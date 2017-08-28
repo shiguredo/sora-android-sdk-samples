@@ -1,10 +1,16 @@
-# Sora Android SDK クイックスタート
-
-Sora Android SDK は [WebRTC SFU Sora](https://sora.shiguredo.jp) の Android クライアントアプリケーションを開発するためのライブラリです。
+# Sora Android SDK サンプルアプリケーション
 
 このリポジトリは Sora Android SDK を利用するサンプル Android アプリケーションを
 提供します。
 使い方は [Sora Android SDK ドキュメント](https://sora.shiguredo.jp/android-sdk-doc/) を参照してください。
+
+## Sora Android SDK
+
+Sora Android SDK は [WebRTC SFU Sora](https://sora.shiguredo.jp) の Android クラ
+イアントアプリケーションを開発するためのライブラリです。Sora Android SDK の使い
+方は [Sora Android SDK ドキュメント](https://sora.shiguredo.jp/android-sdk-doc/)
+を参照してください。
+
 
 ## システム条件
 
@@ -15,6 +21,7 @@ Sora Android SDK は [WebRTC SFU Sora](https://sora.shiguredo.jp) の Android �
 
 ## 参考リンク
 
+- [Sora Android SDK ドキュメント](https://sora.shiguredo.jp/android-sdk-doc/)
 - [クイックスタート](https://github.com/shiguredo/sora-android-sdk-quickstart)
 
 ## サポートについて
@@ -37,4 +44,6 @@ Sora Android SDK に対する有償のサポートについては現在提供し
 
 ## Copyright
 
-Copyright 2017, Shiguredo Inc. and Lyo Kato <lyo.kato at gmail.com>
+- Copyright 2017, Shiguredo Inc. and Lyo Kato <lyo.kato at gmail.com>
+
+- LibYuv ライブラリ: Copyright 2011 The LibYuv Project Authors.
