@@ -2,20 +2,20 @@
 
 Sora Android SDK は [WebRTC SFU Sora](https://sora.shiguredo.jp) の Android クライアントアプリケーションを開発するためのライブラリです。
 
-このリポジトリは Sora Android SDK を利用するシンプルな Android アプリケーションを
+このリポジトリは Sora Android SDK を利用するサンプル Android アプリケーションを
 提供します。
 使い方は [Sora Android SDK ドキュメント](https://sora.shiguredo.jp/android-sdk-doc/) を参照してください。
 
 ## システム条件
 
-- Android 4.1 以降 (シミュレーターは不可)
+- Android 5.0 以降 (シミュレーターは不可)
 - Android Studio 2.3.3 以降
 - WebRTC SFU Sora 17.08 以降
 - Sora Android SDK 1.0.0 以降
 
-## サンプル
+## 参考リンク
 
-- [サンプル集](https://github.com/shiguredo/sora-android-sdk-samples)
+- [クイックスタート](https://github.com/shiguredo/sora-android-sdk-quickstart)
 
 ## サポートについて
 
