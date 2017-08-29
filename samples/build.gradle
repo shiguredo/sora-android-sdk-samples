@@ -1,0 +1,84 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "26.0.1"
+    defaultConfig {
+        applicationId "jp.shiguredo.sora.sample"
+        minSdkVersion 21
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+        free {
+            versionName "1.0-free"
+        }
+    }
+}
+
+dependencies {
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile 'junit:junit:4.12'
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    ext.support_version = '25.3.1'
+    compile "com.android.support:appcompat-v7:$support_version"
+    compile "com.android.support:design:$support_version"
+    compile "com.android.support:cardview-v7:$support_version"
+    compile "com.android.support:recyclerview-v7:$support_version"
+    compile "com.wefika:flowlayout:0.4.1"
+    compile 'com.jaredrummler:material-spinner:1.1.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    // Kotlin libs
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    ext.anko_version = '0.9.1'
+    compile "org.jetbrains.anko:anko-sdk19:$anko_version"
+    compile "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
+    compile "org.jetbrains.anko:anko-design:$anko_version"
+    compile "org.jetbrains.anko:anko-cardview-v7:$anko_version"
+    compile "org.jetbrains.anko:anko-recyclerview-v7:$anko_version"
+
+    compile 'com.github.hotchemi:permissionsdispatcher:2.4.0'
+    kapt 'com.github.hotchemi:permissionsdispatcher-processor:2.4.0'
+
+    // required by "rtc" part
+    compile project(':libwebrtc')
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'io.reactivex.rxjava2:rxjava:2.1.0'
+    compile 'io.reactivex.rxjava2:rxkotlin:2.1.0'
+
+    // required by "signaling" part
+    compile 'com.google.code.gson:gson:2.8.1'
+    compile 'com.squareup.okhttp3:okhttp:3.7.0'
+
+    // Sora Android SDK
+    compile project(':sora-android-sdk')
+
+    releaseCompile project(path: ':webrtc-video-effector', configuration: 'release')
+    debugCompile project(path: ':webrtc-video-effector', configuration: 'debug')
+
+}
+
+repositories {
+    mavenCentral()
+}
+
+kapt {
+    generateStubs = true
+}

@@ -1,0 +1,45 @@
+apply plugin: 'com.android.library'
+
+android {
+    publishNonDefault true
+    compileSdkVersion 25
+    buildToolsVersion "26.0.1"
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 25
+        externalNativeBuild {
+            cmake {
+                arguments '-DANDROID_TOOLCHAIN=clang'
+            }
+        }
+        ndk {
+            //abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/cpp/libyuv/libs']
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+        }
+    }
+}
+
+dependencies {
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile 'junit:junit:4.12'
+
+    // required by "rtc" part
+    compile project(':libwebrtc')
+
+    // Sora Android SDK
+    compile project(':sora-android-sdk')
+
+    compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
+}
