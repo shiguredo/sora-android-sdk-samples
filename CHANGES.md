@@ -22,7 +22,7 @@
 
 ### ADD
 
-- JitPack に対応し、AAR の手動ダウンロードを不要にする
+- Sora Android SDK 依存を JitPack 経由とし、AAR の手動ダウンロードを不要にする
 
 ## 1.0.0
 
