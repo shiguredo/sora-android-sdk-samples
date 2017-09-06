@@ -1,1 +1,1 @@
-include ':libwebrtc', ':sora-android-sdk', ':samples', ':webrtc-video-effector'
+include ':samples', ':webrtc-video-effector'

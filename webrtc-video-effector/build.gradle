@@ -35,11 +35,10 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
 
-    // required by "rtc" part
-    compile project(':libwebrtc')
-
     // Sora Android SDK
-    compile project(':sora-android-sdk')
+    compile("com.github.shiguredo:sora-android-sdk:$sora_android_sdk_version:release@aar") {
+        transitive = true
+    }
 
     compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
 }
