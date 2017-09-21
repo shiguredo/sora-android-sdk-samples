@@ -318,8 +318,11 @@ class SoraScreencastService : Service() {
             enableVideoUpstream(capturer!!, egl?.eglBaseContext)
             videoCodec = SoraVideoOption.Codec.valueOf(req!!.videoCodec)
             audioCodec = SoraAudioOption.Codec.valueOf(req!!.audioCodec)
-        }
 
+            if (req!!.multistream) {
+                enableMultistream()
+            }
+        }
         mediaChannel = SoraMediaChannel(
                 context           = this,
                 signalingEndpoint = req!!.signalingEndpoint,
