@@ -11,14 +11,9 @@ jobs:
       - checkout:
           post:
             - mkdir $ANDROID_HOME/liceses/ && cp .circleci/android-sdk-licenses $ANDROID_HOME/licenses/
-      - run: ls -alt .circleci/
       - run: cp .circleci/gradle.properties ~/sora-android-sdk-sample/gradle.properties
       - run: ls -alt ~/sora-android-sdk-sample/
-      - run: ls -alt ~/sora-android-sdk-sample/sora-android-sdk-sample/
-      - run: echo $ANDROID_NDK_HOME
       - run: echo $ANDROID_HOME
-      - run: ls -alt $ANDROID_HOME
-      - run: ls -alt /opt/android/
       - restore_cache:
           key: android-ndk-r14b
       - run: if [[ ! -e android-ndk-r14b ]]; then wget https://dl.google.com/android/repository/android-ndk-r14b-linux-x86_64.zip && unzip android-ndk-r14b-linux-x86_64.zip; fi
