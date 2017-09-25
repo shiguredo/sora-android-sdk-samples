@@ -15,6 +15,8 @@ jobs:
       - run: echo $ANDROID_HOME
       - run: ls -alt $ANDROID_HOME
       - run: ls -alt /opt/android/
+      - run if [[ ! -e android-ndk-r11c ]]; then wget https://dl.google.com/android/repository/android-ndk-r14b-linux-x86_64.zip && unzip android-ndk-r14b-linux-x86_64.zip; fi
+      - run: echo 'export ANDROID_NDK_HOME=/android-ndk-r14b' >> $BASH_ENV
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "samples/build.gradle" }}
       - run:
