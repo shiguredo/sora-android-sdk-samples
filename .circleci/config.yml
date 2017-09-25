@@ -7,12 +7,12 @@ jobs:
     environment:
       JVM_OPTS: -Xmx1600m
     steps:
-      - run: echo 'export PATH=/foo/bin:$PATH' >> $BASH_ENV
+      - run: echo 'export ANDROID_NDK_HOME=$ANDROID_NDK' >> $BASH_ENV
       - checkout:
           post:
             - mkdir $ANDROID_HOME/liceses/ && cp .circleci/android-sdk-licenses $ANDROID_HOME/licenses/
-      - run: cat $BASH_ENV
-      - run: echo $PATH
+      - run: echo $ANDROID_NDK_HOME
+      - run: echo $ANDROID_HOME
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "samples/build.gradle" }}
       - run:
