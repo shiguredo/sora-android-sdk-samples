@@ -10,6 +10,12 @@
     - バグ修正
 
 
+## develop
+
+### UPDATE
+
+- Signaling Endpoint の設定を Config.kt から build.gradle に移動した
+
 ## 1.3.0
 
 ### UPDATE
