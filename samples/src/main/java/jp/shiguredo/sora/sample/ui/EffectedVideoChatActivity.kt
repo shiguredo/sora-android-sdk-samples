@@ -13,9 +13,9 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import jp.co.cyberagent.android.gpuimage.*
+import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.camera.EffectCameraVideoCapturerFactory
-import jp.shiguredo.sora.sample.config.Config
 import jp.shiguredo.sora.sample.facade.SoraVideoChannel
 import jp.shiguredo.sora.sample.option.SoraStreamType
 import jp.shiguredo.sora.sample.ui.util.RendererLayoutCalculator
@@ -183,7 +183,7 @@ class EffectedVideoChatActivity : AppCompatActivity() {
 
         channel = SoraVideoChannel(
                 context           = this,
-                signalingEndpoint = Config.SIGNALING_ENDPOINT,
+                signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
                 channelId         = channelName,
                 signalingMetadata = "",
                 videoWidth        = 480,

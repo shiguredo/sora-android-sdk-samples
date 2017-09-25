@@ -1,9 +1,8 @@
 package jp.shiguredo.sora.sample.config
 
+import jp.shiguredo.sora.sample.BuildConfig
+
 class Config {
 
-    companion object {
-        const val SIGNALING_ENDPOINT = "wss://sora.example.com/signaling"
-    }
 }
 
