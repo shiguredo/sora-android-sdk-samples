@@ -7,9 +7,7 @@ jobs:
     environment:
       JVM_OPTS: -Xmx1600m
     steps:
-      - run:
-          name: Set ANDROID_NDK_HOME, why dont you exported it yet?
-          command: run: echo 'export ANDROID_NDK_HOME=${ANDROID_NDK}' >> $BASH_ENV
+      - run: echo 'export PATH=/foo/bin:$PATH' >> $BASH_ENV
       - checkout:
           post:
             - mkdir $ANDROID_HOME/liceses/ && cp .circleci/android-sdk-licenses $ANDROID_HOME/licenses/
