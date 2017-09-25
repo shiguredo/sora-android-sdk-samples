@@ -13,6 +13,8 @@ jobs:
             - mkdir $ANDROID_HOME/liceses/ && cp .circleci/android-sdk-licenses $ANDROID_HOME/licenses/
       - run: echo $ANDROID_NDK_HOME
       - run: echo $ANDROID_HOME
+      - run: ls -alt $ANDROID_HOME
+      - run: ls -alt /opt/android/
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "samples/build.gradle" }}
       - run:
