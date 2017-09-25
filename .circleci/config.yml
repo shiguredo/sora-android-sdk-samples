@@ -7,7 +7,9 @@ jobs:
     environment:
       JVM_OPTS: -Xmx1600m
     steps:
-      - checkout
+      - checkout:
+          post:
+            - mkdir $ANDROID_HOME/liceses/ && cp .circleci/android-sdk-licenses $ANDROID_HOME/licenses/
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "samples/build.gradle" }}
       - run:
