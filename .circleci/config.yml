@@ -12,6 +12,7 @@ jobs:
           post:
             - mkdir $ANDROID_HOME/liceses/ && cp .circleci/android-sdk-licenses $ANDROID_HOME/licenses/
       - run: cat $BASH_ENV
+      - run: echo $PATH
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "samples/build.gradle" }}
       - run:
