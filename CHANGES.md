@@ -14,6 +14,11 @@
 
 ### UPDATE
 
+- SDK のバージョンを上げた
+- Kotlin を 1.1.50 に上げた
+
+### CHANGE
+
 - Signaling Endpoint の設定を Config.kt から build.gradle に移動した
 
 ## 1.3.0
