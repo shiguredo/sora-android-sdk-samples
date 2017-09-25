@@ -11,7 +11,7 @@ jobs:
       - checkout:
           post:
             - mkdir $ANDROID_HOME/liceses/ && cp .circleci/android-sdk-licenses $ANDROID_HOME/licenses/
-            - cp .circleci/gradle.properties ~/sora-android-sdk-sample/
+      - run: cp .circleci/gradle.properties ~/sora-android-sdk-sample/
       - run: ls -alt ~/sora-android-sdk-sample/
       - run: ls -alt ~/sora-android-sdk-sample/sora-android-sdk-sample/
       - run: echo $ANDROID_NDK_HOME
