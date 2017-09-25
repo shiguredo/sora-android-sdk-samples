@@ -1,7 +1,5 @@
 # Sora Android SDK サンプルアプリケーション
 
-[![CircleCI](https://circleci.com/gh/shiguredo/sora-android-sdk-samples.svg?style=svg)](https://circleci.com/gh/shiguredo/sora-android-sdk-samples)
-
 このリポジトリは Sora Android SDK を利用するサンプル Android アプリケーションを
 提供します。
 使い方は [Sora Android SDK ドキュメント](https://sora.shiguredo.jp/android-sdk-doc/) を参照してください。
