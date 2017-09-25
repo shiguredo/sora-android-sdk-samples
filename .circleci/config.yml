@@ -11,6 +11,7 @@ jobs:
       - checkout:
           post:
             - mkdir $ANDROID_HOME/liceses/ && cp .circleci/android-sdk-licenses $ANDROID_HOME/licenses/
+            - cp .circleci/gradle.properties $HOME/
       - run: echo $ANDROID_NDK_HOME
       - run: echo $ANDROID_HOME
       - run: ls -alt $ANDROID_HOME

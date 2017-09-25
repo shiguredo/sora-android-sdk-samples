@@ -29,7 +29,8 @@ out/
 .gradle
 .gradle/
 build/
-gradle.properties
+/gradle.properties
+/samples/gradle.properties
 
 # Signing files
 .signing/
