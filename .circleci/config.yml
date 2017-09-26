@@ -31,16 +31,16 @@ jobs:
           key: android-ndk-r14b
 
       - restore_cache:
-          key: 'jars-{{ checksum "build.gradle" }}-{{ checksum  "samples/build.gradle" }}-\
-                {{ checksum  "webrtc-video-effector/build.gradle" }}'
+          key: "jars-{{ checksum \"build.gradle\" }}-{{ checksum  \"samples/build.gradle\" }}-\
+                {{ checksum  \"webrtc-video-effector/build.gradle\" }}"
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
       - save_cache:
           paths:
             - ~/.gradle
-          key: 'jars-{{ checksum "build.gradle" }}-{{ checksum  "samples/build.gradle" }}-\
-                {{ checksum  "webrtc-video-effector/build.gradle" }}'
+          key: "jars-{{ checksum \"build.gradle\" }}-{{ checksum  \"samples/build.gradle\" }}-\
+                {{ checksum  \"webrtc-video-effector/build.gradle\" }}"
 
       - run:
           name: Run lint & build
