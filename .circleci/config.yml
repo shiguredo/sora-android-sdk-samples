@@ -10,32 +10,47 @@ jobs:
       - run: echo 'export ANDROID_NDK_HOME=$ANDROID_NDK' >> $BASH_ENV
       - checkout:
           post:
-            - mkdir $ANDROID_HOME/liceses/ && cp .circleci/android-sdk-licenses $ANDROID_HOME/licenses/
+            - >-
+              mkdir $ANDROID_HOME/liceses/ &&
+              cp .circleci/android-sdk-licenses $ANDROID_HOME/licenses/
       - run: cp .circleci/gradle.properties ~/sora-android-sdk-sample/gradle.properties
       - run: ls -alt ~/sora-android-sdk-sample/
       - run: echo $ANDROID_HOME
+
       - restore_cache:
           key: android-ndk-r14b
-      - run: if [[ ! -e android-ndk-r14b ]]; then wget https://dl.google.com/android/repository/android-ndk-r14b-linux-x86_64.zip && unzip android-ndk-r14b-linux-x86_64.zip; fi
+      - run: >-
+          if [[ ! -e android-ndk-r14b ]];
+              then wget https://dl.google.com/android/repository/android-ndk-r14b-linux-x86_64.zip &&
+              unzip android-ndk-r14b-linux-x86_64.zip;
+          fi
       - run: echo 'export ANDROID_NDK_HOME=android-ndk-r14b' >> $BASH_ENV
       - save_cache:
           paths:
             - android-ndk-r14b
           key: android-ndk-r14b
+
       - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "samples/build.gradle" }}
+          key: 'jars-{{ checksum "build.gradle" }}-{{ checksum  "samples/build.gradle" }}-\
+                {{ checksum  "webrtc-video-effector/build.gradle" }}'
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
       - save_cache:
           paths:
             - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "samples/build.gradle" }}
+          key: 'jars-{{ checksum "build.gradle" }}-{{ checksum  "samples/build.gradle" }}-\
+                {{ checksum  "webrtc-video-effector/build.gradle" }}'
+
       - run:
-          name: Run build
-          command: ./gradlew assembleRelease assembleDebug
+          name: Run lint & build
+          command: ./gradlew lint assembleRelease assembleDebug
       - store_artifacts:
           path: samples/build/outputs
-          destination: reports
-      # - store_test_results:
-      #     path: samples/build/test-results
+          destination: outputs
+      - store_artifacts:
+          path: samples/build/reports
+          destination: samples-reports
+      - store_artifacts:
+          path: webrtc-video-effector/build/reports
+          destination: effector-reports
