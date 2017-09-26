@@ -16,6 +16,8 @@
 
 - SDK のバージョンを上げた
 - Kotlin を 1.1.50 に上げた
+- CircleCI でのビルドを設定した
+- コマンドラインビルドのエラー回避のため、 org.jetbrains:annotations をcompile 依存から除外した
 
 ### CHANGE
 
