@@ -35,11 +35,9 @@ android {
 }
 
 configurations {
-    // エラー回避
-    //   > com.android.build.api.transform.TransformException: [snip] com.android.dex.DexException:
-    //   Multiple dex files define Lorg/intellij/lang/annotations/Identifier;
-    // TODO: 副作用が無いか調査
-    compile.exclude group: 'org.jetbrains'
+    // assembleRelease などで次のエラーが発生するワークアラウンド
+    // "Multiple dex files define Lorg/intellij/lang/annotations/Identifier"
+    compile.exclude group: 'org.jetbrains', module: 'annotations'
 }
 
 dependencies {
