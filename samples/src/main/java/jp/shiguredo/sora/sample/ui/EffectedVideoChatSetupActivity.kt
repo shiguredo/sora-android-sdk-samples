@@ -95,7 +95,7 @@ class EffectedVideoChatSetupActivity : AppCompatActivity() {
                             padding = dip(10)
                             backgroundColor = Color.parseColor(spinnerBackgroundColor)
                             maxLines = 10
-                            text = "VIDEO CODEC"
+                            text = "VIDEO EFFECT"
                         }
 
                         effectSpinner = materialSpinner {
