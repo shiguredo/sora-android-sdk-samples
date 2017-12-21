@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Sora Example</string>
+    <string name="app_name">Sora SDK Samples</string>
 
     <string name="feature_desc_video_room">複数人のグループビデオチャットです。</string>
     <string name="feature_desc_voice_room">複数人のグループボイスチャットです。</string>

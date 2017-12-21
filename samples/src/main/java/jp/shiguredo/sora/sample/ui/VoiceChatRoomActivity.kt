@@ -10,7 +10,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
-import jp.shiguredo.sora.sample.config.Config
+import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.facade.SoraAudioChannel
 import jp.shiguredo.sora.sample.option.SoraStreamType
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
@@ -121,7 +121,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
         channel = SoraAudioChannel(
                 context           = this,
-                signalingEndpoint = Config.SIGNALING_ENDPOINT,
+                signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
                 channelId         = channelName,
                 signalingMetadata = "",
                 codec             = audioCodec,

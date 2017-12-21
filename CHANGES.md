@@ -10,6 +10,21 @@
     - バグ修正
 
 
+## develop
+
+## 1.3.1
+
+### UPDATE
+
+- SDK のバージョンを 1.3.1 に上げた
+- Kotlin を 1.1.51 に上げた
+- CircleCI でのビルドを設定した
+- コマンドラインビルドのエラー回避のため、 org.jetbrains:annotations をcompile 依存から除外した
+
+### CHANGE
+
+- Signaling Endpoint の設定を Config.kt から build.gradle に移動した
+
 ## 1.3.0
 
 ### UPDATE

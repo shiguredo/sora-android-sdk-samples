@@ -15,3 +15,6 @@ org.gradle.jvmargs=-Xmx1536m
 # This option should only be used with decoupled projects. More details, visit
 # http://www.gradle.org/docs/current/userguide/multi_project_builds.html#sec:decoupled_projects
 # org.gradle.parallel=true
+
+# Overwrite sora Signaling endpoint in build.gradle's ext.signaling_endpoint
+# sora.signaling_endpoint = ws://192.0.2.10:50000/signaling

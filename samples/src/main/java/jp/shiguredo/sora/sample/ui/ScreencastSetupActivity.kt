@@ -12,8 +12,8 @@ import android.text.method.DigitsKeyListener
 import android.util.Log
 import android.widget.EditText
 import com.jaredrummler.materialspinner.MaterialSpinner
+import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
-import jp.shiguredo.sora.sample.config.Config
 import jp.shiguredo.sora.sample.screencast.SoraScreencastService
 import jp.shiguredo.sora.sample.screencast.SoraScreencastServiceStarter
 import jp.shiguredo.sora.sample.ui.util.materialSpinner
@@ -56,7 +56,7 @@ class ScreencastSetupActivity : AppCompatActivity() {
 
         screencastStarter = SoraScreencastServiceStarter(
                 activity          = this,
-                signalingEndpoint = Config.SIGNALING_ENDPOINT,
+                signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
                 signalingMetadata = "",
                 channelId         = channelId,
                 videoCodec        = videoCodec,

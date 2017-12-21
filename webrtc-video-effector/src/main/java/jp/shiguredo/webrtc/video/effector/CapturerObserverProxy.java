@@ -5,6 +5,7 @@ import android.os.Handler;
 import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.ThreadUtils;
 import org.webrtc.VideoCapturer;
+import org.webrtc.VideoFrame;
 
 public class CapturerObserverProxy implements VideoCapturer.CapturerObserver {
 
@@ -72,5 +73,10 @@ public class CapturerObserverProxy implements VideoCapturer.CapturerObserver {
         this.originalObserver.onTextureFrameCaptured(width, height, oesTextureId,
                 transformMatrix, rotation, timestamp);
 
+    }
+
+    @Override
+    public void onFrameCaptured(VideoFrame frame) {
+        this.originalObserver.onFrameCaptured(frame);
     }
 }

@@ -13,6 +13,11 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        // アプリで参照する設定を BuildConfig に書き込む。
+        // gradle.properties に endpoint/channel 設定がある場合は上書きする
+        def endpoint   = findProperty("sora.signaling_endpoint") ?: signaling_endpoint
+        buildConfigField("String", "SIGNALING_ENDPOINT", "\"${endpoint}\"")
     }
     buildTypes {
         release {
@@ -25,6 +30,14 @@ android {
             versionNameSuffix "-free"
         }
     }
+
+
+}
+
+configurations {
+    // assembleRelease などで次のエラーが発生するワークアラウンド
+    // "Multiple dex files define Lorg/intellij/lang/annotations/Identifier"
+    compile.exclude group: 'org.jetbrains', module: 'annotations'
 }
 
 dependencies {
