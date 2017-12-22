@@ -12,12 +12,22 @@
 
 ## develop
 
+## 1.4.2
+
+- SDK のバージョンを 1.4.1 に上げた
+
+### UPDATE
+
 ## 1.4.1
+
+### UPDATE
 
 - Android support library を 26.0.2 に上げた
 - PermissionsDispatcher を 3.1.0 に上げた
 
 ## 1.4.0
+
+### UPDATE
 
 - SDK のバージョンを 1.4.0 に上げた
 - Android Studio 3.0 に対応した
