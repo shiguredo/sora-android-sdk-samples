@@ -32,15 +32,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults)
+        onRequestPermissionsResult(requestCode, grantResults)
     }
 
     internal fun goToDemo(position: Int) {
         when (position) {
-            0 -> MainActivityPermissionsDispatcher.goToVideoRoomDemoWithCheck(this)
-            1 -> MainActivityPermissionsDispatcher.goToVoiceRoomDemoWithCheck(this)
+            0 -> goToVideoRoomDemoWithPermissionCheck()
+            1 -> goToVoiceRoomDemoWithPermissionCheck()
             2 -> goToScreencast()
-            3 -> MainActivityPermissionsDispatcher.goToEffectedVideoRoomDemoWithCheck(this)
+            3 -> goToEffectedVideoRoomDemoWithPermissionCheck()
             else -> {
                 Log.w(TAG, "must not come here")
             }
