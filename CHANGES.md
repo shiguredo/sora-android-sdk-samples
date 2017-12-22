@@ -12,6 +12,14 @@
 
 ## develop
 
+## 1.4.0
+
+- SDK のバージョンを 1.4.0 に上げた
+- Android Studio 3.0 に対応した
+  - gradle: 4.1
+  - android-maven-gradle-plugin: 2.0
+- Kotlin 1.2.10 に上げた
+
 ## 1.3.1
 
 ### UPDATE
