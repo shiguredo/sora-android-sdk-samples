@@ -1,9 +1,8 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
 
 android {
-    publishNonDefault true
     compileSdkVersion 25
-    buildToolsVersion "26.0.1"
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 25
@@ -30,15 +29,15 @@ android {
 }
 
 dependencies {
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
 
     // Sora Android SDK
-    compile("com.github.shiguredo:sora-android-sdk:$sora_android_sdk_version:release@aar") {
+    api("com.github.shiguredo:sora-android-sdk:$sora_android_sdk_version@aar") {
         transitive = true
     }
 
-    compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
+    api 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
 }
