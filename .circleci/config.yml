@@ -8,11 +8,7 @@ jobs:
       JVM_OPTS: -Xmx1600m
     steps:
       - run: echo 'export ANDROID_NDK_HOME=$ANDROID_NDK' >> $BASH_ENV
-      - checkout:
-          post:
-            - >-
-              mkdir $ANDROID_HOME/liceses/ &&
-              cp .circleci/android-sdk-licenses $ANDROID_HOME/licenses/
+      - checkout
       - run: cp .circleci/gradle.properties ~/sora-android-sdk-sample/gradle.properties
       - run: ls -alt ~/sora-android-sdk-sample/
       - run: echo $ANDROID_HOME
