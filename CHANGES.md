@@ -12,6 +12,10 @@
 
 ## develop
 
+### UPDATE
+
+- SDK のバージョンを develop に変更した
+
 ## 1.5.0
 
 ### UPDATE

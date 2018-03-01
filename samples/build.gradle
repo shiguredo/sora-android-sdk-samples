@@ -19,6 +19,11 @@ android {
         buildConfigField("String", "SIGNALING_ENDPOINT", "\"${endpoint}\"")
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     flavorDimensions "tier"
 
     buildTypes {
@@ -77,4 +82,11 @@ dependencies {
 
 repositories {
     mavenCentral()
+}
+
+configurations.all {
+    resolutionStrategy {
+        cacheDynamicVersionsFor 0, 'seconds'
+        cacheChangingModulesFor 0, 'seconds'
+    }
 }

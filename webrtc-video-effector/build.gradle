@@ -21,10 +21,16 @@ android {
             jniLibs.srcDirs = ['src/main/cpp/libyuv/libs']
         }
     }
+
     externalNativeBuild {
         cmake {
             path 'src/main/cpp/CMakeLists.txt'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -40,4 +46,11 @@ dependencies {
     }
 
     api 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
+}
+
+configurations.all {
+    resolutionStrategy {
+        cacheDynamicVersionsFor 0, 'seconds'
+        cacheChangingModulesFor 0, 'seconds'
+    }
 }
