@@ -132,6 +132,7 @@ class ScreencastSetupActivity : AppCompatActivity() {
                     keyListener = DigitsKeyListener.getInstance(
                             "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
                     inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+                    setText(BuildConfig.CHANNEL_ID)
                 }
 
                 relativeLayout {

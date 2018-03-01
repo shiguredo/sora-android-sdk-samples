@@ -16,7 +16,9 @@ android {
         // アプリで参照する設定を BuildConfig に書き込む。
         // gradle.properties に endpoint/channel 設定がある場合は上書きする
         def endpoint   = findProperty("sora.signaling_endpoint") ?: signaling_endpoint
+        def channel_id = findProperty("sora.channel_id")         ?: channel_id
         buildConfigField("String", "SIGNALING_ENDPOINT", "\"${endpoint}\"")
+        buildConfigField("String", "CHANNEL_ID",         "\"${channel_id}\"")
     }
 
     compileOptions {

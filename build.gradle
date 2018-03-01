@@ -15,6 +15,7 @@ buildscript {
 
     // アプリから参照する設定項目
     ext.signaling_endpoint = "wss://sora.example.com/signaling"
+    ext.channel_id         = "sora"
 }
 
 allprojects {

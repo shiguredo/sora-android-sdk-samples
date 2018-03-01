@@ -10,6 +10,7 @@ import android.text.method.DigitsKeyListener
 import android.util.Log
 import android.widget.EditText
 import com.jaredrummler.materialspinner.MaterialSpinner
+import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.ui.util.materialSpinner
 import org.jetbrains.anko.*
@@ -71,6 +72,7 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
                         keyListener = DigitsKeyListener.getInstance(
                                 "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
                         inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+                        setText(BuildConfig.CHANNEL_ID)
                     }
 
                     relativeLayout {
