@@ -83,7 +83,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
         listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
 
-        val size = when (intent.getStringExtra("VIDEO_SIZE")) {
+        when (intent.getStringExtra("VIDEO_SIZE")) {
             "VGA" -> {
                 videoWidth = SoraVideoOption.FrameSize.Portrait.VGA.x
                 videoHeight = SoraVideoOption.FrameSize.Portrait.VGA.y
