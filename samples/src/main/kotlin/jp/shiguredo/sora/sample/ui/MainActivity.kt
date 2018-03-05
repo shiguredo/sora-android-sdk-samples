@@ -60,18 +60,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     @TargetApi(21)
-    fun goToScreencastAcitivity() {
+    private fun goToScreencastAcitivity() {
         val intent = Intent(this, ScreencastSetupActivity::class.java)
         startActivity(intent)
     }
 
-    @NeedsPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
+    @NeedsPermission(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
     fun goToVideoRoomDemo() {
         val intent = Intent(this, VideoChatRoomSetupActivity::class.java)
         startActivity(intent)
     }
 
-    @NeedsPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
+    @NeedsPermission(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
     fun goToEffectedVideoRoomDemo() {
         val intent = Intent(this, EffectedVideoChatSetupActivity::class.java)
         startActivity(intent)
@@ -83,20 +83,24 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    @OnShowRationale(Manifest.permission.CAMERA)
-    fun showRationaleForCamera(request: PermissionRequest) {
-        showRationaleDialog(getString(R.string.permission_rationale_camera), request)
+    @OnShowRationale(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
+    fun showRationaleForCameraAndAudio(request: PermissionRequest) {
+        Log.d(TAG, "showRationaleForCameraAndAudio")
+        showRationaleDialog(
+                "ビデオチャットを利用するには、カメラとマイクの使用許可が必要です", request)
     }
 
     @OnShowRationale(Manifest.permission.RECORD_AUDIO)
     fun showRationaleForAudio(request: PermissionRequest) {
-        showRationaleDialog(getString(R.string.permission_rationale_record_audio), request)
+        showRationaleDialog(
+                "ボイスチャットを利用するには、マイクの使用許可が必要です", request)
     }
 
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    fun onCameraDenied() {
+    @OnPermissionDenied(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
+    fun onCameraAndAudioDenied() {
+        Log.d(TAG, "onCameraAndAudioDenied")
         Snackbar.make(this.contentView!!,
-                getString(R.string.permission_denied_camera),
+                "ビデオチャットを利用するには、カメラとマイクの使用を許可してください",
                 Snackbar.LENGTH_LONG)
                 .setAction("OK") { }
                 .show()
@@ -105,7 +109,7 @@ class MainActivity : AppCompatActivity() {
     @OnPermissionDenied(Manifest.permission.RECORD_AUDIO)
     fun onAudioDenied() {
         Snackbar.make(this.contentView!!,
-                getString(R.string.permission_denied_record_audio),
+                "ボイスチャットを利用するには、マイクの使用を許可してください",
                 Snackbar.LENGTH_LONG)
                 .setAction("OK") {  }
                 .show()
@@ -127,10 +131,14 @@ class MainActivityUI : AnkoComponent<MainActivity> {
     val TAG = MainActivityUI::class.simpleName
 
     val adapter = FeatureListAdapter(arrayListOf(
-            Feature(title = "VideoRoom", description = "ビデオチャットのデモです。複数人でのグループトークも可能です。"),
-            Feature(title = "VoiceRoom", description = "ボイスチャットのデモです。複数人でのグループトークも可能です。"),
-            Feature(title = "Screensast", description = "スクリーンキャストのデモです。"),
-            Feature(title = "VideoEffect", description = "エフェクト付きのビデオチャットのデモです")
+            Feature(title = "Video Chat Room",
+                    description = "ビデオチャットのデモです。複数人でのグループチャットも可能です。"),
+            Feature(title = "Voice Chat Room",
+                    description = "ボイスチャットのデモです。複数人でのグループチャットも可能です。"),
+            Feature(title = "Screencast",
+                    description = "スクリーンキャストのデモです。"),
+            Feature(title = "Effected Video Chat",
+                    description = "エフェクト付きのビデオチャットのデモです")
     ))
 
     override fun createView(ui: AnkoContext<MainActivity>): View = with(ui) {
