@@ -56,7 +56,6 @@ public class YuvByteBufferReader {
     }
 
     public int read(byte[] data, int width, int height) {
-        VideoEffectorLogger.d(TAG, "read");
         resizeTextureIfNeeded(width, height);
 
         IntBuffer buf = IntBuffer.allocate(width * height);

@@ -84,8 +84,6 @@ public class RTCVideoEffector {
     byte[] processByteBufferFrame(byte[] bytes, int width, int height,
                                   int rotation, long timestamp) {
 
-        VideoEffectorLogger.d(TAG, "processByteBufferFrame");
-
         if (!needToProcessFrame()) {
             return bytes;
         }
@@ -108,7 +106,6 @@ public class RTCVideoEffector {
 
         for (FrameImageFilter filter : filters) {
             if (filter.isEnabled()) {
-                VideoEffectorLogger.d(TAG, "execute filter");
                 stepTextureId = filter.filter(context, stepTextureId);
             }
         }

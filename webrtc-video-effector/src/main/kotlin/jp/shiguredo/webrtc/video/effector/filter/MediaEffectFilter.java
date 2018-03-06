@@ -5,9 +5,13 @@ import android.media.effect.EffectContext;
 import android.media.effect.EffectFactory;
 import android.opengl.GLES20;
 
+import jp.shiguredo.sora.sdk.util.SoraLogger;
+import jp.shiguredo.webrtc.video.effector.RTCVideoEffector;
 import jp.shiguredo.webrtc.video.effector.VideoEffectorContext;
+import jp.shiguredo.webrtc.video.effector.VideoEffectorLogger;
 
 public class MediaEffectFilter extends FrameImageFilter {
+    public static final String TAG = MediaEffectFilter.class.getSimpleName();
 
     public interface Listener {
         void onInit(Effect effect);
@@ -31,13 +35,18 @@ public class MediaEffectFilter extends FrameImageFilter {
 
     @Override
     public void init() {
+        VideoEffectorLogger.d(TAG, "init: type=" + this.effectType);
+
         final int textures[] = new int[1];
         GLES20.glGenTextures(1, textures, 0);
         textureId = textures[0];
 
         EffectContext ectx = EffectContext.createWithCurrentGlContext();
         EffectFactory factory = ectx.getFactory();
+        VideoEffectorLogger.d(TAG, "init: 3");
         effect = factory.createEffect(effectType);
+
+        VideoEffectorLogger.d(TAG, "init: effect created=" + effect.toString());
 
         if (listener != null) {
             listener.onInit(effect);

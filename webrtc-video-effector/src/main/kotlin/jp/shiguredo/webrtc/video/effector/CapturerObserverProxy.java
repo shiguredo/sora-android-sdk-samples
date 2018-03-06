@@ -46,8 +46,6 @@ public class CapturerObserverProxy implements VideoCapturer.CapturerObserver {
     public void onByteBufferFrameCaptured(byte[] bytes, int width, int height,
                                           int rotation, long timestamp) {
 
-        VideoEffectorLogger.d(TAG, "onByteBufferCapturered");
-
         if (this.videoEffector.needToProcessFrame()) {
 
             byte[] filteredBytes =

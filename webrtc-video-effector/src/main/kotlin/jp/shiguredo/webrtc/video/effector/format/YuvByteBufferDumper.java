@@ -24,7 +24,6 @@ public class YuvByteBufferDumper {
     }
 
     public byte[] dump(int lastTextureId, int width, int height) {
-        VideoEffectorLogger.d(TAG, "dump");
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, bufferId);
         GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0,
                                 GLES20.GL_TEXTURE_2D, lastTextureId, 0);
