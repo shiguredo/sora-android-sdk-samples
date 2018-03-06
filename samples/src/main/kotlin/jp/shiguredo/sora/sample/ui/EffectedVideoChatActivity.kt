@@ -180,7 +180,6 @@ class EffectedVideoChatActivity : AppCompatActivity() {
     private fun connectChannel() {
         Log.d(TAG, "openChannel")
 
-
         channel = SoraVideoChannel(
                 context           = this,
                 signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,

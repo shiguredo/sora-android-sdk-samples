@@ -56,12 +56,8 @@ configurations {
 }
 
 dependencies {
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testImplementation 'junit:junit:4.12'
-
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:${kotlin_version}"
 
     ext.support_version = '26.0.2'
     implementation "com.android.support:appcompat-v7:$support_version"
@@ -80,10 +76,11 @@ dependencies {
     implementation "org.jetbrains.anko:anko-cardview-v7:$anko_version"
     implementation "org.jetbrains.anko:anko-recyclerview-v7:$anko_version"
 
-    implementation ('com.github.hotchemi:permissionsdispatcher:3.1.0') {
+    ext.permissionsdispatcher_version = '3.1.0'
+    implementation ("com.github.hotchemi:permissionsdispatcher:${permissionsdispatcher_version}") {
         exclude module: "support-v13"
     }
-    kapt 'com.github.hotchemi:permissionsdispatcher-processor:3.1.0'
+    kapt "com.github.hotchemi:permissionsdispatcher-processor:${permissionsdispatcher_version}"
 
     implementation project(path: ':webrtc-video-effector')
 }
