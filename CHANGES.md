@@ -14,7 +14,7 @@
 
 ### UPDATE
 
-- SDK のバージョンを develop に変更した
+- SDK のバージョンを 1.5.2 に上げた
 - kotlin ソースディレクトリの名前を kotlin に変更した
 - PermissionDispatcher 3.x に対応した
 - Kotlin 1.2.30 に上げた
