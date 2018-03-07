@@ -1,6 +1,6 @@
 buildscript {
-    ext.kotlin_version = '1.2.10'
-    ext.sora_android_sdk_version = '1.5.0'
+    ext.kotlin_version = '1.2.30'
+    ext.sora_android_sdk_version = '1.5.2'
 
     repositories {
         jcenter()
@@ -15,6 +15,7 @@ buildscript {
 
     // アプリから参照する設定項目
     ext.signaling_endpoint = "wss://sora.example.com/signaling"
+    ext.channel_id         = "sora"
 }
 
 allprojects {

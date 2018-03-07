@@ -2,10 +2,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 25
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_TOOLCHAIN=clang'
@@ -21,23 +20,37 @@ android {
             jniLibs.srcDirs = ['src/main/cpp/libyuv/libs']
         }
     }
+
     externalNativeBuild {
         cmake {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+
+    sourceSets {
+        main {
+            java.srcDirs += 'src/main/kotlin'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testImplementation 'junit:junit:4.12'
-
     // Sora Android SDK
     api("com.github.shiguredo:sora-android-sdk:$sora_android_sdk_version@aar") {
         transitive = true
     }
 
     api 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
+}
+
+configurations.all {
+    resolutionStrategy {
+        cacheDynamicVersionsFor 0, 'seconds'
+        cacheChangingModulesFor 0, 'seconds'
+    }
 }
