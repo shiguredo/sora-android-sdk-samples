@@ -13,8 +13,8 @@ jobs:
       - run: ls -alt ~/sora-android-sdk-sample/
       - run: echo $ANDROID_HOME
 
-      # - restore_cache:
-      #     key: android-26-ndk-r14b
+      - restore_cache:
+          key: android-26-ndk-r14b
       - run: >-
           if [[ ! -e android-ndk-r14b ]];
               then wget https://dl.google.com/android/repository/android-ndk-r14b-linux-x86_64.zip &&
