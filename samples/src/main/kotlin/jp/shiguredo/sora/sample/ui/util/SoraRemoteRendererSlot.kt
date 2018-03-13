@@ -5,12 +5,12 @@ import jp.shiguredo.sora.sdk.util.SoraLogger
 import org.webrtc.*
 
 // TODO support NUMBER_OF_RENDERERS limitation
-class SoreRemoteRendererSlot(
+class SoraRemoteRendererSlot(
         val context:    Context,
         val eglContext: EglBase.Context,
         var listener:   Listener?
 ) {
-    val TAG = SoreRemoteRendererSlot::class.simpleName
+    val TAG = SoraRemoteRendererSlot::class.simpleName
 
     interface Listener {
         fun onAddRenderer(renderer: SurfaceViewRenderer)
