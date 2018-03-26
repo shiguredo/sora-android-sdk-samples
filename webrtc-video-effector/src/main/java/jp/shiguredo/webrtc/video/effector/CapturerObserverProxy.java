@@ -6,6 +6,9 @@ import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.ThreadUtils;
 import org.webrtc.VideoCapturer;
 import org.webrtc.VideoFrame;
+import org.webrtc.YuvHelper;
+
+import java.nio.ByteBuffer;
 
 public class CapturerObserverProxy implements VideoCapturer.CapturerObserver {
 
@@ -75,6 +78,36 @@ public class CapturerObserverProxy implements VideoCapturer.CapturerObserver {
 
     @Override
     public void onFrameCaptured(VideoFrame frame) {
-        this.originalObserver.onFrameCaptured(frame);
+        if (this.videoEffector.needToProcessFrame()) {
+            VideoEffectorLogger.d(TAG, "onFrameCaptured: " + frame.getClass().getName());
+            VideoEffectorLogger.d(TAG, "onFrameCaptured: " + frame.getBuffer().getClass().getName());
+            VideoEffectorLogger.d(TAG, "onFrameCaptured: " + frame.getBuffer().toI420().getClass().getName());
+            final VideoFrame.I420Buffer buffer = frame.getBuffer().toI420();
+
+            final int height = buffer.getHeight();
+            final int width = buffer.getWidth();
+            final int chromaWidth = (width + 1) / 2;
+            final int chromaHeight = (height + 1) / 2;
+            final int dstSize = width * height + chromaWidth * chromaHeight * 2;
+            ByteBuffer dst = ByteBuffer.allocateDirect(dstSize);
+            YuvHelper.I420ToNV12(buffer.getDataY(), buffer.getStrideY(), buffer.getDataU(), buffer.getStrideU(),
+                    buffer.getDataV(), buffer.getStrideV(), dst, width, height);
+
+            byte[] bytes = dst.array();
+
+            byte[] filteredBytes =
+                    this.videoEffector.processByteBufferFrame(bytes, width, height,
+                            frame.getRotation(), frame.getTimestampNs());
+
+            // TODO: どうやって frame にラップし直す?
+            this.originalObserver.onFrameCaptured();
+            // TODO: これなに??
+            surfaceTextureHelper.returnTextureFrame();
+
+
+            this.originalObserver.onFrameCaptured(frame);
+        } else {
+            this.originalObserver.onFrameCaptured(frame);
+        }
     }
 }
