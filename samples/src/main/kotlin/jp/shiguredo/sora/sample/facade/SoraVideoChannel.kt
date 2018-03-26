@@ -159,18 +159,17 @@ class SoraVideoChannel(
         val mediaOption = SoraMediaOption().apply {
 
             if (streamType.hasUpstream()) {
-
                 if (audioEnabled) {
                     enableAudioUpstream()
                 }
-
                 capturer = capturerFactory.createCapturer()
                 enableVideoUpstream(capturer!!, egl!!.eglBaseContext)
             }
 
             if (streamType.hasDownstream()) {
-
-                enableAudioDownstream()
+                if (audioEnabled) {
+                    enableAudioDownstream()
+                }
                 enableVideoDownstream(egl!!.eglBaseContext)
             }
 
