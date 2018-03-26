@@ -55,6 +55,7 @@ public class MediaEffectFilter extends FrameImageFilter {
 
     @Override
     public int filter(VideoEffectorContext context, int srcTextureId) {
+        VideoEffectorLogger.d(TAG, "filter " + srcTextureId);
         if (listener != null) {
             listener.onUpdate(effect, context);
         }
