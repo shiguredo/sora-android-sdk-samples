@@ -47,37 +47,6 @@ public class CapturerObserverProxy implements VideoCapturer.CapturerObserver {
     }
 
     @Override
-    public void onByteBufferFrameCaptured(byte[] bytes, int width, int height,
-                                          int rotation, long timestamp) {
-
-        if (this.videoEffector.needToProcessFrame()) {
-
-            byte[] filteredBytes =
-                    this.videoEffector.processByteBufferFrame(bytes, width, height,
-                            rotation, timestamp);
-
-            this.originalObserver.onByteBufferFrameCaptured(filteredBytes, width, height,
-                    rotation, timestamp);
-            surfaceTextureHelper.returnTextureFrame();
-
-        } else {
-
-            this.originalObserver.onByteBufferFrameCaptured(bytes, width, height,
-                    rotation, timestamp);
-
-        }
-    }
-
-    @Override
-    public void onTextureFrameCaptured(int width, int height, int oesTextureId,
-                                       float[] transformMatrix, int rotation, long timestamp) {
-
-        this.originalObserver.onTextureFrameCaptured(width, height, oesTextureId,
-                transformMatrix, rotation, timestamp);
-
-    }
-
-    @Override
     public void onFrameCaptured(VideoFrame frame) {
         if (this.videoEffector.needToProcessFrame()) {
             final VideoFrame.I420Buffer buffer = frame.getBuffer().toI420();
