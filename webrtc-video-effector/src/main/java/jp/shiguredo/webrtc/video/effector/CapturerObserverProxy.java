@@ -80,10 +80,8 @@ public class CapturerObserverProxy implements VideoCapturer.CapturerObserver {
     @Override
     public void onFrameCaptured(VideoFrame frame) {
         if (this.videoEffector.needToProcessFrame()) {
-            VideoEffectorLogger.d(TAG, "onFrameCaptured: " + frame.getClass().getName());
-            VideoEffectorLogger.d(TAG, "onFrameCaptured: " + frame.getBuffer().getClass().getName());
-            VideoEffectorLogger.d(TAG, "onFrameCaptured: " + frame.getBuffer().toI420().getClass().getName());
             final VideoFrame.I420Buffer buffer = frame.getBuffer().toI420();
+            frame.release();
 
             final int height = buffer.getHeight();
             final int width = buffer.getWidth();
@@ -95,13 +93,14 @@ public class CapturerObserverProxy implements VideoCapturer.CapturerObserver {
             final int chromaHeight = (height + 1) / 2;
             final int dstSize = width * height + chromaWidth * chromaHeight * 2;
             ByteBuffer dst = ByteBuffer.allocateDirect(dstSize);
+            // TODO: libyuv に I420ToARGB があるので NV12 に変換する必要はないかもしれなが、
+            //       下回りの byte[] を取得する方法がわからない
             YuvHelper.I420ToNV12(buffer.getDataY(), strideY, buffer.getDataU(), strideU,
                     buffer.getDataV(), strideV, dst, width, height);
-
-            byte[] bytes = dst.array();
+            buffer.release();
 
             byte[] filteredBytes =
-                    this.videoEffector.processByteBufferFrame(bytes, width, height,
+                    this.videoEffector.processByteBufferFrame(dst.array(), width, height,
                             frame.getRotation(), frame.getTimestampNs());
 
             final int offsetY = 0;
@@ -111,6 +110,7 @@ public class CapturerObserverProxy implements VideoCapturer.CapturerObserver {
             final int lengthU = strideU * chromaHeight;
             final int offsetV = offsetU + lengthU;
             final int lengthV = strideV * chromaHeight;
+
             final ByteBuffer dataY = ByteBuffer.allocateDirect(lengthY);
             dataY.mark();
             dataY.put(filteredBytes, offsetY, lengthY);
@@ -123,14 +123,15 @@ public class CapturerObserverProxy implements VideoCapturer.CapturerObserver {
             dataV.mark();
             dataV.put(filteredBytes, offsetV, lengthV);
             dataV.reset();
+
             VideoFrame.I420Buffer filteredBuffer = JavaI420Buffer.wrap(
                     width, height,
                     dataY, strideY, dataU, strideU, dataV, strideV,
-                    // TODO: どうにかする
                     null);
 
             VideoFrame filteredVideoFrame = new VideoFrame(
                     filteredBuffer, frame.getRotation(), frame.getTimestampNs());
+            filteredBuffer.release();
             this.originalObserver.onFrameCaptured(filteredVideoFrame);
         } else {
             this.originalObserver.onFrameCaptured(frame);
