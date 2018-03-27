@@ -2,6 +2,7 @@ package jp.shiguredo.webrtc.video.effector;
 
 import android.os.Handler;
 
+import org.webrtc.JavaI420Buffer;
 import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.ThreadUtils;
 import org.webrtc.VideoCapturer;
@@ -86,12 +87,16 @@ public class CapturerObserverProxy implements VideoCapturer.CapturerObserver {
 
             final int height = buffer.getHeight();
             final int width = buffer.getWidth();
+            final int strideY = buffer.getStrideY();
+            final int strideU = buffer.getStrideU();
+            final int strideV = buffer.getStrideV();
+
             final int chromaWidth = (width + 1) / 2;
             final int chromaHeight = (height + 1) / 2;
             final int dstSize = width * height + chromaWidth * chromaHeight * 2;
             ByteBuffer dst = ByteBuffer.allocateDirect(dstSize);
-            YuvHelper.I420ToNV12(buffer.getDataY(), buffer.getStrideY(), buffer.getDataU(), buffer.getStrideU(),
-                    buffer.getDataV(), buffer.getStrideV(), dst, width, height);
+            YuvHelper.I420ToNV12(buffer.getDataY(), strideY, buffer.getDataU(), strideU,
+                    buffer.getDataV(), strideV, dst, width, height);
 
             byte[] bytes = dst.array();
 
@@ -99,13 +104,34 @@ public class CapturerObserverProxy implements VideoCapturer.CapturerObserver {
                     this.videoEffector.processByteBufferFrame(bytes, width, height,
                             frame.getRotation(), frame.getTimestampNs());
 
-            // TODO: どうやって frame にラップし直す?
-            this.originalObserver.onFrameCaptured();
-            // TODO: これなに??
-            surfaceTextureHelper.returnTextureFrame();
+            final int offsetY = 0;
+            final int lengthY = strideY * height;
+            VideoEffectorLogger.d(TAG, "lengthY = " + lengthY);
+            final int offsetU = offsetY + lengthY;
+            final int lengthU = strideU * chromaHeight;
+            final int offsetV = offsetU + lengthU;
+            final int lengthV = strideV * chromaHeight;
+            final ByteBuffer dataY = ByteBuffer.allocateDirect(lengthY);
+            dataY.mark();
+            dataY.put(filteredBytes, offsetY, lengthY);
+            dataY.reset();
+            final ByteBuffer dataU = ByteBuffer.allocateDirect(lengthU);
+            dataU.mark();
+            dataU.put(filteredBytes, offsetU, lengthU);
+            dataU.reset();
+            final ByteBuffer dataV = ByteBuffer.allocateDirect(lengthV);
+            dataV.mark();
+            dataV.put(filteredBytes, offsetV, lengthV);
+            dataV.reset();
+            VideoFrame.I420Buffer filteredBuffer = JavaI420Buffer.wrap(
+                    width, height,
+                    dataY, strideY, dataU, strideU, dataV, strideV,
+                    // TODO: どうにかする
+                    null);
 
-
-            this.originalObserver.onFrameCaptured(frame);
+            VideoFrame filteredVideoFrame = new VideoFrame(
+                    filteredBuffer, frame.getRotation(), frame.getTimestampNs());
+            this.originalObserver.onFrameCaptured(filteredVideoFrame);
         } else {
             this.originalObserver.onFrameCaptured(frame);
         }
