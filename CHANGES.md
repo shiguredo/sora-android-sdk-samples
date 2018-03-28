@@ -17,6 +17,10 @@
 - onByteBufferFrameCaptured が onFrameCaptured が置き換えられた変更に対応した
   - cf. https://webrtc-review.googlesource.com/c/src/+/43022
 
+### UPDATE
+
+- CI 環境の NDK を r14 から r16 に上げた
+
 ## 1.5.1
 
 ### UPDATE
