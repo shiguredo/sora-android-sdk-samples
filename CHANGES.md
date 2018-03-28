@@ -12,6 +12,8 @@
 
 ## develop
 
+## 1.5.2
+
 ### CHANGE
 
 - onByteBufferFrameCaptured が onFrameCaptured が置き換えられた変更に対応した
