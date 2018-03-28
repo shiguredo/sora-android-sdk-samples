@@ -4,6 +4,7 @@ import org.webrtc.GlUtil;
 import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.ThreadUtils;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,12 +87,14 @@ public class RTCVideoEffector {
         enabled = false;
     }
 
-    byte[] processByteBufferFrame(byte[] bytes, int width, int height,
+    ByteBuffer processByteBufferFrame(ByteBuffer byteBuffer, int width, int height,
                                   int rotation, long timestamp) {
 
         if (!needToProcessFrame()) {
-            return bytes;
+            return byteBuffer;
         }
+
+        byte[] bytes = byteBuffer.array();
 
         context.updateFrameInfo(bytes, width, height, rotation, timestamp);
 

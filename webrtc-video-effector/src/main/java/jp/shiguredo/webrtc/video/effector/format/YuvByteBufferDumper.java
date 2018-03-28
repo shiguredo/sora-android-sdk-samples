@@ -23,7 +23,7 @@ public class YuvByteBufferDumper {
         bufferId = buffers[0];
     }
 
-    public byte[] dump(int lastTextureId, int width, int height) {
+    public ByteBuffer dump(int lastTextureId, int width, int height) {
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, bufferId);
         GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0,
                                 GLES20.GL_TEXTURE_2D, lastTextureId, 0);
@@ -36,8 +36,8 @@ public class YuvByteBufferDumper {
 
         buf.rewind();
 
-        byte [] yuv = new byte[width*height*3/2];
-        libYuv.rgbToYuv(buf.array(), width, height, yuv);
+        ByteBuffer yuv = ByteBuffer.allocateDirect(width*height*3/2);
+        libYuv.rgbToYuv(buf.array(), width, height, yuv.array());
         return yuv;
     }
 

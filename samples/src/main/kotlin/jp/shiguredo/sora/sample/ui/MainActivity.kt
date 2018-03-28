@@ -1,6 +1,7 @@
 package jp.shiguredo.sora.sample.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Intent
 import android.os.Build
@@ -31,7 +32,10 @@ class MainActivity : AppCompatActivity() {
         MainActivityUI().setContentView(this)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    // TODO: AndroidStudio 3.0.1 でエラーになるので suppress
+    // - Generated onRequestPermissionsResult method not called
+    @SuppressLint("NeedOnRequestPermissionsResult")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         onRequestPermissionsResult(requestCode, grantResults)
     }
