@@ -2,7 +2,7 @@ package jp.shiguredo.webrtc.video.effector;
 
 import android.os.Handler;
 
-import org.webrtc.JavaI420Buffer;
+import org.webrtc.NV12Buffer;
 import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.ThreadUtils;
 import org.webrtc.VideoCapturer;
@@ -55,8 +55,8 @@ public class CapturerObserverProxy implements VideoCapturer.CapturerObserver {
             // VideoEffectorLogger.d(TAG, "i420Buffer = " + i420Buffer);
             frame.release();
 
-            final int height = i420Buffer.getHeight();
             final int width = i420Buffer.getWidth();
+            final int height = i420Buffer.getHeight();
             final int strideY = i420Buffer.getStrideY();
             final int strideU = i420Buffer.getStrideU();
             final int strideV = i420Buffer.getStrideV();
@@ -78,24 +78,12 @@ public class CapturerObserverProxy implements VideoCapturer.CapturerObserver {
                     this.videoEffector.processByteBufferFrame(dst.array(), width, height,
                             frame.getRotation(), frame.getTimestampNs());
 
-            final int offsetY = 0;
-            final int lengthY = strideY * height;
-            final int offsetU = offsetY + lengthY;
-            final int lengthU = strideU * chromaHeight;
-            final int offsetV = offsetU + lengthU;
-            final int lengthV = strideV * chromaHeight;
-
-            // JavaI420Buffer.wrap には direct ByteBuffer を渡す必要がある。
+            // NV12Buffer には direct ByteBuffer を渡す必要がある。ByteBuffer.wrap ではダメ。
             // VideoEffector#processByteBufferFrame の IN/OUT を ByteBuffer にすると
             // ミスマッチが減りそう。
-            final ByteBuffer dataY = copy(effectedBytes, offsetY, lengthY);
-            final ByteBuffer dataU = copy(effectedBytes, offsetU, lengthU);
-            final ByteBuffer dataV = copy(effectedBytes, offsetV, lengthV);
-            VideoFrame.I420Buffer filteredBuffer = JavaI420Buffer.wrap(
-                    width, height,
-                    dataY, strideY, dataU, strideU, dataV, strideV,
-                    null);
-
+            final ByteBuffer effectedByteBuffer = createDirectByteBuffer(effectedBytes);
+            VideoFrame.Buffer filteredBuffer = new NV12Buffer(width, height, strideY, height,
+                    effectedByteBuffer, null);
             VideoFrame filteredVideoFrame = new VideoFrame(
                     filteredBuffer, frame.getRotation(), frame.getTimestampNs());
             filteredBuffer.release();
@@ -105,10 +93,10 @@ public class CapturerObserverProxy implements VideoCapturer.CapturerObserver {
         }
     }
 
-    private ByteBuffer copy(byte[] src, int offset, int length) {
-        ByteBuffer data = ByteBuffer.allocateDirect(length);
+    private ByteBuffer createDirectByteBuffer(byte[] src) {
+        ByteBuffer data = ByteBuffer.allocateDirect(src.length);
         data.mark();
-        data.put(src, offset, length);
+        data.put(src);
         data.reset();
         return data;
     }
