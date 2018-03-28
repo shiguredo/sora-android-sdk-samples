@@ -74,14 +74,10 @@ public class CapturerObserverProxy implements VideoCapturer.CapturerObserver {
                     dst, width, height);
             i420Buffer.release();
 
-            byte[] effectedBytes =
-                    this.videoEffector.processByteBufferFrame(dst.array(), width, height,
+            ByteBuffer effectedByteBuffer =
+                    this.videoEffector.processByteBufferFrame(dst, width, height,
                             frame.getRotation(), frame.getTimestampNs());
 
-            // NV12Buffer には direct ByteBuffer を渡す必要がある。ByteBuffer.wrap ではダメ。
-            // VideoEffector#processByteBufferFrame の IN/OUT を ByteBuffer にすると
-            // ミスマッチが減りそう。
-            final ByteBuffer effectedByteBuffer = createDirectByteBuffer(effectedBytes);
             VideoFrame.Buffer filteredBuffer = new NV12Buffer(width, height, strideY, height,
                     effectedByteBuffer, null);
             VideoFrame filteredVideoFrame = new VideoFrame(
@@ -91,13 +87,5 @@ public class CapturerObserverProxy implements VideoCapturer.CapturerObserver {
         } else {
             this.originalObserver.onFrameCaptured(frame);
         }
-    }
-
-    private ByteBuffer createDirectByteBuffer(byte[] src) {
-        ByteBuffer data = ByteBuffer.allocateDirect(src.length);
-        data.mark();
-        data.put(src);
-        data.reset();
-        return data;
     }
 }
