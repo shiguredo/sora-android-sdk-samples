@@ -40,8 +40,14 @@ jobs:
                 {{ checksum  \"webrtc-video-effector/build.gradle\" }}"
 
       - run:
-          name: Run lint & build
-          command: ./gradlew lint assembleRelease assembleDebug
+          name: Run lint
+          command: ./gradlew lint
+      - run:
+          name: Build release
+          command: ./gradlew assembleRelease
+      - run:
+          name: Build debug
+          command: ./gradlew assembleDebug
       - store_artifacts:
           path: samples/build/outputs
           destination: outputs
