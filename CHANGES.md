@@ -12,6 +12,11 @@
 
 ## develop
 
+### CHANGE
+
+- onByteBufferFrameCaptured が onFrameCaptured が置き換えられた変更に対応した
+  - cf. https://webrtc-review.googlesource.com/c/src/+/43022
+
 ## 1.5.1
 
 ### UPDATE

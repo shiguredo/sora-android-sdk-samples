@@ -139,16 +139,13 @@ public class RTCVideoEffector {
     }
 
     public void dispose() {
-        if (helper != null) {
+        if (this.helper != null) {
             // This effector is not initialized
             return;
         }
-        ThreadUtils.invokeAtFrontUninterruptibly(this.helper.getHandler(), new Runnable() {
-            @Override
-            public void run() {
-                disposeInternal();
-            }
-        });
+        ThreadUtils.invokeAtFrontUninterruptibly(this.helper.getHandler(), () ->
+                disposeInternal()
+        );
     }
 
     private void disposeInternal() {
