@@ -58,14 +58,19 @@ public class RTCVideoEffector {
     }
     public void addMediaEffectFilter(String name,
                                      MediaEffectFilter.Listener listener) {
+        VideoEffectorLogger.d(TAG, "addMediaEffectFilter: " + name +
+                ", listener: " + listener);
         this.filters.add(new MediaEffectFilter(name, listener));
     }
 
     public void addGPUImageFilter(GPUImageFilter filter) {
+        VideoEffectorLogger.d(TAG, "addGPUImageFilter: " + filter.toString());
         this.filters.add(new GPUImageFilterWrapper(filter));
     }
     public void addGPUImageFilter(GPUImageFilter filter,
                                   GPUImageFilterWrapper.Listener listener) {
+        VideoEffectorLogger.d(TAG, "addGPUImageFilter: " + filter.toString() +
+                ", listener: " + listener);
         this.filters.add(new GPUImageFilterWrapper(filter, listener));
     }
 
@@ -134,16 +139,13 @@ public class RTCVideoEffector {
     }
 
     public void dispose() {
-        if (helper != null) {
+        if (this.helper != null) {
             // This effector is not initialized
             return;
         }
-        ThreadUtils.invokeAtFrontUninterruptibly(this.helper.getHandler(), new Runnable() {
-            @Override
-            public void run() {
-                disposeInternal();
-            }
-        });
+        ThreadUtils.invokeAtFrontUninterruptibly(this.helper.getHandler(), () ->
+                disposeInternal()
+        );
     }
 
     private void disposeInternal() {

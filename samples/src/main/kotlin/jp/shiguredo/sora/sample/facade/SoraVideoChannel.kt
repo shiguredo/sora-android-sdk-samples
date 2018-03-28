@@ -4,7 +4,7 @@ import android.content.Context
 import jp.shiguredo.sora.sample.camera.CameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.camera.DefaultCameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.option.SoraStreamType
-import jp.shiguredo.sora.sample.ui.util.SoreRemoteRendererSlot
+import jp.shiguredo.sora.sample.ui.util.SoraRemoteRendererSlot
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
@@ -123,11 +123,11 @@ class SoraVideoChannel(
 
     private var closed    = false
 
-    private var remoteRenderersSlot: SoreRemoteRendererSlot? = null
+    private var remoteRenderersSlot: SoraRemoteRendererSlot? = null
     private var localRenderer:       SurfaceViewRenderer? = null
     private var localAudioTrack:     AudioTrack? = null
 
-    private val rendererSlotListener =  object : SoreRemoteRendererSlot.Listener {
+    private val rendererSlotListener =  object : SoraRemoteRendererSlot.Listener {
 
         override fun onAddRenderer(renderer: SurfaceViewRenderer) {
             context.runOnUiThread {
@@ -150,7 +150,7 @@ class SoraVideoChannel(
 
     fun connect() {
 
-        remoteRenderersSlot = SoreRemoteRendererSlot(
+        remoteRenderersSlot = SoraRemoteRendererSlot(
                 context    = context,
                 eglContext = egl!!.eglBaseContext,
                 listener   = rendererSlotListener
@@ -159,18 +159,17 @@ class SoraVideoChannel(
         val mediaOption = SoraMediaOption().apply {
 
             if (streamType.hasUpstream()) {
-
                 if (audioEnabled) {
                     enableAudioUpstream()
                 }
-
                 capturer = capturerFactory.createCapturer()
                 enableVideoUpstream(capturer!!, egl!!.eglBaseContext)
             }
 
             if (streamType.hasDownstream()) {
-
-                enableAudioDownstream()
+                if (audioEnabled) {
+                    enableAudioDownstream()
+                }
                 enableVideoDownstream(egl!!.eglBaseContext)
             }
 

@@ -12,6 +12,21 @@
 
 ## develop
 
+## 1.5.2
+
+### CHANGE
+
+- onByteBufferFrameCaptured が onFrameCaptured が置き換えられた変更に対応した
+  - cf. https://webrtc-review.googlesource.com/c/src/+/43022
+
+- audio disabled のときは upstream/downstream ともに音声は無効にする
+- SoreRemoteRendererSlot の誤植を修正した
+
+### UPDATE
+
+- SDK のバージョンを 1.5.3 に上げた
+- CI 環境の NDK を r14 から r16 に上げた
+
 ## 1.5.1
 
 ### UPDATE
