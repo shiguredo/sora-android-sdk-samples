@@ -10,8 +10,8 @@ jobs:
       - checkout
       - run: cp .circleci/gradle.properties ~/sora-android-sdk-sample/gradle.properties
       - run: ls -alt ~/sora-android-sdk-sample/
-      - run: echo ANDROID_HOME: ${ANDROID_HOME}
-      - run: echo ANDROID_SDK:${ANDROID_SDK}
+      - run: echo $ANDROID_HOME
+      - run: echo $ANDROID_SDK
 
       - restore_cache:
           key: android-26-ndk-r16b
