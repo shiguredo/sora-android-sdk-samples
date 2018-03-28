@@ -7,7 +7,6 @@ jobs:
     environment:
       JVM_OPTS: -Xmx1600m
     steps:
-      - run: echo 'export ANDROID_NDK_HOME=$ANDROID_NDK' >> $BASH_ENV
       - checkout
       - run: cp .circleci/gradle.properties ~/sora-android-sdk-sample/gradle.properties
       - run: ls -alt ~/sora-android-sdk-sample/
@@ -20,7 +19,8 @@ jobs:
               then wget https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip &&
               unzip android-ndk-r16b-linux-x86_64.zip;
           fi
-      - run: echo 'export ANDROID_NDK_HOME=android-ndk-r16b' >> $BASH_ENV
+      - run: echo 'export ANDROID_NDK=${PWD}/android-ndk-r16b' >> $BASH_ENV
+      - run: echo 'export ANDROID_NDK_HOME=${ANDROID_NDK}' >> $BASH_ENV
       - save_cache:
           paths:
             - android-ndk-r16b
