@@ -75,6 +75,23 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
                         setText(BuildConfig.CHANNEL_ID)
                     }
 
+                    button("START") {
+
+                        lparams{
+
+                            width = matchParent
+                            height= wrapContent
+                            margin = dip(10)
+                        }
+
+                        backgroundColor = Color.parseColor("#F06292")
+                        textColor = Color.WHITE
+
+                        onClick {
+                            startVoiceChat()
+                        }
+                    }
+
                     relativeLayout {
 
                         lparams{
@@ -157,22 +174,6 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
                         streamTypeSpinner?.setItems(streamTypeOptions)
                     }
 
-                    button("START") {
-
-                        lparams{
-
-                            width = matchParent
-                            height= wrapContent
-                            margin = dip(10)
-                        }
-
-                        backgroundColor = Color.parseColor("#F06292")
-                        textColor = Color.WHITE
-
-                        onClick {
-                            startVoiceChat()
-                        }
-                    }
                 }
             }
         }

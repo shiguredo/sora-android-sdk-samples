@@ -135,6 +135,35 @@ class ScreencastSetupActivity : AppCompatActivity() {
                     setText(BuildConfig.CHANNEL_ID)
                 }
 
+                button("START") {
+
+                    lparams {
+
+                        width = matchParent
+                        height = wrapContent
+                        margin = dip(10)
+                    }
+
+                    backgroundColor = Color.parseColor("#F06292")
+                    textColor = Color.WHITE
+
+                    onClick {
+                        val channelName = channelNameInput!!.text.toString()
+                        if (channelName.isEmpty()) {
+                            showInputError()
+                            return@onClick
+                        }
+                        val videoCodec = videoCodecOptions[videoCodecSpinner!!.selectedIndex]
+                        val audioCodec = audioCodecOptions[audioCodecSpinner!!.selectedIndex]
+                        val multistream = when (multistreamOptions[multistreamSpinner!!.selectedIndex]) {
+                            "YES" -> true
+                            "NO"  -> false
+                            else  -> true
+                        }
+                        startScreensast(channelName, videoCodec, audioCodec, multistream)
+                    }
+                }
+
                 relativeLayout {
 
                     lparams {
@@ -259,35 +288,6 @@ class ScreencastSetupActivity : AppCompatActivity() {
                     }
 
                     multistreamSpinner?.setItems(multistreamOptions)
-                }
-
-                button("START") {
-
-                    lparams {
-
-                        width = matchParent
-                        height = wrapContent
-                        margin = dip(10)
-                    }
-
-                    backgroundColor = Color.parseColor("#F06292")
-                    textColor = Color.WHITE
-
-                    onClick {
-                        val channelName = channelNameInput!!.text.toString()
-                        if (channelName.isEmpty()) {
-                            showInputError()
-                            return@onClick
-                        }
-                        val videoCodec = videoCodecOptions[videoCodecSpinner!!.selectedIndex]
-                        val audioCodec = audioCodecOptions[audioCodecSpinner!!.selectedIndex]
-                        val multistream = when (multistreamOptions[multistreamSpinner!!.selectedIndex]) {
-                            "YES" -> true
-                            "NO"  -> false
-                            else  -> true
-                        }
-                        startScreensast(channelName, videoCodec, audioCodec, multistream)
-                    }
                 }
 
             }

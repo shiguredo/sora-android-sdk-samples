@@ -74,6 +74,23 @@ class EffectedVideoChatSetupActivity : AppCompatActivity() {
                         setText(BuildConfig.CHANNEL_ID)
                     }
 
+                    button("START") {
+
+                        lparams{
+
+                            width = matchParent
+                            height= wrapContent
+                            margin = dip(10)
+                        }
+
+                        backgroundColor = Color.parseColor("#F06292")
+                        textColor = Color.WHITE
+
+                        onClick {
+                            startVideoChat()
+                        }
+                    }
+
                     relativeLayout {
 
                         lparams{
@@ -114,23 +131,6 @@ class EffectedVideoChatSetupActivity : AppCompatActivity() {
                         }
 
                         effectSpinner?.setItems(effectOptions)
-                    }
-
-                    button("START") {
-
-                        lparams{
-
-                            width = matchParent
-                            height= wrapContent
-                            margin = dip(10)
-                        }
-
-                        backgroundColor = Color.parseColor("#F06292")
-                        textColor = Color.WHITE
-
-                        onClick {
-                            startVideoChat()
-                        }
                     }
 
                 }

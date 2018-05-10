@@ -86,6 +86,23 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
                         setText(BuildConfig.CHANNEL_ID)
                     }
 
+                    button("START") {
+
+                        lparams{
+
+                            width = matchParent
+                            height= wrapContent
+                            margin = dip(10)
+                        }
+
+                        backgroundColor = Color.parseColor("#F06292")
+                        textColor = Color.WHITE
+
+                        onClick {
+                            startVideoChat()
+                        }
+                    }
+
                     relativeLayout {
 
                         lparams{
@@ -372,23 +389,6 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
                         }
 
                         fpsSpinner?.setItems(fpsOptions)
-                    }
-
-                    button("START") {
-
-                        lparams{
-
-                            width = matchParent
-                            height= wrapContent
-                            margin = dip(10)
-                        }
-
-                        backgroundColor = Color.parseColor("#F06292")
-                        textColor = Color.WHITE
-
-                        onClick {
-                            startVideoChat()
-                        }
                     }
 
                 }

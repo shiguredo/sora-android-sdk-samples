@@ -18,6 +18,7 @@
 - PermissionsDispatcher を 3.2.0 に上げた
   - lint バグフィックスにより不要な SuppressLint アノテーションを削除した
 - Kotlin を 1.2.41 に上げた
+- START ボタンをオプションリストの上に移動した
 
 ### ADD
 
