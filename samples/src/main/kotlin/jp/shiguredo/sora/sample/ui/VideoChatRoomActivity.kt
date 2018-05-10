@@ -241,11 +241,11 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
     private var muted = false
 
-    internal fun mute() {
+    internal fun toggleMuted() {
         if (muted) {
-           ui?.showDisabledMuteButton()
+           ui?.showMuteButton()
         } else {
-            ui?.showEnabledMuteButton()
+            ui?.showUnmuteButton()
         }
         muted = !muted
         channel?.mute(muted)
@@ -267,7 +267,7 @@ class VideoChatRoomActivityUI(
     private var numberOfSendersText:   TextView? = null
     private var numberOfReceiversText: TextView? = null
 
-    private var muteButton: ImageButton? = null
+    private var toggleMuteButton: ImageButton? = null
     private var localRendererContainer: FrameLayout? = null
 
     private var renderersLayoutCalculator: RendererLayoutCalculator? = null
@@ -316,14 +316,12 @@ class VideoChatRoomActivityUI(
         renderersLayoutCalculator?.remove(renderer)
     }
 
-    internal fun showEnabledMuteButton() {
-        muteButton?.image = resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
-        muteButton?.background = resources.getDrawable(R.drawable.enabled_button_background, null)
+    internal fun showUnmuteButton() {
+        toggleMuteButton?.image = resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
     }
 
-    internal fun showDisabledMuteButton() {
-        muteButton?.image = resources.getDrawable(R.drawable.ic_mic_off_white_48dp, null)
-        muteButton?.background = resources.getDrawable(R.drawable.button_background, null)
+    internal fun showMuteButton() {
+        toggleMuteButton?.image = resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
     }
 
     override fun createView(ui: AnkoContext<VideoChatRoomActivity>): View = with(ui) {
@@ -406,19 +404,19 @@ class VideoChatRoomActivityUI(
 
                 linearLayout {
 
-                    muteButton = imageButton {
+                    toggleMuteButton = imageButton {
                         lparams {
                             width = dip(50)
                             height = dip(50)
                             rightMargin = dip(10)
                         }
 
-                        image = resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
+                        image = resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
                         scaleType = ImageView.ScaleType.FIT_CENTER
                         background = resources.getDrawable(R.drawable.enabled_button_background, null)
 
                         onClick {
-                            ui.owner.mute()
+                            ui.owner.toggleMuted()
                         }
                     }
 
