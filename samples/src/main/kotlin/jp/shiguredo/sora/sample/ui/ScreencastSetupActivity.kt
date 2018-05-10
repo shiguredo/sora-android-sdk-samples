@@ -20,6 +20,7 @@ import jp.shiguredo.sora.sample.ui.util.materialSpinner
 import jp.shiguredo.sora.sdk.util.SoraServiceUtil
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.textInputLayout
+import org.jetbrains.anko.sdk21.listeners.onClick
 
 
 @TargetApi(21)
@@ -136,14 +137,6 @@ class ScreencastSetupActivity : AppCompatActivity() {
                 }
 
                 button("START") {
-
-                    lparams {
-
-                        width = matchParent
-                        height = wrapContent
-                        margin = dip(10)
-                    }
-
                     backgroundColor = Color.parseColor("#F06292")
                     textColor = Color.WHITE
 
@@ -162,7 +155,12 @@ class ScreencastSetupActivity : AppCompatActivity() {
                         }
                         startScreensast(channelName, videoCodec, audioCodec, multistream)
                     }
+                }.lparams {
+                    width = matchParent
+                    height = wrapContent
+                    margin = dip(10)
                 }
+
 
                 relativeLayout {
 
@@ -175,20 +173,18 @@ class ScreencastSetupActivity : AppCompatActivity() {
                     backgroundColor = Color.parseColor(spinnerBackgroundColor)
 
                     textView {
-
-                        lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            margin = dip(10)
-                            alignParentLeft()
-                            centerVertically()
-                        }
-
                         padding = dip(10)
                         backgroundColor = Color.parseColor(spinnerBackgroundColor)
                         maxLines = 10
                         text = "VIDEO CODEC"
+                    }.lparams {
+                        width = wrapContent
+                        height = wrapContent
+                        margin = dip(10)
+                        alignParentLeft()
+                        centerVertically()
                     }
+
 
                     videoCodecSpinner = materialSpinner {
 
@@ -217,19 +213,16 @@ class ScreencastSetupActivity : AppCompatActivity() {
                     backgroundColor = Color.parseColor(spinnerBackgroundColor)
 
                     textView {
-
-                        lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            margin = dip(10)
-                            alignParentLeft()
-                            centerVertically()
-                        }
-
                         maxLines = 10
                         text = "AUDIO CODEC"
                         padding = dip(10)
                         backgroundColor = Color.parseColor(spinnerBackgroundColor)
+                    }.lparams {
+                        width = wrapContent
+                        height = wrapContent
+                        margin = dip(10)
+                        alignParentLeft()
+                        centerVertically()
                     }
 
                     audioCodecSpinner = materialSpinner {
@@ -260,20 +253,18 @@ class ScreencastSetupActivity : AppCompatActivity() {
                     backgroundColor = Color.parseColor(spinnerBackgroundColor)
 
                     textView {
-
-                        lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            margin = dip(10)
-                            alignParentLeft()
-                            centerVertically()
-                        }
-
                         maxLines = 10
                         text = "MULTISTREAM"
                         padding = dip(10)
                         backgroundColor = Color.parseColor(spinnerBackgroundColor)
+                    }.lparams {
+                        width = wrapContent
+                        height = wrapContent
+                        margin = dip(10)
+                        alignParentLeft()
+                        centerVertically()
                     }
+
 
                     multistreamSpinner = materialSpinner {
                         padding = dip(10)

@@ -26,6 +26,7 @@ import jp.shiguredo.webrtc.video.effector.RTCVideoEffector
 import jp.shiguredo.webrtc.video.effector.VideoEffectorContext
 import jp.shiguredo.webrtc.video.effector.filter.GPUImageFilterWrapper
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk21.listeners.onClick
 import org.webrtc.SurfaceViewRenderer
 
 class EffectedVideoChatActivity : AppCompatActivity() {
@@ -323,11 +324,6 @@ class EffectedVideoChatActivityUI(
 
                 channelText = textView {
 
-                    lparams {
-                        width = matchParent
-                        height = dip(50)
-                    }
-
                     backgroundColor = Color.parseColor("#FFC107")
 
                     this.gravity = Gravity.CENTER
@@ -335,6 +331,9 @@ class EffectedVideoChatActivityUI(
                     textColor = Color.WHITE
                     textSize = 20f
                     padding = dip(10)
+                }.lparams {
+                    width = matchParent
+                    height = dip(50)
                 }
 
                 rendererContainer = relativeLayout {
@@ -375,29 +374,22 @@ class EffectedVideoChatActivityUI(
                 linearLayout {
 
                     toggleMuteButton = imageButton {
-                        lparams {
-                            width = dip(50)
-                            height = dip(50)
-                            rightMargin = dip(10)
-                        }
-
-                        image = resources.getDrawable(R.drawable.ic_mic_black_48dp, null)
+                        image = resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
                         scaleType = ImageView.ScaleType.FIT_CENTER
                         background = resources.getDrawable(R.drawable.enabled_button_background, null)
 
                         onClick {
                             ui.owner.toggleMute()
                         }
+                    }.lparams {
+                        width = dip(50)
+                        height = dip(50)
+                        rightMargin = dip(10)
                     }
 
+
+
                     imageButton {
-
-                        lparams {
-                            width = dip(50)
-                            height = dip(50)
-                            rightMargin = dip(10)
-                        }
-
                         image = resources.getDrawable(R.drawable.ic_videocam_white_48dp, null)
                         scaleType = ImageView.ScaleType.FIT_CENTER
                         background = resources.getDrawable(R.drawable.enabled_button_background, null)
@@ -405,17 +397,13 @@ class EffectedVideoChatActivityUI(
                         onClick {
                             ui.owner.switchCamera()
                         }
+                    }.lparams {
+                        width = dip(50)
+                        height = dip(50)
+                        rightMargin = dip(10)
                     }
 
-
                     imageButton {
-
-                        lparams {
-                            width = dip(50)
-                            height = dip(50)
-                            rightMargin = dip(10)
-                        }
-
                         image = resources.getDrawable(R.drawable.ic_close_white_48dp, null)
                         scaleType = ImageView.ScaleType.FIT_CENTER
                         background = resources.getDrawable(R.drawable.close_button_background, null)
@@ -423,6 +411,10 @@ class EffectedVideoChatActivityUI(
                         onClick {
                             ui.owner.close()
                         }
+                    }.lparams {
+                        width = dip(50)
+                        height = dip(50)
+                        rightMargin = dip(10)
                     }
 
                 }.lparams {

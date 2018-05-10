@@ -23,6 +23,7 @@ import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk21.listeners.onClick
 import org.webrtc.*
 
 @TargetApi(21)
@@ -142,12 +143,6 @@ class SoraScreencastService : Service() {
 
 
                 imageButton {
-                    lparams {
-                        width = dip(50)
-                        height = dip(50)
-                        rightMargin = dip(10)
-                    }
-
                     image = resources.getDrawable(R.drawable.ic_unfold_more_white_48dp, null)
                     scaleType = ImageView.ScaleType.FIT_CENTER
                     background = resources.getDrawable(R.drawable.button_background, null)
@@ -155,42 +150,36 @@ class SoraScreencastService : Service() {
                     onClick {
                         toggleNavigationBarPosition()
                     }
+                }.lparams {
+                    width = dip(50)
+                    height = dip(50)
+                    rightMargin = dip(10)
                 }
 
                 imageView {
-                    lparams {
-                        width = dip(50)
-                        height = dip(50)
-                    }
                     image = resources.getDrawable(req!!.notificationIcon, null)
 
                     onClick {
                        launchActivity()
                     }
+                }.lparams {
+                    width = dip(50)
+                    height = dip(50)
                 }
 
                 textView {
-
-                    lparams {
-                        height = wrapContent
-                        width  = matchParent
-                        weight = 1f
-                    }
-
                     padding = dip(10)
                     text = req!!.stateTitle + "\n" + req!!.stateText
                     textSize = 14.0f
                     textColor = Color.WHITE
                     maxLines = 2
+                }.lparams {
+                    height = wrapContent
+                    width  = matchParent
+                    weight = 1f
                 }
 
                 toggleMuteButton = imageButton {
-                    lparams {
-                        width = dip(50)
-                        height = dip(50)
-                        rightMargin = dip(10)
-                    }
-
                     image = resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
                     scaleType = ImageView.ScaleType.FIT_CENTER
                     background = resources.getDrawable(R.drawable.enabled_button_background, null)
@@ -198,15 +187,13 @@ class SoraScreencastService : Service() {
                     onClick {
                         toggleMute()
                     }
+                }.lparams {
+                    width = dip(50)
+                    height = dip(50)
+                    rightMargin = dip(10)
                 }
 
-
                 imageButton {
-                    lparams {
-                        width = dip(50)
-                        height = dip(50)
-                    }
-
                     image = resources.getDrawable(R.drawable.ic_close_white_48dp, null)
                     scaleType = ImageView.ScaleType.FIT_CENTER
                     background = resources.getDrawable(R.drawable.close_button_background, null)
@@ -214,6 +201,9 @@ class SoraScreencastService : Service() {
                     onClick {
                         closeChannel()
                     }
+                }.lparams {
+                    width = dip(50)
+                    height = dip(50)
                 }
 
             }

@@ -15,6 +15,7 @@ import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.ui.util.materialSpinner
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.textInputLayout
+import org.jetbrains.anko.sdk21.listeners.onClick
 
 class SpotlightRoomSetupActivity : AppCompatActivity() {
 
@@ -91,20 +92,16 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
                     }
 
                     button("START") {
-
-                        lparams{
-
-                            width = matchParent
-                            height= wrapContent
-                            margin = dip(10)
-                        }
-
                         backgroundColor = Color.parseColor("#F06292")
                         textColor = Color.WHITE
 
                         onClick {
                             startSpotlightChat()
                         }
+                    }.lparams{
+                        width = matchParent
+                        height= wrapContent
+                        margin = dip(10)
                     }
 
                     relativeLayout {
@@ -118,19 +115,16 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
                         backgroundColor = Color.parseColor(spinnerBackgroundColor)
 
                         textView {
-
-                            lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                margin = dip(10)
-                                alignParentLeft()
-                                centerVertically()
-                            }
-
                             maxLines = 10
                             text = "SPOTLIGHT"
                             padding = dip(10)
                             backgroundColor = Color.parseColor(spinnerBackgroundColor)
+                        }.lparams {
+                            width = wrapContent
+                            height = wrapContent
+                            margin = dip(10)
+                            alignParentLeft()
+                            centerVertically()
                         }
 
                         spotlightSpinner = materialSpinner {
@@ -159,24 +153,21 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
                         backgroundColor = Color.parseColor(spinnerBackgroundColor)
 
                         textView {
-
-                            lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                margin = dip(10)
-                                alignParentLeft()
-                                centerVertically()
-                            }
-
                             maxLines = 10
                             text = "STREAM TYPE"
                             padding = dip(10)
                             backgroundColor = Color.parseColor(spinnerBackgroundColor)
+                        }.lparams {
+                            width = wrapContent
+                            height = wrapContent
+                            margin = dip(10)
+                            alignParentLeft()
+                            centerVertically()
                         }
 
                         streamTypeSpinner = materialSpinner {
                             // TODO(shino): DOWN 出来たら enabled に変える
-                            enabled = false
+                            isEnabled = false
                             padding = dip(10)
 
                             lparams{
@@ -202,19 +193,16 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
                         backgroundColor = Color.parseColor(spinnerBackgroundColor)
 
                         textView {
-
-                            lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                margin = dip(10)
-                                alignParentLeft()
-                                centerVertically()
-                            }
-
                             padding = dip(10)
                             backgroundColor = Color.parseColor(spinnerBackgroundColor)
                             maxLines = 10
                             text = "VIDEO CODEC"
+                        }.lparams {
+                            width = wrapContent
+                            height = wrapContent
+                            margin = dip(10)
+                            alignParentLeft()
+                            centerVertically()
                         }
 
                         videoCodecSpinner = materialSpinner {
@@ -244,19 +232,16 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
                         backgroundColor = Color.parseColor(spinnerBackgroundColor)
 
                         textView {
-
-                            lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                margin = dip(10)
-                                alignParentLeft()
-                                centerVertically()
-                            }
-
                             maxLines = 10
                             text = "AUDIO ENABLED"
                             padding = dip(10)
                             backgroundColor = Color.parseColor(spinnerBackgroundColor)
+                        }.lparams {
+                            width = wrapContent
+                            height = wrapContent
+                            margin = dip(10)
+                            alignParentLeft()
+                            centerVertically()
                         }
 
                         audioEnabledSpinner = materialSpinner {
@@ -285,19 +270,16 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
                         backgroundColor = Color.parseColor(spinnerBackgroundColor)
 
                         textView {
-
-                            lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                margin = dip(10)
-                                alignParentLeft()
-                                centerVertically()
-                            }
-
                             maxLines = 10
                             text = "AUDIO CODEC"
                             padding = dip(10)
                             backgroundColor = Color.parseColor(spinnerBackgroundColor)
+                        }.lparams {
+                            width = wrapContent
+                            height = wrapContent
+                            margin = dip(10)
+                            alignParentLeft()
+                            centerVertically()
                         }
 
                         audioCodecSpinner = materialSpinner {
@@ -326,19 +308,16 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
                         backgroundColor = Color.parseColor(spinnerBackgroundColor)
 
                         textView {
-
-                            lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                margin = dip(10)
-                                alignParentLeft()
-                                centerVertically()
-                            }
-
                             maxLines = 10
                             text = "BITRATE"
                             padding = dip(10)
                             backgroundColor = Color.parseColor(spinnerBackgroundColor)
+                        }.lparams {
+                            width = wrapContent
+                            height = wrapContent
+                            margin = dip(10)
+                            alignParentLeft()
+                            centerVertically()
                         }
 
                         bitRateSpinner = materialSpinner {
@@ -367,19 +346,16 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
                         backgroundColor = Color.parseColor(spinnerBackgroundColor)
 
                         textView {
-
-                            lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                margin = dip(10)
-                                alignParentLeft()
-                                centerVertically()
-                            }
-
                             maxLines = 10
                             text = "VIDEO SIZE"
                             padding = dip(10)
                             backgroundColor = Color.parseColor(spinnerBackgroundColor)
+                        }.lparams {
+                            width = wrapContent
+                            height = wrapContent
+                            margin = dip(10)
+                            alignParentLeft()
+                            centerVertically()
                         }
 
                         sizeSpinner = materialSpinner {
@@ -408,19 +384,16 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
                         backgroundColor = Color.parseColor(spinnerBackgroundColor)
 
                         textView {
-
-                            lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                margin = dip(10)
-                                alignParentLeft()
-                                centerVertically()
-                            }
-
                             maxLines = 10
                             text = "FPS"
                             padding = dip(10)
                             backgroundColor = Color.parseColor(spinnerBackgroundColor)
+                        }.lparams {
+                            width = wrapContent
+                            height = wrapContent
+                            margin = dip(10)
+                            alignParentLeft()
+                            centerVertically()
                         }
 
                         fpsSpinner = materialSpinner {

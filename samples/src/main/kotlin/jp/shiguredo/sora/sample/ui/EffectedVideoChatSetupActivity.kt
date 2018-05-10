@@ -15,6 +15,7 @@ import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.ui.util.materialSpinner
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.textInputLayout
+import org.jetbrains.anko.sdk21.listeners.onClick
 
 class EffectedVideoChatSetupActivity : AppCompatActivity() {
 
@@ -75,20 +76,16 @@ class EffectedVideoChatSetupActivity : AppCompatActivity() {
                     }
 
                     button("START") {
-
-                        lparams{
-
-                            width = matchParent
-                            height= wrapContent
-                            margin = dip(10)
-                        }
-
                         backgroundColor = Color.parseColor("#F06292")
                         textColor = Color.WHITE
 
                         onClick {
                             startVideoChat()
                         }
+                    }.lparams {
+                        width = matchParent
+                        height= wrapContent
+                        margin = dip(10)
                     }
 
                     relativeLayout {
@@ -102,20 +99,18 @@ class EffectedVideoChatSetupActivity : AppCompatActivity() {
                         backgroundColor = Color.parseColor(spinnerBackgroundColor)
 
                         textView {
-
-                            lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                margin = dip(10)
-                                alignParentLeft()
-                                centerVertically()
-                            }
-
                             padding = dip(10)
                             backgroundColor = Color.parseColor(spinnerBackgroundColor)
                             maxLines = 10
                             text = "VIDEO EFFECT"
+                        }.lparams {
+                            width = wrapContent
+                            height = wrapContent
+                            margin = dip(10)
+                            alignParentLeft()
+                            centerVertically()
                         }
+
 
                         effectSpinner = materialSpinner {
 

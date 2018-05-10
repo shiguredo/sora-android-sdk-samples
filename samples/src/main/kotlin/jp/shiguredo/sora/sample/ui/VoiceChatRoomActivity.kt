@@ -17,6 +17,7 @@ import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk21.listeners.onClick
 
 class VoiceChatRoomActivity : AppCompatActivity() {
 
@@ -175,12 +176,6 @@ class VoiceChatRoomActivityUI : AnkoComponent<VoiceChatRoomActivity> {
                 }
 
                 channelText = textView {
-
-                    lparams {
-                        width  = matchParent
-                        height = wrapContent
-                    }
-
                     backgroundColor = Color.parseColor("#333333")
 
                     this.gravity = Gravity.CENTER
@@ -188,39 +183,37 @@ class VoiceChatRoomActivityUI : AnkoComponent<VoiceChatRoomActivity> {
                     textColor = Color.WHITE
                     textSize = 20f
                     padding = dip(10)
+                }.lparams {
+                    width  = matchParent
+                    height = wrapContent
                 }
 
                 stateText = textView {
-
-                    lparams {
-                        width = matchParent
-                        height = wrapContent
-                        setMargins(0, 10, 0, 10)
-                    }
-
                     this.gravity = Gravity.CENTER
                     text = "CONNECTING..."
                     textColor = Color.WHITE
                     textSize = 14f
                     padding = dip(10)
+                }.lparams {
+                    width = matchParent
+                    height = wrapContent
+                    setMargins(0, 10, 0, 10)
                 }
 
             }
 
             button("CLOSE") {
-
-                lparams {
-                    width = matchParent
-                    height = wrapContent
-                }
-
                 backgroundColor = Color.RED
                 textColor = Color.WHITE
 
                 onClick {
                     ui.owner.close()
                 }
+            }.lparams {
+                width = matchParent
+                height = wrapContent
             }
+
         }
     }
 

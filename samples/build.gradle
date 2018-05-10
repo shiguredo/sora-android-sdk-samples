@@ -64,17 +64,17 @@ dependencies {
     implementation "com.android.support:design:$support_version"
     implementation "com.android.support:cardview-v7:$support_version"
     implementation "com.android.support:recyclerview-v7:$support_version"
-    implementation "com.wefika:flowlayout:0.4.1"
-    implementation 'com.jaredrummler:material-spinner:1.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.jaredrummler:material-spinner:1.2.5'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
 
     // Anko libs
-    ext.anko_version = '0.9.1'
-    implementation "org.jetbrains.anko:anko-sdk19:$anko_version"
-    implementation "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
-    implementation "org.jetbrains.anko:anko-design:$anko_version"
-    implementation "org.jetbrains.anko:anko-cardview-v7:$anko_version"
-    implementation "org.jetbrains.anko:anko-recyclerview-v7:$anko_version"
+    ext.anko_version = '0.10.5'
+    implementation "org.jetbrains.anko:anko-sdk21:${anko_version}"
+    implementation "org.jetbrains.anko:anko-appcompat-v7:${anko_version}"
+    implementation "org.jetbrains.anko:anko-sdk21-listeners:${anko_version}"
+    implementation "org.jetbrains.anko:anko-design:${anko_version}"
+    implementation "org.jetbrains.anko:anko-cardview-v7:${anko_version}"
+    implementation "org.jetbrains.anko:anko-recyclerview-v7:${anko_version}"
 
     ext.permissionsdispatcher_version = '3.2.0'
     implementation ("com.github.hotchemi:permissionsdispatcher:${permissionsdispatcher_version}") {

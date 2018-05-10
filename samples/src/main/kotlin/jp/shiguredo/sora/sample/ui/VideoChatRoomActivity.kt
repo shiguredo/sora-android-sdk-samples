@@ -22,6 +22,7 @@ import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk21.listeners.onClick
 import org.webrtc.SurfaceViewRenderer
 
 class VideoChatRoomActivity : AppCompatActivity() {
@@ -352,12 +353,6 @@ class VideoChatRoomActivityUI(
                 backgroundColor = Color.parseColor("#222222")
 
                 channelText = textView {
-
-                    lparams {
-                        width = matchParent
-                        height = dip(50)
-                    }
-
                     backgroundColor = Color.parseColor("#FFC107")
 
                     this.gravity = Gravity.CENTER
@@ -365,6 +360,9 @@ class VideoChatRoomActivityUI(
                     textColor = Color.WHITE
                     textSize = 20f
                     padding = dip(10)
+                }.lparams {
+                    width = matchParent
+                    height = dip(50)
                 }
 
                 rendererContainer = relativeLayout {
@@ -405,12 +403,6 @@ class VideoChatRoomActivityUI(
                 linearLayout {
 
                     toggleMuteButton = imageButton {
-                        lparams {
-                            width = dip(50)
-                            height = dip(50)
-                            rightMargin = dip(10)
-                        }
-
                         image = resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
                         scaleType = ImageView.ScaleType.FIT_CENTER
                         background = resources.getDrawable(R.drawable.enabled_button_background, null)
@@ -418,16 +410,13 @@ class VideoChatRoomActivityUI(
                         onClick {
                             ui.owner.toggleMuted()
                         }
+                    }.lparams {
+                        width = dip(50)
+                        height = dip(50)
+                        rightMargin = dip(10)
                     }
 
                     imageButton {
-
-                        lparams {
-                            width = dip(50)
-                            height = dip(50)
-                            rightMargin = dip(10)
-                        }
-
                         image = resources.getDrawable(R.drawable.ic_videocam_white_48dp, null)
                         scaleType = ImageView.ScaleType.FIT_CENTER
                         background = resources.getDrawable(R.drawable.enabled_button_background, null)
@@ -435,17 +424,13 @@ class VideoChatRoomActivityUI(
                         onClick {
                             ui.owner.switchCamera()
                         }
+                    }.lparams {
+                        width = dip(50)
+                        height = dip(50)
+                        rightMargin = dip(10)
                     }
 
-
                     imageButton {
-
-                        lparams {
-                            width = dip(50)
-                            height = dip(50)
-                            rightMargin = dip(10)
-                        }
-
                         image = resources.getDrawable(R.drawable.ic_close_white_48dp, null)
                         scaleType = ImageView.ScaleType.FIT_CENTER
                         background = resources.getDrawable(R.drawable.close_button_background, null)
@@ -453,6 +438,10 @@ class VideoChatRoomActivityUI(
                         onClick {
                             ui.owner.close()
                         }
+                    }.lparams {
+                        width = dip(50)
+                        height = dip(50)
+                        rightMargin = dip(10)
                     }
 
                 }.lparams {
