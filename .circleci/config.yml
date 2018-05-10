@@ -29,7 +29,7 @@ jobs:
 
       - restore_cache:
           key: "jars-{{ checksum \"build.gradle\" }}-{{ checksum  \"samples/build.gradle\" }}-\
-                {{ checksum  \"webrtc-video-effector/build.gradle\" }}"
+                {{ checksum  \"webrtc-video-effector/build.gradle\" }}-r17"
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
@@ -37,7 +37,7 @@ jobs:
           paths:
             - ~/.gradle
           key: "jars-{{ checksum \"build.gradle\" }}-{{ checksum  \"samples/build.gradle\" }}-\
-                {{ checksum  \"webrtc-video-effector/build.gradle\" }}"
+                {{ checksum  \"webrtc-video-effector/build.gradle\" }}-r17"
 
       - run:
           name: Run lint
