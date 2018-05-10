@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         when (position) {
             0 -> goToVideoRoomDemoWithPermissionCheck()
             1 -> goToVoiceRoomDemoWithPermissionCheck()
-            2 -> goToSpotlight()
+            2 -> goToSpotlightWithPermissionCheck()
             3 -> goToScreencast()
             4 -> goToEffectedVideoRoomDemoWithPermissionCheck()
             else -> {
