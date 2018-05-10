@@ -1,6 +1,7 @@
 package jp.shiguredo.sora.sample.facade
 
 import android.content.Context
+import android.util.Log
 import jp.shiguredo.sora.sample.camera.CameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.camera.DefaultCameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.option.SoraStreamType
@@ -20,6 +21,7 @@ class SoraVideoChannel(
         private val signalingEndpoint: String,
         private val channelId:         String,
         private val signalingMetadata: String = "",
+        private val spotlight:         Int = 0,
         private var streamType:        SoraStreamType,
         var         videoWidth:        Int = SoraVideoOption.FrameSize.Portrait.VGA.x,
         var         videoHeight:       Int = SoraVideoOption.FrameSize.Portrait.VGA.y,
@@ -177,6 +179,7 @@ class SoraVideoChannel(
                 enableMultistream()
             }
 
+            spotlight    = this@SoraVideoChannel.spotlight
             videoCodec   = this@SoraVideoChannel.videoCodec
             audioCodec   = this@SoraVideoChannel.audioCodec
             videoBitrate = this@SoraVideoChannel.videoBitrate

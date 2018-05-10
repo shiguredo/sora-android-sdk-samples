@@ -30,6 +30,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
     private var channelName = ""
 
+    private var spotlight = 0
     private var videoCodec:  SoraVideoOption.Codec = SoraVideoOption.Codec.VP9
     private var audioCodec:  SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
     private var audioEnabled = true
@@ -58,6 +59,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
         ui?.setContentView(this)
 
         channelName = intent.getStringExtra("CHANNEL_NAME")
+
+        spotlight = intent.getIntExtra("SPOTLIGHT", 0)
 
         videoCodec = SoraVideoOption.Codec.valueOf(
                 intent.getStringExtra("VIDEO_CODEC"))
@@ -208,6 +211,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
                 channelId         = channelName,
                 signalingMetadata = "",
+                spotlight         = spotlight,
                 videoWidth        = videoWidth,
                 videoHeight       = videoHeight,
                 videoFPS          = fps,

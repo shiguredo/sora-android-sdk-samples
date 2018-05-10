@@ -41,8 +41,9 @@ class MainActivity : AppCompatActivity() {
         when (position) {
             0 -> goToVideoRoomDemoWithPermissionCheck()
             1 -> goToVoiceRoomDemoWithPermissionCheck()
-            2 -> goToScreencast()
-            3 -> goToEffectedVideoRoomDemoWithPermissionCheck()
+            2 -> goToSpotlight()
+            3 -> goToScreencast()
+            4 -> goToEffectedVideoRoomDemoWithPermissionCheck()
             else -> {
                 Log.w(TAG, "must not come here")
             }
@@ -82,6 +83,12 @@ class MainActivity : AppCompatActivity() {
     @NeedsPermission(Manifest.permission.RECORD_AUDIO)
     fun goToVoiceRoomDemo() {
         val intent = Intent(this, VoiceChatRoomSetupActivity::class.java)
+        startActivity(intent)
+    }
+
+    @NeedsPermission(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
+    fun goToSpotlight() {
+        val intent = Intent(this, SpotlightRoomSetupActivity::class.java)
         startActivity(intent)
     }
 
@@ -137,6 +144,8 @@ class MainActivityUI : AnkoComponent<MainActivity> {
                     description = "ビデオチャットのデモです。複数人でのグループチャットも可能です。"),
             Feature(title = "Voice Chat Room",
                     description = "ボイスチャットのデモです。複数人でのグループチャットも可能です。"),
+            Feature(title = "Spotlight Room",
+                    description = "スポットライトのデモです。アクティブ配信数を固定したチャットが可能です。"),
             Feature(title = "Screencast",
                     description = "スクリーンキャストのデモです。"),
             Feature(title = "Effected Video Chat",

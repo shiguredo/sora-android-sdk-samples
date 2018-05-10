@@ -12,10 +12,16 @@
 
 ## develop
 
+### UPDATE
+
 - Android Studio 3.1.2 に対応した
 - PermissionsDispatcher を 3.2.0 に上げた
   - lint バグフィックスにより不要な SuppressLint アノテーションを削除した
 - Kotlin を 1.2.41 に上げた
+
+### ADD
+
+- スポットライト機能のデモを追加した
 
 ## 1.5.3
 
