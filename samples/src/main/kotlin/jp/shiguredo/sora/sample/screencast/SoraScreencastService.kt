@@ -59,6 +59,7 @@ class SoraScreencastService : Service() {
             SoraLogger.d(TAG, "[screencast] @onAddLocalStream")
             if (ms.audioTracks.size > 0) {
                 localAudioTrack = ms.audioTracks[0]
+                localAudioTrack?.setEnabled(!muted)
             }
             startCapturer()
         }
@@ -113,7 +114,7 @@ class SoraScreencastService : Service() {
     }
 
     private var navigationBar: LinearLayout? = null
-    private var muteButton: ImageButton? = null
+    private var toggleMuteButton: ImageButton? = null
 
     // TODO remove Anko dependency
     internal fun createLayout() : View {
@@ -183,7 +184,7 @@ class SoraScreencastService : Service() {
                     maxLines = 2
                 }
 
-                muteButton = imageButton {
+                toggleMuteButton = imageButton {
                     lparams {
                         width = dip(50)
                         height = dip(50)
@@ -233,18 +234,16 @@ class SoraScreencastService : Service() {
         return null
     }
 
-    private var isMuted = false
+    private var muted = true
     private fun toggleMute() {
-        if (isMuted) {
+        if (muted) {
             localAudioTrack?.setEnabled(true)
-            muteButton?.image = resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
-            muteButton?.background = resources.getDrawable(R.drawable.enabled_button_background, null)
+            toggleMuteButton?.image = resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
         } else {
             localAudioTrack?.setEnabled(false)
-            muteButton?.image = resources.getDrawable(R.drawable.ic_mic_off_white_48dp, null)
-            muteButton?.background = resources.getDrawable(R.drawable.button_background, null)
+            toggleMuteButton?.image = resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
         }
-        isMuted = !isMuted
+        muted = !muted
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
