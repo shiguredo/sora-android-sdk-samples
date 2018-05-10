@@ -16,8 +16,8 @@ jobs:
       - restore_cache:
           key: android-ndk-r17
       - run: >-
-          if [[ ! -e android-ndk-r16b ]];
-              then wget https://dl.google.com/android/repository/android-ndk-r16-linux-x86_64.zip &&
+          if [[ ! -e android-ndk-r17 ]];
+              then wget https://dl.google.com/android/repository/android-ndk-r17-linux-x86_64.zip &&
               unzip android-ndk-r17-linux-x86_64.zip;
           fi
       - run: echo 'export ANDROID_NDK=${PWD}/android-ndk-r17' >> $BASH_ENV
