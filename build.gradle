@@ -1,6 +1,6 @@
 buildscript {
     ext.kotlin_version = '1.2.41'
-    ext.sora_android_sdk_version = '1.5.4'
+    ext.sora_android_sdk_version = 'develop-SNAPSHOT'
 
     repositories {
         jcenter()
