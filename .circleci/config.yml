@@ -22,10 +22,10 @@ jobs:
           fi
       - run: echo 'export ANDROID_NDK=${PWD}/android-ndk-r17' >> $BASH_ENV
       - run: echo 'export ANDROID_NDK_HOME=${ANDROID_NDK}' >> $BASH_ENV
-      - save_cache:
-          paths:
-            - android-ndk-r17
-          key: android-ndk-r17
+      # - save_cache:
+      #     paths:
+      #       - android-ndk-r17
+      #     key: android-ndk-r17
 
       # - restore_cache:
       #     key: "jars-{{ checksum \"build.gradle\" }}-{{ checksum  \"samples/build.gradle\" }}-\
@@ -33,11 +33,11 @@ jobs:
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: "jars-{{ checksum \"build.gradle\" }}-{{ checksum  \"samples/build.gradle\" }}-\
-                {{ checksum  \"webrtc-video-effector/build.gradle\" }}-r17"
+      # - save_cache:
+      #     paths:
+      #       - ~/.gradle
+      #     key: "jars-{{ checksum \"build.gradle\" }}-{{ checksum  \"samples/build.gradle\" }}-\
+      #           {{ checksum  \"webrtc-video-effector/build.gradle\" }}-r17"
 
       - run:
           name: Run lint
