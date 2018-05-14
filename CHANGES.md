@@ -24,6 +24,9 @@
   - NDK セットアップに 37 sec, androidDependencies に 43 sec 程度
   - ただしキャッシュがビルド失敗の根本原因かは不明
 - Anko を 0.10.5 に上げる
+- スクリーンキャスト画面を `TYPE_APPLICATION_OVERLAY` に変更する
+  - `TYPE_PHONE` が deprecated になったため
+- Android 8 の Notification Channel に対応する
 
 ### ADD
 

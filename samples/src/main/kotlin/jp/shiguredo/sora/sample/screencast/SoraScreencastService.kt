@@ -1,21 +1,26 @@
 package jp.shiguredo.sora.sample.screencast
 
 import android.annotation.TargetApi
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.media.projection.MediaProjection
+import android.os.Build
 import android.os.IBinder
+import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
-import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
 import jp.shiguredo.sora.sample.R
+import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
@@ -85,16 +90,34 @@ class SoraScreencastService : Service() {
         return START_NOT_STICKY
     }
 
-    fun startNotification(startId: Int) {
+    private fun startNotification(startId: Int) {
+        val notificationChannelId =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                createNotificationChannel()
+            } else {
+                ""
+            }
+
         val activityIntent = createBoundActivityIntent()
         val pendingIntent  = PendingIntent.getActivity(this, 0, activityIntent, 0)
-        val notification = NotificationCompat.Builder(this)
+        val notification = NotificationCompat.Builder(this, notificationChannelId)
                 .setContentTitle(req!!.stateTitle)
                 .setContentText(req!!.stateText)
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(req!!.notificationIcon)
                 .build()
         startForeground(startId, notification)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel(): String {
+        val channelId = "jp.shiguredo.sora.sample"
+        val channelName = "Sora SDK Sample"
+        val channel = NotificationChannel(channelId,
+                channelName, NotificationManager.IMPORTANCE_NONE)
+        val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        service.createNotificationChannel(channel)
+        return channelId
     }
 
     fun setupUI() {

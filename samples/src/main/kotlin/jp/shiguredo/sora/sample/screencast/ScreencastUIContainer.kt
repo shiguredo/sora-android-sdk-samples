@@ -28,7 +28,7 @@ class ScreencastUIContainer(
         return WindowManager.LayoutParams(
                 width,
                 height,
-                WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                 createWindowFrags(),
                 PixelFormat.TRANSLUCENT
         )
