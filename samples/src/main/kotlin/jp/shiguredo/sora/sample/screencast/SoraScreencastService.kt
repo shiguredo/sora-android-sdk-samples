@@ -354,6 +354,7 @@ class SoraScreencastService : Service() {
             egl?.release()
             egl = null
             uiContainer?.clear()
+            NetworkMonitor.getInstance().stopMonitoring()
             stopSelf()
         }
     }
