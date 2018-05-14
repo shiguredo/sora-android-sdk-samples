@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
             0 -> goToVideoRoomDemoWithPermissionCheck()
             1 -> goToVoiceRoomDemoWithPermissionCheck()
             2 -> goToSpotlightWithPermissionCheck()
-            3 -> goToScreencast()
+            3 -> goToScreencastActivity()
             4 -> goToEffectedVideoRoomDemoWithPermissionCheck()
             else -> {
                 Log.w(TAG, "must not come here")
@@ -50,20 +50,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun goToScreencast() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            Snackbar.make(this.contentView!!,
-                    getString(R.string.version_requirement_screencast),
-                    Snackbar.LENGTH_LONG)
-                    .setAction("OK") { }
-                    .show()
-        } else {
-            goToScreencastAcitivity()
-        }
-    }
-
     @TargetApi(21)
-    private fun goToScreencastAcitivity() {
+    private fun goToScreencastActivity() {
         val intent = Intent(this, ScreencastSetupActivity::class.java)
         startActivity(intent)
     }

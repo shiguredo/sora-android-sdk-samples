@@ -208,7 +208,7 @@ class SoraScreencastService : Service() {
                     background = resources.getDrawable(R.drawable.enabled_button_background, null)
 
                     onClick {
-                        toggleMute()
+                        toggleMuted()
                     }
                 }.lparams {
                     width = dip(50)
@@ -248,7 +248,7 @@ class SoraScreencastService : Service() {
     }
 
     private var muted = true
-    private fun toggleMute() {
+    private fun toggleMuted() {
         if (muted) {
             localAudioTrack?.setEnabled(true)
             toggleMuteButton?.image = resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)

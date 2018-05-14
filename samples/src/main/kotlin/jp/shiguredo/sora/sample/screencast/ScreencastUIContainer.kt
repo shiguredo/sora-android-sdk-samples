@@ -3,6 +3,7 @@ package jp.shiguredo.sora.sample.screencast
 import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.PixelFormat
+import android.os.Build
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
@@ -25,12 +26,15 @@ class ScreencastUIContainer(
     }
 
     private fun createLayoutParams(width: Int, height: Int): WindowManager.LayoutParams {
-        return WindowManager.LayoutParams(
-                width,
-                height,
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                createWindowFrags(),
-                PixelFormat.TRANSLUCENT
+        val windowType =
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                } else {
+                    @Suppress("DEPRECATION")
+                    WindowManager.LayoutParams.TYPE_PHONE;
+                }
+        return WindowManager.LayoutParams(width, height, windowType,
+                createWindowFrags(), PixelFormat.TRANSLUCENT
         )
     }
 

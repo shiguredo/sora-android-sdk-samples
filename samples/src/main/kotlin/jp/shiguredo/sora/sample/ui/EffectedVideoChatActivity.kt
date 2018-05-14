@@ -106,22 +106,11 @@ class EffectedVideoChatActivity : AppCompatActivity() {
 
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
                 or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            setWindowVisibility()
-        } else {
-            setLegacyWindowVisibility()
-        }
-    }
-
-    fun setLegacyWindowVisibility() {
-        window.decorView.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                        View.SYSTEM_UI_FLAG_FULLSCREEN
+        setWindowVisibility()
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    fun setWindowVisibility() {
+    private fun setWindowVisibility() {
         window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
                         View.SYSTEM_UI_FLAG_FULLSCREEN or
