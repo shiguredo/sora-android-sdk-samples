@@ -3,6 +3,7 @@ package jp.shiguredo.sora.sample.ui
 import android.annotation.TargetApi
 import android.content.res.Resources
 import android.graphics.Color
+import android.media.AudioManager
 import android.media.effect.EffectFactory
 import android.os.Build
 import android.os.Bundle
@@ -115,6 +116,11 @@ class EffectedVideoChatActivity : AppCompatActivity() {
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
                         View.SYSTEM_UI_FLAG_FULLSCREEN or
                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+    }
+
+    override fun onResume() {
+        super.onResume()
+        this.volumeControlStream = AudioManager.STREAM_MUSIC
     }
 
     override fun onPause() {

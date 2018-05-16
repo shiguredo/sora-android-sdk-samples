@@ -26,7 +26,9 @@
 - Anko を 0.10.5 に上げる
 - スクリーンキャスト画面を `TYPE_APPLICATION_OVERLAY` に変更する
   - `TYPE_PHONE` が deprecated になったため
-- Android 8 の Notification Channel に対応する
+- Android 8 の Notification Channel に対応した
+- Video chat, Voice chat, Spotlight chat, effected video chat の音量を
+  ボリュームキーから制御できるようにした
 
 ### ADD
 
