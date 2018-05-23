@@ -95,7 +95,7 @@ class SoraVideoChannel(
                 context.runOnUiThread {
                     if (ms.videoTracks.size > 0) {
                         localRenderer = createSurfaceViewRenderer()
-                        ms.videoTracks[0].addRenderer(VideoRenderer(localRenderer!!))
+                        ms.videoTracks[0].addSink(localRenderer!!)
                         listener?.onAddLocalRenderer(this@SoraVideoChannel, localRenderer!!)
                     }
                 }

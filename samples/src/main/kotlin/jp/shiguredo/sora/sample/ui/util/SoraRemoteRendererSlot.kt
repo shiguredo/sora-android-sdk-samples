@@ -35,7 +35,7 @@ class SoraRemoteRendererSlot(
         workingTracks.put(ms.id, track)
 
         track.setEnabled(true)
-        track.addRenderer(VideoRenderer(renderer))
+        track.addSink(renderer)
     }
 
     fun onRemoveRemoteStream(label: String) {
