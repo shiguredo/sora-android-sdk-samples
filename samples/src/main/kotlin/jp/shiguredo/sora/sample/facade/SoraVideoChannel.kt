@@ -71,7 +71,7 @@ class SoraVideoChannel(
         }
 
         override fun onAddRemoteStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
-            SoraLogger.d(TAG, "[video_channel] @onAddRemoteStream:${ms.label()}")
+            SoraLogger.d(TAG, "[video_channel] @onAddRemoteStream:${ms.id}")
             context.runOnUiThread {
                 remoteRenderersSlot?.onAddRemoteStream(ms)
             }
