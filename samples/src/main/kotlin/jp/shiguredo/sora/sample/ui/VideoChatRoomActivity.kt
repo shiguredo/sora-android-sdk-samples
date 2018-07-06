@@ -89,6 +89,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
         listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
 
         when (intent.getStringExtra("VIDEO_SIZE")) {
+            // Portrait
             "VGA" -> {
                 videoWidth = SoraVideoOption.FrameSize.Portrait.VGA.x
                 videoHeight = SoraVideoOption.FrameSize.Portrait.VGA.y
@@ -116,6 +117,24 @@ class VideoChatRoomActivity : AppCompatActivity() {
             "FHD" -> {
                 videoWidth = SoraVideoOption.FrameSize.Portrait.FHD.x
                 videoHeight = SoraVideoOption.FrameSize.Portrait.FHD.y
+            }
+            "Res1920x3840" -> {
+                videoWidth = SoraVideoOption.FrameSize.Portrait.Res1920x3840.x
+                videoHeight = SoraVideoOption.FrameSize.Portrait.Res1920x3840.y
+            }
+            "UHD2160x3840" -> {
+                videoWidth = SoraVideoOption.FrameSize.Portrait.UHD2160x3840.x
+                videoHeight = SoraVideoOption.FrameSize.Portrait.UHD2160x3840.y
+            }
+            "UHD2160x4096" -> {
+                videoWidth = SoraVideoOption.FrameSize.Portrait.UHD2160x4096.x
+                videoHeight = SoraVideoOption.FrameSize.Portrait.UHD2160x4096.y
+            }
+
+            // Landscape
+            "Res3840x1920" -> {
+                videoWidth = SoraVideoOption.FrameSize.Landscape.Res3840x1920.x
+                videoHeight = SoraVideoOption.FrameSize.Landscape.Res3840x1920.y
             }
             else -> { }
         }
