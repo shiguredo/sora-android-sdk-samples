@@ -29,6 +29,7 @@
 - Android 8 の Notification Channel に対応した
 - Video chat, Voice chat, Spotlight chat, effected video chat の音量を
   ボリュームキーから制御できるようにした
+- 解像度オプションを増やした
 
 ### ADD
 
