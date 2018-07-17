@@ -41,7 +41,7 @@ android {
 
 dependencies {
     // Sora Android SDK
-    api("com.github.shiguredo:sora-android-sdk:$sora_android_sdk_version@aar") {
+    api("com.github.shiguredo:sora-android-sdk:${sora_android_sdk_version}") {
         transitive = true
     }
 

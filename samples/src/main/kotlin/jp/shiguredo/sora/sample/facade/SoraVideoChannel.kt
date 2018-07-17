@@ -221,7 +221,7 @@ class SoraVideoChannel(
         }
 
         override fun onCameraSwitchError(msg: String?) {
-            SoraLogger.w(TAG, "failed to switch camera " + msg)
+            SoraLogger.w(TAG, "failed to switch camera ${msg}")
         }
     }
 
