@@ -71,14 +71,14 @@ class SoraVideoChannel(
         }
 
         override fun onAddRemoteStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
-            SoraLogger.d(TAG, "[video_channel] @onAddRemoteStream:${ms.label()}")
+            SoraLogger.d(TAG, "[video_channel] @onAddRemoteStream:${ms.id}")
             context.runOnUiThread {
                 remoteRenderersSlot?.onAddRemoteStream(ms)
             }
         }
 
         override fun onRemoveRemoteStream(mediaChannel: SoraMediaChannel, label: String) {
-            SoraLogger.d(TAG, "[video_channel] @onRemoveRemoteStream:$label")
+            SoraLogger.d(TAG, "[video_channel] @onRemoveRemoteStream:${label}")
             context.runOnUiThread {
                 remoteRenderersSlot?.onRemoveRemoteStream(label)
             }

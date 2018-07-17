@@ -23,7 +23,7 @@
   - ときどきビルドが失敗するが、キャッシュ利用しないと成功するため
   - NDK セットアップに 37 sec, androidDependencies に 43 sec 程度
   - ただしキャッシュがビルド失敗の根本原因かは不明
-- Anko を 0.10.5 に上げる
+- Anko を 0.10.5 に上げた
 - スクリーンキャスト画面を `TYPE_APPLICATION_OVERLAY` に変更する
   - `TYPE_PHONE` が deprecated になったため
 - Android 8 の Notification Channel に対応した
@@ -33,6 +33,10 @@
 ### ADD
 
 - スポットライト機能のデモ(upstream, 映像あり)を追加した
+
+### CHANGE
+
+- MediaStream#label() の代わりに id を使うよう変更した
 
 ### FIX
 
