@@ -168,7 +168,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        this.volumeControlStream = AudioManager.STREAM_MUSIC
+        this.volumeControlStream = AudioManager.STREAM_VOICE_CALL
     }
 
     override fun onPause() {
