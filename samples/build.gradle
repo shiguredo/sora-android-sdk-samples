@@ -75,7 +75,7 @@ dependencies {
     implementation "org.jetbrains.anko:anko-cardview-v7:${anko_version}"
     implementation "org.jetbrains.anko:anko-recyclerview-v7:${anko_version}"
 
-    ext.permissionsdispatcher_version = '3.2.0'
+    ext.permissionsdispatcher_version = '3.3.1'
     implementation ("com.github.hotchemi:permissionsdispatcher:${permissionsdispatcher_version}") {
         exclude module: "support-v13"
     }

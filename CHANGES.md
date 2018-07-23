@@ -30,6 +30,7 @@
 - Video chat, Voice chat, Spotlight chat, effected video chat の音量を
   ボリュームキーから制御できるようにした
 - 解像度オプションを増やした
+- PermissionsDispatcher を 3.3.1 に上げた
 
 ### ADD
 
