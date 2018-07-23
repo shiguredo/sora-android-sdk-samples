@@ -25,6 +25,7 @@ class SoraVideoChannel(
         private val signalingMetadata: String = "",
         private val spotlight:         Int = 0,
         private var streamType:        SoraStreamType,
+        private var videoEnabled:      Boolean = true,
         var         videoWidth:        Int = SoraVideoOption.FrameSize.Portrait.VGA.x,
         var         videoHeight:       Int = SoraVideoOption.FrameSize.Portrait.VGA.y,
         var         videoFPS:          Int =  30,
@@ -167,15 +168,17 @@ class SoraVideoChannel(
                 eglContext = egl!!.eglBaseContext,
                 listener   = rendererSlotListener
         )
-
+Log.d(TAG, "streamtype = ${streamType}")
         val mediaOption = SoraMediaOption().apply {
 
             if (streamType.hasUpstream()) {
                 if (audioEnabled) {
                     enableAudioUpstream()
                 }
-                capturer = capturerFactory.createCapturer()
-                enableVideoUpstream(capturer!!, egl!!.eglBaseContext)
+                if (videoEnabled) {
+                    capturer = capturerFactory.createCapturer()
+                    enableVideoUpstream(capturer!!, egl!!.eglBaseContext)
+                }
             }
 
             if (streamType.hasDownstream()) {

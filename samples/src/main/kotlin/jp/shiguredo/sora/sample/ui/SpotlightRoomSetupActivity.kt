@@ -468,6 +468,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         val videoCodec = videoCodecOptions[videoCodecSpinner!!.selectedIndex]
         val audioCodec = audioCodecOptions[audioCodecSpinner!!.selectedIndex]
         val audioEnabled = audioEnabledOptions[audioEnabledSpinner!!.selectedIndex]
+        val videoEnabled = videoEnabledOptions[videoEnabledSpinner!!.selectedIndex]
         val bitRate = bitRateOptions[bitRateSpinner!!.selectedIndex]
         val size = sizeOptions[sizeSpinner!!.selectedIndex]
         val fps = fpsOptions[fpsSpinner!!.selectedIndex]
@@ -479,6 +480,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("VIDEO_CODEC", videoCodec)
         intent.putExtra("AUDIO_CODEC", audioCodec)
         intent.putExtra("AUDIO_ENABLED", audioEnabled)
+        intent.putExtra("VIDEO_ENABLED", videoEnabled)
         intent.putExtra("BITRATE", bitRate)
         intent.putExtra("VIDEO_SIZE", size)
         intent.putExtra("FPS", fps)
