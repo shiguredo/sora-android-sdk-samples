@@ -11,6 +11,8 @@ import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
+import jp.shiguredo.sora.sdk.channel.signaling.message.NotificationMessage
+import jp.shiguredo.sora.sdk.channel.signaling.message.PushMessage
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import org.jetbrains.anko.runOnUiThread
@@ -111,6 +113,14 @@ class SoraVideoChannel(
             context.runOnUiThread {
                 listener?.onAttendeesCountUpdated(this@SoraVideoChannel, attendees)
             }
+        }
+
+        override fun onNotificationMessage(mediaChannel: SoraMediaChannel, notification: NotificationMessage) {
+            SoraLogger.d(TAG, "[video_channel] @onNotificationmessage ${notification}")
+        }
+
+        override fun onPushMessage(mediaChannel: SoraMediaChannel, push: PushMessage) {
+            SoraLogger.d(TAG, "[video_channel] @onPushMessage ${push}")
         }
 
     }
