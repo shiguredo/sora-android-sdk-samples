@@ -33,6 +33,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     private var audioCodecSpinner:   MaterialSpinner? = null
     private var streamTypeSpinner:   MaterialSpinner? = null
     private var bitRateSpinner:      MaterialSpinner? = null
+    private var videoEnabledSpinner: MaterialSpinner? = null
     private var audioEnabledSpinner: MaterialSpinner? = null
     private var sizeSpinner:         MaterialSpinner? = null
     private var fpsSpinner:          MaterialSpinner? = null
@@ -40,10 +41,9 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     val spotlightOptions = listOf(2, 1, 3, 4, 5)
     val videoCodecOptions = listOf("VP8", "VP9", "H264")
     val audioCodecOptions = listOf("OPUS", "PCMU")
+    val videoEnabledOptions = listOf("YES", "NO")
     val audioEnabledOptions = listOf("YES", "NO")
-    // TODO(shino): 視聴のみモードを入れたらこれを有効にする
-    //    val streamTypeOptions = listOf("BIDIRECTIONAL", "MULTI-DOWN")
-    val streamTypeOptions = listOf("BIDIRECTIONAL")
+    val streamTypeOptions = listOf("BIDIRECTIONAL", "MULTI-DOWN")
     val bitRateOptions = listOf("UNDEFINED", "100", "300", "500", "800", "1000", "1500", "2000", "2500")
     val sizeOptions = listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
     val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
@@ -219,6 +219,44 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
                         }
 
                         videoCodecSpinner?.setItems(videoCodecOptions)
+                    }
+
+                    relativeLayout {
+
+                        lparams{
+                            width = matchParent
+                            height= wrapContent
+                            margin = dip(10)
+                        }
+
+                        backgroundColor = Color.parseColor(spinnerBackgroundColor)
+
+                        textView {
+                            maxLines = 10
+                            text = "VIDEO ENABLED"
+                            padding = dip(10)
+                            backgroundColor = Color.parseColor(spinnerBackgroundColor)
+                        }.lparams {
+                            width = wrapContent
+                            height = wrapContent
+                            margin = dip(10)
+                            alignParentLeft()
+                            centerVertically()
+                        }
+
+                        videoEnabledSpinner = materialSpinner {
+                            padding = dip(10)
+
+                            lparams{
+                                width = dip(spinnerWidth)
+                                height= wrapContent
+                                margin = dip(10)
+                                alignParentRight()
+                                centerVertically()
+                            }
+                        }
+
+                        videoEnabledSpinner?.setItems(videoEnabledOptions)
                     }
 
                     relativeLayout {
