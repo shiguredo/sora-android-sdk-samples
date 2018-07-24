@@ -21,7 +21,7 @@ class SoraRemoteRendererSlot(
     val workingTracks    = HashMap<String, VideoTrack>()
 
     fun onAddRemoteStream(ms: MediaStream) {
-        SoraLogger.d(TAG, "onAddRemoteStream:${ms.label()}")
+        SoraLogger.d(TAG, "onAddRemoteStream:${ms.id}")
 
         if (ms.videoTracks.size != 1) {
             SoraLogger.w(TAG, "unsupported video track size")
@@ -31,28 +31,28 @@ class SoraRemoteRendererSlot(
         listener?.onAddRenderer(renderer)
 
         val track = ms.videoTracks[0]
-        workingRenderers.put(ms.label(), renderer)
-        workingTracks.put(ms.label(), track)
+        workingRenderers.put(ms.id, renderer)
+        workingTracks.put(ms.id, track)
 
         track.setEnabled(true)
         track.addRenderer(VideoRenderer(renderer))
     }
 
-    fun onRemoveRemoteStream(label: String) {
+    fun onRemoveRemoteStream(msid: String) {
 
-        SoraLogger.d(TAG, "onRemoveRemoteStream:$label")
+        SoraLogger.d(TAG, "onRemoveRemoteStream:$msid")
 
-        if (workingRenderers.containsKey(label)) {
+        if (workingRenderers.containsKey(msid)) {
 
-            SoraLogger.d(TAG, "track for $label found")
+            SoraLogger.d(TAG, "track for $msid found")
 
-            val renderer = workingRenderers.get(label)
+            val renderer = workingRenderers.get(msid)
             renderer?.let {
                 listener?.onRemoveRenderer(it)
                 it.release()
             }
-            workingRenderers.remove(label)
-            workingTracks.remove(label)
+            workingRenderers.remove(msid)
+            workingTracks.remove(msid)
         }
     }
 

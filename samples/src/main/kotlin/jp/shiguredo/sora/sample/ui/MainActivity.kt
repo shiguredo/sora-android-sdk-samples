@@ -1,10 +1,8 @@
 package jp.shiguredo.sora.sample.ui
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
@@ -32,9 +30,6 @@ class MainActivity : AppCompatActivity() {
         MainActivityUI().setContentView(this)
     }
 
-    // TODO: AndroidStudio 3.0.1 でエラーになるので suppress
-    // - Generated onRequestPermissionsResult method not called
-    @SuppressLint("NeedOnRequestPermissionsResult")
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         onRequestPermissionsResult(requestCode, grantResults)
@@ -44,28 +39,17 @@ class MainActivity : AppCompatActivity() {
         when (position) {
             0 -> goToVideoRoomDemoWithPermissionCheck()
             1 -> goToVoiceRoomDemoWithPermissionCheck()
-            2 -> goToScreencast()
-            3 -> goToEffectedVideoRoomDemoWithPermissionCheck()
+            2 -> goToSpotlightWithPermissionCheck()
+            3 -> goToScreencastActivity()
+            4 -> goToEffectedVideoRoomDemoWithPermissionCheck()
             else -> {
                 Log.w(TAG, "must not come here")
             }
         }
     }
 
-    private fun goToScreencast() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            Snackbar.make(this.contentView!!,
-                    getString(R.string.version_requirement_screencast),
-                    Snackbar.LENGTH_LONG)
-                    .setAction("OK") { }
-                    .show()
-        } else {
-            goToScreencastAcitivity()
-        }
-    }
-
     @TargetApi(21)
-    private fun goToScreencastAcitivity() {
+    private fun goToScreencastActivity() {
         val intent = Intent(this, ScreencastSetupActivity::class.java)
         startActivity(intent)
     }
@@ -85,6 +69,12 @@ class MainActivity : AppCompatActivity() {
     @NeedsPermission(Manifest.permission.RECORD_AUDIO)
     fun goToVoiceRoomDemo() {
         val intent = Intent(this, VoiceChatRoomSetupActivity::class.java)
+        startActivity(intent)
+    }
+
+    @NeedsPermission(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
+    fun goToSpotlight() {
+        val intent = Intent(this, SpotlightRoomSetupActivity::class.java)
         startActivity(intent)
     }
 
@@ -140,6 +130,8 @@ class MainActivityUI : AnkoComponent<MainActivity> {
                     description = "ビデオチャットのデモです。複数人でのグループチャットも可能です。"),
             Feature(title = "Voice Chat Room",
                     description = "ボイスチャットのデモです。複数人でのグループチャットも可能です。"),
+            Feature(title = "Spotlight Room",
+                    description = "スポットライトのデモです。アクティブ配信数を固定したチャットが可能です。"),
             Feature(title = "Screencast",
                     description = "スクリーンキャストのデモです。"),
             Feature(title = "Effected Video Chat",

@@ -1,6 +1,7 @@
 package jp.shiguredo.sora.sample.facade
 
 import android.content.Context
+import android.util.Log
 import jp.shiguredo.sora.sample.camera.CameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.camera.DefaultCameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.option.SoraStreamType
@@ -10,6 +11,8 @@ import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
+import jp.shiguredo.sora.sdk.channel.signaling.message.NotificationMessage
+import jp.shiguredo.sora.sdk.channel.signaling.message.PushMessage
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import org.jetbrains.anko.runOnUiThread
@@ -20,7 +23,9 @@ class SoraVideoChannel(
         private val signalingEndpoint: String,
         private val channelId:         String,
         private val signalingMetadata: String = "",
+        private val spotlight:         Int = 0,
         private var streamType:        SoraStreamType,
+        private var videoEnabled:      Boolean = true,
         var         videoWidth:        Int = SoraVideoOption.FrameSize.Portrait.VGA.x,
         var         videoHeight:       Int = SoraVideoOption.FrameSize.Portrait.VGA.y,
         var         videoFPS:          Int =  30,
@@ -69,14 +74,14 @@ class SoraVideoChannel(
         }
 
         override fun onAddRemoteStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
-            SoraLogger.d(TAG, "[video_channel] @onAddRemoteStream:${ms.label()}")
+            SoraLogger.d(TAG, "[video_channel] @onAddRemoteStream:${ms.id}")
             context.runOnUiThread {
                 remoteRenderersSlot?.onAddRemoteStream(ms)
             }
         }
 
         override fun onRemoveRemoteStream(mediaChannel: SoraMediaChannel, label: String) {
-            SoraLogger.d(TAG, "[video_channel] @onRemoveRemoteStream:$label")
+            SoraLogger.d(TAG, "[video_channel] @onRemoveRemoteStream:${label}")
             context.runOnUiThread {
                 remoteRenderersSlot?.onRemoveRemoteStream(label)
             }
@@ -109,6 +114,14 @@ class SoraVideoChannel(
             context.runOnUiThread {
                 listener?.onAttendeesCountUpdated(this@SoraVideoChannel, attendees)
             }
+        }
+
+        override fun onNotificationMessage(mediaChannel: SoraMediaChannel, notification: NotificationMessage) {
+            SoraLogger.d(TAG, "[video_channel] @onNotificationmessage ${notification}")
+        }
+
+        override fun onPushMessage(mediaChannel: SoraMediaChannel, push: PushMessage) {
+            SoraLogger.d(TAG, "[video_channel] @onPushMessage ${push}")
         }
 
     }
@@ -162,8 +175,10 @@ class SoraVideoChannel(
                 if (audioEnabled) {
                     enableAudioUpstream()
                 }
-                capturer = capturerFactory.createCapturer()
-                enableVideoUpstream(capturer!!, egl!!.eglBaseContext)
+                if (videoEnabled) {
+                    capturer = capturerFactory.createCapturer()
+                    enableVideoUpstream(capturer!!, egl!!.eglBaseContext)
+                }
             }
 
             if (streamType.hasDownstream()) {
@@ -177,6 +192,7 @@ class SoraVideoChannel(
                 enableMultistream()
             }
 
+            spotlight    = this@SoraVideoChannel.spotlight
             videoCodec   = this@SoraVideoChannel.videoCodec
             audioCodec   = this@SoraVideoChannel.audioCodec
             videoBitrate = this@SoraVideoChannel.videoBitrate
@@ -218,7 +234,7 @@ class SoraVideoChannel(
         }
 
         override fun onCameraSwitchError(msg: String?) {
-            SoraLogger.w(TAG, "failed to switch camera " + msg)
+            SoraLogger.w(TAG, "failed to switch camera ${msg}")
         }
     }
 

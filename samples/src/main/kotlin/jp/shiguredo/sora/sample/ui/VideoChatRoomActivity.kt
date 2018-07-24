@@ -3,6 +3,7 @@ package jp.shiguredo.sora.sample.ui
 import android.annotation.TargetApi
 import android.content.res.Resources
 import android.graphics.Color
+import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -22,6 +23,7 @@ import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk21.listeners.onClick
 import org.webrtc.SurfaceViewRenderer
 
 class VideoChatRoomActivity : AppCompatActivity() {
@@ -30,6 +32,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
     private var channelName = ""
 
+    private var spotlight = 0
+    private var videoEnabled = true
     private var videoCodec:  SoraVideoOption.Codec = SoraVideoOption.Codec.VP9
     private var audioCodec:  SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
     private var audioEnabled = true
@@ -59,6 +63,14 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
         channelName = intent.getStringExtra("CHANNEL_NAME")
 
+        spotlight = intent.getIntExtra("SPOTLIGHT", 0)
+
+        videoEnabled = when (intent.getStringExtra("VIDEO_ENABLED")) {
+            "YES" -> true
+            "NO"  -> false
+            else  -> true
+        }
+
         videoCodec = SoraVideoOption.Codec.valueOf(
                 intent.getStringExtra("VIDEO_CODEC"))
 
@@ -84,6 +96,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
         listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
 
         when (intent.getStringExtra("VIDEO_SIZE")) {
+            // Portrait
             "VGA" -> {
                 videoWidth = SoraVideoOption.FrameSize.Portrait.VGA.x
                 videoHeight = SoraVideoOption.FrameSize.Portrait.VGA.y
@@ -112,6 +125,24 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 videoWidth = SoraVideoOption.FrameSize.Portrait.FHD.x
                 videoHeight = SoraVideoOption.FrameSize.Portrait.FHD.y
             }
+            "Res1920x3840" -> {
+                videoWidth = SoraVideoOption.FrameSize.Portrait.Res1920x3840.x
+                videoHeight = SoraVideoOption.FrameSize.Portrait.Res1920x3840.y
+            }
+            "UHD2160x3840" -> {
+                videoWidth = SoraVideoOption.FrameSize.Portrait.UHD2160x3840.x
+                videoHeight = SoraVideoOption.FrameSize.Portrait.UHD2160x3840.y
+            }
+            "UHD2160x4096" -> {
+                videoWidth = SoraVideoOption.FrameSize.Portrait.UHD2160x4096.x
+                videoHeight = SoraVideoOption.FrameSize.Portrait.UHD2160x4096.y
+            }
+
+            // Landscape
+            "Res3840x1920" -> {
+                videoWidth = SoraVideoOption.FrameSize.Landscape.Res3840x1920.x
+                videoHeight = SoraVideoOption.FrameSize.Landscape.Res3840x1920.y
+            }
             else -> { }
         }
 
@@ -131,26 +162,20 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
                 or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            setWindowVisibility()
-        } else {
-            setLegacyWindowVisibility()
-        }
-    }
-
-    fun setLegacyWindowVisibility() {
-        window.decorView.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                        View.SYSTEM_UI_FLAG_FULLSCREEN
+        setWindowVisibility()
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    fun setWindowVisibility() {
+    private fun setWindowVisibility() {
         window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
                         View.SYSTEM_UI_FLAG_FULLSCREEN or
                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+    }
+
+    override fun onResume() {
+        super.onResume()
+        this.volumeControlStream = AudioManager.STREAM_VOICE_CALL
     }
 
     override fun onPause() {
@@ -208,6 +233,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
                 channelId         = channelName,
                 signalingMetadata = "",
+                spotlight         = spotlight,
+                videoEnabled      = videoEnabled,
                 videoWidth        = videoWidth,
                 videoHeight       = videoHeight,
                 videoFPS          = fps,
@@ -237,11 +264,11 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
     private var muted = false
 
-    internal fun mute() {
+    internal fun toggleMuted() {
         if (muted) {
-           ui?.showDisabledMuteButton()
+           ui?.showMuteButton()
         } else {
-            ui?.showEnabledMuteButton()
+            ui?.showUnmuteButton()
         }
         muted = !muted
         channel?.mute(muted)
@@ -263,7 +290,7 @@ class VideoChatRoomActivityUI(
     private var numberOfSendersText:   TextView? = null
     private var numberOfReceiversText: TextView? = null
 
-    private var muteButton: ImageButton? = null
+    private var toggleMuteButton: ImageButton? = null
     private var localRendererContainer: FrameLayout? = null
 
     private var renderersLayoutCalculator: RendererLayoutCalculator? = null
@@ -312,14 +339,12 @@ class VideoChatRoomActivityUI(
         renderersLayoutCalculator?.remove(renderer)
     }
 
-    internal fun showEnabledMuteButton() {
-        muteButton?.image = resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
-        muteButton?.background = resources.getDrawable(R.drawable.enabled_button_background, null)
+    internal fun showUnmuteButton() {
+        toggleMuteButton?.image = resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
     }
 
-    internal fun showDisabledMuteButton() {
-        muteButton?.image = resources.getDrawable(R.drawable.ic_mic_off_white_48dp, null)
-        muteButton?.background = resources.getDrawable(R.drawable.button_background, null)
+    internal fun showMuteButton() {
+        toggleMuteButton?.image = resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
     }
 
     override fun createView(ui: AnkoContext<VideoChatRoomActivity>): View = with(ui) {
@@ -350,12 +375,6 @@ class VideoChatRoomActivityUI(
                 backgroundColor = Color.parseColor("#222222")
 
                 channelText = textView {
-
-                    lparams {
-                        width = matchParent
-                        height = dip(50)
-                    }
-
                     backgroundColor = Color.parseColor("#FFC107")
 
                     this.gravity = Gravity.CENTER
@@ -363,6 +382,9 @@ class VideoChatRoomActivityUI(
                     textColor = Color.WHITE
                     textSize = 20f
                     padding = dip(10)
+                }.lparams {
+                    width = matchParent
+                    height = dip(50)
                 }
 
                 rendererContainer = relativeLayout {
@@ -402,30 +424,21 @@ class VideoChatRoomActivityUI(
 
                 linearLayout {
 
-                    muteButton = imageButton {
-                        lparams {
-                            width = dip(50)
-                            height = dip(50)
-                            rightMargin = dip(10)
-                        }
-
-                        image = resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
+                    toggleMuteButton = imageButton {
+                        image = resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
                         scaleType = ImageView.ScaleType.FIT_CENTER
                         background = resources.getDrawable(R.drawable.enabled_button_background, null)
 
                         onClick {
-                            ui.owner.mute()
+                            ui.owner.toggleMuted()
                         }
+                    }.lparams {
+                        width = dip(50)
+                        height = dip(50)
+                        rightMargin = dip(10)
                     }
 
                     imageButton {
-
-                        lparams {
-                            width = dip(50)
-                            height = dip(50)
-                            rightMargin = dip(10)
-                        }
-
                         image = resources.getDrawable(R.drawable.ic_videocam_white_48dp, null)
                         scaleType = ImageView.ScaleType.FIT_CENTER
                         background = resources.getDrawable(R.drawable.enabled_button_background, null)
@@ -433,17 +446,13 @@ class VideoChatRoomActivityUI(
                         onClick {
                             ui.owner.switchCamera()
                         }
+                    }.lparams {
+                        width = dip(50)
+                        height = dip(50)
+                        rightMargin = dip(10)
                     }
 
-
                     imageButton {
-
-                        lparams {
-                            width = dip(50)
-                            height = dip(50)
-                            rightMargin = dip(10)
-                        }
-
                         image = resources.getDrawable(R.drawable.ic_close_white_48dp, null)
                         scaleType = ImageView.ScaleType.FIT_CENTER
                         background = resources.getDrawable(R.drawable.close_button_background, null)
@@ -451,6 +460,10 @@ class VideoChatRoomActivityUI(
                         onClick {
                             ui.owner.close()
                         }
+                    }.lparams {
+                        width = dip(50)
+                        height = dip(50)
+                        rightMargin = dip(10)
                     }
 
                 }.lparams {

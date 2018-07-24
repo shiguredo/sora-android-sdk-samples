@@ -1,21 +1,26 @@
 package jp.shiguredo.sora.sample.screencast
 
 import android.annotation.TargetApi
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.media.projection.MediaProjection
+import android.os.Build
 import android.os.IBinder
+import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
-import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
 import jp.shiguredo.sora.sample.R
+import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
@@ -23,6 +28,7 @@ import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk21.listeners.onClick
 import org.webrtc.*
 
 @TargetApi(21)
@@ -59,6 +65,7 @@ class SoraScreencastService : Service() {
             SoraLogger.d(TAG, "[screencast] @onAddLocalStream")
             if (ms.audioTracks.size > 0) {
                 localAudioTrack = ms.audioTracks[0]
+                localAudioTrack?.setEnabled(!muted)
             }
             startCapturer()
         }
@@ -83,16 +90,34 @@ class SoraScreencastService : Service() {
         return START_NOT_STICKY
     }
 
-    fun startNotification(startId: Int) {
+    private fun startNotification(startId: Int) {
+        val notificationChannelId =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                createNotificationChannel()
+            } else {
+                ""
+            }
+
         val activityIntent = createBoundActivityIntent()
         val pendingIntent  = PendingIntent.getActivity(this, 0, activityIntent, 0)
-        val notification = NotificationCompat.Builder(this)
+        val notification = NotificationCompat.Builder(this, notificationChannelId)
                 .setContentTitle(req!!.stateTitle)
                 .setContentText(req!!.stateText)
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(req!!.notificationIcon)
                 .build()
         startForeground(startId, notification)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel(): String {
+        val channelId = "jp.shiguredo.sora.sample"
+        val channelName = "Sora SDK Sample"
+        val channel = NotificationChannel(channelId,
+                channelName, NotificationManager.IMPORTANCE_NONE)
+        val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        service.createNotificationChannel(channel)
+        return channelId
     }
 
     fun setupUI() {
@@ -113,7 +138,7 @@ class SoraScreencastService : Service() {
     }
 
     private var navigationBar: LinearLayout? = null
-    private var muteButton: ImageButton? = null
+    private var toggleMuteButton: ImageButton? = null
 
     // TODO remove Anko dependency
     internal fun createLayout() : View {
@@ -141,12 +166,6 @@ class SoraScreencastService : Service() {
 
 
                 imageButton {
-                    lparams {
-                        width = dip(50)
-                        height = dip(50)
-                        rightMargin = dip(10)
-                    }
-
                     image = resources.getDrawable(R.drawable.ic_unfold_more_white_48dp, null)
                     scaleType = ImageView.ScaleType.FIT_CENTER
                     background = resources.getDrawable(R.drawable.button_background, null)
@@ -154,58 +173,50 @@ class SoraScreencastService : Service() {
                     onClick {
                         toggleNavigationBarPosition()
                     }
+                }.lparams {
+                    width = dip(50)
+                    height = dip(50)
+                    rightMargin = dip(10)
                 }
 
                 imageView {
-                    lparams {
-                        width = dip(50)
-                        height = dip(50)
-                    }
                     image = resources.getDrawable(req!!.notificationIcon, null)
 
                     onClick {
                        launchActivity()
                     }
+                }.lparams {
+                    width = dip(50)
+                    height = dip(50)
                 }
 
                 textView {
-
-                    lparams {
-                        height = wrapContent
-                        width  = matchParent
-                        weight = 1f
-                    }
-
                     padding = dip(10)
                     text = req!!.stateTitle + "\n" + req!!.stateText
                     textSize = 14.0f
                     textColor = Color.WHITE
                     maxLines = 2
+                }.lparams {
+                    height = wrapContent
+                    width  = matchParent
+                    weight = 1f
                 }
 
-                muteButton = imageButton {
-                    lparams {
-                        width = dip(50)
-                        height = dip(50)
-                        rightMargin = dip(10)
-                    }
-
+                toggleMuteButton = imageButton {
                     image = resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
                     scaleType = ImageView.ScaleType.FIT_CENTER
                     background = resources.getDrawable(R.drawable.enabled_button_background, null)
 
                     onClick {
-                        toggleMute()
+                        toggleMuted()
                     }
+                }.lparams {
+                    width = dip(50)
+                    height = dip(50)
+                    rightMargin = dip(10)
                 }
 
-
                 imageButton {
-                    lparams {
-                        width = dip(50)
-                        height = dip(50)
-                    }
-
                     image = resources.getDrawable(R.drawable.ic_close_white_48dp, null)
                     scaleType = ImageView.ScaleType.FIT_CENTER
                     background = resources.getDrawable(R.drawable.close_button_background, null)
@@ -213,6 +224,9 @@ class SoraScreencastService : Service() {
                     onClick {
                         closeChannel()
                     }
+                }.lparams {
+                    width = dip(50)
+                    height = dip(50)
                 }
 
             }
@@ -233,18 +247,16 @@ class SoraScreencastService : Service() {
         return null
     }
 
-    private var isMuted = false
-    private fun toggleMute() {
-        if (isMuted) {
+    private var muted = true
+    private fun toggleMuted() {
+        if (muted) {
             localAudioTrack?.setEnabled(true)
-            muteButton?.image = resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
-            muteButton?.background = resources.getDrawable(R.drawable.enabled_button_background, null)
+            toggleMuteButton?.image = resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
         } else {
             localAudioTrack?.setEnabled(false)
-            muteButton?.image = resources.getDrawable(R.drawable.ic_mic_off_white_48dp, null)
-            muteButton?.background = resources.getDrawable(R.drawable.button_background, null)
+            toggleMuteButton?.image = resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
         }
-        isMuted = !isMuted
+        muted = !muted
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -342,6 +354,7 @@ class SoraScreencastService : Service() {
             egl?.release()
             egl = null
             uiContainer?.clear()
+            NetworkMonitor.getInstance().stopMonitoring()
             stopSelf()
         }
     }

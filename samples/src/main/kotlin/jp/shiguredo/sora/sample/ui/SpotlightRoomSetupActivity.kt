@@ -17,9 +17,9 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.design.textInputLayout
 import org.jetbrains.anko.sdk21.listeners.onClick
 
-class VideoChatRoomSetupActivity : AppCompatActivity() {
+class SpotlightRoomSetupActivity : AppCompatActivity() {
 
-    val TAG = VideoChatRoomSetupActivity::class.simpleName
+    val TAG = SpotlightRoomSetupActivity::class.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -28,25 +28,24 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     }
 
     private var channelNameInput:    EditText? = null
+    private var spotlightSpinner:    MaterialSpinner? = null
     private var videoCodecSpinner:   MaterialSpinner? = null
     private var audioCodecSpinner:   MaterialSpinner? = null
     private var streamTypeSpinner:   MaterialSpinner? = null
     private var bitRateSpinner:      MaterialSpinner? = null
+    private var videoEnabledSpinner: MaterialSpinner? = null
     private var audioEnabledSpinner: MaterialSpinner? = null
     private var sizeSpinner:         MaterialSpinner? = null
     private var fpsSpinner:          MaterialSpinner? = null
 
-    val videoCodecOptions = listOf("VP9", "VP8", "H264")
+    val spotlightOptions = listOf(2, 1, 3, 4, 5)
+    val videoCodecOptions = listOf("VP8", "VP9", "H264")
     val audioCodecOptions = listOf("OPUS", "PCMU")
+    val videoEnabledOptions = listOf("YES", "NO")
     val audioEnabledOptions = listOf("YES", "NO")
-    val streamTypeOptions = listOf("BIDIRECTIONAL", "SINGLE-UP", "SINGLE-DOWN", "MULTI-DOWN")
+    val streamTypeOptions = listOf("BIDIRECTIONAL", "MULTI-DOWN")
     val bitRateOptions = listOf("UNDEFINED", "100", "300", "500", "800", "1000", "1500", "2000", "2500")
-    val sizeOptions = listOf(
-            // Portrait
-            "VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD",
-            "Res1920x3840", "UHD2160x3840", "UHD2160x4096",
-            // Landscape
-            "Res3840x1920")
+    val sizeOptions = listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
     val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
 
     private fun setupUI() {
@@ -97,16 +96,92 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
                         textColor = Color.WHITE
 
                         onClick {
-                            startVideoChat()
+                            startSpotlightChat()
                         }
                     }.lparams{
-
                         width = matchParent
                         height= wrapContent
                         margin = dip(10)
                     }
 
                     relativeLayout {
+
+                        lparams{
+                            width = matchParent
+                            height= wrapContent
+                            margin = dip(10)
+                        }
+
+                        backgroundColor = Color.parseColor(spinnerBackgroundColor)
+
+                        textView {
+                            maxLines = 10
+                            text = "SPOTLIGHT"
+                            padding = dip(10)
+                            backgroundColor = Color.parseColor(spinnerBackgroundColor)
+                        }.lparams {
+                            width = wrapContent
+                            height = wrapContent
+                            margin = dip(10)
+                            alignParentLeft()
+                            centerVertically()
+                        }
+
+                        spotlightSpinner = materialSpinner {
+                            padding = dip(10)
+
+                            lparams{
+                                width = dip(spinnerWidth)
+                                height= wrapContent
+                                margin = dip(10)
+                                alignParentRight()
+                                centerVertically()
+                            }
+                        }
+
+                        spotlightSpinner?.setItems(spotlightOptions.map { it.toString() })
+                    }
+
+                    relativeLayout {
+
+                        lparams{
+                            width = matchParent
+                            height= wrapContent
+                            margin = dip(10)
+                        }
+
+                        backgroundColor = Color.parseColor(spinnerBackgroundColor)
+
+                        textView {
+                            maxLines = 10
+                            text = "STREAM TYPE"
+                            padding = dip(10)
+                            backgroundColor = Color.parseColor(spinnerBackgroundColor)
+                        }.lparams {
+                            width = wrapContent
+                            height = wrapContent
+                            margin = dip(10)
+                            alignParentLeft()
+                            centerVertically()
+                        }
+
+                        streamTypeSpinner = materialSpinner {
+                            padding = dip(10)
+
+                            lparams{
+                                width = dip(spinnerWidth)
+                                height= wrapContent
+                                margin = dip(10)
+                                alignParentRight()
+                                centerVertically()
+                            }
+                        }
+
+                        streamTypeSpinner?.setItems(streamTypeOptions)
+                    }
+
+                    relativeLayout {
+
                         lparams{
                             width = matchParent
                             height= wrapContent
@@ -142,6 +217,44 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
                         }
 
                         videoCodecSpinner?.setItems(videoCodecOptions)
+                    }
+
+                    relativeLayout {
+
+                        lparams{
+                            width = matchParent
+                            height= wrapContent
+                            margin = dip(10)
+                        }
+
+                        backgroundColor = Color.parseColor(spinnerBackgroundColor)
+
+                        textView {
+                            maxLines = 10
+                            text = "VIDEO ENABLED"
+                            padding = dip(10)
+                            backgroundColor = Color.parseColor(spinnerBackgroundColor)
+                        }.lparams {
+                            width = wrapContent
+                            height = wrapContent
+                            margin = dip(10)
+                            alignParentLeft()
+                            centerVertically()
+                        }
+
+                        videoEnabledSpinner = materialSpinner {
+                            padding = dip(10)
+
+                            lparams{
+                                width = dip(spinnerWidth)
+                                height= wrapContent
+                                margin = dip(10)
+                                alignParentRight()
+                                centerVertically()
+                            }
+                        }
+
+                        videoEnabledSpinner?.setItems(videoEnabledOptions)
                     }
 
                     relativeLayout {
@@ -218,44 +331,6 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
                         }
 
                         audioCodecSpinner?.setItems(audioCodecOptions)
-                    }
-
-                    relativeLayout {
-
-                        lparams{
-                            width = matchParent
-                            height= wrapContent
-                            margin = dip(10)
-                        }
-
-                        backgroundColor = Color.parseColor(spinnerBackgroundColor)
-
-                        textView {
-                            maxLines = 10
-                            text = "STREAM TYPE"
-                            padding = dip(10)
-                            backgroundColor = Color.parseColor(spinnerBackgroundColor)
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            margin = dip(10)
-                            alignParentLeft()
-                            centerVertically()
-                        }
-
-                        streamTypeSpinner = materialSpinner {
-                            padding = dip(10)
-
-                            lparams{
-                                width = dip(spinnerWidth)
-                                height= wrapContent
-                                margin = dip(10)
-                                alignParentRight()
-                                centerVertically()
-                            }
-                        }
-
-                        streamTypeSpinner?.setItems(streamTypeOptions)
                     }
 
                     relativeLayout {
@@ -379,27 +454,31 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         }
     }
 
-    private fun startVideoChat() {
+    private fun startSpotlightChat() {
         val channelName = channelNameInput!!.text.toString()
         if (channelName.isEmpty()) {
             showInputError()
             return
         }
 
+        val spotlight = spotlightOptions[spotlightSpinner!!.selectedIndex]
         val streamType = streamTypeOptions[streamTypeSpinner!!.selectedIndex]
         val videoCodec = videoCodecOptions[videoCodecSpinner!!.selectedIndex]
         val audioCodec = audioCodecOptions[audioCodecSpinner!!.selectedIndex]
         val audioEnabled = audioEnabledOptions[audioEnabledSpinner!!.selectedIndex]
+        val videoEnabled = videoEnabledOptions[videoEnabledSpinner!!.selectedIndex]
         val bitRate = bitRateOptions[bitRateSpinner!!.selectedIndex]
         val size = sizeOptions[sizeSpinner!!.selectedIndex]
         val fps = fpsOptions[fpsSpinner!!.selectedIndex]
 
         val intent = Intent(this, VideoChatRoomActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
+        intent.putExtra("SPOTLIGHT", spotlight)
         intent.putExtra("STREAM_TYPE", streamType)
         intent.putExtra("VIDEO_CODEC", videoCodec)
         intent.putExtra("AUDIO_CODEC", audioCodec)
         intent.putExtra("AUDIO_ENABLED", audioEnabled)
+        intent.putExtra("VIDEO_ENABLED", videoEnabled)
         intent.putExtra("BITRATE", bitRate)
         intent.putExtra("VIDEO_SIZE", size)
         intent.putExtra("FPS", fps)

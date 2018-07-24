@@ -12,6 +12,45 @@
 
 ## develop
 
+## 1.6.0
+
+### UPDATE
+
+- SDK のバージョンを 1.6.0 に上げた
+- Android Studio 3.1.3 に対応した
+- PermissionsDispatcher を 3.2.0 に上げた
+  - lint バグフィックスにより不要な SuppressLint アノテーションを削除した
+- Kotlin を 1.2.51 に上げた
+- START ボタンをオプションリストの上に移動した
+- CircleCI キャッシュを利用しない
+  - ときどきビルドが失敗するが、キャッシュ利用しないと成功するため
+  - NDK セットアップに 37 sec, androidDependencies に 43 sec 程度
+  - ただしキャッシュがビルド失敗の根本原因かは不明
+- Anko を 0.10.5 に上げた
+- スクリーンキャスト画面を `TYPE_APPLICATION_OVERLAY` に変更した
+  - `TYPE_PHONE` が deprecated になったため
+- Android 8 の Notification Channel に対応した
+- Video chat, Voice chat, Spotlight chat, effected video chat の音量を
+  ボリュームキーから制御できるようにした
+- 解像度オプションを増やした
+- PermissionsDispatcher を 3.3.1 に上げた
+- スポットライトルームの初期映像コーデックを VP8 に変更した
+- ボリューム変更対象ストリームを `STREAM_VOICE_CALL` に変更した
+
+### ADD
+
+- スポットライト機能のデモを追加した
+  - 通信の方向は BIDIRECTIONAL(upstream) と MULTI_DOWN(downstream) を選択可能
+  - メディアは映像+音声か音声のみを選択可能
+
+### CHANGE
+
+- MediaStream#label() の代わりに id を使うよう変更した
+
+### FIX
+
+- スクリーンキャストの停止時に SIGABRT が発生していた問題を修正した
+
 ## 1.5.3
 
 ### UPDATE

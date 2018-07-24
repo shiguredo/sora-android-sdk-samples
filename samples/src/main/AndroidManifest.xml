@@ -41,6 +41,9 @@
         <activity android:name="jp.shiguredo.sora.sample.ui.VideoChatRoomSetupActivity"
             android:label="Video Chat Room" />
 
+        <activity android:name="jp.shiguredo.sora.sample.ui.SpotlightRoomSetupActivity"
+            android:label="Spotlight Room" />
+
         <activity android:name="jp.shiguredo.sora.sample.ui.ScreencastSetupActivity"
             android:label="Screencast"
             android:screenOrientation="portrait"/>

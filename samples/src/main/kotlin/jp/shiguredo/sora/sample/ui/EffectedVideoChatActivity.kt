@@ -3,6 +3,7 @@ package jp.shiguredo.sora.sample.ui
 import android.annotation.TargetApi
 import android.content.res.Resources
 import android.graphics.Color
+import android.media.AudioManager
 import android.media.effect.EffectFactory
 import android.os.Build
 import android.os.Bundle
@@ -26,6 +27,7 @@ import jp.shiguredo.webrtc.video.effector.RTCVideoEffector
 import jp.shiguredo.webrtc.video.effector.VideoEffectorContext
 import jp.shiguredo.webrtc.video.effector.filter.GPUImageFilterWrapper
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk21.listeners.onClick
 import org.webrtc.SurfaceViewRenderer
 
 class EffectedVideoChatActivity : AppCompatActivity() {
@@ -105,26 +107,20 @@ class EffectedVideoChatActivity : AppCompatActivity() {
 
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
                 or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            setWindowVisibility()
-        } else {
-            setLegacyWindowVisibility()
-        }
-    }
-
-    fun setLegacyWindowVisibility() {
-        window.decorView.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                        View.SYSTEM_UI_FLAG_FULLSCREEN
+        setWindowVisibility()
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    fun setWindowVisibility() {
+    private fun setWindowVisibility() {
         window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
                         View.SYSTEM_UI_FLAG_FULLSCREEN or
                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+    }
+
+    override fun onResume() {
+        super.onResume()
+        this.volumeControlStream = AudioManager.STREAM_VOICE_CALL
     }
 
     override fun onPause() {
@@ -211,11 +207,11 @@ class EffectedVideoChatActivity : AppCompatActivity() {
 
     private var muted = false
 
-    internal fun mute() {
+    internal fun toggleMute() {
         if (muted) {
-            ui?.showDisabledMuteButton()
+            ui?.showMuteButton()
         } else {
-            ui?.showEnabledMuteButton()
+            ui?.showUnmuteButton()
         }
         muted = !muted
         channel?.mute(muted)
@@ -237,7 +233,7 @@ class EffectedVideoChatActivityUI(
     private var numberOfSendersText:   TextView? = null
     private var numberOfReceiversText: TextView? = null
 
-    private var muteButton: ImageButton? = null
+    private var toggleMuteButton: ImageButton? = null
     private var localRendererContainer: FrameLayout? = null
 
     private var renderersLayoutCalculator: RendererLayoutCalculator? = null
@@ -286,14 +282,12 @@ class EffectedVideoChatActivityUI(
         renderersLayoutCalculator?.remove(renderer)
     }
 
-    internal fun showEnabledMuteButton() {
-        muteButton?.image = resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
-        muteButton?.background = resources.getDrawable(R.drawable.enabled_button_background, null)
+    internal fun showUnmuteButton() {
+        toggleMuteButton?.image = resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
     }
 
-    internal fun showDisabledMuteButton() {
-        muteButton?.image = resources.getDrawable(R.drawable.ic_mic_off_white_48dp, null)
-        muteButton?.background = resources.getDrawable(R.drawable.button_background, null)
+    internal fun showMuteButton() {
+        toggleMuteButton?.image = resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
     }
 
     override fun createView(ui: AnkoContext<EffectedVideoChatActivity>): View = with(ui) {
@@ -325,11 +319,6 @@ class EffectedVideoChatActivityUI(
 
                 channelText = textView {
 
-                    lparams {
-                        width = matchParent
-                        height = dip(50)
-                    }
-
                     backgroundColor = Color.parseColor("#FFC107")
 
                     this.gravity = Gravity.CENTER
@@ -337,6 +326,9 @@ class EffectedVideoChatActivityUI(
                     textColor = Color.WHITE
                     textSize = 20f
                     padding = dip(10)
+                }.lparams {
+                    width = matchParent
+                    height = dip(50)
                 }
 
                 rendererContainer = relativeLayout {
@@ -376,30 +368,23 @@ class EffectedVideoChatActivityUI(
 
                 linearLayout {
 
-                    muteButton = imageButton {
-                        lparams {
-                            width = dip(50)
-                            height = dip(50)
-                            rightMargin = dip(10)
-                        }
-
-                        image = resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
+                    toggleMuteButton = imageButton {
+                        image = resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
                         scaleType = ImageView.ScaleType.FIT_CENTER
                         background = resources.getDrawable(R.drawable.enabled_button_background, null)
 
                         onClick {
-                            ui.owner.mute()
+                            ui.owner.toggleMute()
                         }
+                    }.lparams {
+                        width = dip(50)
+                        height = dip(50)
+                        rightMargin = dip(10)
                     }
 
+
+
                     imageButton {
-
-                        lparams {
-                            width = dip(50)
-                            height = dip(50)
-                            rightMargin = dip(10)
-                        }
-
                         image = resources.getDrawable(R.drawable.ic_videocam_white_48dp, null)
                         scaleType = ImageView.ScaleType.FIT_CENTER
                         background = resources.getDrawable(R.drawable.enabled_button_background, null)
@@ -407,17 +392,13 @@ class EffectedVideoChatActivityUI(
                         onClick {
                             ui.owner.switchCamera()
                         }
+                    }.lparams {
+                        width = dip(50)
+                        height = dip(50)
+                        rightMargin = dip(10)
                     }
 
-
                     imageButton {
-
-                        lparams {
-                            width = dip(50)
-                            height = dip(50)
-                            rightMargin = dip(10)
-                        }
-
                         image = resources.getDrawable(R.drawable.ic_close_white_48dp, null)
                         scaleType = ImageView.ScaleType.FIT_CENTER
                         background = resources.getDrawable(R.drawable.close_button_background, null)
@@ -425,6 +406,10 @@ class EffectedVideoChatActivityUI(
                         onClick {
                             ui.owner.close()
                         }
+                    }.lparams {
+                        width = dip(50)
+                        height = dip(50)
+                        rightMargin = dip(10)
                     }
 
                 }.lparams {

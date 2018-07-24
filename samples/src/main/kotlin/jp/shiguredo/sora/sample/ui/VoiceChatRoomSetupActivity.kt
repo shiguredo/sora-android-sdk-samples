@@ -15,6 +15,7 @@ import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.ui.util.materialSpinner
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.textInputLayout
+import org.jetbrains.anko.sdk21.listeners.onClick
 
 class VoiceChatRoomSetupActivity : AppCompatActivity() {
 
@@ -75,6 +76,20 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
                         setText(BuildConfig.CHANNEL_ID)
                     }
 
+                    button("START") {
+                        backgroundColor = Color.parseColor("#F06292")
+                        textColor = Color.WHITE
+
+                        onClick {
+                            startVoiceChat()
+                        }
+                    }.lparams{
+
+                        width = matchParent
+                        height= wrapContent
+                        margin = dip(10)
+                    }
+
                     relativeLayout {
 
                         lparams{
@@ -86,19 +101,16 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
                         backgroundColor = Color.parseColor(spinnerBackgroundColor)
 
                         textView {
-
-                            lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                margin = dip(10)
-                                alignParentLeft()
-                                centerVertically()
-                            }
-
                             maxLines = 10
                             text = "AUDIO CODEC"
                             padding = dip(10)
                             backgroundColor = Color.parseColor(spinnerBackgroundColor)
+                        }.lparams {
+                            width = wrapContent
+                            height = wrapContent
+                            margin = dip(10)
+                            alignParentLeft()
+                            centerVertically()
                         }
 
                         audioCodecSpinner = materialSpinner {
@@ -127,19 +139,16 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
                         backgroundColor = Color.parseColor(spinnerBackgroundColor)
 
                         textView {
-
-                            lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                margin = dip(10)
-                                alignParentLeft()
-                                centerVertically()
-                            }
-
                             maxLines = 10
                             text = "STREAM TYPE"
                             padding = dip(10)
                             backgroundColor = Color.parseColor(spinnerBackgroundColor)
+                        }.lparams {
+                            width = wrapContent
+                            height = wrapContent
+                            margin = dip(10)
+                            alignParentLeft()
+                            centerVertically()
                         }
 
                         streamTypeSpinner = materialSpinner {
@@ -157,22 +166,6 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
                         streamTypeSpinner?.setItems(streamTypeOptions)
                     }
 
-                    button("START") {
-
-                        lparams{
-
-                            width = matchParent
-                            height= wrapContent
-                            margin = dip(10)
-                        }
-
-                        backgroundColor = Color.parseColor("#F06292")
-                        textColor = Color.WHITE
-
-                        onClick {
-                            startVoiceChat()
-                        }
-                    }
                 }
             }
         }
