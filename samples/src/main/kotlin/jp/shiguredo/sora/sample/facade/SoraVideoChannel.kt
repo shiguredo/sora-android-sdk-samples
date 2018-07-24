@@ -168,7 +168,7 @@ class SoraVideoChannel(
                 eglContext = egl!!.eglBaseContext,
                 listener   = rendererSlotListener
         )
-Log.d(TAG, "streamtype = ${streamType}")
+
         val mediaOption = SoraMediaOption().apply {
 
             if (streamType.hasUpstream()) {

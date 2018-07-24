@@ -166,8 +166,6 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
                         }
 
                         streamTypeSpinner = materialSpinner {
-                            // TODO(shino): DOWN 出来たら enabled に変える
-                            isEnabled = false
                             padding = dip(10)
 
                             lparams{
