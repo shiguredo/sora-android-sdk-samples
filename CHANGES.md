@@ -12,9 +12,12 @@
 
 ## develop
 
+## 1.6.0
+
 ### UPDATE
 
-- Android Studio 3.1.2 に対応した
+- SDK のバージョンを 1.6.0 に上げた
+- Android Studio 3.1.3 に対応した
 - PermissionsDispatcher を 3.2.0 に上げた
   - lint バグフィックスにより不要な SuppressLint アノテーションを削除した
 - Kotlin を 1.2.51 に上げた
@@ -33,7 +36,6 @@
 - PermissionsDispatcher を 3.3.1 に上げた
 - スポットライトルームの初期映像コーデックを VP8 に変更した
 - ボリューム変更対象ストリームを `STREAM_VOICE_CALL` に変更した
-
 
 ### ADD
 
