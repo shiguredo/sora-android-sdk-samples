@@ -26,7 +26,10 @@ import org.jetbrains.anko.sdk21.listeners.onClick
 @TargetApi(21)
 class ScreencastSetupActivity : AppCompatActivity() {
 
-    val TAG = ScreencastSetupActivity::class.simpleName
+    companion object {
+        val TAG = ScreencastSetupActivity::class.simpleName
+        var running = false
+    }
 
     private var screencastStarter: SoraScreencastServiceStarter? = null
 
@@ -46,7 +49,7 @@ class ScreencastSetupActivity : AppCompatActivity() {
                                  multistream: Boolean) {
 
 
-        if (SoraServiceUtil.isRunning(this, "jp.shiguredo.sora.screencast.SoraScreencastService")) {
+        if (SoraScreencastService.isRunning()) {
             Snackbar.make(this.contentView!!,
                     "既に起動中です",
                     Snackbar.LENGTH_LONG)

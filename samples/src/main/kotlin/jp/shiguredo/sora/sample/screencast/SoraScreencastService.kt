@@ -34,7 +34,12 @@ import org.webrtc.*
 @TargetApi(21)
 class SoraScreencastService : Service() {
 
-    val TAG = SoraScreencastService::class.simpleName
+    companion object {
+        val TAG = SoraScreencastService::class.simpleName
+
+        private var running = false
+        fun isRunning() = running
+    }
 
     private var localAudioTrack: AudioTrack? = null
     private var mediaChannel: SoraMediaChannel? = null
@@ -73,6 +78,8 @@ class SoraScreencastService : Service() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+
+        SoraScreencastService.running = true
 
         egl = EglBase.create()
 
@@ -355,6 +362,7 @@ class SoraScreencastService : Service() {
             egl = null
             uiContainer?.clear()
             NetworkMonitor.getInstance().stopMonitoring()
+            SoraScreencastService.running = false
             stopSelf()
         }
     }

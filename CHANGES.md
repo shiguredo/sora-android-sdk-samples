@@ -12,6 +12,10 @@
 
 ## develop
 
+### CHANGE
+
+- SoraScreencastSerivce の起動中を companion object の変数で管理するよう変更した
+
 ## 1.6.0
 
 ### UPDATE
