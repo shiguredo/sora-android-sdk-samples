@@ -17,7 +17,6 @@ import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.screencast.SoraScreencastService
 import jp.shiguredo.sora.sample.screencast.SoraScreencastServiceStarter
 import jp.shiguredo.sora.sample.ui.util.materialSpinner
-import jp.shiguredo.sora.sdk.util.SoraServiceUtil
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.textInputLayout
 import org.jetbrains.anko.sdk21.listeners.onClick
@@ -28,7 +27,6 @@ class ScreencastSetupActivity : AppCompatActivity() {
 
     companion object {
         val TAG = ScreencastSetupActivity::class.simpleName
-        var running = false
     }
 
     private var screencastStarter: SoraScreencastServiceStarter? = null
