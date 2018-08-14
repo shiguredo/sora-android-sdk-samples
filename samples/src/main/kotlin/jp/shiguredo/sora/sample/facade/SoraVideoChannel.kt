@@ -1,7 +1,6 @@
 package jp.shiguredo.sora.sample.facade
 
 import android.content.Context
-import android.util.Log
 import jp.shiguredo.sora.sample.camera.CameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.camera.DefaultCameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.option.SoraStreamType
@@ -98,7 +97,7 @@ class SoraVideoChannel(
                 context.runOnUiThread {
                     if (ms.videoTracks.size > 0) {
                         localRenderer = createSurfaceViewRenderer()
-                        ms.videoTracks[0].addRenderer(VideoRenderer(localRenderer!!))
+                        ms.videoTracks[0].addSink(localRenderer!!)
                         listener?.onAddLocalRenderer(this@SoraVideoChannel, localRenderer!!)
                     }
                 }

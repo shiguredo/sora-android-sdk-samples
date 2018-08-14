@@ -2,7 +2,10 @@ package jp.shiguredo.sora.sample.ui.util
 
 import android.content.Context
 import jp.shiguredo.sora.sdk.util.SoraLogger
-import org.webrtc.*
+import org.webrtc.EglBase
+import org.webrtc.MediaStream
+import org.webrtc.SurfaceViewRenderer
+import org.webrtc.VideoTrack
 
 // TODO support NUMBER_OF_RENDERERS limitation
 class SoraRemoteRendererSlot(
@@ -35,7 +38,7 @@ class SoraRemoteRendererSlot(
         workingTracks.put(ms.id, track)
 
         track.setEnabled(true)
-        track.addRenderer(VideoRenderer(renderer))
+        track.addSink(renderer)
     }
 
     fun onRemoveRemoteStream(msid: String) {
