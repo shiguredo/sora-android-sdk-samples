@@ -12,9 +12,14 @@
 
 ## develop
 
+## 1.7.0
+
 ### CHANGE
 
 - SoraScreencastSerivce の起動中を companion object の変数で管理するよう変更した
+- SDK のバージョンを 1.7.0 に上げた
+- Android Studio 3.1.4 に対応した
+- SDK から Service 状態管理ユーティリティが削除されたため、自前で companion object での管理に変更した
 
 ## 1.6.0
 
