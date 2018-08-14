@@ -12,6 +12,11 @@
 
 ## develop
 
+### UPDATE
+
+- Kotlin を 1.2.60 に上げた
+
+
 ## 1.7.0
 
 ### CHANGE
