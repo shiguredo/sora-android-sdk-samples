@@ -25,10 +25,10 @@ jobs:
           command: ./gradlew lint
       - run:
           name: Build release
-          command: ./gradlew assembleRelease
-      # - run:
-      #     name: Build debug
-      #     command: ./gradlew assembleDebug
+          command: ./gradlew --debug assembleRelease
+      - run:
+          name: Build debug
+          command: ./gradlew --debug assembleDebug
 
       - store_artifacts:
           path: samples/build/outputs
