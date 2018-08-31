@@ -26,9 +26,9 @@ jobs:
       - run:
           name: Build release
           command: ./gradlew assembleRelease
-      - run:
-          name: Build debug
-          command: ./gradlew assembleDebug
+      # - run:
+      #     name: Build debug
+      #     command: ./gradlew assembleDebug
 
       - store_artifacts:
           path: samples/build/outputs
