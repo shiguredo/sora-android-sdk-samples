@@ -1,15 +1,15 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/sora-android-sdk-sample
+    working_directory: ~/work
     docker:
       - image: circleci/android:api-26-alpha
     environment:
       JVM_OPTS: -Xmx1600m
     steps:
       - checkout
-      - run: cp .circleci/gradle.properties ~/sora-android-sdk-sample/gradle.properties
-      - run: ls -alt ~/sora-android-sdk-sample/
+      - run: cp .circleci/gradle.properties ~/work/gradle.properties
+      - run: ls -alt ~/work/
       - run: echo $ANDROID_HOME
       - run: echo $ANDROID_SDK
 
