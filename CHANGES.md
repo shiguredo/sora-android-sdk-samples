@@ -12,6 +12,12 @@
 
 ## develop
 
+### ADD
+
+- Video chat, Voice chat, Spotlight の各セットアップに sdpSemantics 選択肢を追加した
+  - ただし、Sora Android SDK の動作確認は Plan B のみで Unified Plan は試験的実装
+  - Voice chat は Unified Plan 選択時にエラーで接続できない
+
 ### UPDATE
 
 - Kotlin を 1.2.71 に上げた

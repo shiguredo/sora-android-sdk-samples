@@ -24,6 +24,7 @@ import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk21.listeners.onClick
+import org.webrtc.PeerConnection
 import org.webrtc.SurfaceViewRenderer
 
 class VideoChatRoomActivity : AppCompatActivity() {
@@ -41,6 +42,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x
     private var videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y
     private var fps: Int = 30
+    private var sdpSemantics = PeerConnection.SdpSemantics.PLAN_B
 
     private var streamType = SoraStreamType.BIDIRECTIONAL
 
@@ -152,6 +154,12 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else        -> bitRateStr.toInt()
         }
 
+        when (intent.getStringExtra("SDP_SEMANTICS")) {
+            "Unified Plan" -> { sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN }
+            "Plan B"       -> { sdpSemantics = PeerConnection.SdpSemantics.PLAN_B }
+            else           -> { sdpSemantics = PeerConnection.SdpSemantics.PLAN_B }
+        }
+
         ui?.setChannelName(channelName)
 
         connectChannel()
@@ -242,6 +250,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 videoBitrate      = bitRate,
                 audioEnabled      = audioEnabled,
                 audioCodec        = audioCodec,
+                sdpSemantics      = sdpSemantics,
                 streamType        = streamType,
                 listener          = channelListener,
                 needLocalRenderer = true
