@@ -3,6 +3,7 @@ package jp.shiguredo.webrtc.video.effector.camera;
 import android.content.Context;
 
 import org.webrtc.Camera1Capturer;
+import org.webrtc.CapturerObserver;
 import org.webrtc.SurfaceTextureHelper;
 
 import jp.shiguredo.webrtc.video.effector.CapturerObserverProxy;
