@@ -35,6 +35,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     private var audioEnabledSpinner: MaterialSpinner? = null
     private var sizeSpinner:         MaterialSpinner? = null
     private var fpsSpinner:          MaterialSpinner? = null
+    private var sdpSemanticsSpinner: MaterialSpinner? = null
 
     val videoCodecOptions = listOf("VP9", "VP8", "H264")
     val audioCodecOptions = listOf("OPUS", "PCMU")
@@ -48,6 +49,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
             // Landscape
             "Res3840x1920")
     val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
+    val sdpSemanticsOptions = listOf("Plan B", "Unified Plan")
 
     private fun setupUI() {
 
@@ -372,6 +374,45 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
                         fpsSpinner?.setItems(fpsOptions)
                     }
 
+
+                    relativeLayout {
+
+                        lparams{
+                            width = matchParent
+                            height= wrapContent
+                            margin = dip(10)
+                        }
+
+                        backgroundColor = Color.parseColor(spinnerBackgroundColor)
+
+                        textView {
+                            maxLines = 10
+                            text = "sdpSemantics"
+                            padding = dip(10)
+                            backgroundColor = Color.parseColor(spinnerBackgroundColor)
+                        }.lparams {
+                            width = wrapContent
+                            height = wrapContent
+                            margin = dip(10)
+                            alignParentLeft()
+                            centerVertically()
+                        }
+
+                        sdpSemanticsSpinner = materialSpinner {
+                            padding = dip(10)
+
+                            lparams{
+                                width = dip(spinnerWidth)
+                                height= wrapContent
+                                margin = dip(10)
+                                alignParentRight()
+                                centerVertically()
+                            }
+                        }
+
+                        sdpSemanticsSpinner?.setItems(sdpSemanticsOptions)
+                    }
+
                 }
 
             }
@@ -393,6 +434,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val bitRate = bitRateOptions[bitRateSpinner!!.selectedIndex]
         val size = sizeOptions[sizeSpinner!!.selectedIndex]
         val fps = fpsOptions[fpsSpinner!!.selectedIndex]
+        val sdpSemantics = sdpSemanticsOptions[sdpSemanticsSpinner!!.selectedIndex]
 
         val intent = Intent(this, VideoChatRoomActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
@@ -403,6 +445,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("BITRATE", bitRate)
         intent.putExtra("VIDEO_SIZE", size)
         intent.putExtra("FPS", fps)
+        intent.putExtra("SDP_SEMANTICS", sdpSemantics)
 
         startActivity(intent)
     }

@@ -11,6 +11,7 @@ import jp.shiguredo.sora.sdk.util.SoraLogger
 import org.jetbrains.anko.runOnUiThread
 import org.webrtc.AudioTrack
 import org.webrtc.MediaStream
+import org.webrtc.PeerConnection
 
 class SoraAudioChannel(
         private val context:           Context,
@@ -19,6 +20,7 @@ class SoraAudioChannel(
         private val signalingMetadata: String = "",
         private var streamType:        SoraStreamType,
         private var codec:             SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
+        private var sdpSemantics:      PeerConnection.SdpSemantics = PeerConnection.SdpSemantics.PLAN_B,
         private var listener:          Listener?
 ) {
 
@@ -95,6 +97,7 @@ class SoraAudioChannel(
             }
 
             audioCodec = this@SoraAudioChannel.codec
+            sdpSemantics = this@SoraAudioChannel.sdpSemantics
         }
 
         mediaChannel = SoraMediaChannel(

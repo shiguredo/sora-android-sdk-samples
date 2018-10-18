@@ -19,6 +19,7 @@ import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk21.listeners.onClick
+import org.webrtc.PeerConnection
 
 class VoiceChatRoomActivity : AppCompatActivity() {
 
@@ -28,8 +29,8 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     private var ui: VoiceChatRoomActivityUI? = null
 
     private var audioCodec:  SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
-
     private var streamType   = SoraStreamType.BIDIRECTIONAL
+    private var sdpSemantics = PeerConnection.SdpSemantics.PLAN_B
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -50,6 +51,12 @@ class VoiceChatRoomActivity : AppCompatActivity() {
             "SINGLE-DOWN"   -> { streamType = SoraStreamType.SINGLE_DOWN   }
             "MULTI-DOWN"    -> { streamType = SoraStreamType.MULTI_DOWN    }
             else            -> { streamType = SoraStreamType.BIDIRECTIONAL }
+        }
+
+        when (intent.getStringExtra("SDP_SEMANTICS")) {
+            "Unified Plan" -> { sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN }
+            "Plan B"       -> { sdpSemantics = PeerConnection.SdpSemantics.PLAN_B }
+            else           -> { sdpSemantics = PeerConnection.SdpSemantics.PLAN_B }
         }
 
         ui?.setChannelName(channelName)
@@ -121,6 +128,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
                 channelId         = channelName,
                 signalingMetadata = "",
                 codec             = audioCodec,
+                sdpSemantics      = sdpSemantics,
                 streamType        = streamType,
                 listener          = channelListener
         )

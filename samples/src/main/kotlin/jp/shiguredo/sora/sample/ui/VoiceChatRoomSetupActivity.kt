@@ -16,6 +16,7 @@ import jp.shiguredo.sora.sample.ui.util.materialSpinner
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.textInputLayout
 import org.jetbrains.anko.sdk21.listeners.onClick
+import org.webrtc.PeerConnection
 
 class VoiceChatRoomSetupActivity : AppCompatActivity() {
 
@@ -30,9 +31,11 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
     private var channelNameInput:  EditText? = null
     private var audioCodecSpinner: MaterialSpinner? = null
     private var streamTypeSpinner: MaterialSpinner? = null
+    private var sdpSemanticsSpinner: MaterialSpinner? = null
 
     val audioCodecOptions = listOf("OPUS", "PCMU")
     val streamTypeOptions = listOf("BIDIRECTIONAL", "SINGLE-UP", "SINGLE-DOWN", "MULTI-DOWN")
+    val sdpSemanticsOptions = listOf("Plan B", "Unified Plan")
 
     private fun setupUI() {
 
@@ -166,6 +169,44 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
                         streamTypeSpinner?.setItems(streamTypeOptions)
                     }
 
+                    relativeLayout {
+
+                        lparams{
+                            width = matchParent
+                            height= wrapContent
+                            margin = dip(10)
+                        }
+
+                        backgroundColor = Color.parseColor(spinnerBackgroundColor)
+
+                        textView {
+                            maxLines = 10
+                            text = "sdpSemantics"
+                            padding = dip(10)
+                            backgroundColor = Color.parseColor(spinnerBackgroundColor)
+                        }.lparams {
+                            width = wrapContent
+                            height = wrapContent
+                            margin = dip(10)
+                            alignParentLeft()
+                            centerVertically()
+                        }
+
+                        sdpSemanticsSpinner = materialSpinner {
+                            padding = dip(10)
+
+                            lparams{
+                                width = dip(spinnerWidth)
+                                height= wrapContent
+                                margin = dip(10)
+                                alignParentRight()
+                                centerVertically()
+                            }
+                        }
+
+                        sdpSemanticsSpinner?.setItems(sdpSemanticsOptions)
+                    }
+
                 }
             }
         }
@@ -180,11 +221,13 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
 
         val streamType = streamTypeOptions[streamTypeSpinner!!.selectedIndex]
         val audioCodec = audioCodecOptions[audioCodecSpinner!!.selectedIndex]
+        val sdpSemantics = sdpSemanticsOptions[sdpSemanticsSpinner!!.selectedIndex]
 
         val intent = Intent(this, VoiceChatRoomActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
         intent.putExtra("STREAM_TYPE", streamType)
         intent.putExtra("AUDIO_CODEC", audioCodec)
+        intent.putExtra("SDP_SEMANTICS", sdpSemantics)
 
         startActivity(intent)
     }

@@ -12,6 +12,22 @@
 
 ## develop
 
+## 1.7.1
+
+### ADD
+
+- Video chat, Voice chat, Spotlight の各セットアップに sdpSemantics 選択肢を追加した
+  - ただし、Sora Android SDK の動作確認は Plan B のみで Unified Plan は試験的実装
+  - Voice chat は Unified Plan 選択時にエラーで接続できない
+
+### UPDATE
+
+- SDK のバージョンを 1.7.1 に上げた
+- Kotlin を 1.2.71 に上げた
+- CircleCI のコンテナに入っている Android NDK を使うよう変更した
+- ビルドメモリ設定を `gradle.properties` から `JVM_OPTS: -Xmx3200m` に変更した
+- Android Studio 3.2.1 に対応した
+
 ## 1.7.0
 
 ### CHANGE
