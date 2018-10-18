@@ -28,16 +28,16 @@ class FeatureListAdapter(
         this.listener = listener
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
-        return ViewHolder(FeatureListItemUI().createView(AnkoContext.create(parent!!.context)))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(FeatureListItemUI().createView(AnkoContext.create(parent.context)))
     }
 
     override fun getItemCount(): Int {
         return features.size
     }
 
-    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-        holder?.let {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.let {
             it.bind(features[position])
             it.view.setOnClickListener { _ ->
                 listener?.onItemClick(position)

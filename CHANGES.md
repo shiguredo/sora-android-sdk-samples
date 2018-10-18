@@ -20,6 +20,7 @@
 
 ### UPDATE
 
+- SDK のバージョンを 1.7.1 に上げた
 - Kotlin を 1.2.71 に上げた
 - CircleCI のコンテナに入っている Android NDK を使うよう変更した
 - ビルドメモリ設定を `gradle.properties` から `JVM_OPTS: -Xmx3200m` に変更した
