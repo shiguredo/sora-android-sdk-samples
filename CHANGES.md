@@ -24,6 +24,7 @@
 - CircleCI のコンテナに入っている Android NDK を使うよう変更した
 - ビルドメモリ設定を `gradle.properties` から `JVM_OPTS: -Xmx3200m` に変更した
 - Android Studio 3.2.1 に対応した
+- Anko を 0.10.7 に上げた
 
 ## 1.7.0
 
