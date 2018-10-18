@@ -12,6 +12,8 @@
 
 ## develop
 
+## 1.7.1
+
 ### ADD
 
 - Video chat, Voice chat, Spotlight の各セットアップに sdpSemantics 選択肢を追加した
