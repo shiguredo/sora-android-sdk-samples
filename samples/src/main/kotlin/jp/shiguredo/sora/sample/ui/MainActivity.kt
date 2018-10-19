@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         SoraLogger.enabled = true
-        SoraLogger.libjingle_enabled = false
+        SoraLogger.libjingle_enabled = true
 
         super.onCreate(savedInstanceState)
         MainActivityUI().setContentView(this)
