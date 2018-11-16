@@ -30,7 +30,8 @@ class EffectedVideoChatSetupActivity : AppCompatActivity() {
     private var channelNameInput: EditText? = null
     private var effectSpinner:    MaterialSpinner? = null
 
-    val effectOptions = listOf("GRAYSCALE", "PIXELATION", "POSTERIZE", "TOON", "HALFTONE", "HUE", "EMBOSS")
+    val effectOptions = listOf("GRAYSCALE", "PIXELATION", "POSTERIZE", "TOON",
+            "HALFTONE", "HUE", "EMBOSS", "SEPIA", "NONE")
 
     private fun setupUI() {
 
