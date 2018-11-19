@@ -3,12 +3,11 @@ package jp.shiguredo.webrtc.video.effector.format;
 import android.opengl.GLES20;
 
 import org.webrtc.GlUtil;
+import org.webrtc.VideoFrame;
 
 import java.nio.ByteBuffer;
 
 import jp.shiguredo.webrtc.video.effector.VideoEffectorLogger;
-
-// Read RGB texture from YUV formatted bytes
 
 public class YuvByteBufferReader {
 
@@ -55,11 +54,11 @@ public class YuvByteBufferReader {
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
     }
 
-    public int read(byte[] data, int width, int height) {
+    public int read(VideoFrame.I420Buffer i420Buffer, int width, int height) {
         resizeTextureIfNeeded(width, height);
 
         ByteBuffer buf = ByteBuffer.allocate(width * height * 4);
-        libYuv.yuvToRgba(data, width, height, buf.array());
+        libYuv.i420ToRgba(i420Buffer, width, height, buf.array());
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);

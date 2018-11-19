@@ -59,24 +59,10 @@ public class CapturerObserverProxy implements CapturerObserver {
             final int width = i420Buffer.getWidth();
             final int height = i420Buffer.getHeight();
             final int strideY = i420Buffer.getStrideY();
-            final int strideU = i420Buffer.getStrideU();
-            final int strideV = i420Buffer.getStrideV();
 
-            final int chromaWidth = (width + 1) / 2;
-            final int chromaHeight = (height + 1) / 2;
-            final int dstSize = width * height + chromaWidth * chromaHeight * 2;
-            ByteBuffer dst = ByteBuffer.allocateDirect(dstSize);
-            // TODO: libyuv には I420ToARGB があるので NV12 に変換する必要はないかもしれない。
-            //       そもそも i420Buffer の byte[] が一直線の保証はないし、
-            //       下回りの byte[] を取得する方法も無い
-            YuvHelper.I420ToNV12(i420Buffer.getDataY(), strideY,
-                    i420Buffer.getDataU(), strideU,
-                    i420Buffer.getDataV(), strideV,
-                    dst, width, height);
-            i420Buffer.release();
 
             ByteBuffer effectedByteBuffer =
-                    this.videoEffector.processByteBufferFrame(dst, width, height,
+                    this.videoEffector.processByteBufferFrame(i420Buffer, width, height,
                             frame.getRotation(), frame.getTimestampNs());
 
             VideoFrame.Buffer filteredBuffer = new NV12Buffer(width, height, strideY, height,

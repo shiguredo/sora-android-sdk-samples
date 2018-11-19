@@ -16,14 +16,12 @@ public class VideoEffectorContext {
         private int rotation = 0;
         private long timestamp = 0;
         private boolean rotated = false;
-        private byte[] bytes = null;
 
         private boolean transformChanged = true;
 
         public FrameInfo() {}
 
-        public void update(byte[] bytes,
-                           int width,
+        public void update(int width,
                            int height,
                            int rotation,
                            long timestamp) {
@@ -36,7 +34,6 @@ public class VideoEffectorContext {
                 this.transformChanged = false;
             }
 
-            this.bytes = bytes;
             this.originalWidth = width;
             this.originalHeight = height;
             this.rotation  = rotation;
@@ -69,10 +66,6 @@ public class VideoEffectorContext {
             return this.originalHeight;
         }
 
-        public byte[] getBytes() {
-            return this.bytes;
-        }
-
         public int getWidth() {
             // TODO fix to width
             return this.originalWidth;
@@ -92,7 +85,6 @@ public class VideoEffectorContext {
         }
     }
 
-    private Map<String, PointF> stash = new HashMap<>();
     private FrameInfo frameInfo = new FrameInfo();
 
     public VideoEffectorContext() {}
@@ -109,28 +101,12 @@ public class VideoEffectorContext {
         }
     }
 
-    void updateFrameInfo(byte[] bytes,
-                         int width,
+    void updateFrameInfo(int width,
                          int height,
                          int rotation,
                          long timestamp) {
-        this.frameInfo.update(bytes, width, height, rotation, timestamp);
+        this.frameInfo.update(width, height, rotation, timestamp);
     }
 
-    public void setStash(String key, PointF point) {
-        this.stash.put(key, point);
-    }
-
-    public PointF getStash(String key) {
-        if (this.stash.containsKey(key)) {
-            return this.stash.get(key);
-        } else {
-            return null;
-        }
-    }
-
-    public void clearStash() {
-        this.stash.clear();
-    }
 }
 

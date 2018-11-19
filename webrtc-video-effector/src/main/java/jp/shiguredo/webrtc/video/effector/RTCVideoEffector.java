@@ -3,6 +3,7 @@ package jp.shiguredo.webrtc.video.effector;
 import org.webrtc.GlUtil;
 import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.ThreadUtils;
+import org.webrtc.VideoFrame;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -87,18 +88,18 @@ public class RTCVideoEffector {
         enabled = false;
     }
 
-    ByteBuffer processByteBufferFrame(ByteBuffer byteBuffer, int width, int height,
-                                  int rotation, long timestamp) {
+    VideoFrame.I420Buffer processByteBufferFrame(VideoFrame.I420Buffer i420Buffer, int width, int height,
+                                                 int rotation, long timestamp) {
 
         if (!needToProcessFrame()) {
-            return byteBuffer;
+            return i420Buffer;
         }
 
-        byte[] bytes = byteBuffer.array();
+        // byte[] bytes = byteBuffer.array();
 
-        context.updateFrameInfo(bytes, width, height, rotation, timestamp);
+        context.updateFrameInfo(width, height, rotation, timestamp);
 
-        int stepTextureId = yuvBytesReader.read(bytes, width, height);
+        int stepTextureId = yuvBytesReader.read(i420Buffer, width, height);
 
         // ビデオフレームの画像は回転された状態で来ることがある
         // グレースケールやセピアフィルタなど、画像全体に均質にかけるエフェクトでは問題にならないが

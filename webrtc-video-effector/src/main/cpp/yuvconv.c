@@ -2,34 +2,34 @@
 #include "libyuv.h"
 
 JNIEXPORT void JNICALL
-Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_yuvToRgbaInternal(
+Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_i420ToRgbaInternal(
     JNIEnv *env,
     jobject obj,
-    jbyteArray inYuvBytes,
-    jint width,
-    jint height,
-    jbyteArray outRgbaBytes)
+    jbyteArray dataY, jint strideY, jbyteArray dataU, jint strideU,
+    jbyteArray dataV, jint strideV, jint width, jint height,
+    jbyteArray outRgba)
 {
-  uint8_t *rgbData = (uint8_t *)((*env)->GetPrimitiveArrayCritical(env, outRgbaBytes, 0));
-  uint8_t *yuv = (uint8_t*) (*env)->GetPrimitiveArrayCritical(env, inYuvBytes, 0);
+    uint8_t *dst_rgba = (uint8_t *)((*env)->GetPrimitiveArrayCritical(env, outRgba, 0));
+    uint8_t *data_y = (uint8_t*) (*env)->GetPrimitiveArrayCritical(env, dataY, 0);
+    uint8_t *data_u = (uint8_t*) (*env)->GetPrimitiveArrayCritical(env, dataU, 0);
+    uint8_t *data_v = (uint8_t*) (*env)->GetPrimitiveArrayCritical(env, dataV, 0);
 
-  const uint8* src_y = yuv;
-  int src_stride_y = width;
-  const uint8* src_vu = src_y + width * height;
-  int src_stride_vu = (width + 1) / 2 * 2;;
-  int dst_stride_argb = width * 4;
+    int stride_y = strideY;
+    int stride_u = strideU;
+    int stride_v = strideV;
 
-    NV12ToARGB(src_y,
-         src_stride_y,
-         src_vu,
-         src_stride_vu,
-         rgbData,
-         dst_stride_argb,
-         width,
-         height);
+    int dst_stride_rgba = width * 4;
+    int src_width = width;
+    int src_height = height;
 
-  (*env)->ReleasePrimitiveArrayCritical(env, outRgbaBytes, rgbData, 0);
-  (*env)->ReleasePrimitiveArrayCritical(env, inYuvBytes, yuv, 0);
+    I420ToRGBA(data_y, stride_y, data_u, stride_u,
+               data_v, stride_v,
+               dst_rgba, dst_stride_rgba, src_width, src_height);
+
+    (*env)->ReleasePrimitiveArrayCritical(env, outRgba, dst_rgba, 0);
+    (*env)->ReleasePrimitiveArrayCritical(env, dataY, data_y, 0);
+    (*env)->ReleasePrimitiveArrayCritical(env, dataU, data_u, 0);
+    (*env)->ReleasePrimitiveArrayCritical(env, dataV, data_v, 0);
 }
 
 // most of this code is borrowed from
