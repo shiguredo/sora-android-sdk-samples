@@ -4,7 +4,7 @@ import android.opengl.GLES20;
 
 import org.webrtc.GlUtil;
 
-import java.nio.IntBuffer;
+import java.nio.ByteBuffer;
 
 import jp.shiguredo.webrtc.video.effector.VideoEffectorLogger;
 
@@ -58,7 +58,7 @@ public class YuvByteBufferReader {
     public int read(byte[] data, int width, int height) {
         resizeTextureIfNeeded(width, height);
 
-        IntBuffer buf = IntBuffer.allocate(width * height);
+        ByteBuffer buf = ByteBuffer.allocate(width * height * 4);
         libYuv.yuvToRgba(data, width, height, buf.array());
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);

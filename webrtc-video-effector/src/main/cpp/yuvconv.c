@@ -8,7 +8,7 @@ Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_yuvToRgbaInternal(
     jbyteArray inYuvBytes,
     jint width,
     jint height,
-    jintArray outRgbaBytes)
+    jbyteArray outRgbaBytes)
 {
   uint8_t *rgbData = (uint8_t *)((*env)->GetPrimitiveArrayCritical(env, outRgbaBytes, 0));
   uint8_t *yuv = (uint8_t*) (*env)->GetPrimitiveArrayCritical(env, inYuvBytes, 0);

@@ -8,7 +8,7 @@ public class LibYuvBridge {
 
     public LibYuvBridge() {}
 
-    public void yuvToRgba(byte[] yuv, int width, int height, int[] out) {
+    public void yuvToRgba(byte[] yuv, int width, int height, byte[] out) {
         yuvToRgbaInternal(yuv, width, height, out);
     }
 
@@ -22,7 +22,7 @@ public class LibYuvBridge {
         bgrToYuvInternal(tempBgr, width, height, yuv);
     }
 
-    private native void yuvToRgbaInternal(byte[] yuv, int width, int height, int[] out);
+    private native void yuvToRgbaInternal(byte[] yuv, int width, int height, byte[] out);
     private native void rgbToBgrInternal(byte[] rgb, int width, int height, byte[] bgr);
     private native void bgrToYuvInternal(byte[] bgr, int width, int height, byte[] yuv);
 }
