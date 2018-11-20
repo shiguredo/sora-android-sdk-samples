@@ -58,19 +58,14 @@ public class CapturerObserverProxy implements CapturerObserver {
 
             final int width = i420Buffer.getWidth();
             final int height = i420Buffer.getHeight();
-            final int strideY = i420Buffer.getStrideY();
 
-
-            ByteBuffer effectedByteBuffer =
+            VideoFrame.I420Buffer effectedI420Buffer =
                     this.videoEffector.processByteBufferFrame(i420Buffer, width, height,
                             frame.getRotation(), frame.getTimestampNs());
 
-            VideoFrame.Buffer filteredBuffer = new NV12Buffer(width, height, strideY, height,
-                    effectedByteBuffer, null);
-            VideoFrame filteredVideoFrame = new VideoFrame(
-                    filteredBuffer, frame.getRotation(), frame.getTimestampNs());
-            filteredBuffer.release();
-            this.originalObserver.onFrameCaptured(filteredVideoFrame);
+            VideoFrame effectedVideoFrame = new VideoFrame(
+                    effectedI420Buffer, frame.getRotation(), frame.getTimestampNs());
+            this.originalObserver.onFrameCaptured(effectedVideoFrame);
         } else {
             this.originalObserver.onFrameCaptured(frame);
         }

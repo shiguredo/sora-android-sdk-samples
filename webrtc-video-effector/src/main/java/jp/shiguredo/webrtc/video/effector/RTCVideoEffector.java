@@ -95,7 +95,9 @@ public class RTCVideoEffector {
             return i420Buffer;
         }
 
-        // byte[] bytes = byteBuffer.array();
+        int strideY = i420Buffer.getStrideY();
+        int strideU = i420Buffer.getStrideU();
+        int strideV = i420Buffer.getStrideV();
 
         context.updateFrameInfo(width, height, rotation, timestamp);
 
@@ -123,7 +125,7 @@ public class RTCVideoEffector {
             // TODO
         }
 
-        return yuvBytesDumper.dump(stepTextureId, width, height);
+        return yuvBytesDumper.dump(stepTextureId, width, height, strideY, strideU, strideV);
     }
 
     boolean needToProcessFrame() {

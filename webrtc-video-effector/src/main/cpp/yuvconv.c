@@ -32,40 +32,50 @@ Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_i420ToRgbaInternal(
     (*env)->ReleasePrimitiveArrayCritical(env, dataV, data_v, 0);
 }
 
-// most of this code is borrowed from
-// https://github.com/alzybaad/RGB2YUV/
 JNIEXPORT void JNICALL
-Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_rgbToBgrInternal(
+Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_rgbaToI420Internal(
         JNIEnv *env,
         jobject obj,
-        jbyteArray rgbArray,
+        jbyteArray rgbaArray,
         jint width,
         jint height,
-        jbyteArray bgrArray)
+        jbyteArray dataYArray,
+        jint strideY,
+        jbyteArray dataUArray,
+        jint strideU,
+        jbyteArray dataVArray,
+        jint strideV)
 {
-    jbyte *rgb = (jbyte*) (*env)->GetPrimitiveArrayCritical(env, rgbArray, 0);
-    jbyte *bgr = (jbyte*) (*env)->GetPrimitiveArrayCritical(env, bgrArray, 0);
+    jbyte *rgba = (jbyte*) (*env)->GetPrimitiveArrayCritical(env, rgbaArray, 0);
+    jbyte *data_y = (jbyte*) (*env)->GetPrimitiveArrayCritical(env, dataYArray, 0);
+    jbyte *data_u = (jbyte*) (*env)->GetPrimitiveArrayCritical(env, dataUArray, 0);
+    jbyte *data_v = (jbyte*) (*env)->GetPrimitiveArrayCritical(env, dataVArray, 0);
 
-    ABGRToARGB((uint8*) rgb, width << 2, (uint8*) bgr, width << 2, width, height);
+    // ABGR little endian (rgba in memory) to I420.
+    /*
+    LIBYUV_API
+    int ABGRToI420(const uint8* src_frame, int src_stride_frame,
+                   uint8* dst_y, int dst_stride_y,
+                   uint8* dst_u, int dst_stride_u,
+                   uint8* dst_v, int dst_stride_v,
+                   int width, int height);
 
-    (*env)->ReleasePrimitiveArrayCritical(env, bgrArray, bgr, 0);
-    (*env)->ReleasePrimitiveArrayCritical(env, rgbArray, rgb, 0);
-}
+    LIBYUV_API
+    int ARGBToI420(const uint8* src_argb, int src_stride_argb,
+                   uint8* dst_y, int dst_stride_y,
+                   uint8* dst_u, int dst_stride_u,
+                   uint8* dst_v, int dst_stride_v,
+                   int width, int height);
+    */
 
-// most of this code is borrowed from
-// https://github.com/alzybaad/RGB2YUV/
-JNIEXPORT void JNICALL
-Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_bgrToYuvInternal(
-        JNIEnv *env,
-        jobject obj,
-        jbyteArray bgrArray,
-        jint width,
-        jint height,
-        jbyteArray yuvArray)
-{
-    jbyte *bgr = (jbyte*)(*env)->GetPrimitiveArrayCritical(env, bgrArray, 0);
-    jbyte *yuv = (jbyte*)(*env)->GetPrimitiveArrayCritical(env, yuvArray, 0);
-    ARGBToNV21((uint8*) bgr, width << 2, (uint8*) yuv, width, (uint8*) &yuv[width * height], width, width, height);
-    (*env)->ReleasePrimitiveArrayCritical(env, yuvArray, yuv, 0);
-    (*env)->ReleasePrimitiveArrayCritical(env, bgrArray, bgr, 0);
+    ABGRToI420((uint8*) rgba, width * 4,
+               (uint8*) data_y, strideY,
+               (uint8*) data_u, strideU,
+               (uint8*) data_v, strideV,
+               width, height);
+
+    (*env)->ReleasePrimitiveArrayCritical(env, rgbaArray, rgba, 0);
+    (*env)->ReleasePrimitiveArrayCritical(env, dataYArray, data_y, 0);
+    (*env)->ReleasePrimitiveArrayCritical(env, dataUArray, data_u, 0);
+    (*env)->ReleasePrimitiveArrayCritical(env, dataVArray, data_v, 0);
 }
