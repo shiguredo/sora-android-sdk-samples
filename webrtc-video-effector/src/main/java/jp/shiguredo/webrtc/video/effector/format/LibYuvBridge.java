@@ -10,7 +10,6 @@ public class LibYuvBridge {
 
     public LibYuvBridge() {}
 
-    // TODO: byte[] と stride 渡しに変更する
     public void i420ToRgba(byte[] dataY, int strideY, byte[] dataU, int strideU,
             byte[] dataV, int strideV, int width, int height, byte[] outRgba) {
         i420ToRgbaInternal(dataY, strideY,
@@ -29,6 +28,7 @@ public class LibYuvBridge {
     private native void i420ToRgbaInternal(byte[] dataY, int strideY, byte[] dataU, int strideU,
                                            byte[] dataV, int strideV, int width, int height,
                                            byte[] outRgba);
+
     private native void rgbaToI420Internal(byte[] rgba, int width, int height,
                                            byte[] dataY, int strideY,
                                            byte[] dataU, int strideU,

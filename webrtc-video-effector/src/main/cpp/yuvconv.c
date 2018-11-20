@@ -5,8 +5,10 @@ JNIEXPORT void JNICALL
 Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_i420ToRgbaInternal(
     JNIEnv *env,
     jobject obj,
-    jbyteArray dataY, jint strideY, jbyteArray dataU, jint strideU,
-    jbyteArray dataV, jint strideV, jint width, jint height,
+    jbyteArray dataY, jint strideY,
+    jbyteArray dataU, jint strideU,
+    jbyteArray dataV, jint strideV,
+    jint width, jint height,
     jbyteArray outRgba)
 {
     uint8_t *dst_rgba = (uint8_t *)((*env)->GetPrimitiveArrayCritical(env, outRgba, 0));
@@ -22,9 +24,19 @@ Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_i420ToRgbaInternal(
     int src_width = width;
     int src_height = height;
 
-    I420ToRGBA(data_y, stride_y, data_u, stride_u,
+    /*
+    LIBYUV_API
+    int I420ToARGB(const uint8* src_y, int src_stride_y,
+                   const uint8* src_u, int src_stride_u,
+                   const uint8* src_v, int src_stride_v,
+                   uint8* dst_argb, int dst_stride_argb,
+                   int width, int height);
+    */
+    I420ToRGBA(data_y, stride_y,
+               data_u, stride_u,
                data_v, stride_v,
-               dst_rgba, dst_stride_rgba, src_width, src_height);
+               dst_rgba, dst_stride_rgba,
+               src_width, src_height);
 
     (*env)->ReleasePrimitiveArrayCritical(env, outRgba, dst_rgba, 0);
     (*env)->ReleasePrimitiveArrayCritical(env, dataY, data_y, 0);
@@ -51,8 +63,8 @@ Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_rgbaToI420Internal(
     jbyte *data_u = (jbyte*) (*env)->GetPrimitiveArrayCritical(env, dataUArray, 0);
     jbyte *data_v = (jbyte*) (*env)->GetPrimitiveArrayCritical(env, dataVArray, 0);
 
-    // ABGR little endian (rgba in memory) to I420.
     /*
+    // ABGR little endian (rgba in memory) to I420.
     LIBYUV_API
     int ABGRToI420(const uint8* src_frame, int src_stride_frame,
                    uint8* dst_y, int dst_stride_y,
@@ -60,15 +72,24 @@ Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_rgbaToI420Internal(
                    uint8* dst_v, int dst_stride_v,
                    int width, int height);
 
+// ARGB little endian (bgra in memory) to I420.
     LIBYUV_API
     int ARGBToI420(const uint8* src_argb, int src_stride_argb,
                    uint8* dst_y, int dst_stride_y,
                    uint8* dst_u, int dst_stride_u,
                    uint8* dst_v, int dst_stride_v,
                    int width, int height);
+
+    // RGBA little endian (abgr in memory) to I420.
+    LIBYUV_API
+    int RGBAToI420(const uint8* src_frame, int src_stride_frame,
+                   uint8* dst_y, int dst_stride_y,
+                   uint8* dst_u, int dst_stride_u,
+                   uint8* dst_v, int dst_stride_v,
+                   int width, int height);
     */
 
-    ABGRToI420((uint8*) rgba, width * 4,
+    RGBAToI420((uint8*) rgba, width * 4,
                (uint8*) data_y, strideY,
                (uint8*) data_u, strideU,
                (uint8*) data_v, strideV,
