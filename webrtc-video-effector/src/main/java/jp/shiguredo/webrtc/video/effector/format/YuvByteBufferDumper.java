@@ -33,22 +33,31 @@ public class YuvByteBufferDumper {
         GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0,
                                 GLES20.GL_TEXTURE_2D, lastTextureId, 0);
 
-        final ByteBuffer buf = ByteBuffer.allocateDirect(width * height * 4);
+        final ByteBuffer rgba = ByteBuffer.allocateDirect(width * height * 4);
         GLES20.glViewport(0, 0, width, height);
-        GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, buf);
+        GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, rgba);
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
-        buf.rewind();
+        rgba.rewind();
 
-        ByteBuffer dataY = ByteBuffer.allocate(strideY * height);
-        ByteBuffer dataU = ByteBuffer.allocate(strideU * height);
-        ByteBuffer dataV = ByteBuffer.allocate(strideV * height);
+        byte[] dataYArray = new byte[strideY * height];
+        byte[] dataUArray = new byte[strideU * height];
+        byte[] dataVArray = new byte[strideV * height];
 
+        libYuv.rgbaToI420(rgba.array(), width, height, dataYArray, strideY, dataUArray,
+                strideU, dataVArray, strideV);
 
-        libYuv.rgbaToI420(buf.array(), width, height, dataY.array(), strideY, dataU.array(),
-                strideU, dataV.array(), strideV);
-
+        // TODO: このコピーは避けられないか
+        ByteBuffer dataY = ByteBuffer.allocateDirect(dataYArray.length);
+        dataY.put(dataYArray);
+        dataY.rewind();
+        ByteBuffer dataU = ByteBuffer.allocateDirect(dataUArray.length);
+        dataY.put(dataYArray);
+        dataY.rewind();
+        ByteBuffer dataV = ByteBuffer.allocateDirect(dataVArray.length);
+        dataY.put(dataYArray);
+        dataY.rewind();
         return JavaI420Buffer.wrap(width, height, dataY, strideY,
                 dataU, strideU, dataV, strideV,
                 null);

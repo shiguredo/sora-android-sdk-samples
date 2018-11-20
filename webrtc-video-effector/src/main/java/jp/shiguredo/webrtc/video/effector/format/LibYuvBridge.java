@@ -11,10 +11,11 @@ public class LibYuvBridge {
     public LibYuvBridge() {}
 
     // TODO: byte[] と stride 渡しに変更する
-    public void i420ToRgba(VideoFrame.I420Buffer i420Buffer, int width, int height, byte[] outRgba) {
-        i420ToRgbaInternal(i420Buffer.getDataY().array(), i420Buffer.getStrideY(),
-                i420Buffer.getDataU().array(), i420Buffer.getStrideU(),
-                i420Buffer.getDataV().array(), i420Buffer.getStrideV(),
+    public void i420ToRgba(byte[] dataY, int strideY, byte[] dataU, int strideU,
+            byte[] dataV, int strideV, int width, int height, byte[] outRgba) {
+        i420ToRgbaInternal(dataY, strideY,
+                dataU, strideU,
+                dataV, strideV,
                 width, height, outRgba);
     }
 

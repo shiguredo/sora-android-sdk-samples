@@ -54,7 +54,6 @@ public class CapturerObserverProxy implements CapturerObserver {
             // それらが一直線かどうかは不明。実装次第だが toI420 でメモリコピーは不要。
             // VideoEffectorLogger.d(TAG, "frame.getBuffer() = " + frame.getBuffer());
             // VideoEffectorLogger.d(TAG, "i420Buffer = " + i420Buffer);
-            frame.release();
 
             final int width = i420Buffer.getWidth();
             final int height = i420Buffer.getHeight();
@@ -65,6 +64,8 @@ public class CapturerObserverProxy implements CapturerObserver {
 
             VideoFrame effectedVideoFrame = new VideoFrame(
                     effectedI420Buffer, frame.getRotation(), frame.getTimestampNs());
+            frame.release();
+
             this.originalObserver.onFrameCaptured(effectedVideoFrame);
         } else {
             this.originalObserver.onFrameCaptured(frame);
