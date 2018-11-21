@@ -44,23 +44,9 @@ public class CapturerObserverProxy implements CapturerObserver {
     @Override
     public void onFrameCaptured(VideoFrame frame) {
         if (this.videoEffector.needToProcessFrame()) {
-            // TODO(shino): libwebrtc 66.8.1, Android 7.0/Xperia Z4 では frame.getBuffer() は
-            // org.webrtc.NV21Buffer で実装されている。
-            // NV21Buffer には private data :: byte[] があるがアクセスは出来ない。
-            // VideoEffectorLogger.d(TAG, "frame.getBuffer: " + frame.getBuffer());
-
-            final VideoFrame.I420Buffer i420Buffer = frame.getBuffer().toI420();
-            // TODO: JavaI420Buffer は direct ByteBuffer を3つ別に持っている。
-            // それらが一直線かどうかは不明。実装次第だが toI420 でメモリコピーは不要。
-            // VideoEffectorLogger.d(TAG, "frame.getBuffer() = " + frame.getBuffer());
-            // VideoEffectorLogger.d(TAG, "i420Buffer = " + i420Buffer);
-
-            final int width = i420Buffer.getWidth();
-            final int height = i420Buffer.getHeight();
-
             VideoFrame.I420Buffer effectedI420Buffer =
-                    this.videoEffector.processByteBufferFrame(i420Buffer, width, height,
-                            frame.getRotation(), frame.getTimestampNs());
+                    this.videoEffector.processByteBufferFrame(
+                            frame.getBuffer().toI420(), frame.getRotation(), frame.getTimestampNs());
 
             VideoFrame effectedVideoFrame = new VideoFrame(
                     effectedI420Buffer, frame.getRotation(), frame.getTimestampNs());

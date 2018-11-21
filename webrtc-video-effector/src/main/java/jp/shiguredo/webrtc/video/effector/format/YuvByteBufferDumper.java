@@ -9,8 +9,6 @@ import org.webrtc.VideoFrame;
 
 import java.nio.ByteBuffer;
 
-import jp.shiguredo.webrtc.video.effector.VideoEffectorLogger;
-
 public class YuvByteBufferDumper {
 
     public static final String TAG = YuvByteBufferDumper.class.getSimpleName();

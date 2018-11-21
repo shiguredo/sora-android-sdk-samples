@@ -58,6 +58,7 @@ public class RTCVideoEffector {
     public void addMediaEffectFilter(String name) {
         addMediaEffectFilter(name, null);
     }
+
     public void addMediaEffectFilter(String name,
                                      MediaEffectFilter.Listener listener) {
         VideoEffectorLogger.d(TAG, "addMediaEffectFilter: " + name +
@@ -69,6 +70,7 @@ public class RTCVideoEffector {
         VideoEffectorLogger.d(TAG, "addGPUImageFilter: " + filter.toString());
         this.filters.add(new GPUImageFilterWrapper(filter));
     }
+
     public void addGPUImageFilter(GPUImageFilter filter,
                                   GPUImageFilterWrapper.Listener listener) {
         VideoEffectorLogger.d(TAG, "addGPUImageFilter: " + filter.toString() +
@@ -88,7 +90,7 @@ public class RTCVideoEffector {
         enabled = false;
     }
 
-    VideoFrame.I420Buffer processByteBufferFrame(VideoFrame.I420Buffer i420Buffer, int width, int height,
+    VideoFrame.I420Buffer processByteBufferFrame(VideoFrame.I420Buffer i420Buffer,
                                                  int rotation, long timestamp) {
 
         if (!needToProcessFrame()) {
@@ -103,13 +105,15 @@ public class RTCVideoEffector {
             return i420Buffer;
         }
 
+        int width = i420Buffer.getWidth();
+        int height = i420Buffer.getHeight();
         int strideY = i420Buffer.getStrideY();
         int strideU = i420Buffer.getStrideU();
         int strideV = i420Buffer.getStrideV();
 
         context.updateFrameInfo(width, height, rotation, timestamp);
 
-        int stepTextureId = yuvBytesReader.read(i420Buffer, width, height);
+        int stepTextureId = yuvBytesReader.read(i420Buffer);
 
         // ビデオフレームの画像は回転された状態で来ることがある
         // グレースケールやセピアフィルタなど、画像全体に均質にかけるエフェクトでは問題にならないが

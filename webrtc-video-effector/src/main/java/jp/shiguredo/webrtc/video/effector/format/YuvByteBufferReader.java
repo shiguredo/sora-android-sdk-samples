@@ -7,8 +7,6 @@ import org.webrtc.VideoFrame;
 
 import java.nio.ByteBuffer;
 
-import jp.shiguredo.webrtc.video.effector.VideoEffectorLogger;
-
 public class YuvByteBufferReader {
 
     public static final String TAG = YuvByteBufferReader.class.getSimpleName();
@@ -54,7 +52,10 @@ public class YuvByteBufferReader {
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
     }
 
-    public int read(VideoFrame.I420Buffer i420Buffer, int width, int height) {
+    public int read(VideoFrame.I420Buffer i420Buffer) {
+        int width = i420Buffer.getWidth();
+        int height = i420Buffer.getHeight();
+
         resizeTextureIfNeeded(width, height);
 
         ByteBuffer outRgbaBuffer = ByteBuffer.allocateDirect(width * height * 4);
