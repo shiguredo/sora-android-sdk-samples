@@ -44,12 +44,14 @@ public class CapturerObserverProxy implements CapturerObserver {
     @Override
     public void onFrameCaptured(VideoFrame frame) {
         if (this.videoEffector.needToProcessFrame()) {
+            VideoFrame.I420Buffer originalI420Buffer = frame.getBuffer().toI420();
             VideoFrame.I420Buffer effectedI420Buffer =
                     this.videoEffector.processByteBufferFrame(
-                            frame.getBuffer().toI420(), frame.getRotation(), frame.getTimestampNs());
+                            originalI420Buffer, frame.getRotation(), frame.getTimestampNs());
 
             VideoFrame effectedVideoFrame = new VideoFrame(
                     effectedI420Buffer, frame.getRotation(), frame.getTimestampNs());
+            originalI420Buffer.release();
             frame.release();
 
             this.originalObserver.onFrameCaptured(effectedVideoFrame);
