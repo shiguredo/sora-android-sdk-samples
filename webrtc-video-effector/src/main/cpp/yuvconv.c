@@ -5,16 +5,17 @@ JNIEXPORT void JNICALL
 Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_i420ToAbgrInternal(
     JNIEnv *env,
     jobject obj,
-    jbyteArray dataY, jint strideY,
-    jbyteArray dataU, jint strideU,
-    jbyteArray dataV, jint strideV,
+    jobject dataYBuffer, jint strideY,
+    jobject dataUBuffer, jint strideU,
+    jobject dataVBuffer, jint strideV,
     jint width, jint height,
     jbyteArray outRgba)
 {
+    uint8_t *data_y = (uint8_t*) (*env)->GetDirectBufferAddress(env, dataYBuffer);
+    uint8_t *data_u = (uint8_t*) (*env)->GetDirectBufferAddress(env, dataUBuffer);
+    uint8_t *data_v = (uint8_t*) (*env)->GetDirectBufferAddress(env, dataVBuffer);
+
     uint8_t *dst_rgba = (uint8_t *)((*env)->GetPrimitiveArrayCritical(env, outRgba, 0));
-    uint8_t *data_y = (uint8_t*) (*env)->GetPrimitiveArrayCritical(env, dataY, 0);
-    uint8_t *data_u = (uint8_t*) (*env)->GetPrimitiveArrayCritical(env, dataU, 0);
-    uint8_t *data_v = (uint8_t*) (*env)->GetPrimitiveArrayCritical(env, dataV, 0);
 
     int stride_y = strideY;
     int stride_u = strideU;
@@ -44,9 +45,6 @@ Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_i420ToAbgrInternal(
                src_width, src_height);
 
     (*env)->ReleasePrimitiveArrayCritical(env, outRgba, dst_rgba, 0);
-    (*env)->ReleasePrimitiveArrayCritical(env, dataY, data_y, 0);
-    (*env)->ReleasePrimitiveArrayCritical(env, dataU, data_u, 0);
-    (*env)->ReleasePrimitiveArrayCritical(env, dataV, data_v, 0);
 }
 
 JNIEXPORT void JNICALL

@@ -2,6 +2,8 @@ package jp.shiguredo.webrtc.video.effector.format;
 
 import org.webrtc.VideoFrame;
 
+import java.nio.ByteBuffer;
+
 /** I420 と RGBA の間の変換を受け持つクラス。
  *
  * メモリイメージとして RGBA にしたい。libyuv の RGBA 変換はメモリ上のバイト順が
@@ -18,15 +20,15 @@ public class LibYuvBridge {
 
     public LibYuvBridge() {}
 
-    public void i420ToRgba(byte[] dataY, int strideY,
-                           byte[] dataU, int strideU,
-                           byte[] dataV, int strideV,
+    public void i420ToRgba(ByteBuffer dataYBuffer, int strideY,
+                           ByteBuffer dataUBuffer, int strideU,
+                           ByteBuffer dataVBuffer, int strideV,
                            int width, int height,
                            byte[] outRgba) {
         i420ToAbgrInternal(
-                dataY, strideY,
-                dataU, strideU,
-                dataV, strideV,
+                dataYBuffer, strideY,
+                dataUBuffer, strideU,
+                dataVBuffer, strideV,
                 width, height,
                 outRgba);
     }
@@ -43,9 +45,9 @@ public class LibYuvBridge {
     }
 
     private native void i420ToAbgrInternal(
-            byte[] dataY, int strideY,
-            byte[] dataU, int strideU,
-            byte[] dataV, int strideV,
+            ByteBuffer dataYBuffer, int strideY,
+            ByteBuffer dataUBuffer, int strideU,
+            ByteBuffer dataVBuffer, int strideV,
             int width, int height,
             byte[] outRgba);
 

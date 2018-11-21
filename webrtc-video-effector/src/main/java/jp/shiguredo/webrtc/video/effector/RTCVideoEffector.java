@@ -95,6 +95,14 @@ public class RTCVideoEffector {
             return i420Buffer;
         }
 
+        // Direct buffer ではない場合スルーする
+        // TODO: direct に変換してあげる手もある
+        if(!i420Buffer.getDataY().isDirect()
+                || !i420Buffer.getDataU().isDirect()
+                || !i420Buffer.getDataV().isDirect()) {
+            return i420Buffer;
+        }
+
         int strideY = i420Buffer.getStrideY();
         int strideU = i420Buffer.getStrideU();
         int strideV = i420Buffer.getStrideV();
