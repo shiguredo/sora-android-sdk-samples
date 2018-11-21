@@ -12,6 +12,19 @@
 
 ## develop
 
+### ADD
+
+- Effected video chat にセピア化のエフェクトを追加した
+  - Thanks to @daneko
+- Effected video chat にデバッグ、比較用としてなにもしないエフェクトを追加した
+  - Thanks to @daneko
+
+### FIX
+
+- Effected video chat で I420 から変換された RGB データがずれていた問題を修正した
+  - これに伴い、NV12/NV21 の経由を廃止し、I420 と RGBA の直接の相互変換とした
+  - Thanks to @daneko
+
 ## 1.7.1
 
 ### ADD

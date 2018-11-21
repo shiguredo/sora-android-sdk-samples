@@ -4,9 +4,10 @@ package jp.shiguredo.webrtc.video.effector.format;
 
 import android.opengl.GLES20;
 
-import java.nio.ByteBuffer;
+import org.webrtc.JavaI420Buffer;
+import org.webrtc.VideoFrame;
 
-import jp.shiguredo.webrtc.video.effector.VideoEffectorLogger;
+import java.nio.ByteBuffer;
 
 public class YuvByteBufferDumper {
 
@@ -23,22 +24,37 @@ public class YuvByteBufferDumper {
         bufferId = buffers[0];
     }
 
-    public ByteBuffer dump(int lastTextureId, int width, int height) {
+    // TODO: org.webrtc.YuvConverter.convert() がそのまま使えないか?
+    public VideoFrame.I420Buffer dump(int lastTextureId, int width, int height,
+                                      int strideY, int strideU, int strideV) {
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, bufferId);
-        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0,
-                                GLES20.GL_TEXTURE_2D, lastTextureId, 0);
+        GLES20.glFramebufferTexture2D(
+                GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0,
+                GLES20.GL_TEXTURE_2D, lastTextureId, 0);
 
-        final ByteBuffer buf = ByteBuffer.allocateDirect(width * height * 4);
+        final ByteBuffer rgbaBuffer = ByteBuffer.allocateDirect(width * height * 4);
         GLES20.glViewport(0, 0, width, height);
-        GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, buf);
-
+        GLES20.glReadPixels(0, 0, width, height,
+                GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE,
+                rgbaBuffer);
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+        rgbaBuffer.rewind();
 
-        buf.rewind();
+        ByteBuffer dataYBuffer = ByteBuffer.allocateDirect(strideY * height);
+        ByteBuffer dataUBuffer = ByteBuffer.allocateDirect(strideU * height);
+        ByteBuffer dataVBuffer = ByteBuffer.allocateDirect(strideV * height);
 
-        ByteBuffer yuv = ByteBuffer.allocateDirect(width*height*3/2);
-        libYuv.rgbToYuv(buf.array(), width, height, yuv.array());
-        return yuv;
+        libYuv.rgbaToI420(
+                rgbaBuffer,
+                width, height,
+                dataYBuffer, strideY,
+                dataUBuffer, strideU,
+                dataVBuffer, strideV);
+
+        return JavaI420Buffer.wrap(
+                width, height,
+                dataYBuffer, strideY, dataUBuffer, strideU, dataVBuffer, strideV,
+                null);
     }
 
     public void dispose() {

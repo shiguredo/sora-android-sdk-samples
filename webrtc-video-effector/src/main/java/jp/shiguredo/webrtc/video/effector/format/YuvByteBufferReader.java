@@ -3,12 +3,9 @@ package jp.shiguredo.webrtc.video.effector.format;
 import android.opengl.GLES20;
 
 import org.webrtc.GlUtil;
+import org.webrtc.VideoFrame;
 
-import java.nio.IntBuffer;
-
-import jp.shiguredo.webrtc.video.effector.VideoEffectorLogger;
-
-// Read RGB texture from YUV formatted bytes
+import java.nio.ByteBuffer;
 
 public class YuvByteBufferReader {
 
@@ -55,16 +52,25 @@ public class YuvByteBufferReader {
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
     }
 
-    public int read(byte[] data, int width, int height) {
+    public int read(VideoFrame.I420Buffer i420Buffer) {
+        int width = i420Buffer.getWidth();
+        int height = i420Buffer.getHeight();
+
         resizeTextureIfNeeded(width, height);
 
-        IntBuffer buf = IntBuffer.allocate(width * height);
-        libYuv.yuvToRgba(data, width, height, buf.array());
+        ByteBuffer outRgbaBuffer = ByteBuffer.allocateDirect(width * height * 4);
+        libYuv.i420ToRgba(
+                i420Buffer.getDataY(), i420Buffer.getStrideY(),
+                i420Buffer.getDataU(), i420Buffer.getStrideU(),
+                i420Buffer.getDataV(), i420Buffer.getStrideV(),
+                width, height,
+                outRgbaBuffer);
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
         GLES20.glTexSubImage2D(GLES20.GL_TEXTURE_2D, 0, 0, 0, width, height,
-                                GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, buf);
+                GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE,
+                outRgbaBuffer);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
 
         return textureId;
