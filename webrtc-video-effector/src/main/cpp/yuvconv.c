@@ -72,9 +72,9 @@ Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_abgrToI420Internal(
                    uint8* dst_v, int dst_stride_v,
                    int width, int height);
     */
-    ABGRToI420((uint8*) rgba, width * 4,
-               (uint8*) out_data_y, strideY,
-               (uint8*) out_data_u, strideU,
-               (uint8*) out_data_v, strideV,
+    ABGRToI420(rgba, width * 4,
+               out_data_y, strideY,
+               out_data_u, strideU,
+               out_data_v, strideV,
                width, height);
 }
