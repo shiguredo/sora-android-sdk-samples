@@ -9,12 +9,12 @@ Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_i420ToAbgrInternal(
     jobject dataUBuffer, jint strideU,
     jobject dataVBuffer, jint strideV,
     jint width, jint height,
-    jbyteArray outRgba)
+    jobject outRgbaBuffer)
 {
     uint8_t *data_y = (uint8_t*) (*env)->GetDirectBufferAddress(env, dataYBuffer);
     uint8_t *data_u = (uint8_t*) (*env)->GetDirectBufferAddress(env, dataUBuffer);
     uint8_t *data_v = (uint8_t*) (*env)->GetDirectBufferAddress(env, dataVBuffer);
-    uint8_t *dst_rgba = (uint8_t *)((*env)->GetDirectBufferAddress(env, outRgba));
+    uint8_t *out_rgba = (uint8_t *)((*env)->GetDirectBufferAddress(env, outRgbaBuffer));
 
     int stride_y = strideY;
     int stride_u = strideU;
@@ -40,7 +40,7 @@ Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_i420ToAbgrInternal(
     I420ToABGR(data_y, stride_y,
                data_u, stride_u,
                data_v, stride_v,
-               dst_rgba, dst_stride_rgba,
+               out_rgba, dst_stride_rgba,
                src_width, src_height);
 }
 
@@ -48,20 +48,20 @@ JNIEXPORT void JNICALL
 Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_abgrToI420Internal(
         JNIEnv *env,
         jobject obj,
-        jbyteArray rgbaArray,
+        jobject rgbaBuffer,
         jint width,
         jint height,
-        jbyteArray dataYArray,
+        jobject outDataYBuffer,
         jint strideY,
-        jbyteArray dataUArray,
+        jobject outDataUBuffer,
         jint strideU,
-        jbyteArray dataVArray,
+        jobject outDataVBuffer,
         jint strideV)
 {
-    jbyte *rgba = (jbyte*) (*env)->GetPrimitiveArrayCritical(env, rgbaArray, 0);
-    jbyte *data_y = (jbyte*) (*env)->GetPrimitiveArrayCritical(env, dataYArray, 0);
-    jbyte *data_u = (jbyte*) (*env)->GetPrimitiveArrayCritical(env, dataUArray, 0);
-    jbyte *data_v = (jbyte*) (*env)->GetPrimitiveArrayCritical(env, dataVArray, 0);
+    uint8_t *rgba = (uint8_t*) (*env)->GetDirectBufferAddress(env, rgbaBuffer);
+    uint8_t *out_data_y = (uint8_t*) (*env)->GetDirectBufferAddress(env, outDataYBuffer);
+    uint8_t *out_data_u = (uint8_t*) (*env)->GetDirectBufferAddress(env, outDataUBuffer);
+    uint8_t *out_data_v = (uint8_t*) (*env)->GetDirectBufferAddress(env, outDataVBuffer);
 
     /*
     // ABGR little endian (rgba in memory) to I420.
@@ -73,13 +73,8 @@ Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_abgrToI420Internal(
                    int width, int height);
     */
     ABGRToI420((uint8*) rgba, width * 4,
-               (uint8*) data_y, strideY,
-               (uint8*) data_u, strideU,
-               (uint8*) data_v, strideV,
+               (uint8*) out_data_y, strideY,
+               (uint8*) out_data_u, strideU,
+               (uint8*) out_data_v, strideV,
                width, height);
-
-    (*env)->ReleasePrimitiveArrayCritical(env, rgbaArray, rgba, 0);
-    (*env)->ReleasePrimitiveArrayCritical(env, dataYArray, data_y, 0);
-    (*env)->ReleasePrimitiveArrayCritical(env, dataUArray, data_u, 0);
-    (*env)->ReleasePrimitiveArrayCritical(env, dataVArray, data_v, 0);
 }

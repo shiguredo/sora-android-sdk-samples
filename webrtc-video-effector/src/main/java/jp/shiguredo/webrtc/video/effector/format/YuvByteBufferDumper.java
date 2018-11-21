@@ -30,41 +30,32 @@ public class YuvByteBufferDumper {
     public VideoFrame.I420Buffer dump(int lastTextureId, int width, int height,
                                       int strideY, int strideU, int strideV) {
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, bufferId);
-        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0,
-                                GLES20.GL_TEXTURE_2D, lastTextureId, 0);
+        GLES20.glFramebufferTexture2D(
+                GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0,
+                GLES20.GL_TEXTURE_2D, lastTextureId, 0);
 
-        final ByteBuffer rgba = ByteBuffer.allocateDirect(width * height * 4);
+        final ByteBuffer rgbaBuffer = ByteBuffer.allocateDirect(width * height * 4);
         GLES20.glViewport(0, 0, width, height);
-        GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, rgba);
-
+        GLES20.glReadPixels(0, 0, width, height,
+                GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE,
+                rgbaBuffer);
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+        rgbaBuffer.rewind();
 
-        rgba.rewind();
-
-        byte[] dataYArray = new byte[strideY * height];
-        byte[] dataUArray = new byte[strideU * height];
-        byte[] dataVArray = new byte[strideV * height];
+        ByteBuffer dataYBuffer = ByteBuffer.allocateDirect(strideY * height);
+        ByteBuffer dataUBuffer = ByteBuffer.allocateDirect(strideU * height);
+        ByteBuffer dataVBuffer = ByteBuffer.allocateDirect(strideV * height);
 
         libYuv.rgbaToI420(
-                rgba.array(),
+                rgbaBuffer,
                 width, height,
-                dataYArray, strideY,
-                dataUArray, strideU,
-                dataVArray, strideV);
+                dataYBuffer, strideY,
+                dataUBuffer, strideU,
+                dataVBuffer, strideV);
 
-        // TODO: このコピーは避けたい、あとまわし
-        ByteBuffer dataY = ByteBuffer.allocateDirect(dataYArray.length);
-        dataY.put(dataYArray);
-        dataY.rewind();
-        ByteBuffer dataU = ByteBuffer.allocateDirect(dataUArray.length);
-        dataU.put(dataUArray);
-        dataU.rewind();
-        ByteBuffer dataV = ByteBuffer.allocateDirect(dataVArray.length);
-        dataV.put(dataVArray);
-        dataV.rewind();
         return JavaI420Buffer.wrap(
                 width, height,
-                dataY, strideY, dataU, strideU, dataV, strideV,
+                dataYBuffer, strideY, dataUBuffer, strideU, dataVBuffer, strideV,
                 null);
     }
 

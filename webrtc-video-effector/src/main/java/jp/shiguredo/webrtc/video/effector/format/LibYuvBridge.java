@@ -33,15 +33,15 @@ public class LibYuvBridge {
                 outRgbaBuffer);
     }
 
-    public void rgbaToI420(byte[] rgba,
+    public void rgbaToI420(ByteBuffer rgbaBuffer,
                            int width, int height,
-                           byte[] dataY, int strideY,
-                           byte[] dataU, int strideU,
-                           byte[] dataV, int strideV) {
+                           ByteBuffer dataYBuffer, int strideY,
+                           ByteBuffer dataUBuffer, int strideU,
+                           ByteBuffer dataVBuffer, int strideV) {
         abgrToI420Internal(
-                rgba,
+                rgbaBuffer,
                 width, height,
-                dataY, strideY, dataU, strideU, dataV, strideV);
+                dataYBuffer, strideY, dataUBuffer, strideU, dataVBuffer, strideV);
     }
 
     private native void i420ToAbgrInternal(
@@ -52,9 +52,9 @@ public class LibYuvBridge {
             ByteBuffer outRgbaBuffer);
 
     private native void abgrToI420Internal(
-            byte[] rgba,
+            ByteBuffer rgbaBuffer,
             int width, int height,
-            byte[] dataY, int strideY,
-            byte[] dataU, int strideU,
-            byte[] dataV, int strideV);
+            ByteBuffer outDataYBuffer, int strideY,
+            ByteBuffer outDataUBuffer, int strideU,
+            ByteBuffer outDataVBuffer, int strideV);
 }
