@@ -45,7 +45,9 @@ public class YuvByteBufferDumper {
         byte[] dataUArray = new byte[strideU * height];
         byte[] dataVArray = new byte[strideV * height];
 
-        libYuv.rgbaToI420(rgba.array(), width, height,
+        libYuv.rgbaToI420(
+                rgba.array(),
+                width, height,
                 dataYArray, strideY,
                 dataUArray, strideU,
                 dataVArray, strideV);
@@ -60,8 +62,9 @@ public class YuvByteBufferDumper {
         ByteBuffer dataV = ByteBuffer.allocateDirect(dataVArray.length);
         dataV.put(dataVArray);
         dataV.rewind();
-        return JavaI420Buffer.wrap(width, height, dataY, strideY,
-                dataU, strideU, dataV, strideV,
+        return JavaI420Buffer.wrap(
+                width, height,
+                dataY, strideY, dataU, strideU, dataV, strideV,
                 null);
     }
 

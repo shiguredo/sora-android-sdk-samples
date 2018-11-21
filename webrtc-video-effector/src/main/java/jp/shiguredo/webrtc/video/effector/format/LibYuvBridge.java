@@ -2,6 +2,14 @@ package jp.shiguredo.webrtc.video.effector.format;
 
 import org.webrtc.VideoFrame;
 
+/** I420 と RGBA の間の変換を受け持つクラス。
+ *
+ * メモリイメージとして RGBA にしたい。libyuv の RGBA 変換はメモリ上のバイト順が
+ * 逆順になる。
+ * I420ToARGB() の出力はバイト順として B G R A、I420ToABGR() は R G B A  である。
+ * 関数の命名として、Java の世界はメモリ順で命名し、native method では libyuv に
+ * 合わせて逆順とする。
+ */
 public class LibYuvBridge {
 
     static {
@@ -10,27 +18,41 @@ public class LibYuvBridge {
 
     public LibYuvBridge() {}
 
-    public void i420ToRgba(byte[] dataY, int strideY, byte[] dataU, int strideU,
-            byte[] dataV, int strideV, int width, int height, byte[] outRgba) {
-        i420ToRgbaInternal(dataY, strideY,
+    public void i420ToRgba(byte[] dataY, int strideY,
+                           byte[] dataU, int strideU,
+                           byte[] dataV, int strideV,
+                           int width, int height,
+                           byte[] outRgba) {
+        i420ToAbgrInternal(
+                dataY, strideY,
                 dataU, strideU,
                 dataV, strideV,
-                width, height, outRgba);
+                width, height,
+                outRgba);
     }
 
-    public void rgbaToI420(byte[] rgba, int width, int height,
+    public void rgbaToI420(byte[] rgba,
+                           int width, int height,
                            byte[] dataY, int strideY,
                            byte[] dataU, int strideU,
                            byte[] dataV, int strideV) {
-        rgbaToI420Internal(rgba, width, height, dataY, strideY, dataU, strideU, dataV, strideV);
+        abgrToI420Internal(
+                rgba,
+                width, height,
+                dataY, strideY, dataU, strideU, dataV, strideV);
     }
 
-    private native void i420ToRgbaInternal(byte[] dataY, int strideY, byte[] dataU, int strideU,
-                                           byte[] dataV, int strideV, int width, int height,
-                                           byte[] outRgba);
+    private native void i420ToAbgrInternal(
+            byte[] dataY, int strideY,
+            byte[] dataU, int strideU,
+            byte[] dataV, int strideV,
+            int width, int height,
+            byte[] outRgba);
 
-    private native void rgbaToI420Internal(byte[] rgba, int width, int height,
-                                           byte[] dataY, int strideY,
-                                           byte[] dataU, int strideU,
-                                           byte[] dataV, int strideV);
+    private native void abgrToI420Internal(
+            byte[] rgba,
+            int width, int height,
+            byte[] dataY, int strideY,
+            byte[] dataU, int strideU,
+            byte[] dataV, int strideV);
 }
