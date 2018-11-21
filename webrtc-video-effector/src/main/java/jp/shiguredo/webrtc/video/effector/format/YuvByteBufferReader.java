@@ -57,13 +57,13 @@ public class YuvByteBufferReader {
     public int read(VideoFrame.I420Buffer i420Buffer, int width, int height) {
         resizeTextureIfNeeded(width, height);
 
-        ByteBuffer outRgbaBuffer = ByteBuffer.allocate(width * height * 4);
+        ByteBuffer outRgbaBuffer = ByteBuffer.allocateDirect(width * height * 4);
         libYuv.i420ToRgba(
                 i420Buffer.getDataY(), i420Buffer.getStrideY(),
                 i420Buffer.getDataU(), i420Buffer.getStrideU(),
                 i420Buffer.getDataV(), i420Buffer.getStrideV(),
                 width, height,
-                outRgbaBuffer.array());
+                outRgbaBuffer);
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);

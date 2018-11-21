@@ -14,8 +14,7 @@ Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_i420ToAbgrInternal(
     uint8_t *data_y = (uint8_t*) (*env)->GetDirectBufferAddress(env, dataYBuffer);
     uint8_t *data_u = (uint8_t*) (*env)->GetDirectBufferAddress(env, dataUBuffer);
     uint8_t *data_v = (uint8_t*) (*env)->GetDirectBufferAddress(env, dataVBuffer);
-
-    uint8_t *dst_rgba = (uint8_t *)((*env)->GetPrimitiveArrayCritical(env, outRgba, 0));
+    uint8_t *dst_rgba = (uint8_t *)((*env)->GetDirectBufferAddress(env, outRgba));
 
     int stride_y = strideY;
     int stride_u = strideU;
@@ -43,8 +42,6 @@ Java_jp_shiguredo_webrtc_video_effector_format_LibYuvBridge_i420ToAbgrInternal(
                data_v, stride_v,
                dst_rgba, dst_stride_rgba,
                src_width, src_height);
-
-    (*env)->ReleasePrimitiveArrayCritical(env, outRgba, dst_rgba, 0);
 }
 
 JNIEXPORT void JNICALL
