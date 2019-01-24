@@ -24,6 +24,10 @@
 - Effected video chat にデバッグ、比較用としてなにもしないエフェクトを追加した
   - Thanks to @daneko
 
+### CHANGE
+
+- スポットライトルームの初期映像コーデックを VP9 に変更した
+
 ### FIX
 
 - Effected video chat で I420 から変換された RGB データがずれていた問題を修正した

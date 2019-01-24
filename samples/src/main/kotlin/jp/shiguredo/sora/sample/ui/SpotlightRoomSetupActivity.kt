@@ -40,7 +40,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     private var sdpSemanticsSpinner: MaterialSpinner? = null
 
     val spotlightOptions = listOf(2, 1, 3, 4, 5)
-    val videoCodecOptions = listOf("VP8", "VP9", "H264")
+    val videoCodecOptions = listOf("VP9", "VP8", "H264")
     val audioCodecOptions = listOf("OPUS", "PCMU")
     val videoEnabledOptions = listOf("YES", "NO")
     val audioEnabledOptions = listOf("YES", "NO")
