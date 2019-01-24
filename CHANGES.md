@@ -12,6 +12,10 @@
 
 ## develop
 
+### UPDATE
+
+- `android:extractNativeLibs` を false に設定した
+
 ### ADD
 
 - Effected video chat にセピア化のエフェクトを追加した
