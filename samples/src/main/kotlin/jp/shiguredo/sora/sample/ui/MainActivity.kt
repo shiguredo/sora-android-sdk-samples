@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
             0 -> goToVideoRoomDemoWithPermissionCheck()
             1 -> goToVoiceRoomDemoWithPermissionCheck()
             2 -> goToSpotlightWithPermissionCheck()
-            3 -> goToScreencastActivity()
+            3 -> goToScreencastActivityWithPermissionCheck()
             4 -> goToEffectedVideoRoomDemoWithPermissionCheck()
             else -> {
                 Log.w(TAG, "must not come here")
@@ -49,7 +49,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     @TargetApi(21)
-    private fun goToScreencastActivity() {
+    @NeedsPermission(Manifest.permission.RECORD_AUDIO)
+    fun goToScreencastActivity() {
         val intent = Intent(this, ScreencastSetupActivity::class.java)
         startActivity(intent)
     }
@@ -88,7 +89,7 @@ class MainActivity : AppCompatActivity() {
     @OnShowRationale(Manifest.permission.RECORD_AUDIO)
     fun showRationaleForAudio(request: PermissionRequest) {
         showRationaleDialog(
-                "ボイスチャットを利用するには、マイクの使用許可が必要です", request)
+                "ボイスチャット・スクリーンキャストを利用するには、マイクの使用許可が必要です", request)
     }
 
     @OnPermissionDenied(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
