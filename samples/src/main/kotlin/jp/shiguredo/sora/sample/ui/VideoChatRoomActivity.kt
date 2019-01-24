@@ -42,7 +42,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x
     private var videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y
     private var fps: Int = 30
-    private var sdpSemantics = PeerConnection.SdpSemantics.PLAN_B
+    private var sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN
 
     private var streamType = SoraStreamType.BIDIRECTIONAL
 
@@ -157,7 +157,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
         when (intent.getStringExtra("SDP_SEMANTICS")) {
             "Unified Plan" -> { sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN }
             "Plan B"       -> { sdpSemantics = PeerConnection.SdpSemantics.PLAN_B }
-            else           -> { sdpSemantics = PeerConnection.SdpSemantics.PLAN_B }
+            else           -> { sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN }
         }
 
         ui?.setChannelName(channelName)

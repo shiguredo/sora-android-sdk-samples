@@ -50,7 +50,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
             // Landscape
             "Res3840x1920")
     val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
-    val sdpSemanticsOptions = listOf("Plan B", "Unified Plan")
+    val sdpSemanticsOptions = listOf("Unified Plan", "Plan B")
 
     private fun setupUI() {
 

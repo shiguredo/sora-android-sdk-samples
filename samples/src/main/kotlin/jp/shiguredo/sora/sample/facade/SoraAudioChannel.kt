@@ -20,7 +20,8 @@ class SoraAudioChannel(
         private val signalingMetadata: String = "",
         private var streamType:        SoraStreamType,
         private var codec:             SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
-        private var sdpSemantics:      PeerConnection.SdpSemantics = PeerConnection.SdpSemantics.PLAN_B,
+        private var sdpSemantics:      PeerConnection.SdpSemantics =
+                PeerConnection.SdpSemantics.UNIFIED_PLAN,
         private var listener:          Listener?
 ) {
 

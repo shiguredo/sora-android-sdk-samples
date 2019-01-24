@@ -30,7 +30,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
     private var audioCodec:  SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
     private var streamType   = SoraStreamType.BIDIRECTIONAL
-    private var sdpSemantics = PeerConnection.SdpSemantics.PLAN_B
+    private var sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -56,7 +56,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         when (intent.getStringExtra("SDP_SEMANTICS")) {
             "Unified Plan" -> { sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN }
             "Plan B"       -> { sdpSemantics = PeerConnection.SdpSemantics.PLAN_B }
-            else           -> { sdpSemantics = PeerConnection.SdpSemantics.PLAN_B }
+            else           -> { sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN }
         }
 
         ui?.setChannelName(channelName)

@@ -33,8 +33,10 @@ class SoraVideoChannel(
         var         videoBitrate:      Int? = null,
         private var needLocalRenderer: Boolean = true,
         private var audioEnabled:      Boolean = true,
-        private var sdpSemantics:      PeerConnection.SdpSemantics = PeerConnection.SdpSemantics.PLAN_B,
-        private var capturerFactory:   CameraVideoCapturerFactory = DefaultCameraVideoCapturerFactory(context),
+        private var sdpSemantics:      PeerConnection.SdpSemantics =
+                PeerConnection.SdpSemantics.UNIFIED_PLAN,
+        private var capturerFactory:   CameraVideoCapturerFactory =
+                DefaultCameraVideoCapturerFactory(context),
         private var listener:          Listener?
 ) {
 

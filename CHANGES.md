@@ -15,6 +15,7 @@
 ### UPDATE
 
 - `android:extractNativeLibs` を false に設定した
+- SDP semantics の選択肢のデフォルト値を Unified Plan に変更した
 
 ### ADD
 

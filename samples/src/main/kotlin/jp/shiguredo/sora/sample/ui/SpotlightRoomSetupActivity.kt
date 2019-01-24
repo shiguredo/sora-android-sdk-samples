@@ -48,7 +48,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     val bitRateOptions = listOf("UNDEFINED", "100", "300", "500", "800", "1000", "1500", "2000", "2500")
     val sizeOptions = listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
     val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
-    val sdpSemanticsOptions = listOf("Plan B", "Unified Plan")
+    val sdpSemanticsOptions = listOf("Unified Plan", "Plan B")
 
     private fun setupUI() {
 

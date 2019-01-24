@@ -35,7 +35,7 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
 
     val audioCodecOptions = listOf("OPUS", "PCMU")
     val streamTypeOptions = listOf("BIDIRECTIONAL", "SINGLE-UP", "SINGLE-DOWN", "MULTI-DOWN")
-    val sdpSemanticsOptions = listOf("Plan B", "Unified Plan")
+    val sdpSemanticsOptions = listOf("Unified Plan", "Plan B")
 
     private fun setupUI() {
 
