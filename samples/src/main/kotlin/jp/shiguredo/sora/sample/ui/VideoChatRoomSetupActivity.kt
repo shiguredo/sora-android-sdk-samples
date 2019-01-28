@@ -16,6 +16,7 @@ import jp.shiguredo.sora.sample.ui.util.materialSpinner
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.textInputLayout
 import org.jetbrains.anko.sdk21.listeners.onClick
+import kotlinx.android.synthetic.main.activity_video_chat_room_setup.*
 
 class VideoChatRoomSetupActivity : AppCompatActivity() {
 
@@ -24,7 +25,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
-        setupUI()
+        setContentView(R.layout.activity_video_chat_room_setup)
+        videoCodecSpinner.setItems(videoCodecOptions)
     }
 
     private var channelNameInput:    EditText? = null
