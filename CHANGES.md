@@ -16,6 +16,8 @@
 
 - `android:extractNativeLibs` を false に設定した
 - SDP semantics の選択肢のデフォルト値を Unified Plan に変更した
+- Kotlin を 1.3.20 に上げた
+- Anko を 0.10.8 に上げた
 
 ### ADD
 

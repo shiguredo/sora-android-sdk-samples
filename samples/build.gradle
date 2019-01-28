@@ -67,7 +67,7 @@ dependencies {
     implementation 'com.jaredrummler:material-spinner:1.2.5'
 
     // Anko libs
-    ext.anko_version = '0.10.5'
+    ext.anko_version = '0.10.8'
     implementation "org.jetbrains.anko:anko-sdk21:${anko_version}"
     implementation "org.jetbrains.anko:anko-appcompat-v7:${anko_version}"
     implementation "org.jetbrains.anko:anko-sdk21-listeners:${anko_version}"
