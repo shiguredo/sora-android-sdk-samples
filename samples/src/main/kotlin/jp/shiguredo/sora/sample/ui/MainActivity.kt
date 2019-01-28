@@ -9,17 +9,17 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
-import android.view.View
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sdk.util.SoraLogger
-import org.jetbrains.anko.*
-import org.jetbrains.anko.recyclerview.v7.recyclerView
+import kotlinx.android.synthetic.main.activity_main.*
 import permissions.dispatcher.*
 
 @RuntimePermissions
 class MainActivity : AppCompatActivity() {
 
-    val TAG = MainActivity::class.simpleName
+    companion object {
+        val TAG = MainActivity::class.simpleName
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -27,7 +27,32 @@ class MainActivity : AppCompatActivity() {
         SoraLogger.libjingle_enabled = true
 
         super.onCreate(savedInstanceState)
-        MainActivityUI().setContentView(this)
+        setContentView(R.layout.activity_main)
+
+        val adapter = FeatureListAdapter(arrayListOf(
+                Feature(title = "Video Chat Room",
+                        description = "ビデオチャットのデモです。複数人でのグループチャットも可能です。"),
+                Feature(title = "Voice Chat Room",
+                        description = "ボイスチャットのデモです。複数人でのグループチャットも可能です。"),
+                Feature(title = "Spotlight Room",
+                        description = "スポットライトのデモです。アクティブ配信数を固定したチャットが可能です。"),
+                Feature(title = "Screencast",
+                        description = "スクリーンキャストのデモです。"),
+                Feature(title = "Effected Video Chat",
+                        description = "エフェクト付きのビデオチャットのデモです")
+        ))
+
+        adapter.setOnItemClickListener(object: FeatureListAdapter.OnItemClickListener {
+            override fun onItemClick(position: Int) {
+                Log.d(TAG, "clicked:${position}")
+                goToDemo(position)
+            }
+        })
+
+        val llm = LinearLayoutManager(this)
+        featureList.setHasFixedSize(true)
+        featureList.layoutManager = llm
+        featureList.adapter = adapter
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -95,7 +120,7 @@ class MainActivity : AppCompatActivity() {
     @OnPermissionDenied(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
     fun onCameraAndAudioDenied() {
         Log.d(TAG, "onCameraAndAudioDenied")
-        Snackbar.make(this.contentView!!,
+        Snackbar.make(rootLayout,
                 "ビデオチャットを利用するには、カメラとマイクの使用を許可してください",
                 Snackbar.LENGTH_LONG)
                 .setAction("OK") { }
@@ -104,7 +129,7 @@ class MainActivity : AppCompatActivity() {
 
     @OnPermissionDenied(Manifest.permission.RECORD_AUDIO)
     fun onAudioDenied() {
-        Snackbar.make(this.contentView!!,
+        Snackbar.make(rootLayout,
                 "ボイスチャットを利用するには、マイクの使用を許可してください",
                 Snackbar.LENGTH_LONG)
                 .setAction("OK") {  }
@@ -120,47 +145,4 @@ class MainActivity : AppCompatActivity() {
                 .show()
     }
 
-}
-
-class MainActivityUI : AnkoComponent<MainActivity> {
-
-    val TAG = MainActivityUI::class.simpleName
-
-    val adapter = FeatureListAdapter(arrayListOf(
-            Feature(title = "Video Chat Room",
-                    description = "ビデオチャットのデモです。複数人でのグループチャットも可能です。"),
-            Feature(title = "Voice Chat Room",
-                    description = "ボイスチャットのデモです。複数人でのグループチャットも可能です。"),
-            Feature(title = "Spotlight Room",
-                    description = "スポットライトのデモです。アクティブ配信数を固定したチャットが可能です。"),
-            Feature(title = "Screencast",
-                    description = "スクリーンキャストのデモです。"),
-            Feature(title = "Effected Video Chat",
-                    description = "エフェクト付きのビデオチャットのデモです")
-    ))
-
-    override fun createView(ui: AnkoContext<MainActivity>): View = with(ui) {
-
-        adapter.setOnItemClickListener(object: FeatureListAdapter.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                Log.d(TAG, "clicked:" + position.toString())
-                ui.owner.goToDemo(position)
-            }
-        })
-
-        return verticalLayout {
-
-            padding = dip(6)
-            lparams(width = matchParent, height = matchParent)
-            backgroundResource = R.drawable.app_background
-
-            recyclerView {
-
-                lparams(width = matchParent, height = wrapContent)
-                layoutManager = LinearLayoutManager(ctx)
-                adapter = this@MainActivityUI.adapter
-
-            }
-        }
-    }
 }
