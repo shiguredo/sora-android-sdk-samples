@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
@@ -23,14 +22,14 @@ import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import kotlinx.android.synthetic.main.activity_video_chat_room.*
-import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk21.listeners.onClick
 import org.webrtc.PeerConnection
 import org.webrtc.SurfaceViewRenderer
 
 class VideoChatRoomActivity : AppCompatActivity() {
 
-    val TAG = VideoChatRoomActivity::class.simpleName
+    companion object {
+        val TAG = VideoChatRoomActivity::class.simpleName
+    }
 
     private var channelName = ""
     private var spotlight = 0
@@ -52,16 +51,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
         setupWindow()
-
-        setContentView(R.layout.activity_video_chat_room)
-
-        ui = VideoChatRoomActivityUI(
-                resources       = resources,
-                videoViewWidth  = 100,
-                videoViewHeight = 100,
-                videoViewMargin = 10,
-                density         = this.resources.displayMetrics.density
-        )
 
         channelName = intent.getStringExtra("CHANNEL_NAME")
 
@@ -158,7 +147,18 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else           -> { sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN }
         }
 
-        channelNameText.setText(channelName)
+        setContentView(R.layout.activity_video_chat_room)
+
+        ui = VideoChatRoomActivityUI(
+                activity        = this,
+                channelName     = channelName,
+                resources       = resources,
+                videoViewWidth  = 100,
+                videoViewHeight = 100,
+                videoViewMargin = 10,
+                density         = this.resources.displayMetrics.density
+        )
+
         connectChannel()
     }
 
@@ -225,8 +225,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
         }
 
         override fun onAttendeesCountUpdated(channel: SoraVideoChannel, attendees: ChannelAttendeesCount) {
-            ui?.setNumberOfReceivers(attendees.numberOfDownstreams)
-            ui?.setNumberOfSenders(attendees.numberOfUpstreams)
+            // nop
         }
     }
 
@@ -256,11 +255,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     }
 
     private fun disconnectChannel() {
-        Log.d(TAG, "closeChannel")
-        channel?.disconnect()
-    }
-
-    private fun disposeChannel() {
+        Log.d(TAG, "disconnectChannel")
         channel?.dispose()
     }
 
@@ -272,7 +267,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
     internal fun toggleMuted() {
         if (muted) {
-           ui?.showMuteButton()
+            ui?.showMuteButton()
         } else {
             ui?.showUnmuteButton()
         }
@@ -283,204 +278,66 @@ class VideoChatRoomActivity : AppCompatActivity() {
 }
 
 class VideoChatRoomActivityUI(
+        val activity:        VideoChatRoomActivity,
+        val channelName:     String,
         val resources:       Resources,
         val videoViewWidth:  Int,
         val videoViewHeight: Int,
         val videoViewMargin: Int,
         val density:         Float
-) : AnkoComponent<VideoChatRoomActivity> {
+) {
 
-    private var channelText:       TextView?   = null
-    private var rendererContainer: RelativeLayout? = null
+    private val renderersLayoutCalculator: RendererLayoutCalculator
 
-    private var numberOfSendersText:   TextView? = null
-    private var numberOfReceiversText: TextView? = null
-
-    private var toggleMuteButton: ImageButton? = null
-    private var localRendererContainer: FrameLayout? = null
-
-    private var renderersLayoutCalculator: RendererLayoutCalculator? = null
-
-    internal fun setChannelName(name: String) {
-        channelText?.text = name
-    }
-
-    internal fun setNumberOfSenders(num: Int) {
-        numberOfSendersText?.text = num.toString()
-    }
-
-    internal fun setNumberOfReceivers(num: Int) {
-        numberOfReceiversText?.text = num.toString()
+    init {
+        activity.channelNameText.text = channelName
+        this.renderersLayoutCalculator = RendererLayoutCalculator(
+                width = SoraScreenUtil.size(activity).x -  dp2px(20 * 4),
+                height = SoraScreenUtil.size(activity).y - dp2px(20 * 4 + 100 + 50)
+        )
+        activity.toggleMuteButton.setOnClickListener { activity.toggleMuted() }
+        activity.switchCameraButton.setOnClickListener { activity.switchCamera() }
+        activity.closeButton.setOnClickListener { activity.close() }
     }
 
     internal fun changeState(colorCode: String) {
-        channelText?.backgroundColor = Color.parseColor(colorCode)
-    }
-
-    private fun dpi2px(d: Int): Int = (density * d).toInt()
-
-    private fun rendererLayoutParams(): RelativeLayout.LayoutParams {
-        val params =
-                RelativeLayout.LayoutParams(dpi2px(videoViewWidth), dpi2px(videoViewHeight))
-        val margin = dpi2px(videoViewMargin)
-        params.setMargins(margin, margin, margin, margin)
-        return params
+        activity.channelNameText.setBackgroundColor(Color.parseColor(colorCode))
     }
 
     internal fun addLocalRenderer(renderer: SurfaceViewRenderer) {
         renderer.layoutParams =
-                FrameLayout.LayoutParams(dpi2px(100), dpi2px(100))
-        localRendererContainer?.addView(renderer)
+                FrameLayout.LayoutParams(dp2px(100), dp2px(100))
+        activity.localRendererContainer.addView(renderer)
         renderer.setMirror(true)
     }
 
     internal fun addRenderer(renderer: SurfaceViewRenderer) {
         renderer.layoutParams = rendererLayoutParams()
-        rendererContainer?.addView(renderer)
-        renderersLayoutCalculator?.add(renderer)
+        activity.rendererContainer.addView(renderer)
+        renderersLayoutCalculator.add(renderer)
     }
 
     internal fun removeRenderer(renderer: SurfaceViewRenderer) {
-        rendererContainer?.removeView(renderer)
-        renderersLayoutCalculator?.remove(renderer)
+        activity.rendererContainer.removeView(renderer)
+        renderersLayoutCalculator.remove(renderer)
     }
 
     internal fun showUnmuteButton() {
-        toggleMuteButton?.image = resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
+        activity.toggleMuteButton.setImageDrawable(
+                resources.getDrawable(R.drawable.ic_mic_white_48dp, null))
     }
 
     internal fun showMuteButton() {
-        toggleMuteButton?.image = resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
+        activity.toggleMuteButton.setImageDrawable(
+                resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null))
     }
 
-    override fun createView(ui: AnkoContext<VideoChatRoomActivity>): View = with(ui) {
+    private fun dp2px(d: Int): Int = (density * d).toInt()
 
-        renderersLayoutCalculator = RendererLayoutCalculator(
-                width = SoraScreenUtil.size(ui.owner).x - dip(20 * 4),
-                height = SoraScreenUtil.size(ui.owner).y - dip(20 * 4 + 100 + 50)
-        )
-
-        return verticalLayout {
-
-            lparams {
-                width = matchParent
-                height = matchParent
-            }
-
-            backgroundColor = Color.BLACK
-
-            padding = dip(20)
-
-            verticalLayout {
-
-                lparams {
-                    width = matchParent
-                    weight = 1f
-                }
-
-                backgroundColor = Color.parseColor("#222222")
-
-                channelText = textView {
-                    backgroundColor = Color.parseColor("#FFC107")
-
-                    this.gravity = Gravity.CENTER
-                    text = "Channel"
-                    textColor = Color.WHITE
-                    textSize = 20f
-                    padding = dip(10)
-                }.lparams {
-                    width = matchParent
-                    height = dip(50)
-                }
-
-                rendererContainer = relativeLayout {
-                    lparams {
-                        width = SoraScreenUtil.size(ui.owner).x - dip(20 * 4)
-                        height = SoraScreenUtil.size(ui.owner).y - dip(20 * 4 + 100 + 50)
-                        topMargin = dip(20)
-                        leftMargin = dip(20)
-                    }
-                    backgroundColor = Color.parseColor("#000000")
-                }
-
-            }
-
-            relativeLayout {
-
-                backgroundColor = Color.argb(200, 0, 0, 0)
-
-                lparams {
-                    width  = matchParent
-                    height = dip(100)
-                }
-
-                padding = dip(10)
-
-                localRendererContainer = frameLayout {
-
-                    backgroundColor = Color.GRAY
-
-                }.lparams {
-                    width = dip(80)
-                    height = dip(80)
-                    alignParentLeft()
-                    centerVertically()
-                }
-
-
-                linearLayout {
-
-                    toggleMuteButton = imageButton {
-                        image = resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
-                        scaleType = ImageView.ScaleType.FIT_CENTER
-                        background = resources.getDrawable(R.drawable.enabled_button_background, null)
-
-                        onClick {
-                            ui.owner.toggleMuted()
-                        }
-                    }.lparams {
-                        width = dip(50)
-                        height = dip(50)
-                        rightMargin = dip(10)
-                    }
-
-                    imageButton {
-                        image = resources.getDrawable(R.drawable.ic_videocam_white_48dp, null)
-                        scaleType = ImageView.ScaleType.FIT_CENTER
-                        background = resources.getDrawable(R.drawable.enabled_button_background, null)
-
-                        onClick {
-                            ui.owner.switchCamera()
-                        }
-                    }.lparams {
-                        width = dip(50)
-                        height = dip(50)
-                        rightMargin = dip(10)
-                    }
-
-                    imageButton {
-                        image = resources.getDrawable(R.drawable.ic_close_white_48dp, null)
-                        scaleType = ImageView.ScaleType.FIT_CENTER
-                        background = resources.getDrawable(R.drawable.close_button_background, null)
-
-                        onClick {
-                            ui.owner.close()
-                        }
-                    }.lparams {
-                        width = dip(50)
-                        height = dip(50)
-                        rightMargin = dip(10)
-                    }
-
-                }.lparams {
-                    width = wrapContent
-                    height = wrapContent
-                    alignParentRight()
-                    centerVertically()
-                }
-
-            }
-
-        }
+    private fun rendererLayoutParams(): RelativeLayout.LayoutParams {
+        val params = RelativeLayout.LayoutParams(dp2px(videoViewWidth), dp2px(videoViewHeight))
+        val margin = dp2px(videoViewMargin)
+        params.setMargins(margin, margin, margin, margin)
+        return params
     }
 }
