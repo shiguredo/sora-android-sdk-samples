@@ -17,16 +17,36 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.design.textInputLayout
 import org.jetbrains.anko.sdk21.listeners.onClick
 import kotlinx.android.synthetic.main.activity_video_chat_room_setup.*
+import kotlinx.android.synthetic.main.signaling_selection.view.*
 
 class VideoChatRoomSetupActivity : AppCompatActivity() {
 
-    val TAG = VideoChatRoomSetupActivity::class.simpleName
+    companion object {
+        val TAG = VideoChatRoomSetupActivity::class.simpleName
+    }
+
+    private val videoCodecOptions = listOf("VP9", "VP8", "H264")
+    private val audioCodecOptions = listOf("OPUS", "PCMU")
+    private val audioEnabledOptions = listOf("YES", "NO")
+    private val streamTypeOptions = listOf("BIDIRECTIONAL", "SINGLE-UP", "SINGLE-DOWN", "MULTI-DOWN")
+    private val bitRateOptions = listOf("UNDEFINED", "100", "300", "500", "800", "1000", "1500",
+            "2000", "2500", "3000", "5000")
+    private val sizeOptions = listOf(
+            // Portrait
+            "VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD",
+            "Res1920x3840", "UHD2160x3840", "UHD2160x4096",
+            // Landscape
+            "Res3840x1920")
+    private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
+    private val sdpSemanticsOptions = listOf("Unified Plan", "Plan B")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video_chat_room_setup)
-        videoCodecSpinner.setItems(videoCodecOptions)
+
+        videoCodecSelection.name.text = "VIDEO CODEC"
+        videoCodecSelection.spinner.setItems(videoCodecOptions)
     }
 
     private var channelNameInput:    EditText? = null
@@ -39,20 +59,6 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     private var fpsSpinner:          MaterialSpinner? = null
     private var sdpSemanticsSpinner: MaterialSpinner? = null
 
-    val videoCodecOptions = listOf("VP9", "VP8", "H264")
-    val audioCodecOptions = listOf("OPUS", "PCMU")
-    val audioEnabledOptions = listOf("YES", "NO")
-    val streamTypeOptions = listOf("BIDIRECTIONAL", "SINGLE-UP", "SINGLE-DOWN", "MULTI-DOWN")
-    val bitRateOptions = listOf("UNDEFINED", "100", "300", "500", "800", "1000", "1500",
-                                "2000", "2500", "3000", "5000")
-    val sizeOptions = listOf(
-            // Portrait
-            "VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD",
-            "Res1920x3840", "UHD2160x3840", "UHD2160x4096",
-            // Landscape
-            "Res3840x1920")
-    val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
-    val sdpSemanticsOptions = listOf("Unified Plan", "Plan B")
 
     private fun setupUI() {
 

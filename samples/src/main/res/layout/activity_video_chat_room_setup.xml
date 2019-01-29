@@ -40,30 +40,9 @@
                     android:layout_margin="10dp"
                     android:text="START" />
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="#f6f6f6">
-
-                    <TextView
-                        android:id="@+id/videoCodecText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:text="VIDEO CODEC"
-                        android:layout_alignParentLeft="true"
-                        android:layout_centerVertical="true"/>
-
-                    <Spinner
-                        android:id="@+id/videoCodecSpinner"
-                        android:layout_width="160dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        />
-                </RelativeLayout>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/videoCodecSelection"/>
 
             </android.support.design.widget.TextInputLayout>
 
