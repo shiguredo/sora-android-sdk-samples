@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="10dp"
-    android:background="#f6f6f6"
-    tools:showIn="@layout/activity_video_chat_room_setup">
-
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true" />
+        android:layout_margin="4dp"
+        android:background="#f6f6f6">
 
-    <com.jaredrummler.materialspinner.MaterialSpinner
-        android:id="@+id/spinner"
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true" />
-</RelativeLayout>
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:padding="4dp"/>
+
+        <com.jaredrummler.materialspinner.MaterialSpinner
+            android:id="@+id/spinner"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:padding="4dp"/>
+
+    </RelativeLayout>
+</layout>

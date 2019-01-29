@@ -13,12 +13,13 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        // アプリで参照する設定を BuildConfig に書き込む。
+        // アプリで参照する設定を BuildConfig / resource に書き込む。
         // gradle.properties に endpoint/channel 設定がある場合は上書きする
         def endpoint   = findProperty("sora.signaling_endpoint") ?: signaling_endpoint
         def channel_id = findProperty("sora.channel_id")         ?: channel_id
         buildConfigField("String", "SIGNALING_ENDPOINT", "\"${endpoint}\"")
         buildConfigField("String", "CHANNEL_ID",         "\"${channel_id}\"")
+        resValue("string", "channelId", "\"${channel_id}\"")
     }
 
     compileOptions {
