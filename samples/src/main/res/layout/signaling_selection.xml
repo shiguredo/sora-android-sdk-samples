@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-    <RelativeLayout
-        android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:background="#f6f6f6">
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:background="#f6f6f6">
+        android:layout_margin="6dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:padding="4dp"/>
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="6dp"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:padding="4dp"/>
+    <com.jaredrummler.materialspinner.MaterialSpinner
+        android:id="@+id/spinner"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:padding="4dp"/>
 
-        <com.jaredrummler.materialspinner.MaterialSpinner
-            android:id="@+id/spinner"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="6dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:padding="4dp"/>
-
-    </RelativeLayout>
-</layout>
+</RelativeLayout>

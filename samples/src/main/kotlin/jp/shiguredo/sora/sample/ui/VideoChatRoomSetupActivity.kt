@@ -4,11 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
-import android.text.InputType
-import android.text.method.DigitsKeyListener
 import android.util.Log
 import com.jaredrummler.materialspinner.MaterialSpinner
-import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import kotlinx.android.synthetic.main.activity_video_chat_room_setup.*
 import kotlinx.android.synthetic.main.signaling_selection.view.*

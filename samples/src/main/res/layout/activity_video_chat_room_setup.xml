@@ -1,79 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
-        android:id="@+id/rootLayout"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:padding="6dp"
+        android:background="@drawable/app_background">
 
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="6dp"
-            android:background="@drawable/app_background">
+            android:layout_height="wrap_content"
+            android:background="@drawable/app_background"
+            android:orientation="vertical" >
 
-            <LinearLayout
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/app_background"
-                android:orientation="vertical" >
+                android:background="@android:color/white"
+                android:layout_margin="10dp"
+                android:padding="10dp">
 
-                <android.support.design.widget.TextInputLayout
+                <EditText
+                    android:id="@+id/channelNameInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/white"
+                    android:layout_weight="1"
+                    android:text="@string/channelId"
+                    android:inputType="text"
+                    android:hint="Channel Name" />
+
+                <Button
+                    android:id="@+id/start"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:background="#F06292"
                     android:layout_margin="10dp"
-                    android:padding="10dp">
+                    android:text="START" />
 
-                    <EditText
-                        android:id="@+id/channelNameInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/channelId"
-                        android:inputType="text"
-                        android:hint="Channel Name" />
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/videoCodecSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/audioEnabledSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/audioCodecSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/streamTypeSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/bitRateSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/videoSizeSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/fpsSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/sdpSemanticsSelection"/>
 
-                    <Button
-                        android:id="@+id/start"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@android:color/white"
-                        android:background="#F06292"
-                        android:layout_margin="10dp"
-                        android:text="START" />
+            </android.support.design.widget.TextInputLayout>
 
-                    <include
-                        layout="@layout/signaling_selection"
-                        android:id="@+id/videoCodecSelection"/>
-                    <include
-                        layout="@layout/signaling_selection"
-                        android:id="@+id/audioEnabledSelection"/>
-                    <include
-                        layout="@layout/signaling_selection"
-                        android:id="@+id/audioCodecSelection"/>
-                    <include
-                        layout="@layout/signaling_selection"
-                        android:id="@+id/streamTypeSelection"/>
-                    <include
-                        layout="@layout/signaling_selection"
-                        android:id="@+id/bitRateSelection"/>
-                    <include
-                        layout="@layout/signaling_selection"
-                        android:id="@+id/videoSizeSelection"/>
-                    <include
-                        layout="@layout/signaling_selection"
-                        android:id="@+id/fpsSelection"/>
-                    <include
-                        layout="@layout/signaling_selection"
-                        android:id="@+id/sdpSemanticsSelection"/>
+        </LinearLayout>
+    </ScrollView>
 
-                </android.support.design.widget.TextInputLayout>
-
-            </LinearLayout>
-        </ScrollView>
-
-    </LinearLayout>
-</layout>
+</LinearLayout>

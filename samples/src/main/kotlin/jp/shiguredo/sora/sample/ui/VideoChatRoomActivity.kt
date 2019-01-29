@@ -22,6 +22,7 @@ import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
+import kotlinx.android.synthetic.main.activity_video_chat_room.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk21.listeners.onClick
 import org.webrtc.PeerConnection
@@ -32,7 +33,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
     val TAG = VideoChatRoomActivity::class.simpleName
 
     private var channelName = ""
-
     private var spotlight = 0
     private var videoEnabled = true
     private var videoCodec:  SoraVideoOption.Codec = SoraVideoOption.Codec.VP9
@@ -53,6 +53,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setupWindow()
 
+        setContentView(R.layout.activity_video_chat_room)
+
         ui = VideoChatRoomActivityUI(
                 resources       = resources,
                 videoViewWidth  = 100,
@@ -60,8 +62,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 videoViewMargin = 10,
                 density         = this.resources.displayMetrics.density
         )
-
-        ui?.setContentView(this)
 
         channelName = intent.getStringExtra("CHANNEL_NAME")
 
@@ -94,8 +94,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
         }
 
         fps = intent.getStringExtra("FPS").toInt()
-
-        listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
 
         when (intent.getStringExtra("VIDEO_SIZE")) {
             // Portrait
@@ -160,8 +158,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else           -> { sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN }
         }
 
-        ui?.setChannelName(channelName)
-
+        channelNameText.setText(channelName)
         connectChannel()
     }
 
