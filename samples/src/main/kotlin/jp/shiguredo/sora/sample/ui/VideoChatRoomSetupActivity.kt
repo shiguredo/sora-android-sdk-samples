@@ -57,7 +57,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     }
 
     private fun startVideoChat() {
-        val channelName = channelNameInput!!.text.toString()
+        val channelName = channelNameInput.text.toString()
         if (channelName.isEmpty()) {
             showInputError()
             return

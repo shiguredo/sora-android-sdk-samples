@@ -1,32 +1,30 @@
 package jp.shiguredo.sora.sample.ui
 
 import android.annotation.TargetApi
-import android.graphics.Color
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
-import android.widget.TextView
 import jp.shiguredo.sora.sample.BuildConfig
+import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.facade.SoraAudioChannel
 import jp.shiguredo.sora.sample.option.SoraStreamType
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
-import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk21.listeners.onClick
+import kotlinx.android.synthetic.main.activity_voice_chat_room.*
 import org.webrtc.PeerConnection
 
 class VoiceChatRoomActivity : AppCompatActivity() {
 
-    val TAG = VoiceChatRoomActivity::class.simpleName
+    companion object {
+        val TAG = VoiceChatRoomActivity::class.simpleName
+    }
 
-    private var channelName = ""
-    private var ui: VoiceChatRoomActivityUI? = null
+    private var channelName: String = ""
 
     private var audioCodec:  SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
     private var streamType   = SoraStreamType.BIDIRECTIONAL
@@ -37,29 +35,29 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setupWindow()
 
-        ui = VoiceChatRoomActivityUI()
-        ui?.setContentView(this)
+        setContentView(R.layout.activity_voice_chat_room)
 
         channelName = intent.getStringExtra("CHANNEL_NAME")
 
         audioCodec = SoraAudioOption.Codec.valueOf(
                 intent.getStringExtra("AUDIO_CODEC"))
 
-        when (intent.getStringExtra("STREAM_TYPE")) {
-            "BIDIRECTIONAL" -> { streamType = SoraStreamType.BIDIRECTIONAL }
-            "SINGLE-UP"     -> { streamType = SoraStreamType.SINGLE_UP     }
-            "SINGLE-DOWN"   -> { streamType = SoraStreamType.SINGLE_DOWN   }
-            "MULTI-DOWN"    -> { streamType = SoraStreamType.MULTI_DOWN    }
-            else            -> { streamType = SoraStreamType.BIDIRECTIONAL }
+        streamType = when (intent.getStringExtra("STREAM_TYPE")) {
+            "BIDIRECTIONAL" -> SoraStreamType.BIDIRECTIONAL
+            "SINGLE-UP"     -> SoraStreamType.SINGLE_UP
+            "SINGLE-DOWN"   -> SoraStreamType.SINGLE_DOWN
+            "MULTI-DOWN"    -> SoraStreamType.MULTI_DOWN
+            else            -> SoraStreamType.BIDIRECTIONAL
         }
 
-        when (intent.getStringExtra("SDP_SEMANTICS")) {
-            "Unified Plan" -> { sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN }
-            "Plan B"       -> { sdpSemantics = PeerConnection.SdpSemantics.PLAN_B }
-            else           -> { sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN }
+        sdpSemantics = when (intent.getStringExtra("SDP_SEMANTICS")) {
+            "Unified Plan" -> PeerConnection.SdpSemantics.UNIFIED_PLAN
+            "Plan B"       -> PeerConnection.SdpSemantics.PLAN_B
+            else           -> PeerConnection.SdpSemantics.UNIFIED_PLAN
         }
 
-        ui?.setChannelName(channelName)
+        channelNameText.text = channelName
+        closeButton.setOnClickListener { close() }
 
         connectChannel()
     }
@@ -100,16 +98,16 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     private var channelListener: SoraAudioChannel.Listener = object : SoraAudioChannel.Listener {
 
         override fun onConnect(channel: SoraAudioChannel) {
-            ui?.changeStateText("CONNECTED")
+            changeStateText("CONNECTED")
         }
 
         override fun onClose(channel: SoraAudioChannel) {
-            ui?.changeStateText("CLOSED")
+            changeStateText("CLOSED")
             close()
         }
 
         override fun onError(channel: SoraAudioChannel, reason: SoraErrorReason) {
-            ui?.changeStateText("ERROR")
+            changeStateText("ERROR")
             close()
         }
 
@@ -135,89 +133,12 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         channel!!.connect()
     }
 
-    private fun disconnectChannel() {
-        Log.d(TAG, "disconnectChannel")
-        channel?.disconnect()
+    internal fun changeStateText(msg: String) {
+        stateText.text = msg
     }
 
     private fun disposeChannel() {
+        Log.d(TAG, "disposeChannel")
         channel?.dispose()
     }
-}
-
-class VoiceChatRoomActivityUI : AnkoComponent<VoiceChatRoomActivity> {
-
-    private var channelText: TextView? = null
-    private var stateText:   TextView? = null
-
-    internal fun changeStateText(msg: String) {
-        stateText?.text = msg
-    }
-
-    internal fun setChannelName(name: String) {
-        channelText?.text = name
-    }
-
-    override fun createView(ui: AnkoContext<VoiceChatRoomActivity>): View = with(ui) {
-
-        return verticalLayout {
-
-            lparams {
-                width  = matchParent
-                height = matchParent
-            }
-
-            backgroundColor = Color.BLACK
-
-            padding = dip(20)
-
-            verticalLayout {
-
-                lparams {
-                    width  = matchParent
-                    weight = 1f
-                }
-
-                channelText = textView {
-                    backgroundColor = Color.parseColor("#333333")
-
-                    this.gravity = Gravity.CENTER
-                    text = "Channel"
-                    textColor = Color.WHITE
-                    textSize = 20f
-                    padding = dip(10)
-                }.lparams {
-                    width  = matchParent
-                    height = wrapContent
-                }
-
-                stateText = textView {
-                    this.gravity = Gravity.CENTER
-                    text = "CONNECTING..."
-                    textColor = Color.WHITE
-                    textSize = 14f
-                    padding = dip(10)
-                }.lparams {
-                    width = matchParent
-                    height = wrapContent
-                    setMargins(0, 10, 0, 10)
-                }
-
-            }
-
-            button("CLOSE") {
-                backgroundColor = Color.RED
-                textColor = Color.WHITE
-
-                onClick {
-                    ui.owner.close()
-                }
-            }.lparams {
-                width = matchParent
-                height = wrapContent
-            }
-
-        }
-    }
-
 }
