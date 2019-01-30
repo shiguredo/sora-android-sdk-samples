@@ -291,8 +291,8 @@ class VideoChatRoomActivityUI(
         activity.setContentView(R.layout.activity_video_chat_room)
         activity.channelNameText.text = channelName
         this.renderersLayoutCalculator = RendererLayoutCalculator(
-                width = SoraScreenUtil.size(activity).x -  dp2px(20 * 4),
-                height = SoraScreenUtil.size(activity).y - dp2px(20 * 4 + 100 + 50)
+                width = SoraScreenUtil.size(activity).x - dp2px(20 * 2),
+                height = SoraScreenUtil.size(activity).y - dp2px(20 * 2 + 100)
         )
         activity.toggleMuteButton.setOnClickListener { activity.toggleMuted() }
         activity.switchCameraButton.setOnClickListener { activity.switchCamera() }
