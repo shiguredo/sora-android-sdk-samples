@@ -3,9 +3,9 @@ package jp.shiguredo.sora.sample.ui
 import android.annotation.TargetApi
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.BuildConfig
@@ -86,7 +86,7 @@ class ScreencastSetupActivity : AppCompatActivity() {
                 stateText         = "live on ${channelId}",
                 stateIcon         = R.drawable.icon,
                 notificationIcon  = R.drawable.icon,
-                boundActivityName = MainActivity::class.java.canonicalName,
+                boundActivityName = MainActivity::class.java.canonicalName!!,
                 serviceClass      = SoraScreencastService::class
         )
         screencastStarter?.start()

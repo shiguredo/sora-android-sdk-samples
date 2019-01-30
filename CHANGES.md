@@ -18,6 +18,9 @@
 - SDP semantics の選択肢のデフォルト値を Unified Plan に変更した
 - Kotlin を 1.3.20 に上げた
 - Anko を依存から外した
+- Android support library から androidx に移行した
+- PermissionsDispatcher を 4.3.0 に上げた
+- compileSdkVersion, targetSdkVersion を 28 に上げた
 
 ### ADD
 

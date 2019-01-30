@@ -7,19 +7,19 @@ import android.os.Parcelable
 
 @TargetApi(21)
 class ScreencastRequest(
-        val data:              Intent,
-        val signalingEndpoint: String,
-        val channelId:         String,
-        val signalingMetadata: String,
+        val data:              Intent?,
+        val signalingEndpoint: String?,
+        val channelId:         String?,
+        val signalingMetadata: String?,
         val videoScale:        Float,
         val videoFPS:          Int,
-        val videoCodec:        String,
-        val audioCodec:        String,
-        val stateTitle:        String,
-        val stateText:         String,
+        val videoCodec:        String?,
+        val audioCodec:        String?,
+        val stateTitle:        String?,
+        val stateText:         String?,
         val stateIcon:         Int,
         val notificationIcon:  Int,
-        val boundActivityName: String,
+        val boundActivityName: String?,
         val multistream:       Boolean
 ) : Parcelable {
     constructor(parcel: Parcel) : this(

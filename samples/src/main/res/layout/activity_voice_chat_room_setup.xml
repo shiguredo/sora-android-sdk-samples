@@ -18,7 +18,7 @@
             android:background="@drawable/app_background"
             android:orientation="vertical" >
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
@@ -53,7 +53,7 @@
                     layout="@layout/signaling_selection"
                     android:id="@+id/sdpSemanticsSelection"/>
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
     </ScrollView>

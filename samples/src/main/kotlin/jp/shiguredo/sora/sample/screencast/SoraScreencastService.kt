@@ -12,8 +12,8 @@ import android.media.projection.MediaProjection
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
-import android.support.annotation.RequiresApi
-import android.support.v4.app.NotificationCompat
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
 import android.view.LayoutInflater
 import android.view.View
 import jp.shiguredo.sora.sample.R
@@ -147,7 +147,7 @@ class SoraScreencastService : Service() {
     }
 
     private fun createBoundActivityIntent(): Intent {
-        val intent = Intent(this, Class.forName(req!!.boundActivityName))
+        val intent = Intent(this, Class.forName(req!!.boundActivityName!!))
         intent.putExtra("CHANNEL_ID", req!!.channelId)
         return intent
     }
@@ -243,8 +243,8 @@ class SoraScreencastService : Service() {
             // when audio stream is disabled, it'll crush.
             enableAudioUpstream()
             enableVideoUpstream(capturer!!, egl?.eglBaseContext)
-            videoCodec = SoraVideoOption.Codec.valueOf(req!!.videoCodec)
-            audioCodec = SoraAudioOption.Codec.valueOf(req!!.audioCodec)
+            videoCodec = SoraVideoOption.Codec.valueOf(req!!.videoCodec!!)
+            audioCodec = SoraAudioOption.Codec.valueOf(req!!.audioCodec!!)
 
             if (req!!.multistream) {
                 enableMultistream()
@@ -252,9 +252,9 @@ class SoraScreencastService : Service() {
         }
         mediaChannel = SoraMediaChannel(
                 context           = this,
-                signalingEndpoint = req!!.signalingEndpoint,
+                signalingEndpoint = req!!.signalingEndpoint!!,
                 channelId         = req!!.channelId,
-                signalingMetadata = req!!.signalingMetadata,
+                signalingMetadata = req!!.signalingMetadata!!,
                 mediaOption       = mediaOption,
                 listener          = channelListener
         )

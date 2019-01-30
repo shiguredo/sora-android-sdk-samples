@@ -2,8 +2,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
+        targetSdkVersion 28
         minSdkVersion 16
         externalNativeBuild {
             cmake {

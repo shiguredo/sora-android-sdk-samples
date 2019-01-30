@@ -25,7 +25,7 @@ class SoraScreencastServiceStarter(
         private val videoCodec:        String   = "VP9",
         private val audioCodec:        String   = "OPUS",
         private val multistream:       Boolean  = false,
-        private val boundActivityName: String = activity.javaClass.canonicalName,
+        private val boundActivityName: String = activity.javaClass.canonicalName!!,
         private val serviceClass:      KClass<SoraScreencastService>
 ) {
     companion object {
