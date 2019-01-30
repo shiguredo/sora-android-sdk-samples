@@ -2,25 +2,18 @@ package jp.shiguredo.sora.sample.ui
 
 import android.annotation.TargetApi
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.text.InputType
-import android.text.method.DigitsKeyListener
 import android.util.Log
-import android.widget.EditText
 import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.screencast.SoraScreencastService
 import jp.shiguredo.sora.sample.screencast.SoraScreencastServiceStarter
-import jp.shiguredo.sora.sample.ui.util.materialSpinner
-import org.jetbrains.anko.*
-import org.jetbrains.anko.design.textInputLayout
-import org.jetbrains.anko.sdk21.listeners.onClick
-
+import kotlinx.android.synthetic.main.activity_screencast_setup.*
+import kotlinx.android.synthetic.main.signaling_selection.view.*
 
 @TargetApi(21)
 class ScreencastSetupActivity : AppCompatActivity() {
@@ -29,26 +22,49 @@ class ScreencastSetupActivity : AppCompatActivity() {
         val TAG = ScreencastSetupActivity::class.simpleName
     }
 
+    private val videoCodecOptions  = listOf("VP9", "VP8", "H264")
+    private val audioCodecOptions  = listOf("OPUS", "PCMU")
+    private val streamTypeOptions = listOf("SINGLE-UP", "BIDIRECTIONAL")
+
     private var screencastStarter: SoraScreencastServiceStarter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
-        setupUI()
+        setContentView(R.layout.activity_screencast_setup)
+
+        videoCodecSelection.name.text = "VIDEO CODEC"
+        videoCodecSelection.spinner.setItems(videoCodecOptions)
+        audioCodecSelection.name.text = "AUDIO CODEC"
+        audioCodecSelection.spinner.setItems(audioCodecOptions)
+        streamTypeSelection.name.text = "STREAM TYPE"
+        streamTypeSelection.spinner.setItems(streamTypeOptions)
+
+        start.setOnClickListener {
+            val channelName = channelNameInput.text.toString()
+            val videoCodec = selectedItem(videoCodecSelection.spinner)
+            val audioCodec = selectedItem(audioCodecSelection.spinner)
+            val streamType = selectedItem(streamTypeSelection.spinner)
+            startScreencast(channelName, videoCodec, audioCodec, streamType)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         screencastStarter?.onActivityResult(requestCode, resultCode, data)
     }
 
-    internal fun startScreensast(channelId:   String,
+    private fun startScreencast(channelId:   String,
                                  videoCodec:  String,
                                  audioCodec:  String,
-                                 multistream: Boolean) {
+                                 streamType:  String) {
 
-
+        val multistream = when (streamType) {
+            "SINGLE-UP"     -> false
+            "BIDIRECTIONAL" -> true
+            else            -> false
+        }
         if (SoraScreencastService.isRunning()) {
-            Snackbar.make(this.contentView!!,
+            Snackbar.make(rootLayout,
                     "既に起動中です",
                     Snackbar.LENGTH_LONG)
                     .setAction("OK") { }
@@ -67,7 +83,7 @@ class ScreencastSetupActivity : AppCompatActivity() {
                 videoFPS          = 30,
                 multistream       = multistream,
                 stateTitle        = "Sora Screencast",
-                stateText         = "live on " + channelId,
+                stateText         = "live on ${channelId}",
                 stateIcon         = R.drawable.icon,
                 notificationIcon  = R.drawable.icon,
                 boundActivityName = MainActivity::class.java.canonicalName,
@@ -92,207 +108,7 @@ class ScreencastSetupActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private var channelNameInput:   EditText? = null
-    private var videoCodecSpinner:  MaterialSpinner? = null
-    private var audioCodecSpinner:  MaterialSpinner? = null
-    private var multistreamSpinner: MaterialSpinner? = null
-
-    val videoCodecOptions  = listOf("VP9", "VP8", "H264")
-    val audioCodecOptions  = listOf("OPUS", "PCMU")
-    val multistreamOptions = listOf("NO", "YES")
-
-    private fun setupUI() {
-
-        val spinnerBackgroundColor = "#f6f6f6"
-        val spinnerWidth = 160
-
-        verticalLayout {
-
-            padding = dip(6)
-
-            lparams {
-                width = matchParent
-                height = matchParent
-            }
-
-            backgroundResource = R.drawable.app_background
-
-            textInputLayout {
-
-                padding = dip(10)
-
-                lparams {
-                    width = matchParent
-                    height = wrapContent
-                    margin = dip(10)
-                }
-
-                backgroundColor = Color.parseColor("#ffffff")
-
-                channelNameInput = editText {
-                    hint = "Channel Name"
-                    keyListener = DigitsKeyListener.getInstance(
-                            "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-                    inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-                    setText(BuildConfig.CHANNEL_ID)
-                }
-
-                button("START") {
-                    backgroundColor = Color.parseColor("#F06292")
-                    textColor = Color.WHITE
-
-                    onClick {
-                        val channelName = channelNameInput!!.text.toString()
-                        if (channelName.isEmpty()) {
-                            showInputError()
-                            return@onClick
-                        }
-                        val videoCodec = videoCodecOptions[videoCodecSpinner!!.selectedIndex]
-                        val audioCodec = audioCodecOptions[audioCodecSpinner!!.selectedIndex]
-                        val multistream = when (multistreamOptions[multistreamSpinner!!.selectedIndex]) {
-                            "YES" -> true
-                            "NO"  -> false
-                            else  -> true
-                        }
-                        startScreensast(channelName, videoCodec, audioCodec, multistream)
-                    }
-                }.lparams {
-                    width = matchParent
-                    height = wrapContent
-                    margin = dip(10)
-                }
-
-
-                relativeLayout {
-
-                    lparams {
-                        width = matchParent
-                        height = wrapContent
-                        margin = dip(10)
-                    }
-
-                    backgroundColor = Color.parseColor(spinnerBackgroundColor)
-
-                    textView {
-                        padding = dip(10)
-                        backgroundColor = Color.parseColor(spinnerBackgroundColor)
-                        maxLines = 10
-                        text = "VIDEO CODEC"
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        margin = dip(10)
-                        alignParentLeft()
-                        centerVertically()
-                    }
-
-
-                    videoCodecSpinner = materialSpinner {
-
-                        padding = dip(10)
-
-                        lparams {
-                            width = dip(spinnerWidth)
-                            height = wrapContent
-                            margin = dip(10)
-                            alignParentRight()
-                            centerVertically()
-                        }
-                    }
-
-                    videoCodecSpinner?.setItems(videoCodecOptions)
-                }
-
-                relativeLayout {
-
-                    lparams {
-                        width = matchParent
-                        height = wrapContent
-                        margin = dip(10)
-                    }
-
-                    backgroundColor = Color.parseColor(spinnerBackgroundColor)
-
-                    textView {
-                        maxLines = 10
-                        text = "AUDIO CODEC"
-                        padding = dip(10)
-                        backgroundColor = Color.parseColor(spinnerBackgroundColor)
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        margin = dip(10)
-                        alignParentLeft()
-                        centerVertically()
-                    }
-
-                    audioCodecSpinner = materialSpinner {
-                        padding = dip(10)
-
-                        lparams {
-                            width = dip(spinnerWidth)
-                            height = wrapContent
-                            margin = dip(10)
-                            alignParentRight()
-                            centerVertically()
-                        }
-                    }
-
-                    audioCodecSpinner?.setItems(audioCodecOptions)
-
-
-                }
-
-                relativeLayout {
-
-                    lparams {
-                        width = matchParent
-                        height = wrapContent
-                        margin = dip(10)
-                    }
-
-                    backgroundColor = Color.parseColor(spinnerBackgroundColor)
-
-                    textView {
-                        maxLines = 10
-                        text = "MULTISTREAM"
-                        padding = dip(10)
-                        backgroundColor = Color.parseColor(spinnerBackgroundColor)
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        margin = dip(10)
-                        alignParentLeft()
-                        centerVertically()
-                    }
-
-
-                    multistreamSpinner = materialSpinner {
-                        padding = dip(10)
-
-                        lparams {
-                            width = dip(spinnerWidth)
-                            height = wrapContent
-                            margin = dip(10)
-                            alignParentRight()
-                            centerVertically()
-                        }
-                    }
-
-                    multistreamSpinner?.setItems(multistreamOptions)
-                }
-
-            }
-
-        }
+    private fun selectedItem(spinner: MaterialSpinner): String {
+        return spinner.getItems<String>()[spinner.selectedIndex]
     }
-
-    private fun showInputError() {
-        Snackbar.make(this.contentView!!,
-                "Channel Nameを適切に入力してください",
-                Snackbar.LENGTH_LONG)
-                .setAction("OK") { }
-                .show()
-    }
-
 }
