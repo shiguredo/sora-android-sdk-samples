@@ -63,18 +63,16 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else  -> true
         }
 
-        videoCodec = SoraVideoOption.Codec.valueOf(
-                intent.getStringExtra("VIDEO_CODEC"))
+        videoCodec = SoraVideoOption.Codec.valueOf(intent.getStringExtra("VIDEO_CODEC"))
 
-        audioCodec = SoraAudioOption.Codec.valueOf(
-                intent.getStringExtra("AUDIO_CODEC"))
+        audioCodec = SoraAudioOption.Codec.valueOf(intent.getStringExtra("AUDIO_CODEC"))
 
-        when (intent.getStringExtra("STREAM_TYPE")) {
-            "BIDIRECTIONAL" -> { streamType = SoraStreamType.BIDIRECTIONAL }
-            "SINGLE-UP"     -> { streamType = SoraStreamType.SINGLE_UP     }
-            "SINGLE-DOWN"   -> { streamType = SoraStreamType.SINGLE_DOWN   }
-            "MULTI-DOWN"    -> { streamType = SoraStreamType.MULTI_DOWN    }
-            else            -> { streamType = SoraStreamType.BIDIRECTIONAL }
+        streamType = when (intent.getStringExtra("STREAM_TYPE")) {
+            "BIDIRECTIONAL" -> SoraStreamType.BIDIRECTIONAL
+            "SINGLE-UP"     -> SoraStreamType.SINGLE_UP
+            "SINGLE-DOWN"   -> SoraStreamType.SINGLE_DOWN
+            "MULTI-DOWN"    -> SoraStreamType.MULTI_DOWN
+            else            -> SoraStreamType.BIDIRECTIONAL
         }
 
         audioEnabled = when (intent.getStringExtra("AUDIO_ENABLED")) {
@@ -142,10 +140,10 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else        -> bitRateStr.toInt()
         }
 
-        when (intent.getStringExtra("SDP_SEMANTICS")) {
-            "Unified Plan" -> { sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN }
-            "Plan B"       -> { sdpSemantics = PeerConnection.SdpSemantics.PLAN_B }
-            else           -> { sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN }
+        sdpSemantics = when (intent.getStringExtra("SDP_SEMANTICS")) {
+            "Unified Plan" -> PeerConnection.SdpSemantics.UNIFIED_PLAN
+            "Plan B"       -> PeerConnection.SdpSemantics.PLAN_B
+            else           -> PeerConnection.SdpSemantics.UNIFIED_PLAN
         }
 
         ui = VideoChatRoomActivityUI(

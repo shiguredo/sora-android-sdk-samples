@@ -41,7 +41,9 @@ class SoraVideoChannel(
         private var listener:          Listener?
 ) {
 
-    val TAG = SoraVideoChannel::class.simpleName
+    companion object {
+        val TAG = SoraVideoChannel::class.simpleName
+    }
 
     private var egl: EglBase? = EglBase.create()
 
@@ -133,9 +135,6 @@ class SoraVideoChannel(
     private var capturer: CameraVideoCapturer? = null
 
     private var capturing = false
-
-    val isCapturing: Boolean
-        get() = capturing
 
     private var closed    = false
 

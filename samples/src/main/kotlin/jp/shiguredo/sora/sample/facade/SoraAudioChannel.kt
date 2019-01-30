@@ -72,10 +72,6 @@ class SoraAudioChannel(
 
     private var closed = false
 
-    fun mute(mute: Boolean) {
-        localAudioTrack?.setEnabled(!mute)
-    }
-
     fun connect() {
 
         val mediaOption = SoraMediaOption().apply {
