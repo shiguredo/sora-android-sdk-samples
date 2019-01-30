@@ -147,8 +147,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else           -> { sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN }
         }
 
-        setContentView(R.layout.activity_video_chat_room)
-
         ui = VideoChatRoomActivityUI(
                 activity        = this,
                 channelName     = channelName,
@@ -290,6 +288,7 @@ class VideoChatRoomActivityUI(
     private val renderersLayoutCalculator: RendererLayoutCalculator
 
     init {
+        activity.setContentView(R.layout.activity_video_chat_room)
         activity.channelNameText.text = channelName
         this.renderersLayoutCalculator = RendererLayoutCalculator(
                 width = SoraScreenUtil.size(activity).x -  dp2px(20 * 4),
