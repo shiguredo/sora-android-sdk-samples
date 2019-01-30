@@ -18,7 +18,6 @@ android {
         def endpoint   = findProperty("sora.signaling_endpoint") ?: signaling_endpoint
         def channel_id = findProperty("sora.channel_id")         ?: channel_id
         buildConfigField("String", "SIGNALING_ENDPOINT", "\"${endpoint}\"")
-        buildConfigField("String", "CHANNEL_ID",         "\"${channel_id}\"")
         resValue("string", "channelId", "\"${channel_id}\"")
     }
 
