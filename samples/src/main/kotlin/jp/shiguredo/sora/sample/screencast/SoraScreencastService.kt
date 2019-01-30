@@ -8,17 +8,14 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Color
 import android.media.projection.MediaProjection
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
 import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
-import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
@@ -27,8 +24,7 @@ import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
-import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk21.listeners.onClick
+import kotlinx.android.synthetic.main.screencast_service.view.*
 import org.webrtc.*
 
 @TargetApi(21)
@@ -78,11 +74,9 @@ class SoraScreencastService : Service() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-
         SoraScreencastService.running = true
 
         egl = EglBase.create()
-
         req = intent.getParcelableExtra("SCREENCAST_REQUEST")
         if (req == null) {
             SoraLogger.w(TAG, "request not found")
@@ -118,131 +112,44 @@ class SoraScreencastService : Service() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(): String {
-        val channelId = "jp.shiguredo.sora.sample"
-        val channelName = "Sora SDK Sample"
-        val channel = NotificationChannel(channelId,
-                channelName, NotificationManager.IMPORTANCE_NONE)
+        val notificationChannelId = "jp.shiguredo.sora.sample"
+        val notificationChannelName = "Sora SDK Sample"
+        val channel = NotificationChannel(notificationChannelId,
+                notificationChannelName, NotificationManager.IMPORTANCE_NONE)
         val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         service.createNotificationChannel(channel)
-        return channelId
+        return notificationChannelId
     }
 
-    fun setupUI() {
-        layout = createLayout()
-        uiContainer = ScreencastUIContainer(this, layout!!, matchParent, wrapContent)
+    private fun setupUI() {
+        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        layout = inflater.inflate(R.layout.screencast_service, null)
+        layout!!.setPadding(0, SoraScreenUtil.statusBarHeight(this), 0, 0)
+        val navigationBar = layout!!.navigationBar
+        navigationBar.launchActivityView.setImageResource(req!!.notificationIcon)
+        navigationBar.togglePositionButton.setImageResource(R.drawable.ic_unfold_more_white_48dp)
+        navigationBar.stateText.text = "${req!!.stateTitle}\n${req!!.stateText}"
+        navigationBar.toggleMutedButton.setImageResource(R.drawable.ic_mic_white_48dp)
+        navigationBar.closeChannelButton.setImageResource(R.drawable.ic_close_white_48dp)
+
+        navigationBar.togglePositionButton.setOnClickListener { toggleNavigationBarPosition() }
+        navigationBar.launchActivityView.setOnClickListener { launchActivity() }
+        navigationBar.toggleMutedButton.setOnClickListener { toggleMuted() }
+        navigationBar.closeChannelButton.setOnClickListener { closeChannel() }
+
+        uiContainer = ScreencastUIContainer(this, layout!!)
     }
 
     private fun launchActivity() {
         val intent = createBoundActivityIntent()
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
     }
 
-    internal fun createBoundActivityIntent(): Intent {
+    private fun createBoundActivityIntent(): Intent {
         val intent = Intent(this, Class.forName(req!!.boundActivityName))
         intent.putExtra("CHANNEL_ID", req!!.channelId)
         return intent
-    }
-
-    private var navigationBar: LinearLayout? = null
-    private var toggleMuteButton: ImageButton? = null
-
-    // TODO remove Anko dependency
-    internal fun createLayout() : View {
-
-        return frameLayout {
-
-            lparams {
-                width   = matchParent
-                height  = wrapContent
-                setPadding(0, SoraScreenUtil.statusBarHeight(this@SoraScreencastService), 0, 0)
-            }
-
-            navigationBar = linearLayout {
-
-                backgroundColor = Color.argb(200, 0, 0, 0)
-
-                lparams {
-                    width  = matchParent
-                    height = wrapContent
-                }
-
-                verticalGravity = Gravity.CENTER_VERTICAL
-
-                padding = dip(10)
-
-
-                imageButton {
-                    image = resources.getDrawable(R.drawable.ic_unfold_more_white_48dp, null)
-                    scaleType = ImageView.ScaleType.FIT_CENTER
-                    background = resources.getDrawable(R.drawable.button_background, null)
-
-                    onClick {
-                        toggleNavigationBarPosition()
-                    }
-                }.lparams {
-                    width = dip(50)
-                    height = dip(50)
-                    rightMargin = dip(10)
-                }
-
-                imageView {
-                    image = resources.getDrawable(req!!.notificationIcon, null)
-
-                    onClick {
-                       launchActivity()
-                    }
-                }.lparams {
-                    width = dip(50)
-                    height = dip(50)
-                }
-
-                textView {
-                    padding = dip(10)
-                    text = req!!.stateTitle + "\n" + req!!.stateText
-                    textSize = 14.0f
-                    textColor = Color.WHITE
-                    maxLines = 2
-                }.lparams {
-                    height = wrapContent
-                    width  = matchParent
-                    weight = 1f
-                }
-
-                toggleMuteButton = imageButton {
-                    image = resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
-                    scaleType = ImageView.ScaleType.FIT_CENTER
-                    background = resources.getDrawable(R.drawable.enabled_button_background, null)
-
-                    onClick {
-                        toggleMuted()
-                    }
-                }.lparams {
-                    width = dip(50)
-                    height = dip(50)
-                    rightMargin = dip(10)
-                }
-
-                imageButton {
-                    image = resources.getDrawable(R.drawable.ic_close_white_48dp, null)
-                    scaleType = ImageView.ScaleType.FIT_CENTER
-                    background = resources.getDrawable(R.drawable.close_button_background, null)
-
-                    onClick {
-                        closeChannel()
-                    }
-                }.lparams {
-                    width = dip(50)
-                    height = dip(50)
-                }
-
-            }
-
-        }
-    }
-
-    override fun onCreate() {
-        super.onCreate()
     }
 
     override fun onDestroy() {
@@ -256,14 +163,15 @@ class SoraScreencastService : Service() {
 
     private var muted = true
     private fun toggleMuted() {
-        if (muted) {
-            localAudioTrack?.setEnabled(true)
-            toggleMuteButton?.image = resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
-        } else {
-            localAudioTrack?.setEnabled(false)
-            toggleMuteButton?.image = resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
-        }
         muted = !muted
+        localAudioTrack?.setEnabled(!muted)
+        val navigationBar = layout!!.navigationBar
+        val resourceId = if (muted) {
+            R.drawable.ic_mic_white_48dp
+        } else {
+            R.drawable.ic_mic_off_black_48dp
+        }
+        navigationBar.toggleMutedButton.setImageResource(resourceId)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -300,7 +208,7 @@ class SoraScreencastService : Service() {
         }
     }
 
-    internal fun stopCapturer() {
+    private fun stopCapturer() {
         capturer?.let {
             if (capturing) {
                 capturing = false
@@ -322,7 +230,7 @@ class SoraScreencastService : Service() {
                 }
             }
 
-    internal fun openChannel() {
+    private fun openChannel() {
 
         capturer = ScreenCapturerAndroid(req!!.data, mediaProjectionCallback)
 
@@ -353,8 +261,9 @@ class SoraScreencastService : Service() {
         mediaChannel!!.connect()
     }
 
-    internal fun closeChannel() {
-        runOnUiThread {
+    private fun closeChannel() {
+        val handler = Handler()
+        handler.post {
             mediaChannel?.disconnect()
             mediaChannel = null
             stopCapturer()
