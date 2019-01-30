@@ -264,6 +264,7 @@ class SoraScreencastService : Service() {
     private fun closeChannel() {
         val handler = Handler()
         handler.post {
+            SoraLogger.d(TAG, "closeChannel")
             mediaChannel?.disconnect()
             mediaChannel = null
             stopCapturer()

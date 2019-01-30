@@ -7,6 +7,7 @@ import android.media.AudioManager
 import android.media.effect.EffectFactory
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
@@ -176,6 +177,7 @@ class EffectedVideoChatActivity : AppCompatActivity() {
 
         channel = SoraVideoChannel(
                 context           = this,
+                handler           = Handler(),
                 signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
                 channelId         = channelName,
                 signalingMetadata = "",

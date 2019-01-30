@@ -4,6 +4,7 @@ import android.annotation.TargetApi
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
@@ -122,6 +123,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
         channel = SoraAudioChannel(
                 context           = this,
+                handler           = Handler(),
                 signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
                 channelId         = channelName,
                 signalingMetadata = "",

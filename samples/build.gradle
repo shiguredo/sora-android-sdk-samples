@@ -67,15 +67,6 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:$support_version"
     implementation 'com.jaredrummler:material-spinner:1.2.5'
 
-    // Anko libs
-    ext.anko_version = '0.10.8'
-    implementation "org.jetbrains.anko:anko-sdk21:${anko_version}"
-    implementation "org.jetbrains.anko:anko-appcompat-v7:${anko_version}"
-    implementation "org.jetbrains.anko:anko-sdk21-listeners:${anko_version}"
-    implementation "org.jetbrains.anko:anko-design:${anko_version}"
-    implementation "org.jetbrains.anko:anko-cardview-v7:${anko_version}"
-    implementation "org.jetbrains.anko:anko-recyclerview-v7:${anko_version}"
-
     ext.permissionsdispatcher_version = '3.3.1'
     implementation ("com.github.hotchemi:permissionsdispatcher:${permissionsdispatcher_version}") {
         exclude module: "support-v13"

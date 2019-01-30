@@ -14,11 +14,12 @@ import jp.shiguredo.sora.sdk.channel.signaling.message.NotificationMessage
 import jp.shiguredo.sora.sdk.channel.signaling.message.PushMessage
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
-import org.jetbrains.anko.runOnUiThread
 import org.webrtc.*
+import android.os.Handler
 
 class SoraVideoChannel(
         private val context:           Context,
+        private val handler:           Handler,
         private val signalingEndpoint: String,
         private val channelId:         String,
         private val signalingMetadata: String = "",
@@ -58,7 +59,7 @@ class SoraVideoChannel(
 
         override fun onConnect(mediaChannel: SoraMediaChannel) {
             SoraLogger.d(TAG, "[video_channel] @onConnected")
-            context.runOnUiThread {
+            handler.post {
                 listener?.onConnect(this@SoraVideoChannel)
             }
         }
@@ -70,21 +71,21 @@ class SoraVideoChannel(
 
         override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason) {
             SoraLogger.d(TAG, "[video_channel] @onError")
-            context.runOnUiThread {
+            handler.post {
                 listener?.onError(this@SoraVideoChannel, reason)
             }
         }
 
         override fun onAddRemoteStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
             SoraLogger.d(TAG, "[video_channel] @onAddRemoteStream:${ms.id}")
-            context.runOnUiThread {
+            handler.post {
                 remoteRenderersSlot?.onAddRemoteStream(ms)
             }
         }
 
         override fun onRemoveRemoteStream(mediaChannel: SoraMediaChannel, label: String) {
             SoraLogger.d(TAG, "[video_channel] @onRemoveRemoteStream:${label}")
-            context.runOnUiThread {
+            handler.post {
                 remoteRenderersSlot?.onRemoveRemoteStream(label)
             }
         }
@@ -97,7 +98,7 @@ class SoraVideoChannel(
             }
 
             if (needLocalRenderer) {
-                context.runOnUiThread {
+                handler.post {
                     if (ms.videoTracks.size > 0) {
                         localRenderer = createSurfaceViewRenderer()
                         ms.videoTracks[0].addSink(localRenderer!!)
@@ -105,7 +106,7 @@ class SoraVideoChannel(
                     }
                 }
             }
-            context.runOnUiThread {
+            handler.post {
                 startCapturer()
             }
 
@@ -113,7 +114,7 @@ class SoraVideoChannel(
 
         override fun onAttendeesCountUpdated(mediaChannel: SoraMediaChannel, attendees: ChannelAttendeesCount) {
             SoraLogger.d(TAG, "[video_channel] @onAttendeesCountUpdated")
-            context.runOnUiThread {
+            handler.post {
                 listener?.onAttendeesCountUpdated(this@SoraVideoChannel, attendees)
             }
         }
@@ -145,13 +146,13 @@ class SoraVideoChannel(
     private val rendererSlotListener =  object : SoraRemoteRendererSlot.Listener {
 
         override fun onAddRenderer(renderer: SurfaceViewRenderer) {
-            context.runOnUiThread {
+            handler.post {
                 listener?.onAddRemoteRenderer(this@SoraVideoChannel, renderer)
             }
         }
 
         override fun onRemoveRenderer(renderer: SurfaceViewRenderer) {
-            context.runOnUiThread {
+            handler.post {
                 listener?.onRemoveRemoteRenderer(this@SoraVideoChannel, renderer)
             }
         }
@@ -266,7 +267,7 @@ class SoraVideoChannel(
         if (!closed) {
             closed = true
 
-            context.runOnUiThread {
+            handler.post {
                 listener?.onClose(this@SoraVideoChannel)
 
                 localRenderer?.release()
