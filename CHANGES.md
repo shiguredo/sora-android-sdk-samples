@@ -20,6 +20,17 @@
 - Android support library から androidx に移行した
 - PermissionsDispatcher を 4.3.0 に上げた
 - compileSdkVersion, targetSdkVersion を 28 に上げた
+- video chat room に video enable オプションを追加した
+
+### CHANGE
+
+- SDP semantics の選択肢のデフォルト値を Unified Plan に変更した
+  - upstream のシグナリングで audio や video が false の場合でも、他の配信者の
+    audio や video のトラックを受信する SDP が Sora から offer されるように変わります。
+  - Plan B のときには audio false のときには audio track が SDP に含まれず、
+    video が false のときには video のトラックが含まれませんでした。
+    これは Plan B の制限による挙動でした。
+
 
 ### ADD
 
