@@ -17,6 +17,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     }
 
     private val videoCodecOptions = listOf("VP9", "VP8", "H264")
+    private val videoEnabledOptions = listOf("YES", "NO")
     private val audioCodecOptions = listOf("OPUS", "PCMU")
     private val audioEnabledOptions = listOf("YES", "NO")
     private val streamTypeOptions = listOf("BIDIRECTIONAL", "SINGLE-UP", "SINGLE-DOWN", "MULTI-DOWN")
@@ -38,6 +39,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
 
         start.setOnClickListener { startVideoChat() }
 
+        videoEnabledSelection.name.text = "VIDEO ENABLED"
+        videoEnabledSelection.spinner.setItems(videoEnabledOptions)
         videoCodecSelection.name.text = "VIDEO CODEC"
         videoCodecSelection.spinner.setItems(videoCodecOptions)
         audioEnabledSelection.name.text = "AUDIO ENABLED"
@@ -65,6 +68,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
 
         val streamType = selectedItem(streamTypeSelection.spinner)
         val videoCodec = selectedItem(videoCodecSelection.spinner)
+        val videoEnabled = selectedItem(videoEnabledSelection.spinner)
         val audioCodec = selectedItem(audioCodecSelection.spinner)
         val audioEnabled = selectedItem(audioEnabledSelection.spinner)
         val bitRate = selectedItem(bitRateSelection.spinner)
@@ -76,6 +80,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("CHANNEL_NAME", channelName)
         intent.putExtra("STREAM_TYPE", streamType)
         intent.putExtra("VIDEO_CODEC", videoCodec)
+        intent.putExtra("VIDEO_ENABLED", videoEnabled)
         intent.putExtra("AUDIO_CODEC", audioCodec)
         intent.putExtra("AUDIO_ENABLED", audioEnabled)
         intent.putExtra("BITRATE", bitRate)
