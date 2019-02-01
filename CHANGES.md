@@ -21,6 +21,7 @@
 - PermissionsDispatcher を 4.3.0 に上げた
 - compileSdkVersion, targetSdkVersion を 28 に上げた
 - video chat room に video enable オプションを追加した
+- Android Studio 3.3 に対応した
 
 ### CHANGE
 
