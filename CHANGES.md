@@ -14,6 +14,7 @@
 
 ### UPDATE
 
+- SDK のバージョンを 1.8.0 に上げた
 - `android:extractNativeLibs` を false に設定した
 - Kotlin を 1.3.20 に上げた
 - Anko を依存から外した
