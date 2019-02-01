@@ -13,7 +13,7 @@ import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
-import jp.co.cyberagent.android.gpuimage.*
+import jp.co.cyberagent.android.gpuimage.filter.*
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.camera.EffectCameraVideoCapturerFactory
@@ -77,8 +77,8 @@ class EffectedVideoChatActivity : AppCompatActivity() {
                 "EMBOSS" -> {
                     addGPUImageFilter(GPUImageEmbossFilter())
                 }
-                "SEPIA" -> {
-                    addGPUImageFilter(GPUImageSepiaFilter())
+                "SEPIA TONE" -> {
+                    addGPUImageFilter(GPUImageSepiaToneFilter())
                 }
                 "NONE" -> {
                     // For Debug

@@ -23,6 +23,7 @@
 - compileSdkVersion, targetSdkVersion を 28 に上げた
 - video chat room に video enable オプションを追加した
 - Android Studio 3.3 に対応した
+- `jp.co.cyberagent.android:gpuimage` を 2.0.3 に上げた
 
 ### CHANGE
 
@@ -35,7 +36,7 @@
 
 ### ADD
 
-- Effected video chat にセピア化のエフェクトを追加した
+- Effected video chat にセピアトーン化のエフェクトを追加した
   - Thanks to @daneko
 - Effected video chat にデバッグ、比較用としてなにもしないエフェクトを追加した
   - Thanks to @daneko

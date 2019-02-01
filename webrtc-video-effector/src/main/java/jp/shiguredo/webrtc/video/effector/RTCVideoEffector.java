@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageFilter;
 import jp.shiguredo.webrtc.video.effector.filter.FrameImageFilter;
 import jp.shiguredo.webrtc.video.effector.filter.GPUImageFilterWrapper;
 import jp.shiguredo.webrtc.video.effector.filter.MediaEffectFilter;
