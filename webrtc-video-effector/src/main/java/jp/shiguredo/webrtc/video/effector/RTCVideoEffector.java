@@ -3,12 +3,13 @@ package jp.shiguredo.webrtc.video.effector;
 import org.webrtc.GlUtil;
 import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.ThreadUtils;
+import org.webrtc.VideoFrame;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageFilter;
 import jp.shiguredo.webrtc.video.effector.filter.FrameImageFilter;
 import jp.shiguredo.webrtc.video.effector.filter.GPUImageFilterWrapper;
 import jp.shiguredo.webrtc.video.effector.filter.MediaEffectFilter;
@@ -57,6 +58,7 @@ public class RTCVideoEffector {
     public void addMediaEffectFilter(String name) {
         addMediaEffectFilter(name, null);
     }
+
     public void addMediaEffectFilter(String name,
                                      MediaEffectFilter.Listener listener) {
         VideoEffectorLogger.d(TAG, "addMediaEffectFilter: " + name +
@@ -68,6 +70,7 @@ public class RTCVideoEffector {
         VideoEffectorLogger.d(TAG, "addGPUImageFilter: " + filter.toString());
         this.filters.add(new GPUImageFilterWrapper(filter));
     }
+
     public void addGPUImageFilter(GPUImageFilter filter,
                                   GPUImageFilterWrapper.Listener listener) {
         VideoEffectorLogger.d(TAG, "addGPUImageFilter: " + filter.toString() +
@@ -87,18 +90,30 @@ public class RTCVideoEffector {
         enabled = false;
     }
 
-    ByteBuffer processByteBufferFrame(ByteBuffer byteBuffer, int width, int height,
-                                  int rotation, long timestamp) {
+    VideoFrame.I420Buffer processByteBufferFrame(VideoFrame.I420Buffer i420Buffer,
+                                                 int rotation, long timestamp) {
 
         if (!needToProcessFrame()) {
-            return byteBuffer;
+            return i420Buffer;
         }
 
-        byte[] bytes = byteBuffer.array();
+        // Direct buffer ではない場合スルーする
+        // TODO: direct に変換してあげる手もある
+        if(!i420Buffer.getDataY().isDirect()
+                || !i420Buffer.getDataU().isDirect()
+                || !i420Buffer.getDataV().isDirect()) {
+            return i420Buffer;
+        }
 
-        context.updateFrameInfo(bytes, width, height, rotation, timestamp);
+        int width = i420Buffer.getWidth();
+        int height = i420Buffer.getHeight();
+        int strideY = i420Buffer.getStrideY();
+        int strideU = i420Buffer.getStrideU();
+        int strideV = i420Buffer.getStrideV();
 
-        int stepTextureId = yuvBytesReader.read(bytes, width, height);
+        context.updateFrameInfo(width, height, rotation, timestamp);
+
+        int stepTextureId = yuvBytesReader.read(i420Buffer);
 
         // ビデオフレームの画像は回転された状態で来ることがある
         // グレースケールやセピアフィルタなど、画像全体に均質にかけるエフェクトでは問題にならないが
@@ -122,7 +137,7 @@ public class RTCVideoEffector {
             // TODO
         }
 
-        return yuvBytesDumper.dump(stepTextureId, width, height);
+        return yuvBytesDumper.dump(stepTextureId, width, height, strideY, strideU, strideV);
     }
 
     boolean needToProcessFrame() {

@@ -22,14 +22,16 @@ class SoraScreencastServiceStarter(
         private val signalingMetadata: String   = "",
         private val videoScale:        Float    = 0.5f,
         private val videoFPS:          Int      = 30,
-        private val videoCodec:        String   = "VP8",
+        private val videoCodec:        String   = "VP9",
         private val audioCodec:        String   = "OPUS",
         private val multistream:       Boolean  = false,
-        private val boundActivityName: String = activity.javaClass.canonicalName,
+        private val boundActivityName: String = activity.javaClass.canonicalName!!,
         private val serviceClass:      KClass<SoraScreencastService>
 ) {
-    val REQ_CODE_SCREEN_CAPTURE = 4901
-    val REQ_CODE_OVERLAY        = 4902
+    companion object {
+        const val REQ_CODE_SCREEN_CAPTURE = 4901
+        const val REQ_CODE_OVERLAY        = 4902
+    }
 
     private var resultCode: Int?    = null
     private var resultData: Intent? = null
@@ -71,7 +73,7 @@ class SoraScreencastServiceStarter(
         if (Settings.canDrawOverlays(activity.applicationContext)) {
             startScreenCaptureService()
         } else {
-            val uri = Uri.parse("package:" + activity.packageName)
+            val uri = Uri.parse("package:${activity.packageName}")
             val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, uri)
             activity.startActivityForResult(intent, REQ_CODE_OVERLAY)
         }
@@ -101,4 +103,3 @@ class SoraScreencastServiceStarter(
     }
 
 }
-

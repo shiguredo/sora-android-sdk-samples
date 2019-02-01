@@ -12,8 +12,8 @@ import android.view.WindowManager
 class ScreencastUIContainer(
         val context: Context,
         val view:    View,
-            width:   Int,
-            height:  Int
+            width:   Int  = WindowManager.LayoutParams.MATCH_PARENT,
+            height:  Int  = WindowManager.LayoutParams.WRAP_CONTENT
 ) {
     private var isOnTop = true
     private var windowManager: WindowManager? =
@@ -33,6 +33,7 @@ class ScreencastUIContainer(
                     @Suppress("DEPRECATION")
                     WindowManager.LayoutParams.TYPE_PHONE;
                 }
+
         return WindowManager.LayoutParams(width, height, windowType,
                 createWindowFrags(), PixelFormat.TRANSLUCENT
         )

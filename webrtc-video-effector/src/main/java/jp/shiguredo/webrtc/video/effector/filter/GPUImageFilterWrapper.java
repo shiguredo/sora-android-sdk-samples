@@ -6,7 +6,7 @@ import org.webrtc.GlUtil;
 
 import java.nio.FloatBuffer;
 
-import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageFilter;
 import jp.shiguredo.webrtc.video.effector.VideoEffectorContext;
 
 public class GPUImageFilterWrapper extends FrameImageFilter {
@@ -49,7 +49,7 @@ public class GPUImageFilterWrapper extends FrameImageFilter {
 
     @Override
     public void init() {
-        this.originalFilter.init();
+        this.originalFilter.ifNeedInit();
 
         textureId = GlUtil.generateTexture(GLES20.GL_TEXTURE_2D);
 

@@ -12,6 +12,47 @@
 
 ## develop
 
+## 1.8.0
+
+### UPDATE
+
+- SDK のバージョンを 1.8.0 に上げた
+- `android:extractNativeLibs` を false に設定した
+- Kotlin を 1.3.20 に上げた
+- Anko を依存から外した
+- Android support library から androidx に移行した
+- PermissionsDispatcher を 4.3.0 に上げた
+- compileSdkVersion, targetSdkVersion を 28 に上げた
+- video chat room に video enable オプションを追加した
+- Android Studio 3.3 に対応した
+- `jp.co.cyberagent.android:gpuimage` を 2.0.3 に上げた
+
+### CHANGE
+
+- SDP semantics の選択肢のデフォルト値を Unified Plan に変更した
+  - upstream のシグナリングで audio や video が false の場合でも、他の配信者の
+    audio や video のトラックを受信する SDP が Sora から offer されるように変わります。
+  - Plan B のときには audio false のときには audio track が SDP に含まれず、
+    video が false のときには video のトラックが含まれませんでした。
+    これは Plan B の制限による挙動でした。
+
+### ADD
+
+- Effected video chat にセピアトーン化のエフェクトを追加した
+  - Thanks to @daneko
+- Effected video chat にデバッグ、比較用としてなにもしないエフェクトを追加した
+  - Thanks to @daneko
+
+### CHANGE
+
+- スポットライトルームの初期映像コーデックを VP9 に変更した
+
+### FIX
+
+- Effected video chat で I420 から変換された RGB データがずれていた問題を修正した
+  - これに伴い、NV12/NV21 の経由を廃止し、I420 と RGBA の直接の相互変換とした
+  - Thanks to @daneko
+
 ## 1.7.1
 
 ### ADD

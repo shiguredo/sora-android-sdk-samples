@@ -2,8 +2,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
+        targetSdkVersion 28
         minSdkVersion 16
         externalNativeBuild {
             cmake {
@@ -45,7 +46,7 @@ dependencies {
         transitive = true
     }
 
-    api 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
+    api 'jp.co.cyberagent.android:gpuimage:2.0.3'
 }
 
 configurations.all {
