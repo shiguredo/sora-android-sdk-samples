@@ -31,7 +31,6 @@
     video が false のときには video のトラックが含まれませんでした。
     これは Plan B の制限による挙動でした。
 
-
 ### ADD
 
 - Effected video chat にセピア化のエフェクトを追加した
