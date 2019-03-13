@@ -28,7 +28,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
             "VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD",
             "Res1920x3840", "UHD2160x3840", "UHD2160x4096",
             // Landscape
-            "Res3840x1920")
+            "Res3840x1920", "UHD3840x2160")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val sdpSemanticsOptions = listOf("Unified Plan", "Plan B")
 

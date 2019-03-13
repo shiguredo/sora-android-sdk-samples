@@ -131,6 +131,10 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 videoWidth = SoraVideoOption.FrameSize.Landscape.Res3840x1920.x
                 videoHeight = SoraVideoOption.FrameSize.Landscape.Res3840x1920.y
             }
+            "UHD3840x2160" -> {
+                videoWidth = SoraVideoOption.FrameSize.Landscape.UHD3840x2160.x
+                videoHeight = SoraVideoOption.FrameSize.Landscape.UHD3840x2160.y
+            }
             else -> { }
         }
 
