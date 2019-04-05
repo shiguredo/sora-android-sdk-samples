@@ -16,6 +16,8 @@ android {
         // アプリで参照する設定を BuildConfig / resource に書き込む。
         buildConfigField("String", "SIGNALING_ENDPOINT", "\"${signaling_endpoint}\"")
         resValue("string", "channelId", "\"${channel_id}\"")
+
+        manifestPlaceholders = [usesCleartextTraffic: usesCleartextTraffic];
     }
 
     compileOptions {

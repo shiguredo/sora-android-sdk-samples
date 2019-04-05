@@ -19,6 +19,9 @@ buildscript {
     // アプリから参照する設定項目
     ext.signaling_endpoint = "wss://sora.example.com/signaling"
     ext.channel_id         = "sora"
+
+    // デバッグ用: true に設定すると wss ではなく ws で接続できる
+    ext.usesCleartextTraffic = false
 }
 
 allprojects {
