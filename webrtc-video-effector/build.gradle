@@ -42,8 +42,14 @@ android {
 
 dependencies {
     // Sora Android SDK
-    api("com.github.shiguredo:sora-android-sdk:${sora_android_sdk_version}") {
-        transitive = true
+    if (findProject(':sora-android-sdk') != null) {
+        // module is included
+        api project(':sora-android-sdk')
+    } else {
+        // external dependency
+        api("com.github.shiguredo:sora-android-sdk:${sora_android_sdk_version}") {
+            transitive = true
+        }
     }
 
     api 'jp.co.cyberagent.android:gpuimage:2.0.3'
