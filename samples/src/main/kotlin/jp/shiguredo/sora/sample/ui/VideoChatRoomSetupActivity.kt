@@ -30,6 +30,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
             // Landscape
             "Res3840x1920", "UHD3840x2160")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
+    private val resolutionChangeOptions = listOf("VARIABLE", "FIXED")
+    private val clientIdOptions = listOf("NONE", "BUILD MODEL", "時雨堂", "RANDOM UUID")
     private val sdpSemanticsOptions = listOf("Unified Plan", "Plan B")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +57,10 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         videoSizeSelection.spinner.setItems(videoSizeOptions)
         fpsSelection.name.text = "FPS"
         fpsSelection.spinner.setItems(fpsOptions)
+        resolutionChangeSelection.name.text = "RESOLUTION CHANGE"
+        resolutionChangeSelection.spinner.setItems(resolutionChangeOptions)
+        clientIdSelection.name.text = "CLIENT ID"
+        clientIdSelection.spinner.setItems(clientIdOptions)
         sdpSemanticsSelection.name.text = "SDP SEMANTICS"
         sdpSemanticsSelection.spinner.setItems(sdpSemanticsOptions)
     }
@@ -74,6 +80,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val bitRate = selectedItem(bitRateSelection.spinner)
         val videoSize = selectedItem(videoSizeSelection.spinner)
         val fps = selectedItem(fpsSelection.spinner)
+        val resolutionChange = selectedItem(resolutionChangeSelection.spinner)
+        val clientId = selectedItem(clientIdSelection.spinner)
         val sdpSemantics = selectedItem(sdpSemanticsSelection.spinner)
 
         val intent = Intent(this, VideoChatRoomActivity::class.java)
@@ -86,6 +94,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("BITRATE", bitRate)
         intent.putExtra("VIDEO_SIZE", videoSize)
         intent.putExtra("FPS", fps)
+        intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
+        intent.putExtra("CLIENT_ID", clientId)
         intent.putExtra("SDP_SEMANTICS", sdpSemantics)
 
         startActivity(intent)

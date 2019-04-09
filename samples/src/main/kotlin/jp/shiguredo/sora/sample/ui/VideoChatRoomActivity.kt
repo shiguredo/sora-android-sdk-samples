@@ -25,6 +25,7 @@ import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import kotlinx.android.synthetic.main.activity_video_chat_room.*
 import org.webrtc.PeerConnection
 import org.webrtc.SurfaceViewRenderer
+import java.util.*
 
 class VideoChatRoomActivity : AppCompatActivity() {
 
@@ -42,6 +43,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x
     private var videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y
     private var fps: Int = 30
+    private var fixedResolution = false
+    private var clientId: String? = null
     private var sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN
 
     private var streamType = SoraStreamType.BIDIRECTIONAL
@@ -83,67 +86,42 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
         fps = intent.getStringExtra("FPS").toInt()
 
-        when (intent.getStringExtra("VIDEO_SIZE")) {
+        var videoSize = when (intent.getStringExtra("VIDEO_SIZE")) {
             // Portrait
-            "VGA" -> {
-                videoWidth = SoraVideoOption.FrameSize.Portrait.VGA.x
-                videoHeight = SoraVideoOption.FrameSize.Portrait.VGA.y
-            }
-            "QQVGA" -> {
-                videoWidth = SoraVideoOption.FrameSize.Portrait.QQVGA.x
-                videoHeight = SoraVideoOption.FrameSize.Portrait.QQVGA.y
-            }
-            "QCIF" -> {
-                videoWidth = SoraVideoOption.FrameSize.Portrait.QCIF.x
-                videoHeight = SoraVideoOption.FrameSize.Portrait.QCIF.y
-            }
-            "HQVGA" -> {
-                videoWidth = SoraVideoOption.FrameSize.Portrait.HQVGA.x
-                videoHeight = SoraVideoOption.FrameSize.Portrait.HQVGA.y
-            }
-            "QVGA" -> {
-                videoWidth = SoraVideoOption.FrameSize.Portrait.QVGA.x
-                videoHeight = SoraVideoOption.FrameSize.Portrait.QVGA.y
-            }
-            "HD" -> {
-                videoWidth = SoraVideoOption.FrameSize.Portrait.HD.x
-                videoHeight = SoraVideoOption.FrameSize.Portrait.HD.y
-            }
-            "FHD" -> {
-                videoWidth = SoraVideoOption.FrameSize.Portrait.FHD.x
-                videoHeight = SoraVideoOption.FrameSize.Portrait.FHD.y
-            }
-            "Res1920x3840" -> {
-                videoWidth = SoraVideoOption.FrameSize.Portrait.Res1920x3840.x
-                videoHeight = SoraVideoOption.FrameSize.Portrait.Res1920x3840.y
-            }
-            "UHD2160x3840" -> {
-                videoWidth = SoraVideoOption.FrameSize.Portrait.UHD2160x3840.x
-                videoHeight = SoraVideoOption.FrameSize.Portrait.UHD2160x3840.y
-            }
-            "UHD2160x4096" -> {
-                videoWidth = SoraVideoOption.FrameSize.Portrait.UHD2160x4096.x
-                videoHeight = SoraVideoOption.FrameSize.Portrait.UHD2160x4096.y
-            }
-
+            "VGA"          -> SoraVideoOption.FrameSize.Portrait.VGA
+            "QQVGA"        -> SoraVideoOption.FrameSize.Portrait.QQVGA
+            "QCIF"         -> SoraVideoOption.FrameSize.Portrait.QCIF
+            "HQVGA"        -> SoraVideoOption.FrameSize.Portrait.HQVGA
+            "QVGA"         -> SoraVideoOption.FrameSize.Portrait.QVGA
+            "HD"           -> SoraVideoOption.FrameSize.Portrait.HD
+            "FHD"          -> SoraVideoOption.FrameSize.Portrait.FHD
+            "Res1920x3840" -> SoraVideoOption.FrameSize.Portrait.Res1920x3840
+            "UHD2160x3840" -> SoraVideoOption.FrameSize.Portrait.UHD2160x3840
+            "UHD2160x4096" -> SoraVideoOption.FrameSize.Portrait.UHD2160x4096
             // Landscape
-            "Res3840x1920" -> {
-                videoWidth = SoraVideoOption.FrameSize.Landscape.Res3840x1920.x
-                videoHeight = SoraVideoOption.FrameSize.Landscape.Res3840x1920.y
-            }
-            "UHD3840x2160" -> {
-                videoWidth = SoraVideoOption.FrameSize.Landscape.UHD3840x2160.x
-                videoHeight = SoraVideoOption.FrameSize.Landscape.UHD3840x2160.y
-            }
-            else -> { }
+            "Res3840x1920" -> SoraVideoOption.FrameSize.Landscape.Res3840x1920
+            "UHD3840x2160" -> SoraVideoOption.FrameSize.Landscape.UHD3840x2160
+            // Default
+            else           -> SoraVideoOption.FrameSize.Portrait.VGA
+        }
+        videoWidth = videoSize.x
+        videoHeight = videoSize.y
+
+        fixedResolution = when (intent.getStringExtra("RESOLUTION_CHANGE")) {
+            "VARIABLE" -> false
+            "FIXED"    -> true
+            else       -> false
         }
 
-        val bitRateStr = intent.getStringExtra("BITRATE")
-        bitRate = when (bitRateStr) {
-            "UNDEFINED" -> null
-            else        -> bitRateStr.toInt()
-        }
+        bitRate = intent.getStringExtra("BITRATE")?.toInt()
 
+        clientId = when (intent.getStringExtra("CLIENT_ID")) {
+            "NONE"        -> null
+            "BUILD MODEL" -> Build.MODEL
+            "時雨堂"      -> "時雨堂"
+            "RANDOM UUID" -> UUID.randomUUID().toString()
+            else -> null
+        }
         sdpSemantics = when (intent.getStringExtra("SDP_SEMANTICS")) {
             "Unified Plan" -> PeerConnection.SdpSemantics.UNIFIED_PLAN
             "Plan B"       -> PeerConnection.SdpSemantics.PLAN_B
@@ -244,12 +222,14 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 videoWidth        = videoWidth,
                 videoHeight       = videoHeight,
                 videoFPS          = fps,
+                fixedResolution   = fixedResolution,
                 videoCodec        = videoCodec,
                 videoBitrate      = bitRate,
                 audioEnabled      = audioEnabled,
                 audioCodec        = audioCodec,
                 sdpSemantics      = sdpSemantics,
                 streamType        = streamType,
+                clientId          = clientId,
                 listener          = channelListener,
                 needLocalRenderer = true
         )
