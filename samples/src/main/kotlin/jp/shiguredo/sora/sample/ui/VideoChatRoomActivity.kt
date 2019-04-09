@@ -113,7 +113,10 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else       -> false
         }
 
-        bitRate = intent.getStringExtra("BITRATE")?.toInt()
+        bitRate = when (intent.getStringExtra("BITRATE")) {
+            "UNDEFINED" -> null
+            else -> intent.getStringExtra("BITRATE").toInt()
+        }
 
         clientId = when (intent.getStringExtra("CLIENT_ID")) {
             "NONE"        -> null
