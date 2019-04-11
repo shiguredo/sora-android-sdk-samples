@@ -14,7 +14,8 @@
 
 ### UPDATE
 
-- Video chat に解像度固定、client ID を指定する選択肢を追加した
+- Video chat に解像度固定の選択肢を追加した
+- Video chat に client ID を指定する選択肢を追加した
 
 ## 1.8.0
 
