@@ -121,7 +121,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
         clientId = when (intent.getStringExtra("CLIENT_ID")) {
             "NONE"        -> null
             "BUILD MODEL" -> Build.MODEL
-            "時雨堂"      -> "時雨堂"
+            "時雨堂"      -> "🍖時雨堂🍗"
             "RANDOM UUID" -> UUID.randomUUID().toString()
             else -> null
         }
