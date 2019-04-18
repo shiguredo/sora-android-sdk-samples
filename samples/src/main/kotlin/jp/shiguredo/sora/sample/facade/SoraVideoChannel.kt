@@ -22,7 +22,7 @@ class SoraVideoChannel(
         private val handler:           Handler,
         private val signalingEndpoint: String,
         private val channelId:         String,
-        private val signalingMetadata: String = "",
+        private val signalingMetadata: Any? = "",
         private val clientId:          String? = null,
         private val spotlight:         Int = 0,
         private var streamType:        SoraStreamType,
@@ -125,10 +125,10 @@ class SoraVideoChannel(
 
         override fun onNotificationMessage(mediaChannel: SoraMediaChannel, notification: NotificationMessage) {
             SoraLogger.d(TAG, "[video_channel] @onNotificationmessage ${notification}")
-            // SoraLogger.d(TAG, "metadata: ${notification.metadata} of " +
-            //         notification.metadata?.javaClass)
-            // SoraLogger.d(TAG, "metadata_list: ${notification.metadataList} of " +
-            //         notification.metadataList?.javaClass)
+            SoraLogger.d(TAG, "metadata: ${notification.metadata} of " +
+                    notification.metadata?.javaClass)
+            SoraLogger.d(TAG, "metadata_list: ${notification.metadataList} of " +
+                    notification.metadataList?.javaClass)
         }
 
         override fun onPushMessage(mediaChannel: SoraMediaChannel, push: PushMessage) {
