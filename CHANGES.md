@@ -14,6 +14,7 @@
 
 ### UPDATE
 
+- SDK のバージョンを 1.8.1 に上げた
 - Video chat に解像度固定の選択肢を追加した
 - Video chat に client ID を指定する選択肢を追加した
 - Video chat の connect metadata を Any? 型に変更した
