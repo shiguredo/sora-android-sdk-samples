@@ -15,18 +15,18 @@
 ### UPDATE
 
 - SDK のバージョンを 1.8.1 に上げた
-- Video chat に解像度固定の選択肢を追加した
-- Video chat に client ID を指定する選択肢を追加した
 - Video chat の connect metadata を Any? 型に変更した
-- Video chat に signalingNotifyMetadata を追加した
 - Kotlin を 1.3.30 に上げた
 - PermissionsDispatcher を 4.3.1 に上げた
 - Android Studio 3.4 に対応した
 
 ### ADD
 
+- Video chat に client ID を指定する選択肢を追加した
+- Video chat に解像度固定の選択肢を追加した
 - Video chat のビットレートに 10Mbps, 15Mbps, 20Mbps, 30Mbps を追加した
   - 15Mbps までが Sora のサポート範囲
+- Video chat に signalingNotifyMetadata を追加した
 
 ## 1.8.0
 
