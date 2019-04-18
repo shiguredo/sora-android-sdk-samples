@@ -18,27 +18,30 @@ import org.webrtc.*
 import android.os.Handler
 
 class SoraVideoChannel(
-        private val context:           Context,
-        private val handler:           Handler,
-        private val signalingEndpoint: String,
-        private val channelId:         String,
-        private val signalingMetadata: String = "",
-        private val spotlight:         Int = 0,
-        private var streamType:        SoraStreamType,
-        private var videoEnabled:      Boolean = true,
-        var         videoWidth:        Int = SoraVideoOption.FrameSize.Portrait.VGA.x,
-        var         videoHeight:       Int = SoraVideoOption.FrameSize.Portrait.VGA.y,
-        var         videoFPS:          Int =  30,
-        var         videoCodec:        SoraVideoOption.Codec = SoraVideoOption.Codec.VP9,
-        var         audioCodec:        SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
-        var         videoBitrate:      Int? = null,
-        private var needLocalRenderer: Boolean = true,
-        private var audioEnabled:      Boolean = true,
-        private var sdpSemantics:      PeerConnection.SdpSemantics =
+        private val context:                 Context,
+        private val handler:                 Handler,
+        private val signalingEndpoint:       String,
+        private val channelId:               String,
+        private val signalingMetadata:       Any? = "",
+        private val signalingNotifyMetatada: Any? = null,
+        private val clientId:                String? = null,
+        private val spotlight:               Int = 0,
+        private var streamType:              SoraStreamType,
+        private var videoEnabled:            Boolean = true,
+        private val videoWidth:              Int = SoraVideoOption.FrameSize.Portrait.VGA.x,
+        private val videoHeight:             Int = SoraVideoOption.FrameSize.Portrait.VGA.y,
+        private val videoFPS:                Int =  30,
+        private val fixedResolution:         Boolean = false,
+        private val videoCodec:              SoraVideoOption.Codec = SoraVideoOption.Codec.VP9,
+        private val audioCodec:              SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
+        private val videoBitrate:            Int? = null,
+        private val needLocalRenderer:       Boolean = true,
+        private val audioEnabled:            Boolean = true,
+        private val sdpSemantics:            PeerConnection.SdpSemantics =
                 PeerConnection.SdpSemantics.UNIFIED_PLAN,
-        private var capturerFactory:   CameraVideoCapturerFactory =
-                DefaultCameraVideoCapturerFactory(context),
-        private var listener:          Listener?
+        private val capturerFactory:         CameraVideoCapturerFactory =
+                DefaultCameraVideoCapturerFactory(context, fixedResolution),
+        private var listener:                Listener?
 ) {
 
     companion object {
@@ -122,7 +125,7 @@ class SoraVideoChannel(
         }
 
         override fun onNotificationMessage(mediaChannel: SoraMediaChannel, notification: NotificationMessage) {
-            SoraLogger.d(TAG, "[video_channel] @onNotificationmessage ${notification}")
+            SoraLogger.d(TAG, "[video_channel] @onNotificationmessage ${notification.eventType} ${notification}")
         }
 
         override fun onPushMessage(mediaChannel: SoraMediaChannel, push: PushMessage) {
@@ -202,12 +205,14 @@ class SoraVideoChannel(
         }
 
         mediaChannel = SoraMediaChannel(
-                context            = context,
-                signalingEndpoint  = signalingEndpoint,
-                channelId          = channelId,
-                signalingMetadata  = signalingMetadata,
-                mediaOption        = mediaOption,
-                listener           = channelListener
+                context                 = context,
+                signalingEndpoint       = signalingEndpoint,
+                channelId               = channelId,
+                signalingMetadata       = signalingMetadata,
+                signalingNotifyMetadata = signalingNotifyMetatada,
+                mediaOption             = mediaOption,
+                listener                = channelListener,
+                clientId                = clientId
         )
         mediaChannel!!.connect()
     }

@@ -14,11 +14,10 @@ android {
         versionName "1.0"
 
         // アプリで参照する設定を BuildConfig / resource に書き込む。
-        // gradle.properties に endpoint/channel 設定がある場合は上書きする
-        def endpoint   = findProperty("sora.signaling_endpoint") ?: signaling_endpoint
-        def channel_id = findProperty("sora.channel_id")         ?: channel_id
-        buildConfigField("String", "SIGNALING_ENDPOINT", "\"${endpoint}\"")
+        buildConfigField("String", "SIGNALING_ENDPOINT", "\"${signaling_endpoint}\"")
         resValue("string", "channelId", "\"${channel_id}\"")
+
+        manifestPlaceholders = [usesCleartextTraffic: usesCleartextTraffic];
     }
 
     compileOptions {
@@ -66,7 +65,7 @@ dependencies {
     implementation "com.google.android.material:material:1.0.0"
     implementation 'com.jaredrummler:material-spinner:1.3.1'
 
-    ext.pd_version = '4.3.0'
+    ext.pd_version = '4.3.1'
     implementation "org.permissionsdispatcher:permissionsdispatcher:${pd_version}"
     kapt "org.permissionsdispatcher:permissionsdispatcher-processor:${pd_version}"
 
