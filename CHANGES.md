@@ -18,6 +18,9 @@
 - Video chat に client ID を指定する選択肢を追加した
 - Video chat の connect metadata を Any? 型に変更した
 - Video chat に signalingNotifyMetadata を追加した
+- Kotlin を 1.3.30 に上げた
+- PermissionsDispatcher を 4.3.1 に上げた
+- Android Studio 3.4 に対応した
 
 ## 1.8.0
 
