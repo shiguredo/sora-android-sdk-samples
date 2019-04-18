@@ -22,7 +22,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     private val audioEnabledOptions = listOf("YES", "NO")
     private val streamTypeOptions = listOf("BIDIRECTIONAL", "SINGLE-UP", "SINGLE-DOWN", "MULTI-DOWN")
     private val bitRateOptions = listOf("UNDEFINED", "100", "300", "500", "800", "1000", "1500",
-            "2000", "2500", "3000", "5000")
+            "2000", "2500", "3000", "5000", "10000", "15000", "20000", "30000")
     private val videoSizeOptions = listOf(
             // Portrait
             "VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD",

@@ -23,6 +23,11 @@
 - PermissionsDispatcher を 4.3.1 に上げた
 - Android Studio 3.4 に対応した
 
+### ADD
+
+- Video chat のビットレートに 10Mbps, 15Mbps, 20Mbps, 30Mbps を追加した
+  - 15Mbps までが Sora のサポート範囲
+
 ## 1.8.0
 
 ### UPDATE
