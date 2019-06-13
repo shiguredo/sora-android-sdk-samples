@@ -29,6 +29,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
             "Res1920x3840", "UHD2160x3840", "UHD2160x4096",
             // Landscape
             "Res3840x1920", "UHD3840x2160")
+    private val simulcastOptions = listOf("ENABLED", "DISABLED")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("VARIABLE", "FIXED")
     private val clientIdOptions = listOf("NONE", "BUILD MODEL", "時雨堂", "RANDOM UUID")
@@ -55,6 +56,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         bitRateSelection.spinner.setItems(bitRateOptions)
         videoSizeSelection.name.text = "VIDEO SIZE"
         videoSizeSelection.spinner.setItems(videoSizeOptions)
+        simulcastSelection.name.text = "SIMULCAST"
+        simulcastSelection.spinner.setItems(simulcastOptions)
         fpsSelection.name.text = "FPS"
         fpsSelection.spinner.setItems(fpsOptions)
         resolutionChangeSelection.name.text = "RESOLUTION CHANGE"

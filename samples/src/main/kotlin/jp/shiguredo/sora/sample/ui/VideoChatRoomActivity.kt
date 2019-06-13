@@ -42,6 +42,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var bitRate: Int? = null
     private var videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x
     private var videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y
+    private var simulcast = false
     private var fps: Int = 30
     private var fixedResolution = false
     private var clientId: String? = null
@@ -107,15 +108,20 @@ class VideoChatRoomActivity : AppCompatActivity() {
         videoWidth = videoSize.x
         videoHeight = videoSize.y
 
+        simulcast = when (intent.getStringExtra("SIMULCAST")) {
+            "ENABLED" -> true
+            else      -> false
+        }
+
         fixedResolution = when (intent.getStringExtra("RESOLUTION_CHANGE")) {
             "VARIABLE" -> false
             "FIXED"    -> true
-            else       -> false
-        }
-
         bitRate = when (intent.getStringExtra("BITRATE")) {
             "UNDEFINED" -> null
             else -> intent.getStringExtra("BITRATE").toInt()
+            else       -> false
+        }
+
         }
 
         clientId = when (intent.getStringExtra("CLIENT_ID")) {
@@ -236,6 +242,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 listener          = channelListener,
                 needLocalRenderer = true
         )
+                simulcast         = simulcast,
         channel!!.connect()
     }
 
