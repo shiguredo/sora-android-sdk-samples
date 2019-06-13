@@ -198,10 +198,12 @@ class SoraVideoChannel(
                 enableMultistream()
             }
 
+            if(this@SoraVideoChannel.simulcast) {
+                enableSimulcast()
+            }
             spotlight    = this@SoraVideoChannel.spotlight
             videoCodec   = this@SoraVideoChannel.videoCodec
             audioCodec   = this@SoraVideoChannel.audioCodec
-            simulcast    = this@SoraVideoChannel.simulcast
             videoBitrate = this@SoraVideoChannel.videoBitrate
             sdpSemantics = this@SoraVideoChannel.sdpSemantics
         }

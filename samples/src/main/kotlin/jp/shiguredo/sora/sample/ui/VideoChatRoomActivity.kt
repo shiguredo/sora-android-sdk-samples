@@ -1,6 +1,7 @@
 package jp.shiguredo.sora.sample.ui
 
 import android.annotation.TargetApi
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.media.AudioManager
@@ -48,6 +49,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var clientId: String? = null
     private var sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN
 
+    private var oldAudioMode: Int = AudioManager.MODE_INVALID
+
     private var streamType = SoraStreamType.BIDIRECTIONAL
 
     private var ui: VideoChatRoomActivityUI? = null
@@ -57,7 +60,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setupWindow()
 
-        channelName = intent.getStringExtra("CHANNEL_NAME")
+        channelName = intent.getStringExtra("CHANNEL_NAME") ?: "shino"
 
         spotlight = intent.getIntExtra("SPOTLIGHT", 0)
 
@@ -67,16 +70,16 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else  -> true
         }
 
-        videoCodec = SoraVideoOption.Codec.valueOf(intent.getStringExtra("VIDEO_CODEC"))
+        videoCodec = SoraVideoOption.Codec.valueOf(intent.getStringExtra("VIDEO_CODEC") ?: "VP9")
 
-        audioCodec = SoraAudioOption.Codec.valueOf(intent.getStringExtra("AUDIO_CODEC"))
+        audioCodec = SoraAudioOption.Codec.valueOf(intent.getStringExtra("AUDIO_CODEC") ?: "OPUS")
 
         streamType = when (intent.getStringExtra("STREAM_TYPE")) {
             "BIDIRECTIONAL" -> SoraStreamType.BIDIRECTIONAL
             "SINGLE-UP"     -> SoraStreamType.SINGLE_UP
             "SINGLE-DOWN"   -> SoraStreamType.SINGLE_DOWN
             "MULTI-DOWN"    -> SoraStreamType.MULTI_DOWN
-            else            -> SoraStreamType.BIDIRECTIONAL
+            else            -> SoraStreamType.SINGLE_UP
         }
 
         audioEnabled = when (intent.getStringExtra("AUDIO_ENABLED")) {
@@ -85,7 +88,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else  -> true
         }
 
-        fps = intent.getStringExtra("FPS").toInt()
+        fps = (intent.getStringExtra("FPS") ?: "30").toInt()
 
         var videoSize = when (intent.getStringExtra("VIDEO_SIZE")) {
             // Portrait
@@ -103,7 +106,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
             "Res3840x1920" -> SoraVideoOption.FrameSize.Landscape.Res3840x1920
             "UHD3840x2160" -> SoraVideoOption.FrameSize.Landscape.UHD3840x2160
             // Default
-            else           -> SoraVideoOption.FrameSize.Portrait.VGA
+            else           -> SoraVideoOption.FrameSize.Portrait.HD
         }
         videoWidth = videoSize.x
         videoHeight = videoSize.y
@@ -116,12 +119,12 @@ class VideoChatRoomActivity : AppCompatActivity() {
         fixedResolution = when (intent.getStringExtra("RESOLUTION_CHANGE")) {
             "VARIABLE" -> false
             "FIXED"    -> true
-        bitRate = when (intent.getStringExtra("BITRATE")) {
-            "UNDEFINED" -> null
-            else -> intent.getStringExtra("BITRATE").toInt()
             else       -> false
         }
 
+        bitRate = when (intent.getStringExtra("BITRATE")) {
+            "UNDEFINED" -> null
+            else -> (intent.getStringExtra("BITRATE") ?: "5000").toInt()
         }
 
         clientId = when (intent.getStringExtra("CLIENT_ID")) {
@@ -169,11 +172,20 @@ class VideoChatRoomActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         this.volumeControlStream = AudioManager.STREAM_VOICE_CALL
+        val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
+                as AudioManager
+        oldAudioMode = audioManager.mode
+        Log.d(TAG, "AudioManager mode change: ${oldAudioMode} => MODE_IN_COMMUNICATION(3)")
+        audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
     }
 
     override fun onPause() {
         Log.d(TAG, "onPause")
         super.onPause()
+        val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
+                as AudioManager
+        Log.d(TAG, "AudioManager mode change: MODE_IN_COMMUNICATION(3) => ${oldAudioMode}")
+        audioManager.mode = oldAudioMode
         close()
     }
 
@@ -230,6 +242,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 videoEnabled      = videoEnabled,
                 videoWidth        = videoWidth,
                 videoHeight       = videoHeight,
+                simulcast         = simulcast,
                 videoFPS          = fps,
                 fixedResolution   = fixedResolution,
                 videoCodec        = videoCodec,
@@ -242,7 +255,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 listener          = channelListener,
                 needLocalRenderer = true
         )
-                simulcast         = simulcast,
         channel!!.connect()
     }
 
