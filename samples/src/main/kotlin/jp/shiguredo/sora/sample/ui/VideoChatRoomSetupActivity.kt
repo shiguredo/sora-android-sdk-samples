@@ -16,16 +16,16 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val TAG = VideoChatRoomSetupActivity::class.simpleName
     }
 
-    private val videoCodecOptions = listOf("VP9", "VP8", "H264")
+    private val videoCodecOptions = listOf("VP8", "VP9", "H264")
     private val videoEnabledOptions = listOf("YES", "NO")
     private val audioCodecOptions = listOf("OPUS", "PCMU")
     private val audioEnabledOptions = listOf("YES", "NO")
-    private val streamTypeOptions = listOf("BIDIRECTIONAL", "SINGLE-UP", "SINGLE-DOWN", "MULTI-DOWN")
-    private val bitRateOptions = listOf("UNDEFINED", "100", "300", "500", "800", "1000", "1500",
+    private val streamTypeOptions = listOf("SINGLE-UP", "BIDIRECTIONAL", "SINGLE-UP", "SINGLE-DOWN", "MULTI-DOWN")
+    private val bitRateOptions = listOf("5000", "UNDEFINED", "100", "300", "500", "800", "1000", "1500",
             "2000", "2500", "3000", "5000", "10000", "15000", "20000", "30000")
     private val videoSizeOptions = listOf(
             // Portrait
-            "VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD",
+            "HD", "VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD",
             "Res1920x3840", "UHD2160x3840", "UHD2160x4096",
             // Landscape
             "Res3840x1920", "UHD3840x2160")
@@ -82,6 +82,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val audioEnabled = selectedItem(audioEnabledSelection.spinner)
         val bitRate = selectedItem(bitRateSelection.spinner)
         val videoSize = selectedItem(videoSizeSelection.spinner)
+        val simulcast = selectedItem(simulcastSelection.spinner)
         val fps = selectedItem(fpsSelection.spinner)
         val resolutionChange = selectedItem(resolutionChangeSelection.spinner)
         val clientId = selectedItem(clientIdSelection.spinner)
@@ -96,6 +97,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("AUDIO_ENABLED", audioEnabled)
         intent.putExtra("BITRATE", bitRate)
         intent.putExtra("VIDEO_SIZE", videoSize)
+        intent.putExtra("SIMULCAST", simulcast)
         intent.putExtra("FPS", fps)
         intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
         intent.putExtra("CLIENT_ID", clientId)
