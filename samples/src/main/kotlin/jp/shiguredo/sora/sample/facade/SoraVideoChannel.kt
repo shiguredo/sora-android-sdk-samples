@@ -30,6 +30,7 @@ class SoraVideoChannel(
         private var videoEnabled:            Boolean = true,
         private val videoWidth:              Int = SoraVideoOption.FrameSize.Portrait.VGA.x,
         private val videoHeight:             Int = SoraVideoOption.FrameSize.Portrait.VGA.y,
+        private val simulcast:               Boolean = false,
         private val videoFPS:                Int =  30,
         private val fixedResolution:         Boolean = false,
         private val videoCodec:              SoraVideoOption.Codec = SoraVideoOption.Codec.VP9,
@@ -197,6 +198,11 @@ class SoraVideoChannel(
                 enableMultistream()
             }
 
+            if(this@SoraVideoChannel.simulcast) {
+                enableSimulcast()
+                // hardware encoder では動かせていない、ソフトウェアを指定する
+                videoEncoderFactory = SoftwareVideoEncoderFactory()
+            }
             spotlight    = this@SoraVideoChannel.spotlight
             videoCodec   = this@SoraVideoChannel.videoCodec
             audioCodec   = this@SoraVideoChannel.audioCodec

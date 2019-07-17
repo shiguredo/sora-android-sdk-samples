@@ -12,6 +12,15 @@
 
 ## develop
 
+### ADD
+
+- video chat room に simulcast の設定を追加した
+
+### CHANGE
+
+- video chat room で MODE_IN_COMMUNICATION を使うように変更した
+
+
 ## 1.8.1
 
 ### UPDATE
