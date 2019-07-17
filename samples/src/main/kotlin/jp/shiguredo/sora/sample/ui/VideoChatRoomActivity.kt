@@ -60,7 +60,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setupWindow()
 
-        channelName = intent.getStringExtra("CHANNEL_NAME") ?: "shino"
+        channelName = intent.getStringExtra("CHANNEL_NAME") ?: getString(R.string.channelId)
 
         spotlight = intent.getIntExtra("SPOTLIGHT", 0)
 
@@ -70,7 +70,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else  -> true
         }
 
-        videoCodec = SoraVideoOption.Codec.valueOf(intent.getStringExtra("VIDEO_CODEC") ?: "VP8")
+        videoCodec = SoraVideoOption.Codec.valueOf(intent.getStringExtra("VIDEO_CODEC") ?: "VP9")
 
         audioCodec = SoraAudioOption.Codec.valueOf(intent.getStringExtra("AUDIO_CODEC") ?: "OPUS")
 
@@ -79,7 +79,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
             "SINGLE-UP"     -> SoraStreamType.SINGLE_UP
             "SINGLE-DOWN"   -> SoraStreamType.SINGLE_DOWN
             "MULTI-DOWN"    -> SoraStreamType.MULTI_DOWN
-            else            -> SoraStreamType.SINGLE_UP
+            else            -> SoraStreamType.BIDIRECTIONAL
         }
 
         audioEnabled = when (intent.getStringExtra("AUDIO_ENABLED")) {
@@ -106,7 +106,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
             "Res3840x1920" -> SoraVideoOption.FrameSize.Landscape.Res3840x1920
             "UHD3840x2160" -> SoraVideoOption.FrameSize.Landscape.UHD3840x2160
             // Default
-            else           -> SoraVideoOption.FrameSize.Portrait.HD
+            else           -> SoraVideoOption.FrameSize.Portrait.VGA
         }
         videoWidth = videoSize.x
         videoHeight = videoSize.y
@@ -124,7 +124,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
         bitRate = when (intent.getStringExtra("BITRATE")) {
             "UNDEFINED" -> null
-            else -> (intent.getStringExtra("BITRATE") ?: "5000").toInt()
+            else -> (intent.getStringExtra("BITRATE") ?: "500").toInt()
         }
 
         clientId = when (intent.getStringExtra("CLIENT_ID")) {
