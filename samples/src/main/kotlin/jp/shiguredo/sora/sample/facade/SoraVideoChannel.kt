@@ -16,6 +16,8 @@ import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import org.webrtc.*
 import android.os.Handler
+import jp.shiguredo.sora.sample.stats.VideoUpstreamLatencyStatsCollector
+import jp.shiguredo.sora.sdk.channel.option.PeerConnectionOption
 
 class SoraVideoChannel(
         private val context:                 Context,
@@ -60,6 +62,8 @@ class SoraVideoChannel(
         fun onAddLocalRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {}
         fun onAttendeesCountUpdated(channel: SoraVideoChannel, attendees: ChannelAttendeesCount) {}
     }
+
+    private val statsCollector = VideoUpstreamLatencyStatsCollector()
 
     private val channelListener = object : SoraMediaChannel.Listener {
 
@@ -133,6 +137,12 @@ class SoraVideoChannel(
             SoraLogger.d(TAG, "[video_channel] @onPushMessage ${push}")
         }
 
+        override fun onPeerConnectionStatsReady(mediaChannel: SoraMediaChannel, statsReport: RTCStatsReport) {
+            // statsReport.statsMap.entries.forEach {
+            //     SoraLogger.d(TAG, "${it.key}=${it.value}")
+            // }
+            statsCollector.newStatsReport(statsReport)
+        }
     }
 
     private var mediaChannel:  SoraMediaChannel? = null
@@ -210,6 +220,10 @@ class SoraVideoChannel(
             sdpSemantics = this@SoraVideoChannel.sdpSemantics
         }
 
+        val peerConnectionOption = PeerConnectionOption().apply {
+            getStatsIntervalMSec = 5000
+        }
+
         mediaChannel = SoraMediaChannel(
                 context                 = context,
                 signalingEndpoint       = signalingEndpoint,
@@ -218,7 +232,8 @@ class SoraVideoChannel(
                 signalingNotifyMetadata = signalingNotifyMetatada,
                 mediaOption             = mediaOption,
                 listener                = channelListener,
-                clientId                = clientId
+                clientId                = clientId,
+                peerConnectionOption    = peerConnectionOption
         )
         mediaChannel!!.connect()
     }
