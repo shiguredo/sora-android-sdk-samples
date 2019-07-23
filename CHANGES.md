@@ -12,6 +12,10 @@
 
 ## develop
 
+### UPDATE
+
+- Kotlin を 1.3.41 に上げた
+
 ### ADD
 
 - video chat room に simulcast の設定を追加した
