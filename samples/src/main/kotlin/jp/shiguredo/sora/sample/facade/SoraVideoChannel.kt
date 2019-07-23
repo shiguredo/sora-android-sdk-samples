@@ -80,7 +80,14 @@ class SoraVideoChannel(
         }
 
         override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason) {
-            SoraLogger.d(TAG, "[video_channel] @onError")
+            SoraLogger.d(TAG, "[video_channel] @onError $reason")
+            handler.post {
+                listener?.onError(this@SoraVideoChannel, reason)
+            }
+        }
+
+        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {
+            SoraLogger.d(TAG, "[video_channel] @onError $reason: $message")
             handler.post {
                 listener?.onError(this@SoraVideoChannel, reason)
             }
