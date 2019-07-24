@@ -228,12 +228,12 @@ class SoraVideoChannel(
             // 全部デフォルト値なので、実際には指定する必要はない
             audioOption = SoraAudioOption().apply {
                 useHardwareAcousticEchoCanceler = true
-                useHardwareNoiseSuppressor = true
+                useHardwareNoiseSuppressor      = true
 
-                audioProcessingEC       = true
-                audioProcessingAGC      = true
-                audioProcessingHPFilter = true
-                audioProcessingNS       = true
+                audioProcessingEchoCancellation = true
+                audioProcessingAutoGainControl  = true
+                audioProcessingHighpassFilter   = true
+                audioProcessingNoiseSuppression = true
             }
             sdpSemantics = this@SoraVideoChannel.sdpSemantics
         }
