@@ -222,8 +222,19 @@ class SoraVideoChannel(
             }
             spotlight    = this@SoraVideoChannel.spotlight
             videoCodec   = this@SoraVideoChannel.videoCodec
-            audioCodec   = this@SoraVideoChannel.audioCodec
             videoBitrate = this@SoraVideoChannel.videoBitrate
+
+            audioCodec   = this@SoraVideoChannel.audioCodec
+            // 全部デフォルト値なので、実際には指定する必要はない
+            audioOption = SoraAudioOption().apply {
+                useHardwareAcousticEchoCanceler = true
+                useHardwareNoiseSuppressor = true
+
+                audioProcessingEC       = true
+                audioProcessingAGC      = true
+                audioProcessingHPFilter = true
+                audioProcessingNS       = true
+            }
             sdpSemantics = this@SoraVideoChannel.sdpSemantics
         }
 
