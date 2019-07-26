@@ -80,7 +80,14 @@ class SoraVideoChannel(
         }
 
         override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason) {
-            SoraLogger.d(TAG, "[video_channel] @onError")
+            SoraLogger.d(TAG, "[video_channel] @onError $reason")
+            handler.post {
+                listener?.onError(this@SoraVideoChannel, reason)
+            }
+        }
+
+        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {
+            SoraLogger.d(TAG, "[video_channel] @onError $reason: $message")
             handler.post {
                 listener?.onError(this@SoraVideoChannel, reason)
             }
@@ -215,8 +222,19 @@ class SoraVideoChannel(
             }
             spotlight    = this@SoraVideoChannel.spotlight
             videoCodec   = this@SoraVideoChannel.videoCodec
-            audioCodec   = this@SoraVideoChannel.audioCodec
             videoBitrate = this@SoraVideoChannel.videoBitrate
+
+            audioCodec   = this@SoraVideoChannel.audioCodec
+            // 全部デフォルト値なので、実際には指定する必要はない
+            audioOption = SoraAudioOption().apply {
+                useHardwareAcousticEchoCanceler = true
+                useHardwareNoiseSuppressor      = true
+
+                audioProcessingEchoCancellation = true
+                audioProcessingAutoGainControl  = true
+                audioProcessingHighpassFilter   = true
+                audioProcessingNoiseSuppression = true
+            }
             sdpSemantics = this@SoraVideoChannel.sdpSemantics
         }
 
