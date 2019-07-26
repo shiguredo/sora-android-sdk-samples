@@ -15,6 +15,7 @@
 ### UPDATE
 
 - Kotlin を 1.3.41 に上げた
+- PermissionsDispatcher を 4.5.0 に上げた
 
 ### ADD
 
