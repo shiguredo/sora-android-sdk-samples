@@ -37,7 +37,8 @@ class SoraVideoChannel(
         private val fixedResolution:         Boolean = false,
         private val videoCodec:              SoraVideoOption.Codec = SoraVideoOption.Codec.VP9,
         private val audioCodec:              SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
-        private val videoBitrate:            Int? = null,
+        private val videoBitRate:            Int? = null,
+        private val audioBitRate:            Int? = null,
         private val needLocalRenderer:       Boolean = true,
         private val audioEnabled:            Boolean = true,
         private val sdpSemantics:            PeerConnection.SdpSemantics =
@@ -222,9 +223,11 @@ class SoraVideoChannel(
             }
             spotlight    = this@SoraVideoChannel.spotlight
             videoCodec   = this@SoraVideoChannel.videoCodec
-            videoBitrate = this@SoraVideoChannel.videoBitrate
+            videoBitrate = this@SoraVideoChannel.videoBitRate
 
             audioCodec   = this@SoraVideoChannel.audioCodec
+            audioBitrate = this@SoraVideoChannel.audioBitRate
+
             // 全部デフォルト値なので、実際には指定する必要はない
             audioOption = SoraAudioOption().apply {
                 useHardwareAcousticEchoCanceler = true

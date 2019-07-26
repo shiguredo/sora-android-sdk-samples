@@ -63,13 +63,16 @@
                     android:id="@+id/audioEnabledSelection"/>
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/bitRateSelection"/>
+                    android:id="@+id/videoBitRateSelection"/>
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/videoSizeSelection"/>
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/fpsSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/audioBitRateSelection"/>
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/sdpSemanticsSelection"/>

@@ -51,6 +51,9 @@
                     android:id="@+id/streamTypeSelection"/>
                 <include
                     layout="@layout/signaling_selection"
+                    android:id="@+id/audioBitRateSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
                     android:id="@+id/sdpSemanticsSelection"/>
 
             </com.google.android.material.textfield.TextInputLayout>

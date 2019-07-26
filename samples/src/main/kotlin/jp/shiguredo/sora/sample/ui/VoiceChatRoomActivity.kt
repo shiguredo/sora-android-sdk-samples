@@ -28,6 +28,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     private var channelName: String = ""
 
     private var audioCodec:  SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
+    private var audioBitRate: Int? = null
     private var streamType   = SoraStreamType.BIDIRECTIONAL
     private var sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN
 
@@ -42,6 +43,11 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
         audioCodec = SoraAudioOption.Codec.valueOf(
                 intent.getStringExtra("AUDIO_CODEC"))
+
+        audioBitRate = when (intent.getStringExtra("AUDIO_BIT_RATE")) {
+            "UNDEFINED" -> null
+            else -> intent.getStringExtra("AUDIO_BIT_RATE")?.toInt()
+        }
 
         streamType = when (intent.getStringExtra("STREAM_TYPE")) {
             "BIDIRECTIONAL" -> SoraStreamType.BIDIRECTIONAL
@@ -127,7 +133,8 @@ class VoiceChatRoomActivity : AppCompatActivity() {
                 signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
                 channelId         = channelName,
                 signalingMetadata = "",
-                codec             = audioCodec,
+                audioCodec             = audioCodec,
+                audioBitRate           = audioBitRate,
                 sdpSemantics      = sdpSemantics,
                 streamType        = streamType,
                 listener          = channelListener

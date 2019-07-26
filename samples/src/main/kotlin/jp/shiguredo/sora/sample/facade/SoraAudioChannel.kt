@@ -20,7 +20,8 @@ class SoraAudioChannel(
         private val channelId:         String,
         private val signalingMetadata: String = "",
         private var streamType:        SoraStreamType,
-        private var codec:             SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
+        private var audioCodec:        SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
+        private val audioBitRate:      Int? = null,
         private var sdpSemantics:      PeerConnection.SdpSemantics =
                 PeerConnection.SdpSemantics.UNIFIED_PLAN,
         private var listener:          Listener?
@@ -88,7 +89,9 @@ class SoraAudioChannel(
                 enableMultistream()
             }
 
-            audioCodec = this@SoraAudioChannel.codec
+            audioCodec = this@SoraAudioChannel.audioCodec
+            audioBitrate = this@SoraAudioChannel.audioBitRate
+
             sdpSemantics = this@SoraAudioChannel.sdpSemantics
         }
 

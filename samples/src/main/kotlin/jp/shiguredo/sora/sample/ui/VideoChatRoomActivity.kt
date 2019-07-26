@@ -40,7 +40,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var videoCodec:  SoraVideoOption.Codec = SoraVideoOption.Codec.VP9
     private var audioCodec:  SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
     private var audioEnabled = true
-    private var bitRate: Int? = null
+    private var audioBitRate: Int? = null
+    private var videoBitRate: Int? = null
     private var videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x
     private var videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y
     private var simulcast = false
@@ -122,9 +123,14 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else       -> false
         }
 
-        bitRate = when (intent.getStringExtra("BITRATE")) {
+        videoBitRate = when (intent.getStringExtra("VIDEO_BIT_RATE")) {
             "UNDEFINED" -> null
-            else -> (intent.getStringExtra("BITRATE") ?: "500").toInt()
+            else -> (intent.getStringExtra("VIDEO_BIT_RATE") ?: "500").toInt()
+        }
+
+        audioBitRate = when (intent.getStringExtra("AUDIO_BIT_RATE")) {
+            "UNDEFINED" -> null
+            else -> intent.getStringExtra("AUDIO_BIT_RATE")?.toInt()
         }
 
         clientId = when (intent.getStringExtra("CLIENT_ID")) {
@@ -246,9 +252,10 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 videoFPS          = fps,
                 fixedResolution   = fixedResolution,
                 videoCodec        = videoCodec,
-                videoBitrate      = bitRate,
+                videoBitRate      = videoBitRate,
                 audioEnabled      = audioEnabled,
                 audioCodec        = audioCodec,
+                audioBitRate      = audioBitRate,
                 sdpSemantics      = sdpSemantics,
                 streamType        = streamType,
                 clientId          = clientId,

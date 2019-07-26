@@ -22,6 +22,7 @@
 - video chat room に simulcast の設定を追加した
 - video chat room に upstream video の latency 関連統計ログを追加した
 - video chat room に `SoraAudioOption` を明示的に記述した
+- video chat room, spotlight chat room, voice chat room に音声ビットレート設定を追加した
 
 ### CHANGE
 
