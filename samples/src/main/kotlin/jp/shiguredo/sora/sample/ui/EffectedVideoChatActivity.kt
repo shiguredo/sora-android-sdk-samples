@@ -1,6 +1,7 @@
 package jp.shiguredo.sora.sample.ui
 
 import android.annotation.TargetApi
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.media.AudioManager
@@ -39,6 +40,8 @@ class EffectedVideoChatActivity : AppCompatActivity() {
     private var streamType = SoraStreamType.BIDIRECTIONAL
     private var ui: EffectedVideoChatActivityUI? = null
     private var effector: RTCVideoEffector? = null
+
+    private var oldAudioMode: Int = AudioManager.MODE_INVALID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -121,11 +124,21 @@ class EffectedVideoChatActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         this.volumeControlStream = AudioManager.STREAM_VOICE_CALL
+
+        val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
+                as AudioManager
+        oldAudioMode = audioManager.mode
+        Log.d(TAG, "AudioManager mode change: ${oldAudioMode} => MODE_IN_COMMUNICATION(3)")
+        audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
     }
 
     override fun onPause() {
         Log.d(TAG, "onPause")
         super.onPause()
+        val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
+                as AudioManager
+        Log.d(TAG, "AudioManager mode change: MODE_IN_COMMUNICATION(3) => ${oldAudioMode}")
+        audioManager.mode = oldAudioMode
         close()
     }
 

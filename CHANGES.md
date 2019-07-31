@@ -26,7 +26,8 @@
 
 ### CHANGE
 
-- video chat room で MODE_IN_COMMUNICATION を使うように変更した
+- video chat room, effected video chat room, spotlight room, voice chat room で
+  MODE_IN_COMMUNICATION を使うように変更した
 
 
 ## 1.8.1
