@@ -14,6 +14,7 @@
 
 ### UPDATE
 
+- SDK のバージョンを 1.9.0 に上げた
 - Kotlin を 1.3.41 に上げた
 - PermissionsDispatcher を 4.5.0 に上げた
 - Android Studio 3.4.2 に対応した
