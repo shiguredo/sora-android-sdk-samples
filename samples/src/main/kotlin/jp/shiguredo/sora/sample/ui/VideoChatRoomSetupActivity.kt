@@ -20,8 +20,10 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     private val videoEnabledOptions = listOf("YES", "NO")
     private val audioCodecOptions = listOf("OPUS", "PCMU")
     private val audioEnabledOptions = listOf("YES", "NO")
+    private val audioBitRateOptions = listOf("UNDEFINED", "8", "16", "24", "32",
+            "64", "96", "128", "256")
     private val streamTypeOptions = listOf("BIDIRECTIONAL", "SINGLE-UP", "SINGLE-DOWN", "MULTI-DOWN")
-    private val bitRateOptions = listOf("UNDEFINED", "100", "300", "500", "800", "1000", "1500",
+    private val videoBitRateOptions = listOf("UNDEFINED", "100", "300", "500", "800", "1000", "1500",
             "2000", "2500", "3000", "5000", "10000", "15000", "20000", "30000")
     private val videoSizeOptions = listOf(
             // Portrait
@@ -29,6 +31,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
             "Res1920x3840", "UHD2160x3840", "UHD2160x4096",
             // Landscape
             "Res3840x1920", "UHD3840x2160")
+    private val simulcastOptions = listOf("DISABLED", "ENABLED")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("VARIABLE", "FIXED")
     private val clientIdOptions = listOf("NONE", "BUILD MODEL", "時雨堂", "RANDOM UUID")
@@ -49,12 +52,16 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         audioEnabledSelection.spinner.setItems(audioEnabledOptions)
         audioCodecSelection.name.text = "AUDIO CODEC"
         audioCodecSelection.spinner.setItems(audioCodecOptions)
+        audioBitRateSelection.name.text = "AUDIO BIT RATE"
+        audioBitRateSelection.spinner.setItems(audioBitRateOptions)
         streamTypeSelection.name.text = "STREAM TYPE"
         streamTypeSelection.spinner.setItems(streamTypeOptions)
-        bitRateSelection.name.text = "BIT RATE"
-        bitRateSelection.spinner.setItems(bitRateOptions)
+        videoBitRateSelection.name.text = "VIDEO BIT RATE"
+        videoBitRateSelection.spinner.setItems(videoBitRateOptions)
         videoSizeSelection.name.text = "VIDEO SIZE"
         videoSizeSelection.spinner.setItems(videoSizeOptions)
+        simulcastSelection.name.text = "SIMULCAST"
+        simulcastSelection.spinner.setItems(simulcastOptions)
         fpsSelection.name.text = "FPS"
         fpsSelection.spinner.setItems(fpsOptions)
         resolutionChangeSelection.name.text = "RESOLUTION CHANGE"
@@ -77,8 +84,10 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val videoEnabled = selectedItem(videoEnabledSelection.spinner)
         val audioCodec = selectedItem(audioCodecSelection.spinner)
         val audioEnabled = selectedItem(audioEnabledSelection.spinner)
-        val bitRate = selectedItem(bitRateSelection.spinner)
+        val audioBitRate = selectedItem(audioBitRateSelection.spinner)
+        val videoBitRate = selectedItem(videoBitRateSelection.spinner)
         val videoSize = selectedItem(videoSizeSelection.spinner)
+        val simulcast = selectedItem(simulcastSelection.spinner)
         val fps = selectedItem(fpsSelection.spinner)
         val resolutionChange = selectedItem(resolutionChangeSelection.spinner)
         val clientId = selectedItem(clientIdSelection.spinner)
@@ -91,8 +100,10 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("VIDEO_ENABLED", videoEnabled)
         intent.putExtra("AUDIO_CODEC", audioCodec)
         intent.putExtra("AUDIO_ENABLED", audioEnabled)
-        intent.putExtra("BITRATE", bitRate)
+        intent.putExtra("AUDIO_BIT_RATE", audioBitRate)
+        intent.putExtra("VIDEO_BIT_RATE", videoBitRate)
         intent.putExtra("VIDEO_SIZE", videoSize)
+        intent.putExtra("SIMULCAST", simulcast)
         intent.putExtra("FPS", fps)
         intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
         intent.putExtra("CLIENT_ID", clientId)

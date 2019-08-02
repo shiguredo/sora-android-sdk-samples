@@ -1,6 +1,7 @@
 package jp.shiguredo.sora.sample.ui
 
 import android.annotation.TargetApi
+import android.content.Context
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
@@ -22,14 +23,17 @@ import org.webrtc.PeerConnection
 class VoiceChatRoomActivity : AppCompatActivity() {
 
     companion object {
-        val TAG = VoiceChatRoomActivity::class.simpleName
+        private val TAG = VoiceChatRoomActivity::class.simpleName
     }
 
     private var channelName: String = ""
 
     private var audioCodec:  SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
+    private var audioBitRate: Int? = null
     private var streamType   = SoraStreamType.BIDIRECTIONAL
     private var sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN
+
+    private var oldAudioMode: Int = AudioManager.MODE_INVALID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -42,6 +46,11 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
         audioCodec = SoraAudioOption.Codec.valueOf(
                 intent.getStringExtra("AUDIO_CODEC"))
+
+        audioBitRate = when (intent.getStringExtra("AUDIO_BIT_RATE")) {
+            "UNDEFINED" -> null
+            else -> intent.getStringExtra("AUDIO_BIT_RATE")?.toInt()
+        }
 
         streamType = when (intent.getStringExtra("STREAM_TYPE")) {
             "BIDIRECTIONAL" -> SoraStreamType.BIDIRECTIONAL
@@ -81,11 +90,21 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         this.volumeControlStream = AudioManager.STREAM_VOICE_CALL
+
+        val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
+                as AudioManager
+        oldAudioMode = audioManager.mode
+        Log.d(TAG, "AudioManager mode change: ${oldAudioMode} => MODE_IN_COMMUNICATION(3)")
+        audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
     }
 
     override fun onPause() {
         Log.d(TAG, "onPause")
         super.onPause()
+        val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
+                as AudioManager
+        Log.d(TAG, "AudioManager mode change: MODE_IN_COMMUNICATION(3) => ${oldAudioMode}")
+        audioManager.mode = oldAudioMode
         close()
     }
 
@@ -127,7 +146,8 @@ class VoiceChatRoomActivity : AppCompatActivity() {
                 signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
                 channelId         = channelName,
                 signalingMetadata = "",
-                codec             = audioCodec,
+                audioCodec             = audioCodec,
+                audioBitRate           = audioBitRate,
                 sdpSemantics      = sdpSemantics,
                 streamType        = streamType,
                 listener          = channelListener

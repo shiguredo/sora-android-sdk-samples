@@ -13,7 +13,9 @@ class SoraRemoteRendererSlot(
         val eglContext: EglBase.Context,
         var listener:   Listener?
 ) {
-    val TAG = SoraRemoteRendererSlot::class.simpleName
+    companion object {
+        private val TAG = SoraRemoteRendererSlot::class.simpleName
+    }
 
     interface Listener {
         fun onAddRenderer(renderer: SurfaceViewRenderer)

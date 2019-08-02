@@ -12,6 +12,29 @@
 
 ## develop
 
+## 1.9.0
+
+### UPDATE
+
+- SDK のバージョンを 1.9.0 に上げた
+- Kotlin を 1.3.41 に上げた
+- PermissionsDispatcher を 4.5.0 に上げた
+- Android Studio 3.4.2 に対応した
+
+### ADD
+
+- video chat room に simulcast の設定を追加した
+- video chat room に upstream video の latency 関連統計ログを追加した
+- video chat room に `SoraAudioOption` を明示的に記述した
+- video chat room, spotlight chat room, voice chat room に音声ビットレート設定を追加した
+
+### CHANGE
+
+- video chat room, effected video chat room, spotlight room, voice chat room で
+  `MODE_IN_COMMUNICATION` を使うように変更した
+- spotlight の映像ビットレートを 1000 に変更した
+
+
 ## 1.8.1
 
 ### UPDATE

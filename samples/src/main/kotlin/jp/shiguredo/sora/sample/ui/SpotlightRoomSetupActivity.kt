@@ -13,16 +13,19 @@ import kotlinx.android.synthetic.main.signaling_selection.view.*
 class SpotlightRoomSetupActivity : AppCompatActivity() {
 
     companion object {
-        val TAG = SpotlightRoomSetupActivity::class.simpleName
+        private val TAG = SpotlightRoomSetupActivity::class.simpleName
     }
 
     private val spotlightNumberOptions = listOf("2", "1", "3", "4", "5")
     private val videoCodecOptions = listOf("VP9", "VP8", "H264")
     private val audioCodecOptions = listOf("OPUS", "PCMU")
+    private val audioBitRateOptions = listOf("UNDEFINED", "8", "16", "24", "32",
+            "64", "96", "128", "256")
     private val videoEnabledOptions = listOf("YES", "NO")
     private val audioEnabledOptions = listOf("YES", "NO")
     private val streamTypeOptions = listOf("BIDIRECTIONAL", "MULTI-DOWN")
-    private val bitRateOptions = listOf("UNDEFINED", "100", "300", "500", "800", "1000", "1500", "2000", "2500")
+    private val videoBitRateOptions = listOf("1000", "UNDEFINED", "100", "300", "500", "800",
+            "1500", "2000", "2500")
     private val videoSizeOptions = listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val sdpSemanticsOptions = listOf("Unified Plan", "Plan B")
@@ -47,8 +50,10 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         audioCodecSelection.spinner.setItems(audioCodecOptions)
         audioEnabledSelection.name.text = "AUDIO ENABLED"
         audioEnabledSelection.spinner.setItems(audioEnabledOptions)
-        bitRateSelection.name.text = "BIT RATE"
-        bitRateSelection.spinner.setItems(bitRateOptions)
+        audioBitRateSelection.name.text = "AUDIO BIT RATE"
+        audioBitRateSelection.spinner.setItems(audioBitRateOptions)
+        videoBitRateSelection.name.text = "VIDEO BIT RATE"
+        videoBitRateSelection.spinner.setItems(videoBitRateOptions)
         videoSizeSelection.name.text = "VIDEO SIZE"
         videoSizeSelection.spinner.setItems(videoSizeOptions)
         fpsSelection.name.text = "FPS"
@@ -68,9 +73,10 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         val streamType = selectedItem(streamTypeSelection.spinner)
         val videoCodec = selectedItem(videoCodecSelection.spinner)
         val audioCodec = selectedItem(audioCodecSelection.spinner)
+        val audioBitRate = selectedItem(audioBitRateSelection.spinner)
         val audioEnabled = selectedItem(audioEnabledSelection.spinner)
         val videoEnabled = selectedItem(videoEnabledSelection.spinner)
-        val bitRate = selectedItem(bitRateSelection.spinner)
+        val videoBitRate = selectedItem(videoBitRateSelection.spinner)
         val videoSize = selectedItem(videoSizeSelection.spinner)
         val fps = selectedItem(fpsSelection.spinner)
         val sdpSemantics = selectedItem(sdpSemanticsSelection.spinner)
@@ -81,9 +87,10 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("STREAM_TYPE", streamType)
         intent.putExtra("VIDEO_CODEC", videoCodec)
         intent.putExtra("AUDIO_CODEC", audioCodec)
+        intent.putExtra("AUDIO_BIT_RATE", audioBitRate)
         intent.putExtra("AUDIO_ENABLED", audioEnabled)
         intent.putExtra("VIDEO_ENABLED", videoEnabled)
-        intent.putExtra("BITRATE", bitRate)
+        intent.putExtra("VIDEO_BIT_RATE", videoBitRate)
         intent.putExtra("VIDEO_SIZE", videoSize)
         intent.putExtra("FPS", fps)
         intent.putExtra("SDP_SEMANTICS", sdpSemantics)

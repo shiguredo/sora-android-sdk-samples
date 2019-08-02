@@ -67,8 +67,13 @@
         -->
         <activity android:name="jp.shiguredo.sora.sample.ui.VideoChatRoomActivity"
             android:label="Video Chat Room"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait">
+            <!-- <intent-filter> -->
+            <!--     <action android:name="android.intent.action.MAIN" /> -->
 
+            <!--     <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
         <activity android:name="jp.shiguredo.sora.sample.ui.VoiceChatRoomActivity"
             android:label="Voice Chat Room"
             android:screenOrientation="portrait"/>
