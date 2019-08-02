@@ -27,7 +27,9 @@ class SoraAudioChannel(
         private var listener:          Listener?
 ) {
 
-    val TAG = SoraAudioChannel::class.simpleName
+    companion object {
+        private val TAG = SoraAudioChannel::class.simpleName
+    }
 
     interface Listener {
         fun onConnect(channel: SoraAudioChannel) {}

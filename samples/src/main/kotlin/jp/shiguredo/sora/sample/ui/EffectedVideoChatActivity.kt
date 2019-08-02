@@ -33,7 +33,7 @@ import org.webrtc.SurfaceViewRenderer
 class EffectedVideoChatActivity : AppCompatActivity() {
 
     companion object {
-        val TAG = EffectedVideoChatActivity::class.simpleName
+        private val TAG = EffectedVideoChatActivity::class.simpleName
     }
 
     private var channelName = ""

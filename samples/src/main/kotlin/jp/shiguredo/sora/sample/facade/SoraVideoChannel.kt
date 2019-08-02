@@ -49,7 +49,7 @@ class SoraVideoChannel(
 ) {
 
     companion object {
-        val TAG = SoraVideoChannel::class.simpleName
+        private val TAG = SoraVideoChannel::class.simpleName
     }
 
     private var egl: EglBase? = EglBase.create()

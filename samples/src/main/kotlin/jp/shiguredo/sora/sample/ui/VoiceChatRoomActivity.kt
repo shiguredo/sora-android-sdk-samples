@@ -23,7 +23,7 @@ import org.webrtc.PeerConnection
 class VoiceChatRoomActivity : AppCompatActivity() {
 
     companion object {
-        val TAG = VoiceChatRoomActivity::class.simpleName
+        private val TAG = VoiceChatRoomActivity::class.simpleName
     }
 
     private var channelName: String = ""

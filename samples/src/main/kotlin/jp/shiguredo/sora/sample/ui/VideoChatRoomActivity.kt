@@ -31,7 +31,7 @@ import java.util.*
 class VideoChatRoomActivity : AppCompatActivity() {
 
     companion object {
-        val TAG = VideoChatRoomActivity::class.simpleName
+        private val TAG = VideoChatRoomActivity::class.simpleName
     }
 
     private var channelName = ""

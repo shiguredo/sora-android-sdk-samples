@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.signaling_selection.view.*
 class SpotlightRoomSetupActivity : AppCompatActivity() {
 
     companion object {
-        val TAG = SpotlightRoomSetupActivity::class.simpleName
+        private val TAG = SpotlightRoomSetupActivity::class.simpleName
     }
 
     private val spotlightNumberOptions = listOf("2", "1", "3", "4", "5")
