@@ -24,8 +24,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     private val videoEnabledOptions = listOf("YES", "NO")
     private val audioEnabledOptions = listOf("YES", "NO")
     private val streamTypeOptions = listOf("BIDIRECTIONAL", "MULTI-DOWN")
-    private val videoBitRateOptions = listOf("UNDEFINED", "100", "300", "500", "800",
-            "1000", "1500", "2000", "2500")
+    private val videoBitRateOptions = listOf("1000", "UNDEFINED", "100", "300", "500", "800",
+            "1500", "2000", "2500")
     private val videoSizeOptions = listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val sdpSemanticsOptions = listOf("Unified Plan", "Plan B")

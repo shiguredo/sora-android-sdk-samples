@@ -125,7 +125,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
         videoBitRate = when (intent.getStringExtra("VIDEO_BIT_RATE")) {
             "UNDEFINED" -> null
-            else -> (intent.getStringExtra("VIDEO_BIT_RATE") ?: "500").toInt()
+            else -> intent.getStringExtra("VIDEO_BIT_RATE")?.toInt()
         }
 
         audioBitRate = when (intent.getStringExtra("AUDIO_BIT_RATE")) {
