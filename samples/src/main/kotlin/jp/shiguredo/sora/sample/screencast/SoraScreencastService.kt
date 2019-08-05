@@ -249,6 +249,16 @@ class SoraScreencastService : Service() {
             if (req!!.multistream) {
                 enableMultistream()
             }
+
+            audioOption = SoraAudioOption().apply {
+                useHardwareAcousticEchoCanceler = true
+                useHardwareNoiseSuppressor      = true
+
+                audioProcessingEchoCancellation = true
+                audioProcessingAutoGainControl  = true
+                audioProcessingHighpassFilter   = true
+                audioProcessingNoiseSuppression = true
+            }
         }
         mediaChannel = SoraMediaChannel(
                 context           = this,
