@@ -1,6 +1,7 @@
 package jp.shiguredo.sora.sample.facade
 
 import android.content.Context
+import android.os.Environment
 import jp.shiguredo.sora.sample.camera.CameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.camera.DefaultCameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.option.SoraStreamType
@@ -18,6 +19,7 @@ import org.webrtc.*
 import android.os.Handler
 import jp.shiguredo.sora.sample.stats.VideoUpstreamLatencyStatsCollector
 import jp.shiguredo.sora.sdk.channel.option.PeerConnectionOption
+import java.io.File
 
 class SoraVideoChannel(
         private val context:                 Context,
@@ -72,7 +74,13 @@ class SoraVideoChannel(
             SoraLogger.d(TAG, "[video_channel] @onConnected")
             handler.post {
                 listener?.onConnect(this@SoraVideoChannel)
+                val traceFilePath = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                        "sora-webrtc-trace.txt").absolutePath
+                SoraMediaChannel.startTracer(traceFilePath)
             }
+            handler.postDelayed({
+                SoraMediaChannel.stopTracer()
+            }, 10000)
         }
 
         override fun onClose(mediaChannel: SoraMediaChannel) {
@@ -243,6 +251,8 @@ class SoraVideoChannel(
 
         val peerConnectionOption = PeerConnectionOption().apply {
             getStatsIntervalMSec = 5000
+            // FIXME(shino): このフラグは storage 書き込み権限が必要なのでオプション化したい
+            useLibwebrtcInternalTracer = true
         }
 
         mediaChannel = SoraMediaChannel(

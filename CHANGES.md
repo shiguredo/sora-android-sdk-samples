@@ -12,6 +12,10 @@
 
 ## develop
 
+### ADD
+
+- video facade に libwebrtc internal tracer 利用フラグを立てるよう変更した
+
 ## 1.9.0
 
 ### UPDATE
