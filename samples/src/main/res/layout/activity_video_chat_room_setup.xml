@@ -79,9 +79,6 @@
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/clientIdSelection"/>
-                <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/sdpSemanticsSelection"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 

@@ -28,7 +28,6 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
             "1500", "2000", "2500")
     private val videoSizeOptions = listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
-    private val sdpSemanticsOptions = listOf("Unified Plan", "Plan B")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -58,8 +57,6 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         videoSizeSelection.spinner.setItems(videoSizeOptions)
         fpsSelection.name.text = "FPS"
         fpsSelection.spinner.setItems(fpsOptions)
-        sdpSemanticsSelection.name.text = "SDP SEMANTICS"
-        sdpSemanticsSelection.spinner.setItems(sdpSemanticsOptions)
     }
 
     private fun startSpotlightChat() {
@@ -79,7 +76,6 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         val videoBitRate = selectedItem(videoBitRateSelection.spinner)
         val videoSize = selectedItem(videoSizeSelection.spinner)
         val fps = selectedItem(fpsSelection.spinner)
-        val sdpSemantics = selectedItem(sdpSemanticsSelection.spinner)
 
         val intent = Intent(this, VideoChatRoomActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
@@ -93,7 +89,6 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("VIDEO_BIT_RATE", videoBitRate)
         intent.putExtra("VIDEO_SIZE", videoSize)
         intent.putExtra("FPS", fps)
-        intent.putExtra("SDP_SEMANTICS", sdpSemantics)
 
         startActivity(intent)
     }

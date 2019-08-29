@@ -238,7 +238,6 @@ class SoraVideoChannel(
                 audioProcessingHighpassFilter   = true
                 audioProcessingNoiseSuppression = true
             }
-            sdpSemantics = this@SoraVideoChannel.sdpSemantics
         }
 
         val peerConnectionOption = PeerConnectionOption().apply {

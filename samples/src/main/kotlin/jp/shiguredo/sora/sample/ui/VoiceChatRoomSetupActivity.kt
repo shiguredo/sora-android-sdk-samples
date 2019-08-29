@@ -35,8 +35,6 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
         audioBitRateSelection.spinner.setItems(audioBitRateOptions)
         streamTypeSelection.name.text = "STREAM TYPE"
         streamTypeSelection.spinner.setItems(streamTypeOptions)
-        sdpSemanticsSelection.name.text = "SDP SEMANTICS"
-        sdpSemanticsSelection.spinner.setItems(sdpSemanticsOptions)
     }
 
     private fun startVoiceChat() {
@@ -49,14 +47,12 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
         val streamType = selectedItem(streamTypeSelection.spinner)
         val audioCodec = selectedItem(audioCodecSelection.spinner)
         val audioBitRate = selectedItem(audioBitRateSelection.spinner)
-        val sdpSemantics = selectedItem(sdpSemanticsSelection.spinner)
 
         val intent = Intent(this, VoiceChatRoomActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
         intent.putExtra("STREAM_TYPE", streamType)
         intent.putExtra("AUDIO_CODEC", audioCodec)
         intent.putExtra("AUDIO_BIT_RATE", audioBitRate)
-        intent.putExtra("SDP_SEMANTICS", sdpSemantics)
 
         startActivity(intent)
     }
