@@ -41,8 +41,6 @@ class SoraVideoChannel(
         private val audioBitRate:            Int? = null,
         private val needLocalRenderer:       Boolean = true,
         private val audioEnabled:            Boolean = true,
-        private val sdpSemantics:            PeerConnection.SdpSemantics =
-                PeerConnection.SdpSemantics.UNIFIED_PLAN,
         private val capturerFactory:         CameraVideoCapturerFactory =
                 DefaultCameraVideoCapturerFactory(context, fixedResolution),
         private var listener:                Listener?

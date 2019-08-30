@@ -48,7 +48,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var fps: Int = 30
     private var fixedResolution = false
     private var clientId: String? = null
-    private var sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN
 
     private var oldAudioMode: Int = AudioManager.MODE_INVALID
 
@@ -139,11 +138,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
             "時雨堂"      -> "🍖時雨堂🍗"
             "RANDOM UUID" -> UUID.randomUUID().toString()
             else -> null
-        }
-        sdpSemantics = when (intent.getStringExtra("SDP_SEMANTICS")) {
-            "Unified Plan" -> PeerConnection.SdpSemantics.UNIFIED_PLAN
-            "Plan B"       -> PeerConnection.SdpSemantics.PLAN_B
-            else           -> PeerConnection.SdpSemantics.UNIFIED_PLAN
         }
 
         ui = VideoChatRoomActivityUI(
@@ -256,7 +250,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 audioEnabled      = audioEnabled,
                 audioCodec        = audioCodec,
                 audioBitRate      = audioBitRate,
-                sdpSemantics      = sdpSemantics,
                 streamType        = streamType,
                 clientId          = clientId,
                 listener          = channelListener,

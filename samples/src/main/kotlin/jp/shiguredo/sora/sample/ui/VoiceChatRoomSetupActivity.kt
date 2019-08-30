@@ -21,7 +21,6 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
             "64", "96", "128", "256")
 
     private val streamTypeOptions = listOf("BIDIRECTIONAL", "SINGLE-UP", "SINGLE-DOWN", "MULTI-DOWN")
-    private val sdpSemanticsOptions = listOf("Unified Plan", "Plan B")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")

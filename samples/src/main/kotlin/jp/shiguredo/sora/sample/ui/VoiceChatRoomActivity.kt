@@ -31,7 +31,6 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     private var audioCodec:  SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
     private var audioBitRate: Int? = null
     private var streamType   = SoraStreamType.BIDIRECTIONAL
-    private var sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN
 
     private var oldAudioMode: Int = AudioManager.MODE_INVALID
 
@@ -58,12 +57,6 @@ class VoiceChatRoomActivity : AppCompatActivity() {
             "SINGLE-DOWN"   -> SoraStreamType.SINGLE_DOWN
             "MULTI-DOWN"    -> SoraStreamType.MULTI_DOWN
             else            -> SoraStreamType.BIDIRECTIONAL
-        }
-
-        sdpSemantics = when (intent.getStringExtra("SDP_SEMANTICS")) {
-            "Unified Plan" -> PeerConnection.SdpSemantics.UNIFIED_PLAN
-            "Plan B"       -> PeerConnection.SdpSemantics.PLAN_B
-            else           -> PeerConnection.SdpSemantics.UNIFIED_PLAN
         }
 
         channelNameText.text = channelName
@@ -148,7 +141,6 @@ class VoiceChatRoomActivity : AppCompatActivity() {
                 signalingMetadata = "",
                 audioCodec             = audioCodec,
                 audioBitRate           = audioBitRate,
-                sdpSemantics      = sdpSemantics,
                 streamType        = streamType,
                 listener          = channelListener
         )
