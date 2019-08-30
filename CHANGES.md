@@ -12,6 +12,10 @@
 
 ## develop
 
+### UPDATE
+
+- Android Studio 3.5.0 に対応した
+
 ## 1.9.0
 
 ### UPDATE
