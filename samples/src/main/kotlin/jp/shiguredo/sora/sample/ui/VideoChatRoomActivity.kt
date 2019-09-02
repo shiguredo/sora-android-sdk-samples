@@ -2,6 +2,8 @@ package jp.shiguredo.sora.sample.ui
 
 import android.annotation.TargetApi
 import android.content.Context
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Color
 import android.media.AudioManager
@@ -23,6 +25,7 @@ import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
+import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.android.synthetic.main.activity_video_chat_room.*
 import org.webrtc.PeerConnection
 import org.webrtc.SurfaceViewRenderer
@@ -55,6 +58,11 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var streamType = SoraStreamType.BIDIRECTIONAL
 
     private var ui: VideoChatRoomActivityUI? = null
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        SoraLogger.d(TAG, "onConfigurationChanged: orientation=${newConfig?.orientation}")
+        super.onConfigurationChanged(newConfig)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -145,6 +153,18 @@ class VideoChatRoomActivity : AppCompatActivity() {
             "時雨堂"      -> "🍖時雨堂🍗"
             "RANDOM UUID" -> UUID.randomUUID().toString()
             else -> null
+        }
+
+        // ステレオでは landscape にしたほうが内蔵マイクを使うときに自然な向きとなる。
+        // それ以外は、リモート映像の分割が簡単になるように portrait で動かす。
+        if (audioStereo) {
+            if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            }
+        } else {
+            if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            }
         }
 
         ui = VideoChatRoomActivityUI(
