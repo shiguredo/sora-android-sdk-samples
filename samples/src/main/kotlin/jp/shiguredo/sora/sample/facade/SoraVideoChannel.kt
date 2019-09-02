@@ -1,6 +1,7 @@
 package jp.shiguredo.sora.sample.facade
 
 import android.content.Context
+import android.media.MediaRecorder
 import jp.shiguredo.sora.sample.camera.CameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.camera.DefaultCameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.option.SoraStreamType
@@ -39,6 +40,7 @@ class SoraVideoChannel(
         private val audioCodec:              SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
         private val videoBitRate:            Int? = null,
         private val audioBitRate:            Int? = null,
+        private val audioStereo:             Boolean = false,
         private val needLocalRenderer:       Boolean = true,
         private val audioEnabled:            Boolean = true,
         private val capturerFactory:         CameraVideoCapturerFactory =
@@ -226,8 +228,8 @@ class SoraVideoChannel(
             audioCodec   = this@SoraVideoChannel.audioCodec
             audioBitrate = this@SoraVideoChannel.audioBitRate
 
-            // 全部デフォルト値なので、実際には指定する必要はない
             audioOption = SoraAudioOption().apply {
+                // 全部デフォルト値なので、実際には指定する必要はない
                 useHardwareAcousticEchoCanceler = true
                 useHardwareNoiseSuppressor      = true
 
@@ -235,6 +237,21 @@ class SoraVideoChannel(
                 audioProcessingAutoGainControl  = true
                 audioProcessingHighpassFilter   = true
                 audioProcessingNoiseSuppression = true
+
+                // 配信にステレオを使う場合の設定。
+                // AndroidManifest で portrait 固定だが、ステレオで配信するときは landscape に
+                // 変更したほうが良い。
+                if (audioStereo) {
+                    // libwebrtc の AGC が有効のときはステレオで出ないため無効化する
+                    audioProcessingAutoGainControl  = false
+
+                    // MediaRecorder.AudioSource.MIC の場合、両側のマイクの真ん中あたりで
+                    // 不連続に音量が下がるように聞こえる (Pixel 3 XL -> Sora で録音)。
+                    // マイクから離れることに依る近接センサーの影響か??
+                    // CAMCORDER にすると端末のマイクから離れたときの影響が小さい。
+                    audioSource = MediaRecorder.AudioSource.CAMCORDER
+                    useStereoInput = true
+                }
             }
         }
 

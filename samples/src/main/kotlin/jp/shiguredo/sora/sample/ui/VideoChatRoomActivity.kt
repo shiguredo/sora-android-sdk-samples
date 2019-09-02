@@ -41,6 +41,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var audioCodec:  SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
     private var audioEnabled = true
     private var audioBitRate: Int? = null
+    private var audioStereo: Boolean = false
     private var videoBitRate: Int? = null
     private var videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x
     private var videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y
@@ -122,14 +123,20 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else       -> false
         }
 
-        videoBitRate = when (intent.getStringExtra("VIDEO_BIT_RATE")) {
+        videoBitRate = when (val stringValue = intent.getStringExtra("VIDEO_BIT_RATE")) {
             "UNDEFINED" -> null
-            else -> intent.getStringExtra("VIDEO_BIT_RATE")?.toInt()
+            else -> stringValue?.toInt()
         }
 
-        audioBitRate = when (intent.getStringExtra("AUDIO_BIT_RATE")) {
+        audioBitRate = when (val stringValue = intent.getStringExtra("AUDIO_BIT_RATE")) {
             "UNDEFINED" -> null
-            else -> intent.getStringExtra("AUDIO_BIT_RATE")?.toInt()
+            else -> stringValue?.toInt()
+        }
+
+        audioStereo = when (intent.getStringExtra("AUDIO_STEREO")) {
+            "MONO"   -> false
+            "STEREO" -> true
+            else     -> false
         }
 
         clientId = when (intent.getStringExtra("CLIENT_ID")) {
@@ -250,6 +257,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 audioEnabled      = audioEnabled,
                 audioCodec        = audioCodec,
                 audioBitRate      = audioBitRate,
+                audioStereo       = audioStereo,
                 streamType        = streamType,
                 clientId          = clientId,
                 listener          = channelListener,

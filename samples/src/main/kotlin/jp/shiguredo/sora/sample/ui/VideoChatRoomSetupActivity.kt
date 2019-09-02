@@ -22,6 +22,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     private val audioEnabledOptions = listOf("YES", "NO")
     private val audioBitRateOptions = listOf("UNDEFINED", "8", "16", "24", "32",
             "64", "96", "128", "256")
+    private val audioStereoOptions = listOf("MONO", "STEREO")
     private val streamTypeOptions = listOf("BIDIRECTIONAL", "SINGLE-UP", "SINGLE-DOWN", "MULTI-DOWN")
     private val videoBitRateOptions = listOf("UNDEFINED", "100", "300", "500", "800", "1000", "1500",
             "2000", "2500", "3000", "5000", "10000", "15000", "20000", "30000")
@@ -53,6 +54,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         audioCodecSelection.spinner.setItems(audioCodecOptions)
         audioBitRateSelection.name.text = "AUDIO BIT RATE"
         audioBitRateSelection.spinner.setItems(audioBitRateOptions)
+        audioStereoSelection.name.text = "AUDIO STEREO"
+        audioStereoSelection.spinner.setItems(audioStereoOptions)
         streamTypeSelection.name.text = "STREAM TYPE"
         streamTypeSelection.spinner.setItems(streamTypeOptions)
         videoBitRateSelection.name.text = "VIDEO BIT RATE"
@@ -82,6 +85,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val audioCodec = selectedItem(audioCodecSelection.spinner)
         val audioEnabled = selectedItem(audioEnabledSelection.spinner)
         val audioBitRate = selectedItem(audioBitRateSelection.spinner)
+        val audioStereo = selectedItem(audioStereoSelection.spinner)
         val videoBitRate = selectedItem(videoBitRateSelection.spinner)
         val videoSize = selectedItem(videoSizeSelection.spinner)
         val simulcast = selectedItem(simulcastSelection.spinner)
@@ -97,6 +101,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("AUDIO_CODEC", audioCodec)
         intent.putExtra("AUDIO_ENABLED", audioEnabled)
         intent.putExtra("AUDIO_BIT_RATE", audioBitRate)
+        intent.putExtra("AUDIO_STEREO", audioStereo)
         intent.putExtra("VIDEO_BIT_RATE", videoBitRate)
         intent.putExtra("VIDEO_SIZE", videoSize)
         intent.putExtra("SIMULCAST", simulcast)

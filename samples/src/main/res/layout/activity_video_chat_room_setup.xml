@@ -51,13 +51,7 @@
                     android:id="@+id/videoEnabledSelection"/>
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/audioCodecSelection"/>
-                <include
-                    layout="@layout/signaling_selection"
                     android:id="@+id/audioEnabledSelection"/>
-                <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/audioBitRateSelection"/>
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/streamTypeSelection"/>
@@ -72,10 +66,19 @@
                     android:id="@+id/simulcastSelection"/>
                 <include
                     layout="@layout/signaling_selection"
+                    android:id="@+id/resolutionChangeSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/audioCodecSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
                     android:id="@+id/fpsSelection"/>
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/resolutionChangeSelection"/>
+                    android:id="@+id/audioBitRateSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/audioStereoSelection"/>
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/clientIdSelection"/>
