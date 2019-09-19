@@ -1,7 +1,13 @@
 package jp.shiguredo.sora.sample.ui
 
 import android.annotation.TargetApi
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothHeadset
+import android.bluetooth.BluetoothProfile
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -27,7 +33,6 @@ import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.android.synthetic.main.activity_video_chat_room.*
-import org.webrtc.PeerConnection
 import org.webrtc.SurfaceViewRenderer
 import java.util.*
 
@@ -63,6 +68,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
         SoraLogger.d(TAG, "onConfigurationChanged: orientation=${newConfig?.orientation}")
         super.onConfigurationChanged(newConfig)
     }
+
+    var bluetoothHeadset: BluetoothHeadset? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -177,7 +184,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 density         = this.resources.displayMetrics.density
         )
 
-        connectChannel()
+        // connectChannel()
     }
 
     private fun setupWindow() {
@@ -196,14 +203,101 @@ class VideoChatRoomActivity : AppCompatActivity() {
                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
     }
 
+    private val profileListener = object : BluetoothProfile.ServiceListener {
+
+        override fun onServiceConnected(profile: Int, proxy: BluetoothProfile) {
+            if (profile == BluetoothProfile.HEADSET) {
+                bluetoothHeadset = proxy as BluetoothHeadset
+                SoraLogger.d(TAG, "bluetooth: headset profile connected, proxy=${bluetoothHeadset}")
+                SoraLogger.d(TAG, "bluetooth: #(connectedDevices)=${bluetoothHeadset?.connectedDevices?.size}")
+                bluetoothHeadset?.connectedDevices?.forEach {
+                    // BluetoothProfile.STATE_CONNECTED = 2
+                    val state = bluetoothHeadset?.getConnectionState(it)
+                    val isConnected = bluetoothHeadset?.isAudioConnected(it)
+                    SoraLogger.d(TAG, "bluetooth: device name=${it.name} state=${state} isConnected=${isConnected}")
+                }
+            }
+        }
+
+        override fun onServiceDisconnected(profile: Int) {
+            if (profile == BluetoothProfile.HEADSET) {
+                SoraLogger.d(TAG, "bluetooth: headset profile disconnected")
+                bluetoothHeadset = null
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         this.volumeControlStream = AudioManager.STREAM_VOICE_CALL
+
         val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
                 as AudioManager
         oldAudioMode = audioManager.mode
         Log.d(TAG, "AudioManager mode change: ${oldAudioMode} => MODE_IN_COMMUNICATION(3)")
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+
+        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        // STATE_ON = 12
+        SoraLogger.d(TAG, "bluetoothAdapter=${bluetoothAdapter} isEnabled=${bluetoothAdapter.isEnabled} state=${bluetoothAdapter.state}")
+        // BluetoothProfile.STATE_CONNECTED = 2
+        SoraLogger.d(TAG, "bluetoothAdapter=${bluetoothAdapter} profileConnectionState(headset)=${bluetoothAdapter.getProfileConnectionState(BluetoothProfile.HEADSET)}")
+
+        bluetoothAdapter?.getProfileProxy(this, profileListener, BluetoothProfile.HEADSET)
+
+        val pairedDevices = bluetoothAdapter.bondedDevices
+        pairedDevices.forEach {
+            SoraLogger.d(TAG, "bluetooth device: name=${it.name} class=${it.bluetoothClass} type=${it.type} bondState=${it.bondState}")
+        }
+
+        val focusResult = audioManager.requestAudioFocus(
+                {focusChange -> SoraLogger.d(TAG, "bluetooth: audioManager focusChange=${focusChange}") },
+                AudioManager.STREAM_VOICE_CALL, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
+        // AUDIOFOCUS_REQUEST_GRANTED=1
+
+        val headsetBroadcastFilter = IntentFilter()
+        headsetBroadcastFilter.addAction(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED)
+        headsetBroadcastFilter.addAction(BluetoothHeadset.ACTION_AUDIO_STATE_CHANGED)
+        applicationContext.registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent) {
+                val action = intent.action
+                // STATE_AUDIO_CONNECTED    = 12
+                // STATE_AUDIO_DISCONNECTED = 10
+                val state = intent.getIntExtra(BluetoothHeadset.EXTRA_STATE, BluetoothHeadset.STATE_DISCONNECTED)
+                SoraLogger.d(TAG, "bluetooth headset broadcast onReceive: action=${action} state=${state}")
+
+                if (action == BluetoothHeadset.ACTION_AUDIO_STATE_CHANGED &&
+                        state == BluetoothHeadset.STATE_CONNECTED) {
+                    SoraLogger.d(TAG, "bluetooth headset audio state connected")
+                    audioManager.setSpeakerphoneOn(false)
+                    applicationContext.unregisterReceiver(this)
+                }
+            }
+        }, headsetBroadcastFilter)
+
+        // TODO: Create another receiver for this
+        val scoBroadcastFilter = IntentFilter()
+        scoBroadcastFilter.addAction(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED)
+        applicationContext.registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent) {
+                val action = intent.action
+                // SCO_AUDIO_STATE_DISCONNECTED = 0
+                // SCO_AUDIO_STATE_CONNECTED    = 1
+                // SCO_AUDIO_STATE_CONNECTING   = 2
+                val state = intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1)
+                SoraLogger.d(TAG, "bluetooth SCO broadcast onReceive: action=${action} state=${state}")
+                if (state == AudioManager.SCO_AUDIO_STATE_CONNECTED) {
+                    applicationContext.unregisterReceiver(this)
+                    SoraLogger.d(TAG, "bluetooth SCO connected. Try to connect to Sora")
+                    connectChannel()
+                }
+            }
+        }, scoBroadcastFilter)
+
+        // audioManager.setBluetoothScoOn(true)
+        audioManager.startBluetoothSco()
+
+        SoraLogger.d(TAG, "bluetooth: audioManger focusResult=${focusResult}")
     }
 
     override fun onPause() {
@@ -213,6 +307,10 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 as AudioManager
         Log.d(TAG, "AudioManager mode change: MODE_IN_COMMUNICATION(3) => ${oldAudioMode}")
         audioManager.mode = oldAudioMode
+
+        audioManager.stopBluetoothSco()
+        audioManager.setBluetoothScoOn(false)
+
         close()
     }
 
