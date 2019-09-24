@@ -27,6 +27,7 @@ import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.android.synthetic.main.activity_video_chat_room.*
+import org.appspot.apprtc.AppRTCAudioManager
 import org.webrtc.PeerConnection
 import org.webrtc.SurfaceViewRenderer
 import java.util.*
@@ -58,6 +59,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var streamType = SoraStreamType.BIDIRECTIONAL
 
     private var ui: VideoChatRoomActivityUI? = null
+
+    private var apprtcAudioManager: AppRTCAudioManager? = null
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         SoraLogger.d(TAG, "onConfigurationChanged: orientation=${newConfig?.orientation}")
@@ -204,6 +207,12 @@ class VideoChatRoomActivity : AppCompatActivity() {
         oldAudioMode = audioManager.mode
         Log.d(TAG, "AudioManager mode change: ${oldAudioMode} => MODE_IN_COMMUNICATION(3)")
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+
+        apprtcAudioManager = AppRTCAudioManager.create(applicationContext)
+        apprtcAudioManager?.start { audioDevice: AppRTCAudioManager.AudioDevice,
+                                    availableAudioDevices: Set<AppRTCAudioManager.AudioDevice> ->
+            SoraLogger.d(TAG, "onAudioDeviceChanged: ${audioDevice}")
+        }
     }
 
     override fun onPause() {
@@ -213,6 +222,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 as AudioManager
         Log.d(TAG, "AudioManager mode change: MODE_IN_COMMUNICATION(3) => ${oldAudioMode}")
         audioManager.mode = oldAudioMode
+        apprtcAudioManager?.stop()
         close()
     }
 
