@@ -19,6 +19,7 @@ import org.webrtc.*
 import android.os.Handler
 import jp.shiguredo.sora.sample.stats.VideoUpstreamLatencyStatsCollector
 import jp.shiguredo.sora.sdk.channel.option.PeerConnectionOption
+import jp.shiguredo.sora.sdk.channel.signaling.message.OpusParams
 
 class SoraVideoChannel(
         private val context:                 Context,
@@ -251,6 +252,12 @@ class SoraVideoChannel(
                     // CAMCORDER にすると端末のマイクから離れたときの影響が小さい。
                     audioSource = MediaRecorder.AudioSource.CAMCORDER
                     useStereoInput = true
+                }
+
+                opusParams = OpusParams().apply {
+                    // channels = 2
+                    stereo = false
+                    spropStereo = false
                 }
             }
         }

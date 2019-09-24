@@ -54,3 +54,7 @@ Sora Android SDK に対する有償のサポートについては現在提供し
 - Copyright 2017, Shiguredo Inc. and Lyo Kato <lyo.kato at gmail.com>
 
 - LibYuv ライブラリ: Copyright 2011 The LibYuv Project Authors.
+
+- webrtc.org
+  - AppRTCBuetoothManager、AppRTCAudioManager は webrtc.org
+  - ライセンスは BSD ライセンス(三条項)
