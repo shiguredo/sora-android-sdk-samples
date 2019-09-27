@@ -28,9 +28,9 @@ import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.android.synthetic.main.activity_video_chat_room.*
 import org.appspot.apprtc.AppRTCAudioManager
-import org.webrtc.PeerConnection
 import org.webrtc.SurfaceViewRenderer
 import java.util.*
+
 
 class VideoChatRoomActivity : AppCompatActivity() {
 
@@ -53,8 +53,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var fps: Int = 30
     private var fixedResolution = false
     private var clientId: String? = null
-
-    private var oldAudioMode: Int = AudioManager.MODE_INVALID
 
     private var streamType = SoraStreamType.BIDIRECTIONAL
 
@@ -179,8 +177,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 videoViewMargin = 10,
                 density         = this.resources.displayMetrics.density
         )
-
-        connectChannel()
     }
 
     private fun setupWindow() {
@@ -201,27 +197,24 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        this.volumeControlStream = AudioManager.STREAM_VOICE_CALL
-        val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
-                as AudioManager
-        oldAudioMode = audioManager.mode
-        Log.d(TAG, "AudioManager mode change: ${oldAudioMode} => MODE_IN_COMMUNICATION(3)")
-        audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+          this.volumeControlStream = AudioManager.STREAM_VOICE_CALL
+          val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
+                  as AudioManager
 
         apprtcAudioManager = AppRTCAudioManager.create(applicationContext)
         apprtcAudioManager?.start { audioDevice: AppRTCAudioManager.AudioDevice,
                                     availableAudioDevices: Set<AppRTCAudioManager.AudioDevice> ->
             SoraLogger.d(TAG, "onAudioDeviceChanged: ${audioDevice}")
+            if (audioDevice == AppRTCAudioManager.AudioDevice.BLUETOOTH) {
+                SoraLogger.d(TAG, "isScoOn=${audioManager.isBluetoothScoOn}")
+            }
         }
+        connectChannel()
     }
 
     override fun onPause() {
         Log.d(TAG, "onPause")
         super.onPause()
-        val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
-                as AudioManager
-        Log.d(TAG, "AudioManager mode change: MODE_IN_COMMUNICATION(3) => ${oldAudioMode}")
-        audioManager.mode = oldAudioMode
         apprtcAudioManager?.stop()
         close()
     }
