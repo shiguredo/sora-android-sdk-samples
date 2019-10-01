@@ -254,11 +254,6 @@ class SoraVideoChannel(
                     useStereoInput = true
                 }
 
-                opusParams = OpusParams().apply {
-                    // channels = 2
-                    stereo = false
-                    spropStereo = false
-                }
             }
         }
 
