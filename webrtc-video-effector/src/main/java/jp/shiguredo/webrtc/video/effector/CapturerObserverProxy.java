@@ -52,7 +52,6 @@ public class CapturerObserverProxy implements CapturerObserver {
             VideoFrame effectedVideoFrame = new VideoFrame(
                     effectedI420Buffer, frame.getRotation(), frame.getTimestampNs());
             originalI420Buffer.release();
-            frame.release();
 
             this.originalObserver.onFrameCaptured(effectedVideoFrame);
         } else {
