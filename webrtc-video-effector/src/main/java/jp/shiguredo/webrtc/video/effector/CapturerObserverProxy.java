@@ -3,14 +3,9 @@ package jp.shiguredo.webrtc.video.effector;
 import android.os.Handler;
 
 import org.webrtc.CapturerObserver;
-import org.webrtc.NV12Buffer;
 import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.ThreadUtils;
-import org.webrtc.VideoCapturer;
 import org.webrtc.VideoFrame;
-import org.webrtc.YuvHelper;
-
-import java.nio.ByteBuffer;
 
 public class CapturerObserverProxy implements CapturerObserver {
     public static final String TAG = CapturerObserverProxy.class.getSimpleName();
