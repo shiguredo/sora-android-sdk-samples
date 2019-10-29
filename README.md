@@ -6,6 +6,11 @@
 提供します。
 使い方は [Sora Android SDK ドキュメント](https://sora.shiguredo.jp/android-sdk-doc/) を参照してください。
 
+## About Support
+
+We check PRs or Issues only when written in JAPANESE.
+In other languages, we won't be able to deal with them. Thank you for your understanding.
+
 ## Sora Android SDK
 
 Sora Android SDK は [WebRTC SFU Sora](https://sora.shiguredo.jp) の Android クラ
