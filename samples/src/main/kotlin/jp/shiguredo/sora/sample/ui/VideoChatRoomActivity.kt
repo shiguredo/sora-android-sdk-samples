@@ -59,7 +59,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
     private var ui: VideoChatRoomActivityUI? = null
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         SoraLogger.d(TAG, "onConfigurationChanged: orientation=${newConfig?.orientation}")
         super.onConfigurationChanged(newConfig)
     }
