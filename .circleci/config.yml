@@ -39,3 +39,6 @@ jobs:
       - store_artifacts:
           path: webrtc-video-effector/build/reports
           destination: effector-reports
+    branches:
+      ignore:
+        - feature/simulcast-encoder
