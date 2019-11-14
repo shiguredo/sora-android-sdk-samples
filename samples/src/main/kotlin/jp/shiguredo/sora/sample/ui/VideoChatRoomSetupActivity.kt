@@ -16,23 +16,23 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val TAG = VideoChatRoomSetupActivity::class.simpleName
     }
 
-    private val videoCodecOptions = listOf("VP9", "VP8", "H264")
+    private val videoCodecOptions = listOf("VP8", "VP9", "VP8", "H264")
     private val videoEnabledOptions = listOf("YES", "NO")
     private val audioCodecOptions = listOf("OPUS", "PCMU")
     private val audioEnabledOptions = listOf("YES", "NO")
     private val audioBitRateOptions = listOf("UNDEFINED", "8", "16", "24", "32",
             "64", "96", "128", "256")
     private val audioStereoOptions = listOf("MONO", "STEREO")
-    private val streamTypeOptions = listOf("BIDIRECTIONAL", "SINGLE-UP", "SINGLE-DOWN", "MULTI-DOWN")
-    private val videoBitRateOptions = listOf("UNDEFINED", "100", "300", "500", "800", "1000", "1500",
+    private val streamTypeOptions = listOf("SINGLE-UP", "BIDIRECTIONAL", "SINGLE-UP", "SINGLE-DOWN", "MULTI-DOWN")
+    private val videoBitRateOptions = listOf("3000", "UNDEFINED", "100", "300", "500", "800", "1000", "1500",
             "2000", "2500", "3000", "5000", "10000", "15000", "20000", "30000")
     private val videoSizeOptions = listOf(
             // Portrait
-            "VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD",
+            "FHD", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD",
             "Res1920x3840", "UHD2160x3840", "UHD2160x4096",
             // Landscape
             "Res3840x1920", "UHD3840x2160")
-    private val simulcastOptions = listOf("DISABLED", "ENABLED")
+    private val simulcastOptions = listOf("ENABLED", "DISABLED", "ENABLED")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("VARIABLE", "FIXED")
     private val cameraFacingOptions = listOf("FRONT", "REAR")

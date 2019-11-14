@@ -19,6 +19,8 @@ import org.webrtc.*
 import android.os.Handler
 import jp.shiguredo.sora.sample.stats.VideoUpstreamLatencyStatsCollector
 import jp.shiguredo.sora.sdk.channel.option.PeerConnectionOption
+import jp.shiguredo.sora.sdk.channel.signaling.message.Encoding
+import jp.shiguredo.sora.sdk.video.SimulcastVideoEncoderFactory
 
 class SoraVideoChannel(
         private val context:                 Context,
@@ -223,8 +225,7 @@ class SoraVideoChannel(
 
             if(this@SoraVideoChannel.simulcast) {
                 enableSimulcast()
-                // hardware encoder では動かせていない、ソフトウェアを指定する
-                videoEncoderFactory = SoftwareVideoEncoderFactory()
+                videoEncoderFactory = SimulcastVideoEncoderFactory(eglContext = egl!!.eglBaseContext)
             }
             spotlight    = this@SoraVideoChannel.spotlight
             videoCodec   = this@SoraVideoChannel.videoCodec
