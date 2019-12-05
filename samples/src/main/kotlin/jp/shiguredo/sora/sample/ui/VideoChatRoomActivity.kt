@@ -51,6 +51,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var simulcast = false
     private var fps: Int = 30
     private var fixedResolution = false
+    private var cameraFacing = true
     private var clientId: String? = null
 
     private var oldAudioMode: Int = AudioManager.MODE_INVALID
@@ -145,6 +146,12 @@ class VideoChatRoomActivity : AppCompatActivity() {
             "MONO"   -> false
             "STEREO" -> true
             else     -> false
+        }
+
+        cameraFacing = when (intent.getStringExtra("CAMERA_FACING")) {
+            "FRONT" -> true
+            "REAR"  -> false
+            else    -> true
         }
 
         clientId = when (intent.getStringExtra("CLIENT_ID")) {
@@ -279,6 +286,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 audioBitRate      = audioBitRate,
                 audioStereo       = audioStereo,
                 streamType        = streamType,
+                cameraFacing      = cameraFacing,
                 clientId          = clientId,
                 listener          = channelListener,
                 needLocalRenderer = true

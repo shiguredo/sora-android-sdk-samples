@@ -36,6 +36,7 @@ class SoraVideoChannel(
         private val simulcast:               Boolean = false,
         private val videoFPS:                Int =  30,
         private val fixedResolution:         Boolean = false,
+        private val cameraFacing:            Boolean = true,
         private val videoCodec:              SoraVideoOption.Codec = SoraVideoOption.Codec.VP9,
         private val audioCodec:              SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
         private val videoBitRate:            Int? = null,
@@ -44,7 +45,7 @@ class SoraVideoChannel(
         private val needLocalRenderer:       Boolean = true,
         private val audioEnabled:            Boolean = true,
         private val capturerFactory:         CameraVideoCapturerFactory =
-                DefaultCameraVideoCapturerFactory(context, fixedResolution),
+                DefaultCameraVideoCapturerFactory(context, fixedResolution, cameraFacing),
         private var listener:                Listener?
 ) {
 
