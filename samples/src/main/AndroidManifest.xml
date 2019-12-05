@@ -67,7 +67,8 @@
         -->
         <activity android:name="jp.shiguredo.sora.sample.ui.VideoChatRoomActivity"
             android:label="Video Chat Room"
-            android:screenOrientation="portrait">
+            android:configChanges="orientation|screenSize"
+            >
             <!-- <intent-filter> -->
             <!--     <action android:name="android.intent.action.MAIN" /> -->
 

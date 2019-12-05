@@ -22,8 +22,6 @@ class SoraAudioChannel(
         private var streamType:        SoraStreamType,
         private var audioCodec:        SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
         private val audioBitRate:      Int? = null,
-        private var sdpSemantics:      PeerConnection.SdpSemantics =
-                PeerConnection.SdpSemantics.UNIFIED_PLAN,
         private var listener:          Listener?
 ) {
 
@@ -93,8 +91,6 @@ class SoraAudioChannel(
 
             audioCodec = this@SoraAudioChannel.audioCodec
             audioBitrate = this@SoraAudioChannel.audioBitRate
-
-            sdpSemantics = this@SoraAudioChannel.sdpSemantics
         }
 
         mediaChannel = SoraMediaChannel(

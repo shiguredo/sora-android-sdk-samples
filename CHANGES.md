@@ -12,6 +12,27 @@
 
 ## develop
 
+## 1.10.0
+
+### UPDATE
+
+- Android Studio 3.5.2 に対応した
+- Kotlin を 1.3.50 に上げた
+- `androidx.appcompat:appcompat` を 1.1.0` に上げた
+
+### ADD
+
+- video chat room にステレオで配信するオプションを追加した
+  - Andoird 9 / Pixel3 XL からの配信で動作を確認している
+    - カメラを体の前に持った状態で、液晶を自分向き、ホームボタン側を自分から見て右にした状態
+    - 映像はリアカメラからの入力
+    - マイクは内蔵を利用し、上部が左、下部を右とすると映像の向きとステレオの左右が同期した
+
+### CHANGE
+
+- Plan-B 対応を削除した
+- minSdkVersion を 21 に上げた
+
 ## 1.9.0
 
 ### UPDATE

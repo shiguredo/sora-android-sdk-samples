@@ -17,4 +17,5 @@ org.gradle.jvmargs=-Xmx1536m
 # org.gradle.parallel=true
 
 # Overwrite sora Signaling endpoint in build.gradle's ext.signaling_endpoint
-# sora.signaling_endpoint = ws://192.0.2.10:50000/signaling
+# signaling_endpoint = ws://192.0.2.10:50000/signaling
+# channel_id         = sora
