@@ -164,6 +164,7 @@ class EffectedVideoChatActivity : AppCompatActivity() {
 
         override fun onError(channel: SoraVideoChannel, reason: SoraErrorReason) {
             ui?.changeState("#DD2C00")
+            Toast.makeText(this@EffectedVideoChatActivity, "Error: ${reason.name}", Toast.LENGTH_LONG).show()
             close()
         }
 

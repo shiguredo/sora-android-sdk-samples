@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.facade.SoraAudioChannel
@@ -121,6 +122,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
         override fun onError(channel: SoraAudioChannel, reason: SoraErrorReason) {
             changeStateText("ERROR")
+            Toast.makeText(this@VoiceChatRoomActivity, "Error: ${reason.name}", Toast.LENGTH_LONG).show()
             close()
         }
 
