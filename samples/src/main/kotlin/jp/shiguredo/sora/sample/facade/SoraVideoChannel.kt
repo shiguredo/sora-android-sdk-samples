@@ -95,6 +95,10 @@ class SoraVideoChannel(
             }
         }
 
+        override fun onSenderEncodings(mediaChannel: SoraMediaChannel, encodings: List<RtpParameters.Encoding>) {
+            SoraLogger.d(TAG, "[video_channel] @onSenderEncodings: encodings=${encodings}")
+        }
+
         override fun onAddRemoteStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
             SoraLogger.d(TAG, "[video_channel] @onAddRemoteStream:${ms.id}")
             handler.post {
