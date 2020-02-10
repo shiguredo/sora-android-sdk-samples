@@ -16,7 +16,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val TAG = VideoChatRoomSetupActivity::class.simpleName
     }
 
-    private val videoCodecOptions = listOf("VP8", "VP9", "VP8", "H264")
+    private val videoCodecOptions = listOf("H264", "VP8", "VP9", "VP8", "H264")
     private val videoEnabledOptions = listOf("YES", "NO")
     private val audioCodecOptions = listOf("OPUS", "PCMU")
     private val audioEnabledOptions = listOf("NO", "YES", "NO")
