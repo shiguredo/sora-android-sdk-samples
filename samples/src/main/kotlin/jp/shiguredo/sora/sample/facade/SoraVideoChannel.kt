@@ -19,7 +19,6 @@ import org.webrtc.*
 import android.os.Handler
 import jp.shiguredo.sora.sample.stats.VideoUpstreamLatencyStatsCollector
 import jp.shiguredo.sora.sdk.channel.option.PeerConnectionOption
-import jp.shiguredo.sora.sdk.channel.signaling.message.Encoding
 import jp.shiguredo.sora.sdk.video.SimulcastVideoEncoderFactory
 import java.lang.IllegalArgumentException
 
@@ -101,23 +100,21 @@ class SoraVideoChannel(
         override fun onSenderEncodings(mediaChannel: SoraMediaChannel, encodings: List<RtpParameters.Encoding>) {
             SoraLogger.d(TAG, "[video_channel] @onSenderEncodings: encodings=${encodings}")
             encodings.forEach { encoding ->
+                encoding.scaleResolutionDownBy = 1.0
                 when (encoding.rid) {
                     "low" -> {
-                        encoding.scaleResolutionDownBy = 1.0
                         encoding.maxFramerate = 1
                         encoding.maxBitrateBps =10_000_000
                     }
                     "middle" -> {
-                        encoding.scaleResolutionDownBy = 1.0
                         encoding.maxFramerate = 30
                         encoding.maxBitrateBps =15_000_000
                     }
                     "high" -> {
-                        encoding.scaleResolutionDownBy = 1.0
                         encoding.active = false
                     }
                     else ->
-                        throw IllegalArgumentException("rid=${encoding.rid}")
+                        throw IllegalArgumentException("invalid rid=${encoding.rid}")
                 }
             }
         }
@@ -247,6 +244,8 @@ class SoraVideoChannel(
             if(this@SoraVideoChannel.simulcast) {
                 enableSimulcast()
                 videoEncoderFactory = SimulcastVideoEncoderFactory(eglContext = egl!!.eglBaseContext)
+            } else {
+                videoEncoderFactory = SoraHardwareVideoEncoderFactory(egl!!.eglBaseContext, true, false)
             }
             spotlight    = this@SoraVideoChannel.spotlight
             videoCodec   = this@SoraVideoChannel.videoCodec
