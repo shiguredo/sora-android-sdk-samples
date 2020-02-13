@@ -115,6 +115,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
             // Landscape
             "Res3840x1920" -> SoraVideoOption.FrameSize.Landscape.Res3840x1920
             "UHD3840x2160" -> SoraVideoOption.FrameSize.Landscape.UHD3840x2160
+            "4096x2160"    -> SoraVideoOption.FrameSize.Landscape.UHD4096x2160
             // Default
             else           -> SoraVideoOption.FrameSize.Portrait.VGA
         }
@@ -170,7 +171,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
             }
         } else {
             if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                // requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             }
         }
 
@@ -290,7 +292,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 cameraFacing      = cameraFacing,
                 clientId          = clientId,
                 listener          = channelListener,
-                needLocalRenderer = true
+                needLocalRenderer = false
         )
         channel!!.connect()
     }
