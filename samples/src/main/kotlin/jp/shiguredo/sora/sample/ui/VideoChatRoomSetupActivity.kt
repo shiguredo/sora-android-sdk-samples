@@ -16,7 +16,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val TAG = VideoChatRoomSetupActivity::class.simpleName
     }
 
-    private val videoCodecOptions = listOf("H264", "VP8", "VP9", "VP8", "H264")
+    private val videoCodecOptions = listOf("VP8", "H264", "VP9", "VP8", "H264")
     private val videoEnabledOptions = listOf("YES", "NO")
     private val audioCodecOptions = listOf("OPUS", "PCMU")
     private val audioEnabledOptions = listOf("NO", "YES", "NO")
@@ -24,10 +24,11 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
             "64", "96", "128", "256")
     private val audioStereoOptions = listOf("MONO", "STEREO")
     private val streamTypeOptions = listOf("SINGLE-UP", "BIDIRECTIONAL", "SINGLE-UP", "SINGLE-DOWN", "MULTI-DOWN")
-    private val videoBitRateOptions = listOf("10000", "UNDEFINED", "100", "300", "500", "800", "1000", "1500",
+    private val videoBitRateOptions = listOf("30000", "UNDEFINED", "100", "300", "500", "800", "1000", "1500",
             "2000", "2500", "3000", "5000", "10000", "15000", "20000", "30000")
     private val videoSizeOptions = listOf(
-            "4096x2160", "UHD3840x2160",
+            // "4096x2160",
+            "UHD3840x2160",
             // Portrait
             "FHD", "QQVGA", "QCIF", "HQVGA", "QVGA", "VGA", "HD", "FHD",
             "Res1920x3840", "UHD2160x3840", "UHD2160x4096",
