@@ -247,6 +247,10 @@ class VideoChatRoomActivity : AppCompatActivity() {
             close()
         }
 
+        override fun onWarning(channel: SoraVideoChannel, reason: SoraErrorReason) {
+            Toast.makeText(this@VideoChatRoomActivity, "Error: ${reason.name}", Toast.LENGTH_LONG).show()
+        }
+
         override fun onAddLocalRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {
             ui?.addLocalRenderer(renderer)
         }

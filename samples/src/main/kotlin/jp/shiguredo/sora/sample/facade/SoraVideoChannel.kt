@@ -59,6 +59,7 @@ class SoraVideoChannel(
         fun onConnect(channel: SoraVideoChannel) {}
         fun onClose(channel: SoraVideoChannel) {}
         fun onError(channel: SoraVideoChannel, reason: SoraErrorReason) {}
+        fun onWarning(channel: SoraVideoChannel, reason: SoraErrorReason) {}
         fun onAddRemoteRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {}
         fun onRemoveRemoteRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {}
         fun onAddLocalRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {}
@@ -92,6 +93,20 @@ class SoraVideoChannel(
             SoraLogger.d(TAG, "[video_channel] @onError $reason: $message")
             handler.post {
                 listener?.onError(this@SoraVideoChannel, reason)
+            }
+        }
+
+        override fun onWarning(mediaChannel: SoraMediaChannel, reason: SoraErrorReason) {
+            SoraLogger.d(TAG, "[video_channel] @onWarning $reason")
+            handler.post {
+                listener?.onWarning(this@SoraVideoChannel, reason)
+            }
+        }
+
+        override fun onWarning(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {
+            SoraLogger.d(TAG, "[video_channel] @onWarning $reason: $message")
+            handler.post {
+                listener?.onWarning(this@SoraVideoChannel, reason)
             }
         }
 
