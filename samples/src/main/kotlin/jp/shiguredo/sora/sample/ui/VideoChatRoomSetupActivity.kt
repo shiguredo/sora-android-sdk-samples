@@ -35,6 +35,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     private val simulcastOptions = listOf("DISABLED", "ENABLED")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("VARIABLE", "FIXED")
+    private val cameraFacingOptions = listOf("FRONT", "REAR")
     private val clientIdOptions = listOf("NONE", "BUILD MODEL", "時雨堂", "RANDOM UUID")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,6 +69,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         fpsSelection.spinner.setItems(fpsOptions)
         resolutionChangeSelection.name.text = "RESOLUTION CHANGE"
         resolutionChangeSelection.spinner.setItems(resolutionChangeOptions)
+        cameraFacingSelection.name.text = "CAMERA FACING"
+        cameraFacingSelection.spinner.setItems(cameraFacingOptions)
         clientIdSelection.name.text = "CLIENT ID"
         clientIdSelection.spinner.setItems(clientIdOptions)
     }
@@ -91,6 +94,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val simulcast = selectedItem(simulcastSelection.spinner)
         val fps = selectedItem(fpsSelection.spinner)
         val resolutionChange = selectedItem(resolutionChangeSelection.spinner)
+        val cameraFacing = selectedItem(cameraFacingSelection.spinner)
         val clientId = selectedItem(clientIdSelection.spinner)
 
         val intent = Intent(this, VideoChatRoomActivity::class.java)
@@ -107,6 +111,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("SIMULCAST", simulcast)
         intent.putExtra("FPS", fps)
         intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
+        intent.putExtra("CAMERA_FACING", cameraFacing)
         intent.putExtra("CLIENT_ID", clientId)
 
         startActivity(intent)

@@ -36,6 +36,7 @@ class SoraVideoChannel(
         private val simulcast:               Boolean = false,
         private val videoFPS:                Int =  30,
         private val fixedResolution:         Boolean = false,
+        private val cameraFacing:            Boolean = true,
         private val videoCodec:              SoraVideoOption.Codec = SoraVideoOption.Codec.VP9,
         private val audioCodec:              SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
         private val videoBitRate:            Int? = null,
@@ -44,7 +45,7 @@ class SoraVideoChannel(
         private val needLocalRenderer:       Boolean = true,
         private val audioEnabled:            Boolean = true,
         private val capturerFactory:         CameraVideoCapturerFactory =
-                DefaultCameraVideoCapturerFactory(context, fixedResolution),
+                DefaultCameraVideoCapturerFactory(context, fixedResolution, cameraFacing),
         private var listener:                Listener?
 ) {
 
@@ -58,6 +59,7 @@ class SoraVideoChannel(
         fun onConnect(channel: SoraVideoChannel) {}
         fun onClose(channel: SoraVideoChannel) {}
         fun onError(channel: SoraVideoChannel, reason: SoraErrorReason) {}
+        fun onWarning(channel: SoraVideoChannel, reason: SoraErrorReason) {}
         fun onAddRemoteRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {}
         fun onRemoveRemoteRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {}
         fun onAddLocalRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {}
@@ -92,6 +94,24 @@ class SoraVideoChannel(
             handler.post {
                 listener?.onError(this@SoraVideoChannel, reason)
             }
+        }
+
+        override fun onWarning(mediaChannel: SoraMediaChannel, reason: SoraErrorReason) {
+            SoraLogger.d(TAG, "[video_channel] @onWarning $reason")
+            handler.post {
+                listener?.onWarning(this@SoraVideoChannel, reason)
+            }
+        }
+
+        override fun onWarning(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {
+            SoraLogger.d(TAG, "[video_channel] @onWarning $reason: $message")
+            handler.post {
+                listener?.onWarning(this@SoraVideoChannel, reason)
+            }
+        }
+
+        override fun onSenderEncodings(mediaChannel: SoraMediaChannel, encodings: List<RtpParameters.Encoding>) {
+            SoraLogger.d(TAG, "[video_channel] @onSenderEncodings: encodings=${encodings}")
         }
 
         override fun onAddRemoteStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {

@@ -12,11 +12,12 @@ interface CameraVideoCapturerFactory {
 
 class DefaultCameraVideoCapturerFactory(
         private val context: Context,
-        private val fixedResolution: Boolean = false
+        private val fixedResolution: Boolean = false,
+        private val frontFacingFirst: Boolean = true
 ): CameraVideoCapturerFactory {
 
     override fun createCapturer(): CameraVideoCapturer? {
-        return CameraCapturerFactory.create(context, fixedResolution)
+        return CameraCapturerFactory.create(context, fixedResolution, frontFacingFirst)
     }
 }
 

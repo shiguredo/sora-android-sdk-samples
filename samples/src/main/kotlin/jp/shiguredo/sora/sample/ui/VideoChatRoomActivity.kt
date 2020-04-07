@@ -51,6 +51,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var simulcast = false
     private var fps: Int = 30
     private var fixedResolution = false
+    private var cameraFacing = true
     private var clientId: String? = null
 
     private var oldAudioMode: Int = AudioManager.MODE_INVALID
@@ -60,7 +61,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var ui: VideoChatRoomActivityUI? = null
 
     override fun onConfigurationChanged(newConfig: Configuration) {
-        SoraLogger.d(TAG, "onConfigurationChanged: orientation=${newConfig?.orientation}")
+        SoraLogger.d(TAG, "onConfigurationChanged: orientation=${newConfig.orientation}")
         super.onConfigurationChanged(newConfig)
     }
 
@@ -145,6 +146,12 @@ class VideoChatRoomActivity : AppCompatActivity() {
             "MONO"   -> false
             "STEREO" -> true
             else     -> false
+        }
+
+        cameraFacing = when (intent.getStringExtra("CAMERA_FACING")) {
+            "FRONT" -> true
+            "REAR"  -> false
+            else    -> true
         }
 
         clientId = when (intent.getStringExtra("CLIENT_ID")) {
@@ -236,7 +243,12 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
         override fun onError(channel: SoraVideoChannel, reason: SoraErrorReason) {
             ui?.changeState("#DD2C00")
+            Toast.makeText(this@VideoChatRoomActivity, "Error: ${reason.name}", Toast.LENGTH_LONG).show()
             close()
+        }
+
+        override fun onWarning(channel: SoraVideoChannel, reason: SoraErrorReason) {
+            Toast.makeText(this@VideoChatRoomActivity, "Error: ${reason.name}", Toast.LENGTH_LONG).show()
         }
 
         override fun onAddLocalRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {
@@ -279,6 +291,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 audioBitRate      = audioBitRate,
                 audioStereo       = audioStereo,
                 streamType        = streamType,
+                cameraFacing      = cameraFacing,
                 clientId          = clientId,
                 listener          = channelListener,
                 needLocalRenderer = true
