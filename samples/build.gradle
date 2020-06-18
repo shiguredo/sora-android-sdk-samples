@@ -70,6 +70,7 @@ dependencies {
     kapt "org.permissionsdispatcher:permissionsdispatcher-processor:${pd_version}"
 
     implementation project(path: ':webrtc-video-effector')
+    implementation project(path: ':sora-android-sdk-video-filters')
 }
 
 repositories {
