@@ -23,7 +23,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     private val audioBitRateOptions = listOf("UNDEFINED", "8", "16", "24", "32",
             "64", "96", "128", "256")
     private val audioStereoOptions = listOf("MONO", "STEREO")
-    private val streamTypeOptions = listOf("BIDIRECTIONAL", "SINGLE-UP", "SINGLE-DOWN", "MULTI-DOWN")
+    private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
+    private val multiplicityOptions = listOf("MULTI-STREAM", "SINGLE-STREAM")
     private val videoBitRateOptions = listOf("UNDEFINED", "100", "300", "500", "800", "1000", "1500",
             "2000", "2500", "3000", "5000", "10000", "15000", "20000", "30000")
     private val videoSizeOptions = listOf(
@@ -57,8 +58,10 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         audioBitRateSelection.spinner.setItems(audioBitRateOptions)
         audioStereoSelection.name.text = "AUDIO STEREO"
         audioStereoSelection.spinner.setItems(audioStereoOptions)
-        streamTypeSelection.name.text = "STREAM TYPE"
-        streamTypeSelection.spinner.setItems(streamTypeOptions)
+        roleSelection.name.text = "ROLE"
+        roleSelection.spinner.setItems(roleOptions)
+        multiplicitySelection.name.text = "MULTIPLICITY"
+        multiplicitySelection.spinner.setItems(multiplicityOptions)
         videoBitRateSelection.name.text = "VIDEO BIT RATE"
         videoBitRateSelection.spinner.setItems(videoBitRateOptions)
         videoSizeSelection.name.text = "VIDEO SIZE"
@@ -82,7 +85,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
             return
         }
 
-        val streamType = selectedItem(streamTypeSelection.spinner)
+        val role = selectedItem(roleSelection.spinner)
         val videoCodec = selectedItem(videoCodecSelection.spinner)
         val videoEnabled = selectedItem(videoEnabledSelection.spinner)
         val audioCodec = selectedItem(audioCodecSelection.spinner)
@@ -99,7 +102,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
 
         val intent = Intent(this, VideoChatRoomActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
-        intent.putExtra("STREAM_TYPE", streamType)
+        intent.putExtra("ROLE", role)
         intent.putExtra("VIDEO_CODEC", videoCodec)
         intent.putExtra("VIDEO_ENABLED", videoEnabled)
         intent.putExtra("AUDIO_CODEC", audioCodec)
