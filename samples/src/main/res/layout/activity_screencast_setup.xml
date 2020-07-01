@@ -51,7 +51,7 @@
                     android:id="@+id/audioCodecSelection"/>
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/streamTypeSelection"/>
+                    android:id="@+id/roleSelection"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 

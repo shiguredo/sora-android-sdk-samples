@@ -45,10 +45,13 @@
 
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/audioCodecSelection"/>
+                    android:id="@+id/roleSelection"/>
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/streamTypeSelection"/>
+                    android:id="@+id/multistreamSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/audioCodecSelection"/>
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/audioBitRateSelection"/>

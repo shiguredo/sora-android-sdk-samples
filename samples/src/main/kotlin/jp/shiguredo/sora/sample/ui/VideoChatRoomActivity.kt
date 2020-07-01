@@ -18,7 +18,7 @@ import android.widget.*
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.facade.SoraVideoChannel
-import jp.shiguredo.sora.sample.option.SoraStreamType
+import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sample.ui.util.RendererLayoutCalculator
 import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
@@ -27,7 +27,6 @@ import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.android.synthetic.main.activity_video_chat_room.*
-import org.webrtc.PeerConnection
 import org.webrtc.SurfaceViewRenderer
 import java.util.*
 
@@ -49,6 +48,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x
     private var videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y
     private var simulcast = false
+    private var multistream = true
     private var fps: Int = 30
     private var fixedResolution = false
     private var cameraFacing = true
@@ -56,7 +56,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
     private var oldAudioMode: Int = AudioManager.MODE_INVALID
 
-    private var streamType = SoraStreamType.BIDIRECTIONAL
+    private var role = SoraRoleType.SENDRECV
 
     private var ui: VideoChatRoomActivityUI? = null
 
@@ -84,12 +84,11 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
         audioCodec = SoraAudioOption.Codec.valueOf(intent.getStringExtra("AUDIO_CODEC") ?: "OPUS")
 
-        streamType = when (intent.getStringExtra("STREAM_TYPE")) {
-            "BIDIRECTIONAL" -> SoraStreamType.BIDIRECTIONAL
-            "SINGLE-UP"     -> SoraStreamType.SINGLE_UP
-            "SINGLE-DOWN"   -> SoraStreamType.SINGLE_DOWN
-            "MULTI-DOWN"    -> SoraStreamType.MULTI_DOWN
-            else            -> SoraStreamType.BIDIRECTIONAL
+        role = when (intent.getStringExtra("ROLE")) {
+            "SENDONLY" -> SoraRoleType.SENDONLY
+            "RECVONLY" -> SoraRoleType.RECVONLY
+            "SENDRECV" -> SoraRoleType.SENDRECV
+            else       -> SoraRoleType.SENDRECV
         }
 
         audioEnabled = when (intent.getStringExtra("AUDIO_ENABLED")) {
@@ -122,6 +121,11 @@ class VideoChatRoomActivity : AppCompatActivity() {
         videoHeight = videoSize.y
 
         simulcast = when (intent.getStringExtra("SIMULCAST")) {
+            "ENABLED" -> true
+            else      -> false
+        }
+
+        multistream = when (intent.getStringExtra("MULTISTREAM")) {
             "ENABLED" -> true
             else      -> false
         }
@@ -290,7 +294,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 audioCodec        = audioCodec,
                 audioBitRate      = audioBitRate,
                 audioStereo       = audioStereo,
-                streamType        = streamType,
+                role              = role,
+                multistream       = multistream,
                 cameraFacing      = cameraFacing,
                 clientId          = clientId,
                 listener          = channelListener,

@@ -24,7 +24,7 @@ class ScreencastSetupActivity : AppCompatActivity() {
 
     private val videoCodecOptions  = listOf("VP9", "VP8", "H264")
     private val audioCodecOptions  = listOf("OPUS", "PCMU")
-    private val streamTypeOptions = listOf("SINGLE-UP", "BIDIRECTIONAL")
+    private val roleOptions = listOf("SINGLE-UP", "SENDRECV")
 
     private var screencastStarter: SoraScreencastServiceStarter? = null
 
@@ -37,15 +37,15 @@ class ScreencastSetupActivity : AppCompatActivity() {
         videoCodecSelection.spinner.setItems(videoCodecOptions)
         audioCodecSelection.name.text = "AUDIO CODEC"
         audioCodecSelection.spinner.setItems(audioCodecOptions)
-        streamTypeSelection.name.text = "STREAM TYPE"
-        streamTypeSelection.spinner.setItems(streamTypeOptions)
+        roleSelection.name.text = "ROLE"
+        roleSelection.spinner.setItems(roleOptions)
 
         start.setOnClickListener {
             val channelName = channelNameInput.text.toString()
             val videoCodec = selectedItem(videoCodecSelection.spinner)
             val audioCodec = selectedItem(audioCodecSelection.spinner)
-            val streamType = selectedItem(streamTypeSelection.spinner)
-            startScreencast(channelName, videoCodec, audioCodec, streamType)
+            val role = selectedItem(roleSelection.spinner)
+            startScreencast(channelName, videoCodec, audioCodec, role)
         }
     }
 
@@ -57,11 +57,11 @@ class ScreencastSetupActivity : AppCompatActivity() {
     private fun startScreencast(channelId:   String,
                                  videoCodec:  String,
                                  audioCodec:  String,
-                                 streamType:  String) {
+                                 role:  String) {
 
-        val multistream = when (streamType) {
+        val multistream = when (role) {
             "SINGLE-UP"     -> false
-            "BIDIRECTIONAL" -> true
+            "SENDRECV" -> true
             else            -> false
         }
         if (SoraScreencastService.isRunning()) {

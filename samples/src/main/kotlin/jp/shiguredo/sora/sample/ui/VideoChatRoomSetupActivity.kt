@@ -24,7 +24,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
             "64", "96", "128", "256")
     private val audioStereoOptions = listOf("MONO", "STEREO")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
-    private val multiplicityOptions = listOf("MULTI-STREAM", "SINGLE-STREAM")
+    private val multistreamOptions = listOf("ENABLED", "DISABLED")
     private val videoBitRateOptions = listOf("UNDEFINED", "100", "300", "500", "800", "1000", "1500",
             "2000", "2500", "3000", "5000", "10000", "15000", "20000", "30000")
     private val videoSizeOptions = listOf(
@@ -60,8 +60,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         audioStereoSelection.spinner.setItems(audioStereoOptions)
         roleSelection.name.text = "ROLE"
         roleSelection.spinner.setItems(roleOptions)
-        multiplicitySelection.name.text = "MULTIPLICITY"
-        multiplicitySelection.spinner.setItems(multiplicityOptions)
+        multistreamSelection.name.text = "MULTISTREAM"
+        multistreamSelection.spinner.setItems(multistreamOptions)
         videoBitRateSelection.name.text = "VIDEO BIT RATE"
         videoBitRateSelection.spinner.setItems(videoBitRateOptions)
         videoSizeSelection.name.text = "VIDEO SIZE"
@@ -86,6 +86,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         }
 
         val role = selectedItem(roleSelection.spinner)
+        val multistream = selectedItem(multistreamSelection.spinner)
         val videoCodec = selectedItem(videoCodecSelection.spinner)
         val videoEnabled = selectedItem(videoEnabledSelection.spinner)
         val audioCodec = selectedItem(audioCodecSelection.spinner)
@@ -103,6 +104,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val intent = Intent(this, VideoChatRoomActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
         intent.putExtra("ROLE", role)
+        intent.putExtra("MULTISTREAM", multistream)
         intent.putExtra("VIDEO_CODEC", videoCodec)
         intent.putExtra("VIDEO_ENABLED", videoEnabled)
         intent.putExtra("AUDIO_CODEC", audioCodec)

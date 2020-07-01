@@ -20,7 +20,8 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
     private val audioBitRateOptions = listOf("UNDEFINED", "8", "16", "24", "32",
             "64", "96", "128", "256")
 
-    private val streamTypeOptions = listOf("BIDIRECTIONAL", "SINGLE-UP", "SINGLE-DOWN", "MULTI-DOWN")
+    private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
+    private val multistreamOptions = listOf("ENABLED", "DISABLED")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -32,8 +33,10 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
         audioCodecSelection.spinner.setItems(audioCodecOptions)
         audioBitRateSelection.name.text = "AUDIO BIT RATE"
         audioBitRateSelection.spinner.setItems(audioBitRateOptions)
-        streamTypeSelection.name.text = "STREAM TYPE"
-        streamTypeSelection.spinner.setItems(streamTypeOptions)
+        roleSelection.name.text = "ROLE"
+        roleSelection.spinner.setItems(roleOptions)
+        multistreamSelection.name.text = "MULTISTREAM"
+        multistreamSelection.spinner.setItems(multistreamOptions)
     }
 
     private fun startVoiceChat() {
@@ -43,13 +46,15 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
             return
         }
 
-        val streamType = selectedItem(streamTypeSelection.spinner)
+        val role = selectedItem(roleSelection.spinner)
+        val multistream = selectedItem(multistreamSelection.spinner)
         val audioCodec = selectedItem(audioCodecSelection.spinner)
         val audioBitRate = selectedItem(audioBitRateSelection.spinner)
 
         val intent = Intent(this, VoiceChatRoomActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
-        intent.putExtra("STREAM_TYPE", streamType)
+        intent.putExtra("ROLE", role)
+        intent.putExtra("MULTISTREAM", multistream)
         intent.putExtra("AUDIO_CODEC", audioCodec)
         intent.putExtra("AUDIO_BIT_RATE", audioBitRate)
 

@@ -45,6 +45,12 @@
 
                 <include
                     layout="@layout/signaling_selection"
+                    android:id="@+id/roleSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/multistreamSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
                     android:id="@+id/videoCodecSelection"/>
                 <include
                     layout="@layout/signaling_selection"
@@ -52,12 +58,6 @@
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/audioEnabledSelection"/>
-                <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/roleSelection"/>
-                <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/multiplicitySelection"/>
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/videoBitRateSelection"/>

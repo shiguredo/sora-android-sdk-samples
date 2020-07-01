@@ -2,7 +2,7 @@ package jp.shiguredo.sora.sample.facade
 
 import android.content.Context
 import android.os.Handler
-import jp.shiguredo.sora.sample.option.SoraStreamType
+import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
@@ -11,7 +11,6 @@ import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import org.webrtc.AudioTrack
 import org.webrtc.MediaStream
-import org.webrtc.PeerConnection
 
 class SoraAudioChannel(
         private val context:           Context,
@@ -19,7 +18,8 @@ class SoraAudioChannel(
         private val signalingEndpoint: String,
         private val channelId:         String,
         private val signalingMetadata: String = "",
-        private var streamType:        SoraStreamType,
+        private var role:              SoraRoleType,
+        private var multistream:       Boolean = true,
         private var audioCodec:        SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
         private val audioBitRate:      Int? = null,
         private var listener:          Listener?
@@ -77,15 +77,15 @@ class SoraAudioChannel(
 
         val mediaOption = SoraMediaOption().apply {
 
-            if (streamType.hasUpstream()) {
+            if (role.hasUpstream()) {
                 enableAudioUpstream()
             }
 
-            if (streamType.hasDownstream()) {
+            if (role.hasDownstream()) {
                 enableAudioDownstream()
             }
 
-            if (streamType.hasMultistream()) {
+            if (multistream) {
                 enableMultistream()
             }
 
