@@ -12,7 +12,12 @@ import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.screencast.SoraScreencastService
 import jp.shiguredo.sora.sample.screencast.SoraScreencastServiceStarter
-import kotlinx.android.synthetic.main.activity_screencast_setup.*
+import kotlinx.android.synthetic.main.activity_screencast_setup.audioCodecSelection
+import kotlinx.android.synthetic.main.activity_screencast_setup.channelNameInput
+import kotlinx.android.synthetic.main.activity_screencast_setup.multistreamSelection
+import kotlinx.android.synthetic.main.activity_screencast_setup.rootLayout
+import kotlinx.android.synthetic.main.activity_screencast_setup.start
+import kotlinx.android.synthetic.main.activity_screencast_setup.videoCodecSelection
 import kotlinx.android.synthetic.main.signaling_selection.view.*
 
 @TargetApi(21)
@@ -24,7 +29,7 @@ class ScreencastSetupActivity : AppCompatActivity() {
 
     private val videoCodecOptions  = listOf("VP9", "VP8", "H264")
     private val audioCodecOptions  = listOf("OPUS", "PCMU")
-    private val roleOptions = listOf("SINGLE-UP", "SENDRECV")
+    private val multistreamOptions = listOf("ENABLED", "DISABLED")
 
     private var screencastStarter: SoraScreencastServiceStarter? = null
 
@@ -37,15 +42,15 @@ class ScreencastSetupActivity : AppCompatActivity() {
         videoCodecSelection.spinner.setItems(videoCodecOptions)
         audioCodecSelection.name.text = "AUDIO CODEC"
         audioCodecSelection.spinner.setItems(audioCodecOptions)
-        roleSelection.name.text = "ROLE"
-        roleSelection.spinner.setItems(roleOptions)
+        multistreamSelection.name.text = "MULTISTREAM"
+        multistreamSelection.spinner.setItems(multistreamOptions)
 
         start.setOnClickListener {
             val channelName = channelNameInput.text.toString()
             val videoCodec = selectedItem(videoCodecSelection.spinner)
             val audioCodec = selectedItem(audioCodecSelection.spinner)
-            val role = selectedItem(roleSelection.spinner)
-            startScreencast(channelName, videoCodec, audioCodec, role)
+            var multistream = selectedItem(multistreamSelection.spinner)
+            startScreencast(channelName, videoCodec, audioCodec, multistream == "ENABLED")
         }
     }
 
@@ -55,15 +60,9 @@ class ScreencastSetupActivity : AppCompatActivity() {
     }
 
     private fun startScreencast(channelId:   String,
-                                 videoCodec:  String,
-                                 audioCodec:  String,
-                                 role:  String) {
-
-        val multistream = when (role) {
-            "SINGLE-UP"     -> false
-            "SENDRECV" -> true
-            else            -> false
-        }
+                                videoCodec:  String,
+                                audioCodec:  String,
+                                multistream: Boolean) {
         if (SoraScreencastService.isRunning()) {
             Snackbar.make(rootLayout,
                     "既に起動中です",

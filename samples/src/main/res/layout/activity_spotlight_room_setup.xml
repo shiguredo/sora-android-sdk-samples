@@ -45,10 +45,13 @@
 
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/spotlightNumberSelection"/>
+                    android:id="@+id/roleSelection"/>
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/roleSelection"/>
+                    android:id="@+id/multistreamSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/spotlightNumberSelection"/>
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/videoCodecSelection"/>

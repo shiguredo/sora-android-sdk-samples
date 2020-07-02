@@ -23,7 +23,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
             "64", "96", "128", "256")
     private val videoEnabledOptions = listOf("YES", "NO")
     private val audioEnabledOptions = listOf("YES", "NO")
-    private val roleOptions = listOf("SENDRECV", "MULTI-DOWN")
+    private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
+    private val multistreamOptions = listOf("ENABLED", "DISABLED")
     private val videoBitRateOptions = listOf("1000", "UNDEFINED", "100", "300", "500", "800",
             "1500", "2000", "2500")
     private val videoSizeOptions = listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
@@ -41,6 +42,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         spotlightNumberSelection.spinner.setItems(spotlightNumberOptions)
         roleSelection.name.text = "ROLE"
         roleSelection.spinner.setItems(roleOptions)
+        multistreamSelection.name.text = "MULTISTREAM"
+        multistreamSelection.spinner.setItems(multistreamOptions)
         videoCodecSelection.name.text = "VIDEO CODEC"
         videoCodecSelection.spinner.setItems(videoCodecOptions)
         videoEnabledSelection.name.text = "VIDEO ENABLED"
@@ -68,6 +71,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
 
         val spotlightNumber = selectedItem(spotlightNumberSelection.spinner).toInt()
         val role = selectedItem(roleSelection.spinner)
+        val multistream = selectedItem(multistreamSelection.spinner)
         val videoCodec = selectedItem(videoCodecSelection.spinner)
         val audioCodec = selectedItem(audioCodecSelection.spinner)
         val audioBitRate = selectedItem(audioBitRateSelection.spinner)
@@ -81,6 +85,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("CHANNEL_NAME", channelName)
         intent.putExtra("SPOTLIGHT", spotlightNumber)
         intent.putExtra("ROLE", role)
+        intent.putExtra("MULTISTREAM", multistream)
         intent.putExtra("VIDEO_CODEC", videoCodec)
         intent.putExtra("AUDIO_CODEC", audioCodec)
         intent.putExtra("AUDIO_BIT_RATE", audioBitRate)
