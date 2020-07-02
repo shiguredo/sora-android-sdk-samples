@@ -29,13 +29,13 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_voice_chat_room_setup)
         start.setOnClickListener { startVoiceChat() }
-        audioCodecSelection.name.text = "AUDIO CODEC"
+        audioCodecSelection.name.text = "音声コーデック"
         audioCodecSelection.spinner.setItems(audioCodecOptions)
-        audioBitRateSelection.name.text = "AUDIO BIT RATE"
+        audioBitRateSelection.name.text = "音声ビットレート"
         audioBitRateSelection.spinner.setItems(audioBitRateOptions)
-        roleSelection.name.text = "ROLE"
+        roleSelection.name.text = "ロール"
         roleSelection.spinner.setItems(roleOptions)
-        multistreamSelection.name.text = "MULTISTREAM"
+        multistreamSelection.name.text = "マルチストリーム"
         multistreamSelection.spinner.setItems(multistreamOptions)
     }
 
@@ -67,7 +67,7 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
 
     private fun showInputError() {
         Snackbar.make(rootLayout,
-                "Channel Nameを適切に入力してください",
+                "チャネル名を適切に入力してください",
                 Snackbar.LENGTH_LONG)
                 .setAction("OK") { }
                 .show()

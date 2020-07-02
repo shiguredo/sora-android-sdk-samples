@@ -43,29 +43,29 @@ class SimulcastSetupActivity : AppCompatActivity() {
 
         start.setOnClickListener { startVideoChat() }
 
-        videoEnabledSelection.name.text = "VIDEO ENABLED"
+        videoEnabledSelection.name.text = "映像の有無"
         videoEnabledSelection.spinner.setItems(videoEnabledOptions)
-        videoCodecSelection.name.text = "VIDEO CODEC"
+        videoCodecSelection.name.text = "映像コーデック"
         videoCodecSelection.spinner.setItems(videoCodecOptions)
-        audioEnabledSelection.name.text = "AUDIO ENABLED"
+        audioEnabledSelection.name.text = "音声の有無"
         audioEnabledSelection.spinner.setItems(audioEnabledOptions)
-        audioCodecSelection.name.text = "AUDIO CODEC"
+        audioCodecSelection.name.text = "音声コーデック"
         audioCodecSelection.spinner.setItems(audioCodecOptions)
-        audioBitRateSelection.name.text = "AUDIO BIT RATE"
+        audioBitRateSelection.name.text = "音声ビットレート"
         audioBitRateSelection.spinner.setItems(audioBitRateOptions)
-        audioStereoSelection.name.text = "AUDIO STEREO"
+        audioStereoSelection.name.text = "ステレオ音声"
         audioStereoSelection.spinner.setItems(audioStereoOptions)
-        roleSelection.name.text = "ROLE"
+        roleSelection.name.text = "ロール"
         roleSelection.spinner.setItems(roleOptions)
-        multistreamSelection.name.text = "MULTISTREAM"
+        multistreamSelection.name.text = "マルチストリーム"
         multistreamSelection.spinner.setItems(multistreamOptions)
-        videoBitRateSelection.name.text = "VIDEO BIT RATE"
+        videoBitRateSelection.name.text = "映像ビットレート"
         videoBitRateSelection.spinner.setItems(videoBitRateOptions)
-        videoSizeSelection.name.text = "VIDEO SIZE"
+        videoSizeSelection.name.text = "映像サイズ"
         videoSizeSelection.spinner.setItems(videoSizeOptions)
-        fpsSelection.name.text = "FPS"
+        fpsSelection.name.text = "フレームレート"
         fpsSelection.spinner.setItems(fpsOptions)
-        resolutionChangeSelection.name.text = "RESOLUTION CHANGE"
+        resolutionChangeSelection.name.text = "解像度の変更"
         resolutionChangeSelection.spinner.setItems(resolutionChangeOptions)
     }
 
@@ -114,7 +114,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
 
     private fun showInputError() {
         Snackbar.make(rootLayout,
-                "Channel Name を適切に入力してください",
+                "チャネル名 を適切に入力してください",
                 Snackbar.LENGTH_LONG)
                 .setAction("OK") { }
                 .show()

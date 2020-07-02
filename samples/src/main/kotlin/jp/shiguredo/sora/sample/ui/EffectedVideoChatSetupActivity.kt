@@ -26,7 +26,7 @@ class EffectedVideoChatSetupActivity : AppCompatActivity() {
 
         start.setOnClickListener { startVideoChat() }
 
-        videoEffectSelection.name.text = "VIDEO EFFECT"
+        videoEffectSelection.name.text = "映像エフェクト"
         videoEffectSelection.spinner.setItems(videoEffectOptions)
 
     }
@@ -53,7 +53,7 @@ class EffectedVideoChatSetupActivity : AppCompatActivity() {
 
     private fun showInputError() {
         Snackbar.make(rootLayout,
-                "Channel Nameを適切に入力してください",
+                "チャネル名を適切に入力してください",
                 Snackbar.LENGTH_LONG)
                 .setAction("OK") { }
                 .show()

@@ -38,27 +38,27 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
 
         start.setOnClickListener { startSpotlightChat() }
 
-        spotlightNumberSelection.name.text = "SPOTLIGHT"
+        spotlightNumberSelection.name.text = "スポットライト"
         spotlightNumberSelection.spinner.setItems(spotlightNumberOptions)
-        roleSelection.name.text = "ROLE"
+        roleSelection.name.text = "ロール"
         roleSelection.spinner.setItems(roleOptions)
-        multistreamSelection.name.text = "MULTISTREAM"
+        multistreamSelection.name.text = "マルチストリーム"
         multistreamSelection.spinner.setItems(multistreamOptions)
-        videoCodecSelection.name.text = "VIDEO CODEC"
+        videoCodecSelection.name.text = "映像コーデック"
         videoCodecSelection.spinner.setItems(videoCodecOptions)
-        videoEnabledSelection.name.text = "VIDEO ENABLED"
+        videoEnabledSelection.name.text = "映像の有無"
         videoEnabledSelection.spinner.setItems(videoEnabledOptions)
-        audioCodecSelection.name.text = "AUDIO CODEC"
+        audioCodecSelection.name.text = "音声コーデック"
         audioCodecSelection.spinner.setItems(audioCodecOptions)
-        audioEnabledSelection.name.text = "AUDIO ENABLED"
+        audioEnabledSelection.name.text = "音声の有無"
         audioEnabledSelection.spinner.setItems(audioEnabledOptions)
-        audioBitRateSelection.name.text = "AUDIO BIT RATE"
+        audioBitRateSelection.name.text = "音声ビットレート"
         audioBitRateSelection.spinner.setItems(audioBitRateOptions)
-        videoBitRateSelection.name.text = "VIDEO BIT RATE"
+        videoBitRateSelection.name.text = "映像ビットレート"
         videoBitRateSelection.spinner.setItems(videoBitRateOptions)
-        videoSizeSelection.name.text = "VIDEO SIZE"
+        videoSizeSelection.name.text = "映像サイズ"
         videoSizeSelection.spinner.setItems(videoSizeOptions)
-        fpsSelection.name.text = "FPS"
+        fpsSelection.name.text = "フレームレート"
         fpsSelection.spinner.setItems(fpsOptions)
     }
 
@@ -104,7 +104,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
 
     private fun showInputError() {
         Snackbar.make(rootLayout,
-                "Channel Nameを適切に入力してください",
+                "チャネル名を適切に入力してください",
                 Snackbar.LENGTH_LONG)
                 .setAction("OK") { }
                 .show()

@@ -31,7 +31,7 @@
                     android:layout_weight="1"
                     android:text="@string/channelId"
                     android:inputType="text"
-                    android:hint="Channel Name" />
+                    android:hint="チャネル名" />
 
                 <Button
                     android:id="@+id/start"

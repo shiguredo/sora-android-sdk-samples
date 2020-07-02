@@ -38,11 +38,11 @@ class ScreencastSetupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_screencast_setup)
 
-        videoCodecSelection.name.text = "VIDEO CODEC"
+        videoCodecSelection.name.text = "映像コーデック"
         videoCodecSelection.spinner.setItems(videoCodecOptions)
-        audioCodecSelection.name.text = "AUDIO CODEC"
+        audioCodecSelection.name.text = "音声コーデック"
         audioCodecSelection.spinner.setItems(audioCodecOptions)
-        multistreamSelection.name.text = "MULTISTREAM"
+        multistreamSelection.name.text = "マルチストリーム"
         multistreamSelection.spinner.setItems(multistreamOptions)
 
         start.setOnClickListener {
