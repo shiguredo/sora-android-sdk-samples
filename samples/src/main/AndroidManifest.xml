@@ -39,24 +39,24 @@
         </activity>
         <activity
             android:name=".ui.VoiceChatRoomSetupActivity"
-            android:label="Voice Chat Room" />
+            android:label="ボイスチャット" />
         <activity
             android:name=".ui.VideoChatRoomSetupActivity"
-            android:label="Video Chat Room" />
+            android:label="ビデオチャット" />
         <activity
             android:name=".ui.SpotlightRoomSetupActivity"
-            android:label="Spotlight Room" />
+            android:label="スポットライト" />
         <activity
             android:name=".ui.ScreencastSetupActivity"
-            android:label="Screencast"
+            android:label="スクリーンキャスト"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.EffectedVideoChatSetupActivity"
-            android:label="Effected Vedeo Chat"
+            android:label="ビデオエフェクト"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.SimulcastSetupActivity"
-            android:label="Simulcast"
+            android:label="サイマルキャスト"
             android:screenOrientation="portrait" />
         <!--
             以下は実際にWebRTCを利用して動画/音声の通話を行うActivity
@@ -69,7 +69,7 @@
         <activity
             android:name=".ui.VideoChatRoomActivity"
             android:configChanges="orientation|screenSize"
-            android:label="Video Chat Room">
+            android:label="ビデオチャット">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -80,14 +80,14 @@
         </activity>
         <activity
             android:name=".ui.VoiceChatRoomActivity"
-            android:label="Voice Chat Room"
+            android:label="ボイスチャット"
             android:screenOrientation="portrait" />
         <service
             android:name=".screencast.SoraScreencastService"
             android:enabled="true" />
         <activity
             android:name=".ui.EffectedVideoChatActivity"
-            android:label="Effected Video Chat"
+            android:label="エフェクト付きビデオチャット"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.SimulcastActivity"

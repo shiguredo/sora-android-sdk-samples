@@ -30,17 +30,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val adapter = FeatureListAdapter(arrayListOf(
-                Feature(title = "Video Chat Room",
+                Feature(title = "ビデオチャット",
                         description = "ビデオチャットのデモです。複数人でのグループチャットも可能です。"),
-                Feature(title = "Voice Chat Room",
+                Feature(title = "ボイスチャット",
                         description = "ボイスチャットのデモです。複数人でのグループチャットも可能です。"),
-                Feature(title = "Spotlight Room",
+                Feature(title = "スポットライト",
                         description = "スポットライトのデモです。アクティブ配信数を固定したチャットが可能です。"),
-                Feature(title = "Screencast",
+                Feature(title = "スクリーンキャスト",
                         description = "スクリーンキャストのデモです。"),
-                Feature(title = "Effected Video Chat",
+                Feature(title = "ビデオエフェクト",
                         description = "エフェクト付きのビデオチャットのデモです"),
-                Feature(title = "Simulcast",
+                Feature(title = "サイマルキャスト",
                         description = "サイマルキャストのデモです。")))
 
         adapter.setOnItemClickListener(object: FeatureListAdapter.OnItemClickListener {
