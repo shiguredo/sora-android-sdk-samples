@@ -39,8 +39,9 @@ class MainActivity : AppCompatActivity() {
                 Feature(title = "Screencast",
                         description = "スクリーンキャストのデモです。"),
                 Feature(title = "Effected Video Chat",
-                        description = "エフェクト付きのビデオチャットのデモです")
-        ))
+                        description = "エフェクト付きのビデオチャットのデモです"),
+                Feature(title = "Simulcast",
+                        description = "サイマルキャストのデモです。")))
 
         adapter.setOnItemClickListener(object: FeatureListAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
@@ -67,6 +68,7 @@ class MainActivity : AppCompatActivity() {
             2 -> goToSpotlightWithPermissionCheck()
             3 -> goToScreencastActivityWithPermissionCheck()
             4 -> goToEffectedVideoRoomDemoWithPermissionCheck()
+            5 -> goToSimulcastWithPermissionCheck()
             else -> {
                 Log.w(TAG, "must not come here")
             }
@@ -101,6 +103,12 @@ class MainActivity : AppCompatActivity() {
     @NeedsPermission(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
     fun goToSpotlight() {
         val intent = Intent(this, SpotlightRoomSetupActivity::class.java)
+        startActivity(intent)
+    }
+
+    @NeedsPermission(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
+    fun goToSimulcast() {
+        val intent = Intent(this, SimulcastSetupActivity::class.java)
         startActivity(intent)
     }
 
