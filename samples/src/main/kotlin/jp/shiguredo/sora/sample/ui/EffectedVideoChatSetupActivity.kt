@@ -17,7 +17,7 @@ class EffectedVideoChatSetupActivity : AppCompatActivity() {
     }
 
     private val videoEffectOptions = listOf("GRAYSCALE", "PIXELATION", "POSTERIZE", "TOON",
-            "HALFTONE", "HUE", "EMBOSS", "SEPIA TONE", "NONE")
+            "HALFTONE", "HUE", "EMBOSS", "SEPIA TONE", "なし")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")

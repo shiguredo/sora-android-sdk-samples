@@ -83,7 +83,7 @@ class EffectedVideoChatActivity : AppCompatActivity() {
                 "SEPIA TONE" -> {
                     addGPUImageFilter(GPUImageSepiaToneFilter())
                 }
-                "NONE" -> {
+                "なし" -> {
                     // For Debug
                     addGPUImageFilter(GPUImageFilter())
                 }

@@ -29,7 +29,7 @@ class ScreencastSetupActivity : AppCompatActivity() {
 
     private val videoCodecOptions  = listOf("VP9", "VP8", "H264")
     private val audioCodecOptions  = listOf("OPUS", "PCMU")
-    private val multistreamOptions = listOf("ENABLED", "DISABLED")
+    private val multistreamOptions = listOf("有効", "無効")
 
     private var screencastStarter: SoraScreencastServiceStarter? = null
 
@@ -50,7 +50,7 @@ class ScreencastSetupActivity : AppCompatActivity() {
             val videoCodec = selectedItem(videoCodecSelection.spinner)
             val audioCodec = selectedItem(audioCodecSelection.spinner)
             var multistream = selectedItem(multistreamSelection.spinner)
-            startScreencast(channelName, videoCodec, audioCodec, multistream == "ENABLED")
+            startScreencast(channelName, videoCodec, audioCodec, multistream == "有効")
         }
     }
 

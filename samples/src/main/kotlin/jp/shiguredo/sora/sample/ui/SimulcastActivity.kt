@@ -72,8 +72,8 @@ class SimulcastActivity : AppCompatActivity() {
         spotlight = intent.getIntExtra("SPOTLIGHT", 0)
 
         videoEnabled = when (intent.getStringExtra("VIDEO_ENABLED")) {
-            "YES" -> true
-            "NO"  -> false
+            "有効" -> true
+            "無効"  -> false
             else  -> true
         }
 
@@ -89,8 +89,8 @@ class SimulcastActivity : AppCompatActivity() {
         }
 
         audioEnabled = when (intent.getStringExtra("AUDIO_ENABLED")) {
-            "YES" -> true
-            "NO"  -> false
+            "有効" -> true
+            "無効"  -> false
             else  -> true
         }
 
@@ -118,29 +118,29 @@ class SimulcastActivity : AppCompatActivity() {
         videoHeight = videoSize.y
 
         multistream = when (intent.getStringExtra("MULTISTREAM")) {
-            "ENABLED" -> true
+            "有効" -> true
             else      -> false
         }
 
         fixedResolution = when (intent.getStringExtra("RESOLUTION_CHANGE")) {
-            "VARIABLE" -> false
-            "FIXED"    -> true
+            "可変" -> false
+            "固定"    -> true
             else       -> false
         }
 
         videoBitRate = when (val stringValue = intent.getStringExtra("VIDEO_BIT_RATE")) {
-            "UNDEFINED" -> null
+            "未指定" -> null
             else -> stringValue?.toInt()
         }
 
         audioBitRate = when (val stringValue = intent.getStringExtra("AUDIO_BIT_RATE")) {
-            "UNDEFINED" -> null
+            "未指定" -> null
             else -> stringValue?.toInt()
         }
 
         audioStereo = when (intent.getStringExtra("AUDIO_STEREO")) {
-            "MONO"   -> false
-            "STEREO" -> true
+            "モノラル"   -> false
+            "ステレオ" -> true
             else     -> false
         }
 

@@ -74,8 +74,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
         spotlight = intent.getIntExtra("SPOTLIGHT", 0)
 
         videoEnabled = when (intent.getStringExtra("VIDEO_ENABLED")) {
-            "YES" -> true
-            "NO"  -> false
+            "有効" -> true
+            "無効"  -> false
             else  -> true
         }
 
@@ -91,8 +91,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
         }
 
         audioEnabled = when (intent.getStringExtra("AUDIO_ENABLED")) {
-            "YES" -> true
-            "NO"  -> false
+            "有効" -> true
+            "無効"  -> false
             else  -> true
         }
 
@@ -120,43 +120,43 @@ class VideoChatRoomActivity : AppCompatActivity() {
         videoHeight = videoSize.y
 
         multistream = when (intent.getStringExtra("MULTISTREAM")) {
-            "ENABLED" -> true
+            "有効" -> true
             else      -> false
         }
 
         fixedResolution = when (intent.getStringExtra("RESOLUTION_CHANGE")) {
-            "VARIABLE" -> false
-            "FIXED"    -> true
+            "可変" -> false
+            "固定"    -> true
             else       -> false
         }
 
         videoBitRate = when (val stringValue = intent.getStringExtra("VIDEO_BIT_RATE")) {
-            "UNDEFINED" -> null
+            "未指定" -> null
             else -> stringValue?.toInt()
         }
 
         audioBitRate = when (val stringValue = intent.getStringExtra("AUDIO_BIT_RATE")) {
-            "UNDEFINED" -> null
+            "未指定" -> null
             else -> stringValue?.toInt()
         }
 
         audioStereo = when (intent.getStringExtra("AUDIO_STEREO")) {
-            "MONO"   -> false
-            "STEREO" -> true
+            "モノラル"   -> false
+            "ステレオ" -> true
             else     -> false
         }
 
         cameraFacing = when (intent.getStringExtra("CAMERA_FACING")) {
-            "FRONT" -> true
-            "REAR"  -> false
+            "前面" -> true
+            "背面"  -> false
             else    -> true
         }
 
         clientId = when (intent.getStringExtra("CLIENT_ID")) {
-            "NONE"        -> null
-            "BUILD MODEL" -> Build.MODEL
+            "なし"        -> null
+            "端末情報" -> Build.MODEL
             "時雨堂"      -> "🍖時雨堂🍗"
-            "RANDOM UUID" -> UUID.randomUUID().toString()
+            "ランダム" -> UUID.randomUUID().toString()
             else -> null
         }
 

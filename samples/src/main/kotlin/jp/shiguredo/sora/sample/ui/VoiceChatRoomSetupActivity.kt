@@ -17,11 +17,11 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
     }
 
     private val audioCodecOptions = listOf("OPUS", "PCMU")
-    private val audioBitRateOptions = listOf("UNDEFINED", "8", "16", "24", "32",
+    private val audioBitRateOptions = listOf("未指定", "8", "16", "24", "32",
             "64", "96", "128", "256")
 
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
-    private val multistreamOptions = listOf("ENABLED", "DISABLED")
+    private val multistreamOptions = listOf("有効", "無効")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")

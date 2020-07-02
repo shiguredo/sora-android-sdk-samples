@@ -17,15 +17,15 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     }
 
     private val videoCodecOptions = listOf("VP9", "VP8", "H264")
-    private val videoEnabledOptions = listOf("YES", "NO")
+    private val videoEnabledOptions = listOf("有効", "無効")
     private val audioCodecOptions = listOf("OPUS", "PCMU")
-    private val audioEnabledOptions = listOf("YES", "NO")
-    private val audioBitRateOptions = listOf("UNDEFINED", "8", "16", "24", "32",
+    private val audioEnabledOptions = listOf("有効", "無効")
+    private val audioBitRateOptions = listOf("未指定", "8", "16", "24", "32",
             "64", "96", "128", "256")
-    private val audioStereoOptions = listOf("MONO", "STEREO")
+    private val audioStereoOptions = listOf("モノラル", "ステレオ")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
-    private val multistreamOptions = listOf("ENABLED", "DISABLED")
-    private val videoBitRateOptions = listOf("UNDEFINED", "100", "300", "500", "800", "1000", "1500",
+    private val multistreamOptions = listOf("有効", "無効")
+    private val videoBitRateOptions = listOf("未指定", "100", "300", "500", "800", "1000", "1500",
             "2000", "2500", "3000", "5000", "10000", "15000", "20000", "30000")
     private val videoSizeOptions = listOf(
             // Portrait
@@ -34,9 +34,9 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
             // Landscape
             "Res3840x1920", "UHD3840x2160")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
-    private val resolutionChangeOptions = listOf("VARIABLE", "FIXED")
-    private val cameraFacingOptions = listOf("FRONT", "REAR")
-    private val clientIdOptions = listOf("NONE", "BUILD MODEL", "時雨堂", "RANDOM UUID")
+    private val resolutionChangeOptions = listOf("可変", "固定")
+    private val cameraFacingOptions = listOf("前面", "背面")
+    private val clientIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")

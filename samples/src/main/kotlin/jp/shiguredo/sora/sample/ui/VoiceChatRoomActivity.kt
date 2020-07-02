@@ -48,7 +48,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
                 intent.getStringExtra("AUDIO_CODEC"))
 
         audioBitRate = when (intent.getStringExtra("AUDIO_BIT_RATE")) {
-            "UNDEFINED" -> null
+            "未指定" -> null
             else -> intent.getStringExtra("AUDIO_BIT_RATE")?.toInt()
         }
 
