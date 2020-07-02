@@ -47,7 +47,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var videoBitRate: Int? = null
     private var videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x
     private var videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y
-    private var simulcast = false
     private var multistream = true
     private var fps: Int = 30
     private var fixedResolution = false
@@ -119,11 +118,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
         }
         videoWidth = videoSize.x
         videoHeight = videoSize.y
-
-        simulcast = when (intent.getStringExtra("SIMULCAST")) {
-            "ENABLED" -> true
-            else      -> false
-        }
 
         multistream = when (intent.getStringExtra("MULTISTREAM")) {
             "ENABLED" -> true
@@ -285,7 +279,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 videoEnabled      = videoEnabled,
                 videoWidth        = videoWidth,
                 videoHeight       = videoHeight,
-                simulcast         = simulcast,
                 videoFPS          = fps,
                 fixedResolution   = fixedResolution,
                 videoCodec        = videoCodec,

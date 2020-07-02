@@ -33,7 +33,6 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
             "Res1920x3840", "UHD2160x3840", "UHD2160x4096",
             // Landscape
             "Res3840x1920", "UHD3840x2160")
-    private val simulcastOptions = listOf("DISABLED", "ENABLED")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("VARIABLE", "FIXED")
     private val cameraFacingOptions = listOf("FRONT", "REAR")
@@ -66,8 +65,6 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         videoBitRateSelection.spinner.setItems(videoBitRateOptions)
         videoSizeSelection.name.text = "VIDEO SIZE"
         videoSizeSelection.spinner.setItems(videoSizeOptions)
-        simulcastSelection.name.text = "SIMULCAST"
-        simulcastSelection.spinner.setItems(simulcastOptions)
         fpsSelection.name.text = "FPS"
         fpsSelection.spinner.setItems(fpsOptions)
         resolutionChangeSelection.name.text = "RESOLUTION CHANGE"
@@ -95,7 +92,6 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val audioStereo = selectedItem(audioStereoSelection.spinner)
         val videoBitRate = selectedItem(videoBitRateSelection.spinner)
         val videoSize = selectedItem(videoSizeSelection.spinner)
-        val simulcast = selectedItem(simulcastSelection.spinner)
         val fps = selectedItem(fpsSelection.spinner)
         val resolutionChange = selectedItem(resolutionChangeSelection.spinner)
         val cameraFacing = selectedItem(cameraFacingSelection.spinner)
@@ -113,7 +109,6 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("AUDIO_STEREO", audioStereo)
         intent.putExtra("VIDEO_BIT_RATE", videoBitRate)
         intent.putExtra("VIDEO_SIZE", videoSize)
-        intent.putExtra("SIMULCAST", simulcast)
         intent.putExtra("FPS", fps)
         intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
         intent.putExtra("CAMERA_FACING", cameraFacing)
