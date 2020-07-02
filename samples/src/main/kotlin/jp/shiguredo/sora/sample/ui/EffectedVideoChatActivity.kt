@@ -51,10 +51,10 @@ class EffectedVideoChatActivity : AppCompatActivity() {
         effector = RTCVideoEffector().apply {
 
             when (intent.getStringExtra("EFFECT")) {
-                "GRAYSCALE"  -> {
+                "グレースケール"  -> {
                     addMediaEffectFilter(EffectFactory.EFFECT_GRAYSCALE)
                 }
-                "PIXELATION" -> {
+                "ピクセル化" -> {
                     addGPUImageFilter(GPUImagePixelationFilter(),
                             object : GPUImageFilterWrapper.Listener {
                                 override fun onInit(filter: GPUImageFilter) {
@@ -65,22 +65,22 @@ class EffectedVideoChatActivity : AppCompatActivity() {
                                 }
                             })
                 }
-                "POSTERIZE" -> {
+                "ポスタライズ" -> {
                     addGPUImageFilter(GPUImagePosterizeFilter(5))
                 }
-                "TOON" -> {
+                "トゥーン調" -> {
                     addGPUImageFilter(GPUImageToonFilter())
                 }
-                "HALFTONE" -> {
+                "ハーフトーン" -> {
                     addGPUImageFilter(GPUImageHalftoneFilter())
                 }
-                "HUE" -> {
+                "色調補正" -> {
                     addGPUImageFilter(GPUImageHueFilter(100.0f))
                 }
-                "EMBOSS" -> {
+                "エンボス" -> {
                     addGPUImageFilter(GPUImageEmbossFilter())
                 }
-                "SEPIA TONE" -> {
+                "セピア調" -> {
                     addGPUImageFilter(GPUImageSepiaToneFilter())
                 }
                 "なし" -> {
