@@ -11,20 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical"
         android:background="#222222"
-        >
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/channelNameText"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
             android:background="#64DD17"
-            android:padding="10dp"
             android:gravity="center"
-            android:text="[Channel]" />
+            android:padding="10dp"
+            android:text="[Channel]"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
 
         <RelativeLayout
             android:id="@+id/rendererContainer"
@@ -32,8 +31,43 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:background="#000000">
+
         </RelativeLayout>
+
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:padding="10dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/lowQualityButton"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:text="Low" />
+
+            <Button
+                android:id="@+id/middleQualityButton"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:text="Middle" />
+
+            <Button
+                android:id="@+id/highQualityButton"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:text="High" />
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
