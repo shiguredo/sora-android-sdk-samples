@@ -41,7 +41,7 @@
                     android:textColor="@android:color/white"
                     android:background="#F06292"
                     android:layout_margin="10dp"
-                    android:text="START" />
+                    android:text="接続する" />
 
                 <include
                     layout="@layout/signaling_selection"
