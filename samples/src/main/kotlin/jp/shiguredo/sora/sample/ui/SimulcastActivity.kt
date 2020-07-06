@@ -27,7 +27,15 @@ import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.android.synthetic.main.activity_simulcast.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.webrtc.SurfaceViewRenderer
+import java.io.BufferedOutputStream
+import java.net.HttpURLConnection
+import java.net.URI
+import java.net.URL
 import java.util.*
 
 class SimulcastActivity : AppCompatActivity() {
@@ -301,6 +309,37 @@ class SimulcastActivity : AppCompatActivity() {
         channel?.mute(muted)
     }
 
+    internal fun changeQuality(quality: String) {
+        if (channel?.mediaChannel?.connectionId == null) {
+            SoraLogger.d(TAG, "cannot change quality: connection ID is not found")
+            return
+        }
+
+        GlobalScope.launch {
+            withContext(Dispatchers.IO) {
+                val host = URI(BuildConfig.SIGNALING_ENDPOINT).host
+                val url = URL("http://$host:3000")
+                val conn = url.openConnection() as HttpURLConnection
+                conn.requestMethod = "POST"
+                conn.setRequestProperty("x-sora-target", "Sora_20180820.ChangeSimulcastQuality")
+                conn.doOutput = true
+                conn.connect()
+                val buffer = BufferedOutputStream(conn.outputStream)
+                buffer.write("{\n".toByteArray())
+                buffer.write("    \"channel_id\": \"$channelName\",\n".toByteArray())
+                buffer.write("    \"connection_id\": \"${channel!!.mediaChannel!!.connectionId!!}\",\n".toByteArray())
+                buffer.write("    \"quality\": \"$quality\"\n".toByteArray())
+                buffer.write("}".toByteArray())
+                buffer.flush()
+                buffer.close()
+                conn.outputStream.close()
+
+                val status = conn.responseCode
+                SoraLogger.d(TAG, "change quality: response $status")
+            }
+        }
+    }
+
 }
 
 class SimulcastActivityUI(
@@ -325,6 +364,9 @@ class SimulcastActivityUI(
         activity.toggleMuteButton.setOnClickListener { activity.toggleMuted() }
         activity.switchCameraButton.setOnClickListener { activity.switchCamera() }
         activity.closeButton.setOnClickListener { activity.close() }
+        activity.lowQualityButton.setOnClickListener { activity.changeQuality("low") }
+        activity.middleQualityButton.setOnClickListener { activity.changeQuality("middle") }
+        activity.highQualityButton.setOnClickListener { activity.changeQuality("high") }
     }
 
     internal fun changeState(colorCode: String) {

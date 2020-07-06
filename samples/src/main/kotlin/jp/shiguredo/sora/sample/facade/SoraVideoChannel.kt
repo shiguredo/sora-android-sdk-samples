@@ -171,7 +171,7 @@ class SoraVideoChannel(
         }
     }
 
-    private var mediaChannel:  SoraMediaChannel? = null
+    var mediaChannel:  SoraMediaChannel? = null
     private var capturer: CameraVideoCapturer? = null
 
     private var capturing = false
