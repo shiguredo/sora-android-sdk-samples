@@ -17,14 +17,15 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     }
 
     private val videoCodecOptions = listOf("VP9", "VP8", "H264")
-    private val videoEnabledOptions = listOf("YES", "NO")
+    private val videoEnabledOptions = listOf("有効", "無効")
     private val audioCodecOptions = listOf("OPUS", "PCMU")
-    private val audioEnabledOptions = listOf("YES", "NO")
-    private val audioBitRateOptions = listOf("UNDEFINED", "8", "16", "24", "32",
+    private val audioEnabledOptions = listOf("有効", "無効")
+    private val audioBitRateOptions = listOf("未指定", "8", "16", "24", "32",
             "64", "96", "128", "256")
-    private val audioStereoOptions = listOf("MONO", "STEREO")
-    private val streamTypeOptions = listOf("BIDIRECTIONAL", "SINGLE-UP", "SINGLE-DOWN", "MULTI-DOWN")
-    private val videoBitRateOptions = listOf("UNDEFINED", "100", "300", "500", "800", "1000", "1500",
+    private val audioStereoOptions = listOf("モノラル", "ステレオ")
+    private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
+    private val multistreamOptions = listOf("有効", "無効")
+    private val videoBitRateOptions = listOf("未指定", "100", "300", "500", "800", "1000", "1500",
             "2000", "2500", "3000", "5000", "10000", "15000", "20000", "30000")
     private val videoSizeOptions = listOf(
             // Portrait
@@ -32,11 +33,10 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
             "Res1920x3840", "UHD2160x3840", "UHD2160x4096",
             // Landscape
             "Res3840x1920", "UHD3840x2160")
-    private val simulcastOptions = listOf("DISABLED", "ENABLED")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
-    private val resolutionChangeOptions = listOf("VARIABLE", "FIXED")
-    private val cameraFacingOptions = listOf("FRONT", "REAR")
-    private val clientIdOptions = listOf("NONE", "BUILD MODEL", "時雨堂", "RANDOM UUID")
+    private val resolutionChangeOptions = listOf("可変", "固定")
+    private val cameraFacingOptions = listOf("前面", "背面")
+    private val clientIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -45,33 +45,33 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
 
         start.setOnClickListener { startVideoChat() }
 
-        videoEnabledSelection.name.text = "VIDEO ENABLED"
+        videoEnabledSelection.name.text = "映像の有無"
         videoEnabledSelection.spinner.setItems(videoEnabledOptions)
-        videoCodecSelection.name.text = "VIDEO CODEC"
+        videoCodecSelection.name.text = "映像コーデック"
         videoCodecSelection.spinner.setItems(videoCodecOptions)
-        audioEnabledSelection.name.text = "AUDIO ENABLED"
+        audioEnabledSelection.name.text = "音声の有無"
         audioEnabledSelection.spinner.setItems(audioEnabledOptions)
-        audioCodecSelection.name.text = "AUDIO CODEC"
+        audioCodecSelection.name.text = "音声コーデック"
         audioCodecSelection.spinner.setItems(audioCodecOptions)
-        audioBitRateSelection.name.text = "AUDIO BIT RATE"
+        audioBitRateSelection.name.text = "音声ビットレート"
         audioBitRateSelection.spinner.setItems(audioBitRateOptions)
-        audioStereoSelection.name.text = "AUDIO STEREO"
+        audioStereoSelection.name.text = "ステレオ音声"
         audioStereoSelection.spinner.setItems(audioStereoOptions)
-        streamTypeSelection.name.text = "STREAM TYPE"
-        streamTypeSelection.spinner.setItems(streamTypeOptions)
-        videoBitRateSelection.name.text = "VIDEO BIT RATE"
+        roleSelection.name.text = "ロール"
+        roleSelection.spinner.setItems(roleOptions)
+        multistreamSelection.name.text = "マルチストリーム"
+        multistreamSelection.spinner.setItems(multistreamOptions)
+        videoBitRateSelection.name.text = "映像ビットレート"
         videoBitRateSelection.spinner.setItems(videoBitRateOptions)
-        videoSizeSelection.name.text = "VIDEO SIZE"
+        videoSizeSelection.name.text = "映像サイズ"
         videoSizeSelection.spinner.setItems(videoSizeOptions)
-        simulcastSelection.name.text = "SIMULCAST"
-        simulcastSelection.spinner.setItems(simulcastOptions)
-        fpsSelection.name.text = "FPS"
+        fpsSelection.name.text = "フレームレート"
         fpsSelection.spinner.setItems(fpsOptions)
-        resolutionChangeSelection.name.text = "RESOLUTION CHANGE"
+        resolutionChangeSelection.name.text = "解像度の変更"
         resolutionChangeSelection.spinner.setItems(resolutionChangeOptions)
-        cameraFacingSelection.name.text = "CAMERA FACING"
+        cameraFacingSelection.name.text = "カメラ"
         cameraFacingSelection.spinner.setItems(cameraFacingOptions)
-        clientIdSelection.name.text = "CLIENT ID"
+        clientIdSelection.name.text = "クライアント ID"
         clientIdSelection.spinner.setItems(clientIdOptions)
     }
 
@@ -82,7 +82,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
             return
         }
 
-        val streamType = selectedItem(streamTypeSelection.spinner)
+        val role = selectedItem(roleSelection.spinner)
+        val multistream = selectedItem(multistreamSelection.spinner)
         val videoCodec = selectedItem(videoCodecSelection.spinner)
         val videoEnabled = selectedItem(videoEnabledSelection.spinner)
         val audioCodec = selectedItem(audioCodecSelection.spinner)
@@ -91,7 +92,6 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val audioStereo = selectedItem(audioStereoSelection.spinner)
         val videoBitRate = selectedItem(videoBitRateSelection.spinner)
         val videoSize = selectedItem(videoSizeSelection.spinner)
-        val simulcast = selectedItem(simulcastSelection.spinner)
         val fps = selectedItem(fpsSelection.spinner)
         val resolutionChange = selectedItem(resolutionChangeSelection.spinner)
         val cameraFacing = selectedItem(cameraFacingSelection.spinner)
@@ -99,7 +99,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
 
         val intent = Intent(this, VideoChatRoomActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
-        intent.putExtra("STREAM_TYPE", streamType)
+        intent.putExtra("ROLE", role)
+        intent.putExtra("MULTISTREAM", multistream)
         intent.putExtra("VIDEO_CODEC", videoCodec)
         intent.putExtra("VIDEO_ENABLED", videoEnabled)
         intent.putExtra("AUDIO_CODEC", audioCodec)
@@ -108,7 +109,6 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("AUDIO_STEREO", audioStereo)
         intent.putExtra("VIDEO_BIT_RATE", videoBitRate)
         intent.putExtra("VIDEO_SIZE", videoSize)
-        intent.putExtra("SIMULCAST", simulcast)
         intent.putExtra("FPS", fps)
         intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
         intent.putExtra("CAMERA_FACING", cameraFacing)
@@ -123,7 +123,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
 
     private fun showInputError() {
         Snackbar.make(rootLayout,
-                "Channel Name を適切に入力してください",
+                "チャネル名 を適切に入力してください",
                 Snackbar.LENGTH_LONG)
                 .setAction("OK") { }
                 .show()

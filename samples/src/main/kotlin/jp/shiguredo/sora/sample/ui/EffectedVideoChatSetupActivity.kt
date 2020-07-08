@@ -16,8 +16,8 @@ class EffectedVideoChatSetupActivity : AppCompatActivity() {
         val TAG = EffectedVideoChatSetupActivity::class.simpleName
     }
 
-    private val videoEffectOptions = listOf("GRAYSCALE", "PIXELATION", "POSTERIZE", "TOON",
-            "HALFTONE", "HUE", "EMBOSS", "SEPIA TONE", "NONE")
+    private val videoEffectOptions = listOf("グレースケール", "ピクセル化", "ポスタライズ", "トゥーン調",
+            "ハーフトーン", "色調補正", "エンボス", "セピア調", "なし")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -26,7 +26,7 @@ class EffectedVideoChatSetupActivity : AppCompatActivity() {
 
         start.setOnClickListener { startVideoChat() }
 
-        videoEffectSelection.name.text = "VIDEO EFFECT"
+        videoEffectSelection.name.text = "映像エフェクト"
         videoEffectSelection.spinner.setItems(videoEffectOptions)
 
     }
@@ -53,7 +53,7 @@ class EffectedVideoChatSetupActivity : AppCompatActivity() {
 
     private fun showInputError() {
         Snackbar.make(rootLayout,
-                "Channel Nameを適切に入力してください",
+                "チャネル名を適切に入力してください",
                 Snackbar.LENGTH_LONG)
                 .setAction("OK") { }
                 .show()

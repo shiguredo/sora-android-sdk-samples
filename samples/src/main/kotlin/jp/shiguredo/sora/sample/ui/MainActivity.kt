@@ -30,17 +30,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val adapter = FeatureListAdapter(arrayListOf(
-                Feature(title = "Video Chat Room",
+                Feature(title = "ビデオチャット",
                         description = "ビデオチャットのデモです。複数人でのグループチャットも可能です。"),
-                Feature(title = "Voice Chat Room",
+                Feature(title = "ボイスチャット",
                         description = "ボイスチャットのデモです。複数人でのグループチャットも可能です。"),
-                Feature(title = "Spotlight Room",
+                Feature(title = "スポットライト",
                         description = "スポットライトのデモです。アクティブ配信数を固定したチャットが可能です。"),
-                Feature(title = "Screencast",
+                Feature(title = "スクリーンキャスト",
                         description = "スクリーンキャストのデモです。"),
-                Feature(title = "Effected Video Chat",
-                        description = "エフェクト付きのビデオチャットのデモです")
-        ))
+                Feature(title = "ビデオエフェクト",
+                        description = "エフェクト付きのビデオチャットのデモです"),
+                Feature(title = "サイマルキャスト",
+                        description = "サイマルキャストのデモです。")))
 
         adapter.setOnItemClickListener(object: FeatureListAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
@@ -67,6 +68,7 @@ class MainActivity : AppCompatActivity() {
             2 -> goToSpotlightWithPermissionCheck()
             3 -> goToScreencastActivityWithPermissionCheck()
             4 -> goToEffectedVideoRoomDemoWithPermissionCheck()
+            5 -> goToSimulcastWithPermissionCheck()
             else -> {
                 Log.w(TAG, "must not come here")
             }
@@ -101,6 +103,12 @@ class MainActivity : AppCompatActivity() {
     @NeedsPermission(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
     fun goToSpotlight() {
         val intent = Intent(this, SpotlightRoomSetupActivity::class.java)
+        startActivity(intent)
+    }
+
+    @NeedsPermission(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
+    fun goToSimulcast() {
+        val intent = Intent(this, SimulcastSetupActivity::class.java)
         startActivity(intent)
     }
 

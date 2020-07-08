@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Sora SDK Samples</string>
+    <string name="app_name">Sora Android SDK サンプル集</string>
 
     <string name="version_requirement_screencast">この機能のご利用にはAndroid 5.0以上のOSが必要です。</string>
 

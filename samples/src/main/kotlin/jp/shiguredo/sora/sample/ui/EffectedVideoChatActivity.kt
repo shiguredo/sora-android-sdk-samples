@@ -19,7 +19,7 @@ import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.camera.EffectCameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.facade.SoraVideoChannel
-import jp.shiguredo.sora.sample.option.SoraStreamType
+import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sample.ui.util.RendererLayoutCalculator
 import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
@@ -37,7 +37,7 @@ class EffectedVideoChatActivity : AppCompatActivity() {
     }
 
     private var channelName = ""
-    private var streamType = SoraStreamType.BIDIRECTIONAL
+    private var role = SoraRoleType.SENDRECV
     private var ui: EffectedVideoChatActivityUI? = null
     private var effector: RTCVideoEffector? = null
 
@@ -51,10 +51,10 @@ class EffectedVideoChatActivity : AppCompatActivity() {
         effector = RTCVideoEffector().apply {
 
             when (intent.getStringExtra("EFFECT")) {
-                "GRAYSCALE"  -> {
+                "グレースケール"  -> {
                     addMediaEffectFilter(EffectFactory.EFFECT_GRAYSCALE)
                 }
-                "PIXELATION" -> {
+                "ピクセル化" -> {
                     addGPUImageFilter(GPUImagePixelationFilter(),
                             object : GPUImageFilterWrapper.Listener {
                                 override fun onInit(filter: GPUImageFilter) {
@@ -65,25 +65,25 @@ class EffectedVideoChatActivity : AppCompatActivity() {
                                 }
                             })
                 }
-                "POSTERIZE" -> {
+                "ポスタライズ" -> {
                     addGPUImageFilter(GPUImagePosterizeFilter(5))
                 }
-                "TOON" -> {
+                "トゥーン調" -> {
                     addGPUImageFilter(GPUImageToonFilter())
                 }
-                "HALFTONE" -> {
+                "ハーフトーン" -> {
                     addGPUImageFilter(GPUImageHalftoneFilter())
                 }
-                "HUE" -> {
+                "色調補正" -> {
                     addGPUImageFilter(GPUImageHueFilter(100.0f))
                 }
-                "EMBOSS" -> {
+                "エンボス" -> {
                     addGPUImageFilter(GPUImageEmbossFilter())
                 }
-                "SEPIA TONE" -> {
+                "セピア調" -> {
                     addGPUImageFilter(GPUImageSepiaToneFilter())
                 }
-                "NONE" -> {
+                "なし" -> {
                     // For Debug
                     addGPUImageFilter(GPUImageFilter())
                 }
@@ -198,7 +198,7 @@ class EffectedVideoChatActivity : AppCompatActivity() {
                 videoWidth        = 480,
                 videoHeight       = 960,
                 videoFPS          = 30,
-                streamType        = streamType,
+                role        = role,
                 capturerFactory   = EffectCameraVideoCapturerFactory(effector!!),
                 listener          = channelListener
         )

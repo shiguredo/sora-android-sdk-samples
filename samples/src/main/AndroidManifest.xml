@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="jp.shiguredo.sora.sample">
 
-    <uses-sdk tools:overrideLibrary="android.support.v17.leanback"/>
+    <uses-sdk tools:overrideLibrary="android.support.v17.leanback" />
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -23,71 +23,76 @@
 
     <application
         android:allowBackup="true"
+        android:extractNativeLibs="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="${usesCleartextTraffic}"
-        android:extractNativeLibs="false">
-        <activity android:name="jp.shiguredo.sora.sample.ui.MainActivity">
+        android:usesCleartextTraffic="true">
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name="jp.shiguredo.sora.sample.ui.VoiceChatRoomSetupActivity"
-            android:label="Voice Chat Room" />
-
-        <activity android:name="jp.shiguredo.sora.sample.ui.VideoChatRoomSetupActivity"
-            android:label="Video Chat Room" />
-
-        <activity android:name="jp.shiguredo.sora.sample.ui.SpotlightRoomSetupActivity"
-            android:label="Spotlight Room" />
-
-        <activity android:name="jp.shiguredo.sora.sample.ui.ScreencastSetupActivity"
-            android:label="Screencast"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name="jp.shiguredo.sora.sample.ui.EffectedVideoChatSetupActivity"
-            android:label="Effected Vedeo Chat"
-            android:screenOrientation="portrait"/>
-
+        <activity
+            android:name=".ui.VoiceChatRoomSetupActivity"
+            android:label="ボイスチャット" />
+        <activity
+            android:name=".ui.VideoChatRoomSetupActivity"
+            android:label="ビデオチャット" />
+        <activity
+            android:name=".ui.SpotlightRoomSetupActivity"
+            android:label="スポットライト" />
+        <activity
+            android:name=".ui.ScreencastSetupActivity"
+            android:label="スクリーンキャスト"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.EffectedVideoChatSetupActivity"
+            android:label="ビデオエフェクト"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.SimulcastSetupActivity"
+            android:label="サイマルキャスト"
+            android:screenOrientation="portrait" />
         <!--
-
             以下は実際にWebRTCを利用して動画/音声の通話を行うActivity
             セッション中にActivityが破壊されないように次のどちらかの設定を行う
 
             1) android:screenOrientationを指定して向きを固定する
             2) android:configChanges="orientation|screenSize"を指定しつつ
                ActivityのonConfigurationChangedメソッドでレイアウトを調整
-
         -->
-        <activity android:name="jp.shiguredo.sora.sample.ui.VideoChatRoomActivity"
-            android:label="Video Chat Room"
+        <activity
+            android:name=".ui.VideoChatRoomActivity"
             android:configChanges="orientation|screenSize"
-            >
-            <!-- <intent-filter> -->
-            <!--     <action android:name="android.intent.action.MAIN" /> -->
+            android:label="ビデオチャット">
 
-            <!--     <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name="jp.shiguredo.sora.sample.ui.VoiceChatRoomActivity"
-            android:label="Voice Chat Room"
-            android:screenOrientation="portrait"/>
-
-        <service android:name="jp.shiguredo.sora.sample.screencast.SoraScreencastService"
-            android:enabled="true"/>
-
-        <activity android:name="jp.shiguredo.sora.sample.ui.EffectedVideoChatActivity"
-            android:label="Effected Video Chat"
-            android:screenOrientation="portrait"/>
-
-
+        <activity
+            android:name=".ui.VoiceChatRoomActivity"
+            android:label="ボイスチャット"
+            android:screenOrientation="portrait" />
+        <service
+            android:name=".screencast.SoraScreencastService"
+            android:enabled="true" />
+        <activity
+            android:name=".ui.EffectedVideoChatActivity"
+            android:label="エフェクト付きビデオチャット"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.SimulcastActivity"
+            android:label="Simulcast"
+            android:screenOrientation="portrait" />
     </application>
-
 
 </manifest>

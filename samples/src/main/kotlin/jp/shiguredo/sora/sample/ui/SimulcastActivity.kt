@@ -26,14 +26,22 @@ import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
-import kotlinx.android.synthetic.main.activity_video_chat_room.*
+import kotlinx.android.synthetic.main.activity_simulcast.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.webrtc.SurfaceViewRenderer
+import java.io.BufferedOutputStream
+import java.net.HttpURLConnection
+import java.net.URI
+import java.net.URL
 import java.util.*
 
-class VideoChatRoomActivity : AppCompatActivity() {
+class SimulcastActivity : AppCompatActivity() {
 
     companion object {
-        private val TAG = VideoChatRoomActivity::class.simpleName
+        private val TAG = SimulcastActivity::class.simpleName
     }
 
     private var channelName = ""
@@ -50,14 +58,12 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var multistream = true
     private var fps: Int = 30
     private var fixedResolution = false
-    private var cameraFacing = true
-    private var clientId: String? = null
 
     private var oldAudioMode: Int = AudioManager.MODE_INVALID
 
     private var role = SoraRoleType.SENDRECV
 
-    private var ui: VideoChatRoomActivityUI? = null
+    private var ui: SimulcastActivityUI? = null
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         SoraLogger.d(TAG, "onConfigurationChanged: orientation=${newConfig.orientation}")
@@ -146,20 +152,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else     -> false
         }
 
-        cameraFacing = when (intent.getStringExtra("CAMERA_FACING")) {
-            "前面" -> true
-            "背面"  -> false
-            else    -> true
-        }
-
-        clientId = when (intent.getStringExtra("CLIENT_ID")) {
-            "なし"        -> null
-            "端末情報" -> Build.MODEL
-            "時雨堂"      -> "🍖時雨堂🍗"
-            "ランダム" -> UUID.randomUUID().toString()
-            else -> null
-        }
-
         // ステレオでは landscape にしたほうが内蔵マイクを使うときに自然な向きとなる。
         // それ以外は、リモート映像の分割が簡単になるように portrait で動かす。
         if (audioStereo) {
@@ -172,7 +164,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
             }
         }
 
-        ui = VideoChatRoomActivityUI(
+        ui = SimulcastActivityUI(
                 activity        = this,
                 channelName     = channelName,
                 resources       = resources,
@@ -241,12 +233,12 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
         override fun onError(channel: SoraVideoChannel, reason: SoraErrorReason) {
             ui?.changeState("#DD2C00")
-            Toast.makeText(this@VideoChatRoomActivity, "Error: ${reason.name}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this@SimulcastActivity, "Error: ${reason.name}", Toast.LENGTH_LONG).show()
             close()
         }
 
         override fun onWarning(channel: SoraVideoChannel, reason: SoraErrorReason) {
-            Toast.makeText(this@VideoChatRoomActivity, "Error: ${reason.name}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this@SimulcastActivity, "Error: ${reason.name}", Toast.LENGTH_LONG).show()
         }
 
         override fun onAddLocalRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {
@@ -279,6 +271,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 videoEnabled      = videoEnabled,
                 videoWidth        = videoWidth,
                 videoHeight       = videoHeight,
+                simulcast         = true,
                 videoFPS          = fps,
                 fixedResolution   = fixedResolution,
                 videoCodec        = videoCodec,
@@ -289,8 +282,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 audioStereo       = audioStereo,
                 role              = role,
                 multistream       = multistream,
-                cameraFacing      = cameraFacing,
-                clientId          = clientId,
                 listener          = channelListener,
                 needLocalRenderer = true
         )
@@ -318,10 +309,41 @@ class VideoChatRoomActivity : AppCompatActivity() {
         channel?.mute(muted)
     }
 
+    internal fun changeQuality(quality: String) {
+        if (channel?.mediaChannel?.connectionId == null) {
+            SoraLogger.d(TAG, "cannot change quality: connection ID is not found")
+            return
+        }
+
+        GlobalScope.launch {
+            withContext(Dispatchers.IO) {
+                val host = URI(BuildConfig.SIGNALING_ENDPOINT).host
+                val url = URL("http://$host:3000")
+                val conn = url.openConnection() as HttpURLConnection
+                conn.requestMethod = "POST"
+                conn.setRequestProperty("x-sora-target", "Sora_20180820.ChangeSimulcastQuality")
+                conn.doOutput = true
+                conn.connect()
+                val buffer = BufferedOutputStream(conn.outputStream)
+                buffer.write("{\n".toByteArray())
+                buffer.write("    \"channel_id\": \"$channelName\",\n".toByteArray())
+                buffer.write("    \"connection_id\": \"${channel!!.mediaChannel!!.connectionId!!}\",\n".toByteArray())
+                buffer.write("    \"quality\": \"$quality\"\n".toByteArray())
+                buffer.write("}".toByteArray())
+                buffer.flush()
+                buffer.close()
+                conn.outputStream.close()
+
+                val status = conn.responseCode
+                SoraLogger.d(TAG, "change quality: response $status")
+            }
+        }
+    }
+
 }
 
-class VideoChatRoomActivityUI(
-        val activity:        VideoChatRoomActivity,
+class SimulcastActivityUI(
+        val activity:        SimulcastActivity,
         val channelName:     String,
         val resources:       Resources,
         val videoViewWidth:  Int,
@@ -333,7 +355,7 @@ class VideoChatRoomActivityUI(
     private val renderersLayoutCalculator: RendererLayoutCalculator
 
     init {
-        activity.setContentView(R.layout.activity_video_chat_room)
+        activity.setContentView(R.layout.activity_simulcast)
         activity.channelNameText.text = channelName
         this.renderersLayoutCalculator = RendererLayoutCalculator(
                 width = SoraScreenUtil.size(activity).x - dp2px(20 * 2),
@@ -342,6 +364,9 @@ class VideoChatRoomActivityUI(
         activity.toggleMuteButton.setOnClickListener { activity.toggleMuted() }
         activity.switchCameraButton.setOnClickListener { activity.switchCamera() }
         activity.closeButton.setOnClickListener { activity.close() }
+        activity.lowQualityButton.setOnClickListener { activity.changeQuality("low") }
+        activity.middleQualityButton.setOnClickListener { activity.changeQuality("middle") }
+        activity.highQualityButton.setOnClickListener { activity.changeQuality("high") }
     }
 
     internal fun changeState(colorCode: String) {
