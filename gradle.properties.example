@@ -16,6 +16,8 @@ org.gradle.jvmargs=-Xmx1536m
 # http://www.gradle.org/docs/current/userguide/multi_project_builds.html#sec:decoupled_projects
 # org.gradle.parallel=true
 
+android.useAndroidX=true
+
 # Overwrite sora Signaling endpoint in build.gradle's ext.signaling_endpoint
 # signaling_endpoint = ws://192.0.2.10:50000/signaling
 # channel_id         = sora
