@@ -11,7 +11,7 @@ import android.view.LayoutInflater
 data class Feature (
         val title:       String,
         val description: String
-) {}
+)
 
 class FeatureListAdapter(
         private val features: List<Feature>
@@ -40,7 +40,7 @@ class FeatureListAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.let {
             it.bind(features[position])
-            it.view.setOnClickListener { _ -> listener?.onItemClick(position) }
+            it.view.setOnClickListener { listener?.onItemClick(position) }
         }
     }
 
