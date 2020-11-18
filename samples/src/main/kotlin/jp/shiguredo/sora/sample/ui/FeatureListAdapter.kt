@@ -17,7 +17,7 @@ class FeatureListAdapter(
         private val features: List<Feature>
 ) : RecyclerView.Adapter<FeatureListAdapter.ViewHolder>() {
 
-    interface OnItemClickListener {
+    fun interface OnItemClickListener {
         fun onItemClick(position: Int)
     }
 

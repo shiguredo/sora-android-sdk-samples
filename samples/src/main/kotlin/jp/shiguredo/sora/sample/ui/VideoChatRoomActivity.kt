@@ -1,5 +1,6 @@
 package jp.shiguredo.sora.sample.ui
 
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.pm.ActivityInfo
@@ -98,7 +99,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
         fps = (intent.getStringExtra("FPS") ?: "30").toInt()
 
-        var videoSize = when (intent.getStringExtra("VIDEO_SIZE")) {
+        val videoSize = when (intent.getStringExtra("VIDEO_SIZE")) {
             // Portrait
             "VGA"          -> SoraVideoOption.FrameSize.Portrait.VGA
             "QQVGA"        -> SoraVideoOption.FrameSize.Portrait.QQVGA
@@ -207,10 +208,11 @@ class VideoChatRoomActivity : AppCompatActivity() {
         val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
                 as AudioManager
         oldAudioMode = audioManager.mode
-        Log.d(TAG, "AudioManager mode change: ${oldAudioMode} => MODE_IN_COMMUNICATION(3)")
+        Log.d(TAG, "AudioManager mode change: $oldAudioMode => MODE_IN_COMMUNICATION(3)")
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
     }
 
+    @SuppressLint("WrongConstant")
     override fun onPause() {
         Log.d(TAG, "onPause")
         super.onPause()

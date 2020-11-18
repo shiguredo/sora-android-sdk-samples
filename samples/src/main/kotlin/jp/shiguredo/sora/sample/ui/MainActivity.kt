@@ -43,12 +43,10 @@ class MainActivity : AppCompatActivity() {
                 Feature(title = "サイマルキャスト",
                         description = "サイマルキャストのデモです。")))
 
-        adapter.setOnItemClickListener(object: FeatureListAdapter.OnItemClickListener {
-            override fun onItemClick(position: Int) {
+        adapter.setOnItemClickListener { position ->
                 Log.d(TAG, "clicked:${position}")
                 goToDemo(position)
-            }
-        })
+        }
 
         val llm = LinearLayoutManager(this)
         featureList.setHasFixedSize(true)
@@ -61,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         onRequestPermissionsResult(requestCode, grantResults)
     }
 
-    internal fun goToDemo(position: Int) {
+    private fun goToDemo(position: Int) {
         when (position) {
             0 -> goToVideoRoomDemoWithPermissionCheck()
             1 -> goToVoiceRoomDemoWithPermissionCheck()
