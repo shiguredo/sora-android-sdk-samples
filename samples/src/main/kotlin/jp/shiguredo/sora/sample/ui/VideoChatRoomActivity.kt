@@ -27,6 +27,7 @@ import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
+import jp.shiguredo.sora.sdk2.*
 import kotlinx.android.synthetic.main.activity_video_chat_room.*
 import org.webrtc.SurfaceViewRenderer
 import java.util.*
@@ -40,14 +41,14 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var channelName = ""
     private var spotlight = 0
     private var videoEnabled = true
-    private var videoCodec:  SoraVideoOption.Codec = SoraVideoOption.Codec.VP9
-    private var audioCodec:  SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
+    private var videoCodec:  VideoCodec = VideoCodec.VP9
+    private var audioCodec:  AudioCodec = AudioCodec.OPUS
     private var audioEnabled = true
     private var audioBitRate: Int? = null
     private var audioStereo: Boolean = false
     private var videoBitRate: Int? = null
-    private var videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x
-    private var videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y
+    private var videoWidth: Int = VideoFrameSize.VGA.portrate.width
+    private var videoHeight: Int = VideoFrameSize.VGA.portrate.height
     private var multistream = true
     private var fps: Int = 30
     private var fixedResolution = false
@@ -56,7 +57,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
     private var oldAudioMode: Int = AudioManager.MODE_INVALID
 
-    private var role = SoraRoleType.SENDRECV
+    private var role = Role.SENDRECV
 
     private var ui: VideoChatRoomActivityUI? = null
 
@@ -80,15 +81,15 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else  -> true
         }
 
-        videoCodec = SoraVideoOption.Codec.valueOf(intent.getStringExtra("VIDEO_CODEC") ?: "VP9")
+        videoCodec = VideoCodec.valueOf(intent.getStringExtra("VIDEO_CODEC") ?: "VP9")
 
-        audioCodec = SoraAudioOption.Codec.valueOf(intent.getStringExtra("AUDIO_CODEC") ?: "OPUS")
+        audioCodec = AudioCodec.valueOf(intent.getStringExtra("AUDIO_CODEC") ?: "OPUS")
 
         role = when (intent.getStringExtra("ROLE")) {
-            "SENDONLY" -> SoraRoleType.SENDONLY
-            "RECVONLY" -> SoraRoleType.RECVONLY
-            "SENDRECV" -> SoraRoleType.SENDRECV
-            else       -> SoraRoleType.SENDRECV
+            "SENDONLY" -> Role.SENDONLY
+            "RECVONLY" -> Role.RECVONLY
+            "SENDRECV" -> Role.SENDRECV
+            else       -> Role.SENDRECV
         }
 
         audioEnabled = when (intent.getStringExtra("AUDIO_ENABLED")) {
@@ -274,6 +275,10 @@ class VideoChatRoomActivity : AppCompatActivity() {
         channel = SoraVideoChannel(
                 context           = this,
                 handler           = Handler(),
+                configuration = jp.shiguredo.sora.sdk2.Configuration(this,
+                        BuildConfig.SIGNALING_ENDPOINT, channelName, role).apply {
+
+                },
                 signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
                 channelId         = channelName,
                 signalingMetadata = "",

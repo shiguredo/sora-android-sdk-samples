@@ -16,35 +16,43 @@ import org.webrtc.*
 import android.os.Handler
 import jp.shiguredo.sora.sample.stats.VideoUpstreamLatencyStatsCollector
 import jp.shiguredo.sora.sdk.channel.option.*
+import jp.shiguredo.sora.sdk2.*
+import org.webrtc.MediaStream
 
 class SoraVideoChannel(
-        private val context:                 Context,
-        private val handler:                 Handler,
+        private val context: Context,
+        private val handler: Handler,
+        private val configuration: Configuration,
+        private val fixedResolution: Boolean = false,
+        private val cameraFacing: Boolean = true,
+        private val needLocalRenderer: Boolean = true,
+        /*
         private val signalingEndpoint:       String,
         private val channelId:               String,
         private val signalingMetadata:       Any? = "",
-        private val signalingNotifyMetatada: Any? = null,
+        private val signalingNotifyMetadata: Any? = null,
         private val clientId:                String? = null,
         private val spotlight:               Int = 0,
         private var role:                    SoraRoleType = SoraRoleType.SENDRECV,
         private var multistream:             Boolean = true,
         private var videoEnabled:            Boolean = true,
-        private val videoWidth:              Int = SoraVideoOption.FrameSize.Portrait.VGA.x,
-        private val videoHeight:             Int = SoraVideoOption.FrameSize.Portrait.VGA.y,
+        private val videoWidth:              Int = VideoFrameSize.VGA.portrate.width,
+        private val videoHeight:             Int = VideoFrameSize.VGA.portrate.height,
         private val simulcast:               Boolean = false,
         private val videoFPS:                Int =  30,
         private val fixedResolution:         Boolean = false,
         private val cameraFacing:            Boolean = true,
-        private val videoCodec:              SoraVideoOption.Codec = SoraVideoOption.Codec.VP9,
-        private val audioCodec:              SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
+        private val videoCodec:              VideoCodec = VideoCodec.VP9,
+        private val audioCodec:              AudioCodec = AudioCodec.OPUS,
         private val videoBitRate:            Int? = null,
         private val audioBitRate:            Int? = null,
         private val audioStereo:             Boolean = false,
         private val needLocalRenderer:       Boolean = true,
         private val audioEnabled:            Boolean = true,
-        private val capturerFactory:         CameraVideoCapturerFactory =
+         */
+        private val capturerFactory: CameraVideoCapturerFactory =
                 DefaultCameraVideoCapturerFactory(context, fixedResolution, cameraFacing),
-        private var listener:                Listener?
+        private var listener: Listener?
 ) {
 
     companion object {
@@ -126,7 +134,7 @@ class SoraVideoChannel(
             }
         }
 
-        override fun onAddLocalStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
+        override fun onAddLocalStream(mediaChannel: SoraMediaChannel, ms: MediaStream, videoSource: VideoSource?) {
             SoraLogger.d(TAG, "[video_channel] @onAddLocalStream")
 
             if (ms.audioTracks.size > 0) {
@@ -204,6 +212,7 @@ class SoraVideoChannel(
     }
 
     fun connect() {
+        SoraLogger.d(TAG, "[video_channel] try connecting")
 
         remoteRenderersSlot = SoraRemoteRendererSlot(
                 context    = context,
@@ -211,7 +220,8 @@ class SoraVideoChannel(
                 listener   = rendererSlotListener
         )
 
-        val mediaOption = SoraMediaOption().apply {
+        /*
+        val mediaOption = Configuration(context, channelId, role).apply {
 
             if (role.hasUpstream()) {
                 if (audioEnabled) {
@@ -239,7 +249,7 @@ class SoraVideoChannel(
                 // hardware encoder では動かせていない、ソフトウェアを指定する
                 videoEncoderFactory = SoftwareVideoEncoderFactory()
             }
-            spotlight    = this@SoraVideoChannel.spotlight
+            spotlightEnabled    = this@SoraVideoChannel.spotlight
             videoCodec   = this@SoraVideoChannel.videoCodec
             videoBitrate = this@SoraVideoChannel.videoBitRate
 
@@ -282,22 +292,30 @@ class SoraVideoChannel(
                 signalingEndpoint       = signalingEndpoint,
                 channelId               = channelId,
                 signalingMetadata       = signalingMetadata,
-                signalingNotifyMetadata = signalingNotifyMetatada,
+                signalingNotifyMetadata = signalingNotifyMetadata,
                 mediaOption             = mediaOption,
                 listener                = channelListener,
                 clientId                = clientId,
                 peerConnectionOption    = peerConnectionOption
         )
         mediaChannel!!.connect()
+         */
+
+        Sora.connect(configuration) { result ->
+            SoraLogger.d(TAG, "[video_channel] connecting => $result")
+        }
     }
 
     fun startCapturer() {
+        /*
         capturer?.let {
             if (!capturing) {
                 capturing = true
                 it.startCapture(videoWidth, videoHeight, videoFPS)
             }
         }
+
+         */
     }
 
     fun stopCapturer() {
