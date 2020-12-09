@@ -32,9 +32,10 @@ import kotlinx.android.synthetic.main.activity_video_chat_room.*
 import org.webrtc.SurfaceViewRenderer
 import java.util.*
 
-class VideoChatRoomActivity : AppCompatActivity() {
+class VideoChatRoomActivity : SampleAppCompatActivity() {
 
     companion object {
+        private val TAG = VideoChatRoomActivity::class.simpleName
         private val TAG = VideoChatRoomActivity::class.simpleName
     }
 
@@ -47,8 +48,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var audioBitRate: Int? = null
     private var audioStereo: Boolean = false
     private var videoBitRate: Int? = null
-    private var videoWidth: Int = VideoFrameSize.VGA.portrate.width
-    private var videoHeight: Int = VideoFrameSize.VGA.portrate.height
     private var multistream = true
     private var fps: Int = 30
     private var fixedResolution = false
@@ -100,26 +99,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
         fps = (intent.getStringExtra("FPS") ?: "30").toInt()
 
-        val videoSize = when (intent.getStringExtra("VIDEO_SIZE")) {
-            // Portrait
-            "VGA"          -> SoraVideoOption.FrameSize.Portrait.VGA
-            "QQVGA"        -> SoraVideoOption.FrameSize.Portrait.QQVGA
-            "QCIF"         -> SoraVideoOption.FrameSize.Portrait.QCIF
-            "HQVGA"        -> SoraVideoOption.FrameSize.Portrait.HQVGA
-            "QVGA"         -> SoraVideoOption.FrameSize.Portrait.QVGA
-            "HD"           -> SoraVideoOption.FrameSize.Portrait.HD
-            "FHD"          -> SoraVideoOption.FrameSize.Portrait.FHD
-            "Res1920x3840" -> SoraVideoOption.FrameSize.Portrait.Res1920x3840
-            "UHD2160x3840" -> SoraVideoOption.FrameSize.Portrait.UHD2160x3840
-            "UHD2160x4096" -> SoraVideoOption.FrameSize.Portrait.UHD2160x4096
-            // Landscape
-            "Res3840x1920" -> SoraVideoOption.FrameSize.Landscape.Res3840x1920
-            "UHD3840x2160" -> SoraVideoOption.FrameSize.Landscape.UHD3840x2160
-            // Default
-            else           -> SoraVideoOption.FrameSize.Portrait.VGA
-        }
-        videoWidth = videoSize.x
-        videoHeight = videoSize.y
+        videoFrameSize = SoraVideoChannel.getVideoFrameSize(intent.getStringExtra("VIDEO_SIZE")))
 
         multistream = when (intent.getStringExtra("MULTISTREAM")) {
             "有効" -> true

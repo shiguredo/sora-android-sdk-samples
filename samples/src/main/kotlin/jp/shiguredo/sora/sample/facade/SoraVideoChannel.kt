@@ -23,6 +23,7 @@ class SoraVideoChannel(
         private val context: Context,
         private val handler: Handler,
         private val configuration: Configuration,
+        private val videoFrameSize: VideoFrameSize,
         private val fixedResolution: Boolean = false,
         private val cameraFacing: Boolean = true,
         private val needLocalRenderer: Boolean = true,
@@ -59,6 +60,7 @@ class SoraVideoChannel(
         private val TAG = SoraVideoChannel::class.simpleName
     }
 
+    // TODO: configuration.videoRendererContext.eglBase
     private var egl: EglBase? = EglBase.create()
 
     interface Listener {
@@ -307,15 +309,14 @@ class SoraVideoChannel(
     }
 
     fun startCapturer() {
-        /*
         capturer?.let {
             if (!capturing) {
                 capturing = true
-                it.startCapture(videoWidth, videoHeight, videoFPS)
+                it.startCapture(videoFrameSize.width,
+                        videoFrameSize.height,
+                        configuration.videoFps)
             }
         }
-
-         */
     }
 
     fun stopCapturer() {
