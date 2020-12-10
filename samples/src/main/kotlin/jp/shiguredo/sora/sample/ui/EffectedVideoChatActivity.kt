@@ -91,6 +91,7 @@ class EffectedVideoChatActivity : AppCompatActivity() {
             }
         }
 
+        /*
         channelName = intent.getStringExtra("CHANNEL_NAME")
         ui = EffectedVideoChatActivityUI(
                 activity        = this,
@@ -101,6 +102,8 @@ class EffectedVideoChatActivity : AppCompatActivity() {
                 videoViewMargin = 10,
                 density         = this.resources.displayMetrics.density
         )
+
+         */
 
         connectChannel()
     }
@@ -138,7 +141,7 @@ class EffectedVideoChatActivity : AppCompatActivity() {
         val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
                 as AudioManager
         Log.d(TAG, "AudioManager mode change: MODE_IN_COMMUNICATION(3) => ${oldAudioMode}")
-        audioManager.mode = oldAudioMode
+        //audioManager.mode = oldAudioMode
         close()
     }
 
@@ -189,6 +192,7 @@ class EffectedVideoChatActivity : AppCompatActivity() {
     private fun connectChannel() {
         Log.d(TAG, "connectChannel")
 
+        /*
         channel = VideoChannel(
                 context           = this,
                 handler           = Handler(),
@@ -203,6 +207,8 @@ class EffectedVideoChatActivity : AppCompatActivity() {
                 listener          = channelListener
         )
         channel!!.connect()
+
+         */
     }
 
     private fun disconnectChannel() {

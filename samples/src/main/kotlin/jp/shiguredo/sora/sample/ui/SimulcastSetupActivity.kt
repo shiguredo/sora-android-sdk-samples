@@ -89,6 +89,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
         val fps = selectedItem(fpsSelection.spinner)
         val resolutionChange = selectedItem(resolutionChangeSelection.spinner)
 
+        /*
         val intent = Intent(this, SimulcastActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
         intent.putExtra("ROLE", role)
@@ -104,6 +105,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
         intent.putExtra("SIMULCAST", true)
         intent.putExtra("FPS", fps)
         intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
+         */
 
         startActivity(intent)
     }

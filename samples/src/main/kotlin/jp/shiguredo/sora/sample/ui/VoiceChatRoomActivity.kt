@@ -42,10 +42,10 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_voice_chat_room)
 
-        channelName = intent.getStringExtra("CHANNEL_NAME")
+        channelName = intent.getStringExtra("CHANNEL_NAME")!!
 
         audioCodec = SoraAudioOption.Codec.valueOf(
-                intent.getStringExtra("AUDIO_CODEC"))
+                intent.getStringExtra("AUDIO_CODEC")!!)
 
         audioBitRate = when (intent.getStringExtra("AUDIO_BIT_RATE")) {
             "未指定" -> null
@@ -97,7 +97,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
                 as AudioManager
         Log.d(TAG, "AudioManager mode change: MODE_IN_COMMUNICATION(3) => ${oldAudioMode}")
-        audioManager.mode = oldAudioMode
+        //audioManager.mode = oldAudioMode
         close()
     }
 

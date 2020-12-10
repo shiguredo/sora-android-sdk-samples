@@ -62,7 +62,7 @@ class SoraScreencastService : Service() {
             SoraLogger.d(TAG, "[screencast] @onError")
         }
 
-        override fun onAddLocalStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
+        override fun onAddLocalStream(mediaChannel: SoraMediaChannel, ms: MediaStream, videoSource: VideoSource?) {
             SoraLogger.d(TAG, "[screencast] @onAddLocalStream")
             if (ms.audioTracks.size > 0) {
                 localAudioTrack = ms.audioTracks[0]
