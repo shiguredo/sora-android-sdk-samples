@@ -18,7 +18,7 @@ import jp.co.cyberagent.android.gpuimage.filter.*
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.camera.EffectCameraVideoCapturerFactory
-import jp.shiguredo.sora.sample.facade.SoraVideoChannel
+import jp.shiguredo.sora.sample.facade.VideoChannel
 import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sample.ui.util.RendererLayoutCalculator
 import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
@@ -150,37 +150,37 @@ class EffectedVideoChatActivity : AppCompatActivity() {
         finish()
     }
 
-    private var channel: SoraVideoChannel? = null
-    private var channelListener: SoraVideoChannel.Listener = object : SoraVideoChannel.Listener {
+    private var channel: VideoChannel? = null
+    private var channelListener: VideoChannel.Listener = object : VideoChannel.Listener {
 
-        override fun onConnect(channel: SoraVideoChannel) {
+        override fun onConnect(channel: VideoChannel) {
             ui?.changeState("#00C853")
         }
 
-        override fun onClose(channel: SoraVideoChannel) {
+        override fun onClose(channel: VideoChannel) {
             ui?.changeState("#37474F")
             close()
         }
 
-        override fun onError(channel: SoraVideoChannel, reason: SoraErrorReason) {
+        override fun onError(channel: VideoChannel, reason: SoraErrorReason) {
             ui?.changeState("#DD2C00")
             Toast.makeText(this@EffectedVideoChatActivity, "Error: ${reason.name}", Toast.LENGTH_LONG).show()
             close()
         }
 
-        override fun onAddLocalRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {
+        override fun onAddLocalRenderer(channel: VideoChannel, renderer: SurfaceViewRenderer) {
             ui?.addLocalRenderer(renderer)
         }
 
-        override fun onAddRemoteRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {
+        override fun onAddRemoteRenderer(channel: VideoChannel, renderer: SurfaceViewRenderer) {
             ui?.addRenderer(renderer)
         }
 
-        override fun onRemoveRemoteRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {
+        override fun onRemoveRemoteRenderer(channel: VideoChannel, renderer: SurfaceViewRenderer) {
             ui?.removeRenderer(renderer)
         }
 
-        override fun onAttendeesCountUpdated(channel: SoraVideoChannel, attendees: ChannelAttendeesCount) {
+        override fun onAttendeesCountUpdated(channel: VideoChannel, attendees: ChannelAttendeesCount) {
             // nop
         }
     }
@@ -189,7 +189,7 @@ class EffectedVideoChatActivity : AppCompatActivity() {
     private fun connectChannel() {
         Log.d(TAG, "connectChannel")
 
-        channel = SoraVideoChannel(
+        channel = VideoChannel(
                 context           = this,
                 handler           = Handler(),
                 signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,

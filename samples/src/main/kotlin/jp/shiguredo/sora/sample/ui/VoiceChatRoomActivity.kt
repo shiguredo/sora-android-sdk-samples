@@ -13,7 +13,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
-import jp.shiguredo.sora.sample.facade.SoraAudioChannel
+import jp.shiguredo.sora.sample.facade.AudioChannel
 import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
@@ -107,25 +107,25 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         finish()
     }
 
-    private var channel: SoraAudioChannel? = null
-    private var channelListener: SoraAudioChannel.Listener = object : SoraAudioChannel.Listener {
+    private var channel: AudioChannel? = null
+    private var channelListener: AudioChannel.Listener = object : AudioChannel.Listener {
 
-        override fun onConnect(channel: SoraAudioChannel) {
+        override fun onConnect(channel: AudioChannel) {
             changeStateText("CONNECTED")
         }
 
-        override fun onClose(channel: SoraAudioChannel) {
+        override fun onClose(channel: AudioChannel) {
             changeStateText("CLOSED")
             close()
         }
 
-        override fun onError(channel: SoraAudioChannel, reason: SoraErrorReason) {
+        override fun onError(channel: AudioChannel, reason: SoraErrorReason) {
             changeStateText("ERROR")
             Toast.makeText(this@VoiceChatRoomActivity, "Error: ${reason.name}", Toast.LENGTH_LONG).show()
             close()
         }
 
-        override fun onAttendeesCountUpdated(channel: SoraAudioChannel, attendees: ChannelAttendeesCount) {
+        override fun onAttendeesCountUpdated(channel: AudioChannel, attendees: ChannelAttendeesCount) {
             Log.d(TAG, "onAttendeesCountUpdated")
         }
 
@@ -134,7 +134,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     private fun connectChannel() {
         Log.d(TAG, "connectChannel")
 
-        channel = SoraAudioChannel(
+        channel = AudioChannel(
                 context           = this,
                 handler           = Handler(),
                 signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,

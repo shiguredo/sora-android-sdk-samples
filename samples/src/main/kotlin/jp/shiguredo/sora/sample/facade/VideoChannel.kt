@@ -9,14 +9,12 @@ import jp.shiguredo.sora.sample.ui.util.SoraRemoteRendererSlot
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.*
-import jp.shiguredo.sora.sdk.channel.signaling.message.NotificationMessage
-import jp.shiguredo.sora.sdk.channel.signaling.message.PushMessage
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import jp.shiguredo.sora.sdk2.*
 import org.webrtc.*
 
-class SoraVideoChannel(
+class VideoChannel(
         private val context: Context,
         private val handler: Handler,
         private val configuration: Configuration,
@@ -54,21 +52,21 @@ class SoraVideoChannel(
 ) {
 
     companion object {
-        private val TAG = SoraVideoChannel::class.simpleName
+        private val TAG = VideoChannel::class.simpleName
     }
 
     // TODO: configuration.videoRendererContext.eglBase
     private var egl: EglBase? = EglBase.create()
 
     interface Listener {
-        fun onConnect(channel: SoraVideoChannel) {}
-        fun onClose(channel: SoraVideoChannel) {}
-        fun onError(channel: SoraVideoChannel, reason: SoraErrorReason) {}
-        fun onWarning(channel: SoraVideoChannel, reason: SoraErrorReason) {}
-        fun onAddRemoteRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {}
-        fun onRemoveRemoteRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {}
-        fun onAddLocalRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {}
-        fun onAttendeesCountUpdated(channel: SoraVideoChannel, attendees: ChannelAttendeesCount) {}
+        fun onConnect(channel: VideoChannel) {}
+        fun onClose(channel: VideoChannel) {}
+        fun onError(channel: VideoChannel, reason: SoraErrorReason) {}
+        fun onWarning(channel: VideoChannel, reason: SoraErrorReason) {}
+        fun onAddRemoteRenderer(channel: VideoChannel, renderer: SurfaceViewRenderer) {}
+        fun onRemoveRemoteRenderer(channel: VideoChannel, renderer: SurfaceViewRenderer) {}
+        fun onAddLocalRenderer(channel: VideoChannel, renderer: SurfaceViewRenderer) {}
+        fun onAttendeesCountUpdated(channel: VideoChannel, attendees: ChannelAttendeesCount) {}
     }
 
     private val statsCollector = VideoUpstreamLatencyStatsCollector()
@@ -197,13 +195,13 @@ class SoraVideoChannel(
 
         override fun onAddRenderer(renderer: SurfaceViewRenderer) {
             handler.post {
-                listener?.onAddRemoteRenderer(this@SoraVideoChannel, renderer)
+                listener?.onAddRemoteRenderer(this@VideoChannel, renderer)
             }
         }
 
         override fun onRemoveRenderer(renderer: SurfaceViewRenderer) {
             handler.post {
-                listener?.onRemoveRemoteRenderer(this@SoraVideoChannel, renderer)
+                listener?.onRemoveRemoteRenderer(this@VideoChannel, renderer)
             }
         }
     }
@@ -360,7 +358,7 @@ class SoraVideoChannel(
             closed = true
 
             handler.post {
-                listener?.onClose(this@SoraVideoChannel)
+                listener?.onClose(this@VideoChannel)
                 localAudioTrack = null
             }
 

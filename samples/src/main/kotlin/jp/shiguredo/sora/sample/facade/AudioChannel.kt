@@ -13,7 +13,7 @@ import org.webrtc.AudioTrack
 import org.webrtc.MediaStream
 import org.webrtc.VideoSource
 
-class SoraAudioChannel(
+class AudioChannel(
         private val context:           Context,
         private val handler:           Handler,
         private val signalingEndpoint: String,
@@ -27,21 +27,21 @@ class SoraAudioChannel(
 ) {
 
     companion object {
-        private val TAG = SoraAudioChannel::class.simpleName
+        private val TAG = AudioChannel::class.simpleName
     }
 
     interface Listener {
-        fun onConnect(channel: SoraAudioChannel) {}
-        fun onClose(channel: SoraAudioChannel) {}
-        fun onError(channel: SoraAudioChannel, reason: SoraErrorReason) {}
-        fun onAttendeesCountUpdated(channel: SoraAudioChannel, attendees: ChannelAttendeesCount) {}
+        fun onConnect(channel: AudioChannel) {}
+        fun onClose(channel: AudioChannel) {}
+        fun onError(channel: AudioChannel, reason: SoraErrorReason) {}
+        fun onAttendeesCountUpdated(channel: AudioChannel, attendees: ChannelAttendeesCount) {}
     }
 
     private val channelListener = object : SoraMediaChannel.Listener {
 
         override fun onConnect(mediaChannel: SoraMediaChannel) {
             SoraLogger.d(TAG, "[audio_channel] @onConnected")
-            handler.post { listener?.onConnect(this@SoraAudioChannel) }
+            handler.post { listener?.onConnect(this@AudioChannel) }
         }
 
         override fun onClose(mediaChannel: SoraMediaChannel) {
@@ -51,7 +51,7 @@ class SoraAudioChannel(
 
         override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason) {
             SoraLogger.d(TAG, "[audio_channel] @onError")
-            handler.post { listener?.onError(this@SoraAudioChannel, reason) }
+            handler.post { listener?.onError(this@AudioChannel, reason) }
             disconnect()
         }
 
@@ -64,7 +64,7 @@ class SoraAudioChannel(
 
         override fun onAttendeesCountUpdated(mediaChannel: SoraMediaChannel, attendees: ChannelAttendeesCount) {
             SoraLogger.d(TAG, "[audio_channel] @onAttendeesCountUpdated")
-            handler.post { listener?.onAttendeesCountUpdated(this@SoraAudioChannel, attendees) }
+            handler.post { listener?.onAttendeesCountUpdated(this@AudioChannel, attendees) }
         }
 
     }
@@ -90,8 +90,8 @@ class SoraAudioChannel(
                 enableMultistream()
             }
 
-            audioCodec = this@SoraAudioChannel.audioCodec
-            audioBitrate = this@SoraAudioChannel.audioBitRate
+            audioCodec = this@AudioChannel.audioCodec
+            audioBitrate = this@AudioChannel.audioBitRate
         }
 
         mediaChannel = SoraMediaChannel(
@@ -112,7 +112,7 @@ class SoraAudioChannel(
         if (!closed) {
             closed = true
             handler.post {
-                listener?.onClose(this@SoraAudioChannel)
+                listener?.onClose(this@AudioChannel)
                 localAudioTrack = null
             }
         }
