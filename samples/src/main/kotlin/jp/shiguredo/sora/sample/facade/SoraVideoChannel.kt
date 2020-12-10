@@ -1,30 +1,27 @@
 package jp.shiguredo.sora.sample.facade
 
 import android.content.Context
-import android.media.MediaRecorder
+import android.os.Handler
 import jp.shiguredo.sora.sample.camera.CameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.camera.DefaultCameraVideoCapturerFactory
-import jp.shiguredo.sora.sample.option.SoraRoleType
+import jp.shiguredo.sora.sample.stats.VideoUpstreamLatencyStatsCollector
 import jp.shiguredo.sora.sample.ui.util.SoraRemoteRendererSlot
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
+import jp.shiguredo.sora.sdk.channel.option.*
 import jp.shiguredo.sora.sdk.channel.signaling.message.NotificationMessage
 import jp.shiguredo.sora.sdk.channel.signaling.message.PushMessage
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
-import org.webrtc.*
-import android.os.Handler
-import jp.shiguredo.sora.sample.stats.VideoUpstreamLatencyStatsCollector
-import jp.shiguredo.sora.sdk.channel.option.*
 import jp.shiguredo.sora.sdk2.*
-import org.webrtc.MediaStream
+import org.webrtc.*
 
 class SoraVideoChannel(
         private val context: Context,
         private val handler: Handler,
         private val configuration: Configuration,
-        private val videoFrameSize: VideoFrameSize,
         private val fixedResolution: Boolean = false,
+        private val clientId:                String? = null,
         private val cameraFacing: Boolean = true,
         private val needLocalRenderer: Boolean = true,
         /*
@@ -76,6 +73,8 @@ class SoraVideoChannel(
 
     private val statsCollector = VideoUpstreamLatencyStatsCollector()
 
+    // TODO: SoraMediaChannel は捨てるので不要
+    /*
     private val channelListener = object : SoraMediaChannel.Listener {
 
         override fun onConnect(mediaChannel: SoraMediaChannel) {
@@ -181,6 +180,9 @@ class SoraVideoChannel(
         }
     }
 
+     */
+
+    // TODO: SDK2 の MediaChannel にする
     var mediaChannel:  SoraMediaChannel? = null
     private var capturer: CameraVideoCapturer? = null
 
@@ -188,8 +190,7 @@ class SoraVideoChannel(
 
     private var closed    = false
 
-    private var remoteRenderersSlot: SoraRemoteRendererSlot? = null
-    private var localRenderer:       SurfaceViewRenderer? = null
+    // TODO: MediaChannel から取得すべき
     private var localAudioTrack:     AudioTrack? = null
 
     private val rendererSlotListener =  object : SoraRemoteRendererSlot.Listener {
@@ -215,12 +216,6 @@ class SoraVideoChannel(
 
     fun connect() {
         SoraLogger.d(TAG, "[video_channel] try connecting")
-
-        remoteRenderersSlot = SoraRemoteRendererSlot(
-                context    = context,
-                eglContext = egl!!.eglBaseContext,
-                listener   = rendererSlotListener
-        )
 
         /*
         val mediaOption = Configuration(context, channelId, role).apply {
@@ -312,8 +307,8 @@ class SoraVideoChannel(
         capturer?.let {
             if (!capturing) {
                 capturing = true
-                it.startCapture(videoFrameSize.width,
-                        videoFrameSize.height,
+                it.startCapture(configuration.videoFrameSize.width,
+                        configuration.videoFrameSize.height,
                         configuration.videoFps)
             }
         }
@@ -366,14 +361,7 @@ class SoraVideoChannel(
 
             handler.post {
                 listener?.onClose(this@SoraVideoChannel)
-
-                localRenderer?.release()
-                localRenderer = null
-
                 localAudioTrack = null
-
-                remoteRenderersSlot?.dispose()
-                remoteRenderersSlot = null
             }
 
         }

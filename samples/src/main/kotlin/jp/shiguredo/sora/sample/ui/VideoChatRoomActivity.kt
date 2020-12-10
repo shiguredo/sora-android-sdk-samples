@@ -3,7 +3,6 @@ package jp.shiguredo.sora.sample.ui
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
-import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Color
@@ -11,20 +10,18 @@ import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import androidx.appcompat.app.AppCompatActivity
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
+import androidx.core.content.res.ResourcesCompat
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.facade.SoraVideoChannel
-import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sample.ui.util.RendererLayoutCalculator
 import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
-import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
-import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import jp.shiguredo.sora.sdk2.*
@@ -36,27 +33,9 @@ class VideoChatRoomActivity : SampleAppCompatActivity() {
 
     companion object {
         private val TAG = VideoChatRoomActivity::class.simpleName
-        private val TAG = VideoChatRoomActivity::class.simpleName
     }
 
-    private var channelName = ""
-    private var spotlight = 0
-    private var videoEnabled = true
-    private var videoCodec:  VideoCodec = VideoCodec.VP9
-    private var audioCodec:  AudioCodec = AudioCodec.OPUS
-    private var audioEnabled = true
-    private var audioBitRate: Int? = null
-    private var audioStereo: Boolean = false
-    private var videoBitRate: Int? = null
-    private var multistream = true
-    private var fps: Int = 30
-    private var fixedResolution = false
-    private var cameraFacing = true
-    private var clientId: String? = null
-
     private var oldAudioMode: Int = AudioManager.MODE_INVALID
-
-    private var role = Role.SENDRECV
 
     private var ui: VideoChatRoomActivityUI? = null
 
@@ -70,89 +49,7 @@ class VideoChatRoomActivity : SampleAppCompatActivity() {
         super.onCreate(savedInstanceState)
         setupWindow()
 
-        channelName = intent.getStringExtra("CHANNEL_NAME") ?: getString(R.string.channelId)
-
-        spotlight = intent.getIntExtra("SPOTLIGHT", 0)
-
-        videoEnabled = when (intent.getStringExtra("VIDEO_ENABLED")) {
-            "有効" -> true
-            "無効"  -> false
-            else  -> true
-        }
-
-        videoCodec = VideoCodec.valueOf(intent.getStringExtra("VIDEO_CODEC") ?: "VP9")
-
-        audioCodec = AudioCodec.valueOf(intent.getStringExtra("AUDIO_CODEC") ?: "OPUS")
-
-        role = when (intent.getStringExtra("ROLE")) {
-            "SENDONLY" -> Role.SENDONLY
-            "RECVONLY" -> Role.RECVONLY
-            "SENDRECV" -> Role.SENDRECV
-            else       -> Role.SENDRECV
-        }
-
-        audioEnabled = when (intent.getStringExtra("AUDIO_ENABLED")) {
-            "有効" -> true
-            "無効"  -> false
-            else  -> true
-        }
-
-        fps = (intent.getStringExtra("FPS") ?: "30").toInt()
-
-        videoFrameSize = SoraVideoChannel.getVideoFrameSize(intent.getStringExtra("VIDEO_SIZE")))
-
-        multistream = when (intent.getStringExtra("MULTISTREAM")) {
-            "有効" -> true
-            else      -> false
-        }
-
-        fixedResolution = when (intent.getStringExtra("RESOLUTION_CHANGE")) {
-            "可変" -> false
-            "固定"    -> true
-            else       -> false
-        }
-
-        videoBitRate = when (val stringValue = intent.getStringExtra("VIDEO_BIT_RATE")) {
-            "未指定" -> null
-            else -> stringValue?.toInt()
-        }
-
-        audioBitRate = when (val stringValue = intent.getStringExtra("AUDIO_BIT_RATE")) {
-            "未指定" -> null
-            else -> stringValue?.toInt()
-        }
-
-        audioStereo = when (intent.getStringExtra("AUDIO_STEREO")) {
-            "モノラル"   -> false
-            "ステレオ" -> true
-            else     -> false
-        }
-
-        cameraFacing = when (intent.getStringExtra("CAMERA_FACING")) {
-            "前面" -> true
-            "背面"  -> false
-            else    -> true
-        }
-
-        clientId = when (intent.getStringExtra("CLIENT_ID")) {
-            "なし"        -> null
-            "端末情報" -> Build.MODEL
-            "時雨堂"      -> "🍖時雨堂🍗"
-            "ランダム" -> UUID.randomUUID().toString()
-            else -> null
-        }
-
-        // ステレオでは landscape にしたほうが内蔵マイクを使うときに自然な向きとなる。
-        // それ以外は、リモート映像の分割が簡単になるように portrait で動かす。
-        if (audioStereo) {
-            if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-            }
-        } else {
-            if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            }
-        }
+        setRequestedOrientation()
 
         ui = VideoChatRoomActivityUI(
                 activity        = this,
@@ -175,6 +72,7 @@ class VideoChatRoomActivity : SampleAppCompatActivity() {
         setWindowVisibility()
     }
 
+    @Suppress("DEPRECATION")
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private fun setWindowVisibility() {
         window.decorView.systemUiVisibility =
@@ -211,6 +109,7 @@ class VideoChatRoomActivity : SampleAppCompatActivity() {
     }
 
     private var channel: SoraVideoChannel? = null
+
     private var channelListener: SoraVideoChannel.Listener = object : SoraVideoChannel.Listener {
 
         override fun onConnect(channel: SoraVideoChannel) {
@@ -254,28 +153,22 @@ class VideoChatRoomActivity : SampleAppCompatActivity() {
 
         channel = SoraVideoChannel(
                 context           = this,
-                handler           = Handler(),
-                configuration = jp.shiguredo.sora.sdk2.Configuration(this,
-                        BuildConfig.SIGNALING_ENDPOINT, channelName, role).apply {
-
+                handler           = Handler(Looper.myLooper()!!),
+                configuration = Configuration(this,
+                        BuildConfig.SIGNALING_ENDPOINT, channelName, role).also {
+                    it.multistreamEnabled = multistreamEnabled
+                    it.videoCodec = videoCodec
+                    it.videoBitRate = videoBitRate
+                    it.videoFps = videoFps
+                    it.videoFrameSize = videoFrameSize
+                    it.audioEnabled = audioEnabled
+                    it.audioCodec = audioCodec
+                    it.audioBitRate = audioBitRate
+                    it.inputAudioSound = audioSound
+                    it.spotlightEnabled = spotlight != 0
+                    it.activeSpeakerLimit = spotlight
                 },
-                signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
-                channelId         = channelName,
-                signalingMetadata = "",
-                spotlight         = spotlight,
-                videoEnabled      = videoEnabled,
-                videoWidth        = videoWidth,
-                videoHeight       = videoHeight,
-                videoFPS          = fps,
                 fixedResolution   = fixedResolution,
-                videoCodec        = videoCodec,
-                videoBitRate      = videoBitRate,
-                audioEnabled      = audioEnabled,
-                audioCodec        = audioCodec,
-                audioBitRate      = audioBitRate,
-                audioStereo       = audioStereo,
-                role              = role,
-                multistream       = multistream,
                 cameraFacing      = cameraFacing,
                 clientId          = clientId,
                 listener          = channelListener,
@@ -355,12 +248,12 @@ class VideoChatRoomActivityUI(
 
     internal fun showUnmuteButton() {
         activity.toggleMuteButton.setImageDrawable(
-                resources.getDrawable(R.drawable.ic_mic_white_48dp, null))
+                ResourcesCompat.getDrawable(resources, R.drawable.ic_mic_white_48dp, null))
     }
 
     internal fun showMuteButton() {
         activity.toggleMuteButton.setImageDrawable(
-                resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null))
+                ResourcesCompat.getDrawable(resources, R.drawable.ic_mic_off_black_48dp, null))
     }
 
     private fun dp2px(d: Int): Int = (density * d).toInt()
