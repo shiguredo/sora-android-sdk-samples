@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.activity_video_chat_room.*
 import org.webrtc.SurfaceViewRenderer
 import java.util.*
 
-class VideoChatRoomActivity : SampleAppCompatActivity() {
+class VideoChatRoomActivity : SampleAppActivity() {
 
     companion object {
         private val TAG = VideoChatRoomActivity::class.simpleName

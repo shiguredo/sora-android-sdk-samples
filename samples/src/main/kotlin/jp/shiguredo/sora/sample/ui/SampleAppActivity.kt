@@ -8,7 +8,7 @@ import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sdk2.*
 import java.util.*
 
-open class SampleAppCompatActivity: AppCompatActivity() {
+open class SampleAppActivity: AppCompatActivity() {
 
     val clientId: String?
         get() = when (intent.getStringExtra("CLIENT_ID")) {
