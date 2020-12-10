@@ -18,7 +18,7 @@
 
     <com.jaredrummler.materialspinner.MaterialSpinner
         android:id="@+id/spinner"
-        android:layout_width="180dp"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:layout_margin="6dp"
         android:layout_alignParentEnd="true"

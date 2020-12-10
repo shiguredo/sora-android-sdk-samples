@@ -79,12 +79,6 @@
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/audioStereoSelection"/>
-                <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/cameraFacingSelection"/>
-                <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/clientIdSelection"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 

@@ -35,8 +35,6 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
             "Res3840x1920", "UHD3840x2160")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("可変", "固定")
-    private val cameraFacingOptions = listOf("前面", "背面")
-    private val clientIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -69,10 +67,6 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         fpsSelection.spinner.setItems(fpsOptions)
         resolutionChangeSelection.name.text = "解像度の変更"
         resolutionChangeSelection.spinner.setItems(resolutionChangeOptions)
-        cameraFacingSelection.name.text = "カメラ"
-        cameraFacingSelection.spinner.setItems(cameraFacingOptions)
-        clientIdSelection.name.text = "クライアント ID"
-        clientIdSelection.spinner.setItems(clientIdOptions)
     }
 
     private fun startVideoChat() {
@@ -94,8 +88,6 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val videoSize = selectedItem(videoSizeSelection.spinner)
         val fps = selectedItem(fpsSelection.spinner)
         val resolutionChange = selectedItem(resolutionChangeSelection.spinner)
-        val cameraFacing = selectedItem(cameraFacingSelection.spinner)
-        val clientId = selectedItem(clientIdSelection.spinner)
 
         val intent = Intent(this, VideoChatRoomActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
@@ -111,8 +103,6 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("VIDEO_SIZE", videoSize)
         intent.putExtra("FPS", fps)
         intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
-        intent.putExtra("CAMERA_FACING", cameraFacing)
-        intent.putExtra("CLIENT_ID", clientId)
 
         startActivity(intent)
     }
