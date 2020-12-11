@@ -2,6 +2,7 @@ package jp.shiguredo.sora.sample.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import jp.shiguredo.sora.sample.R
 import kotlinx.android.synthetic.main.activity_video_chat_room_setup.*
 import kotlinx.android.synthetic.main.signaling_selection.view.*
 
@@ -27,32 +28,69 @@ open class SampleAppSetupActivity: AppCompatActivity() {
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("可変", "固定")
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        videoEnabledSelection.name.text = "映像の有無"
-        videoEnabledSelection.spinner.setItems(videoEnabledOptions)
-        videoCodecSelection.name.text = "映像コーデック"
-        videoCodecSelection.spinner.setItems(videoCodecOptions)
-        audioEnabledSelection.name.text = "音声の有無"
-        audioEnabledSelection.spinner.setItems(audioEnabledOptions)
-        audioCodecSelection.name.text = "音声コーデック"
-        audioCodecSelection.spinner.setItems(audioCodecOptions)
-        audioBitRateSelection.name.text = "音声ビットレート"
-        audioBitRateSelection.spinner.setItems(audioBitRateOptions)
-        audioStereoSelection.name.text = "ステレオ音声"
-        audioStereoSelection.spinner.setItems(audioStereoOptions)
-        roleSelection.name.text = "ロール"
-        roleSelection.spinner.setItems(roleOptions)
-        multistreamSelection.name.text = "マルチストリーム"
-        multistreamSelection.spinner.setItems(multistreamOptions)
-        videoBitRateSelection.name.text = "映像ビットレート"
-        videoBitRateSelection.spinner.setItems(videoBitRateOptions)
-        videoSizeSelection.name.text = "映像サイズ"
-        videoSizeSelection.spinner.setItems(videoSizeOptions)
-        fpsSelection.name.text = "フレームレート"
-        fpsSelection.spinner.setItems(fpsOptions)
-        resolutionChangeSelection.name.text = "解像度の変更"
-        resolutionChangeSelection.spinner.setItems(resolutionChangeOptions)
+    override fun setContentView(layoutResID: Int) {
+        super.setContentView(layoutResID)
+
+        if (videoEnabledSelection != null) {
+            videoEnabledSelection.name.text = "映像の有無"
+            videoEnabledSelection.spinner.setItems(videoEnabledOptions)
+        }
+
+        // TODO: 以下 null チェック
+        if (videoCodecSelection != null) {
+            videoCodecSelection.name.text = "映像コーデック"
+            videoCodecSelection.spinner.setItems(videoCodecOptions)
+        }
+
+        if (audioEnabledSelection != null) {
+            audioEnabledSelection.name.text = "音声の有無"
+            audioEnabledSelection.spinner.setItems(audioEnabledOptions)
+        }
+
+        if (audioCodecSelection != null) {
+            audioCodecSelection.name.text = "音声コーデック"
+            audioCodecSelection.spinner.setItems(audioCodecOptions)
+        }
+
+        if (audioBitRateSelection != null) {
+            audioBitRateSelection.name.text = "音声ビットレート"
+            audioBitRateSelection.spinner.setItems(audioBitRateOptions)
+        }
+
+        if (audioStereoSelection != null) {
+            audioStereoSelection.name.text = "ステレオ音声"
+            audioStereoSelection.spinner.setItems(audioStereoOptions)
+        }
+
+        if (roleSelection != null) {
+            roleSelection.name.text = "ロール"
+            roleSelection.spinner.setItems(roleOptions)
+        }
+
+        if (multistreamSelection != null) {
+            multistreamSelection.name.text = "マルチストリーム"
+            multistreamSelection.spinner.setItems(multistreamOptions)
+        }
+
+        if (videoBitRateSelection != null) {
+            videoBitRateSelection.name.text = "映像ビットレート"
+            videoBitRateSelection.spinner.setItems(videoBitRateOptions)
+        }
+
+        if (videoSizeSelection != null) {
+            videoSizeSelection.name.text = "映像サイズ"
+            videoSizeSelection.spinner.setItems(videoSizeOptions)
+        }
+
+       if (fpsSelection != null) {
+           fpsSelection.name.text = "フレームレート"
+           fpsSelection.spinner.setItems(fpsOptions)
+       }
+
+        if (resolutionChangeSelection != null) {
+            resolutionChangeSelection.name.text = "解像度の変更"
+            resolutionChangeSelection.spinner.setItems(resolutionChangeOptions)
+        }
     }
 
 }
