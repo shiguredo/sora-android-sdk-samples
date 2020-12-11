@@ -19,9 +19,7 @@ class VideoChannel(
         private val handler: Handler,
         private val configuration: Configuration,
         private val fixedResolution: Boolean = false,
-        private val clientId:                String? = null,
         private val cameraFacing: Boolean = true,
-        private val needLocalRenderer: Boolean = true,
         /*
         private val signalingEndpoint:       String,
         private val channelId:               String,
@@ -55,8 +53,8 @@ class VideoChannel(
         private val TAG = VideoChannel::class.simpleName
     }
 
-    // TODO: configuration.videoRendererContext.eglBase
-    private var egl: EglBase? = EglBase.create()
+    private val egl: EglBase?
+        get() = configuration.videoCapturerVideoRenderingContext?.eglBase
 
     interface Listener {
         fun onConnect(channel: VideoChannel) {}
@@ -367,8 +365,6 @@ class VideoChannel(
 
     fun dispose() {
         disconnect()
-        egl?.release()
-        egl = null
         listener = null
     }
 }

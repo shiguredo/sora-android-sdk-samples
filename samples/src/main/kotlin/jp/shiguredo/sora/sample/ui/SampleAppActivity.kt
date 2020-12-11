@@ -10,15 +10,6 @@ import java.util.*
 
 open class SampleAppActivity: AppCompatActivity() {
 
-    val clientId: String?
-        get() = when (intent.getStringExtra("CLIENT_ID")) {
-            "なし"        -> null
-            "端末情報" -> Build.MODEL
-            "時雨堂"      -> "🍖時雨堂🍗"
-            "ランダム" -> UUID.randomUUID().toString()
-            else -> null
-        }
-
     val channelName: String
         get() = intent.getStringExtra("CHANNEL_NAME") ?: getString(R.string.channelId) ?: ""
 

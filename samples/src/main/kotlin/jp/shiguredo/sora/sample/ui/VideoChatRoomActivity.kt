@@ -170,9 +170,7 @@ class VideoChatRoomActivity : SampleAppActivity() {
                 },
                 fixedResolution   = fixedResolution,
                 cameraFacing      = cameraFacing,
-                clientId          = clientId,
                 listener          = channelListener,
-                needLocalRenderer = true
         )
         channel!!.connect()
     }

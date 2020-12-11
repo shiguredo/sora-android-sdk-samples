@@ -1,8 +1,9 @@
 package jp.shiguredo.sora.sample.ui
 
-import android.os.Bundle
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import jp.shiguredo.sora.sample.R
+import com.google.android.material.snackbar.Snackbar
+import com.jaredrummler.materialspinner.MaterialSpinner
 import kotlinx.android.synthetic.main.activity_video_chat_room_setup.*
 import kotlinx.android.synthetic.main.signaling_selection.view.*
 
@@ -36,7 +37,6 @@ open class SampleAppSetupActivity: AppCompatActivity() {
             videoEnabledSelection.spinner.setItems(videoEnabledOptions)
         }
 
-        // TODO: 以下 null チェック
         if (videoCodecSelection != null) {
             videoCodecSelection.name.text = "映像コーデック"
             videoCodecSelection.spinner.setItems(videoCodecOptions)
@@ -91,6 +91,56 @@ open class SampleAppSetupActivity: AppCompatActivity() {
             resolutionChangeSelection.name.text = "解像度の変更"
             resolutionChangeSelection.spinner.setItems(resolutionChangeOptions)
         }
+    }
+
+    internal fun <T> createIntent(klass: Class<T>): Intent? {
+        val channelName = channelNameInput.text.toString()
+        if (channelName.isEmpty()) {
+            showInputError()
+            return null
+        }
+
+        val role = selectedItem(roleSelection.spinner)
+        val multistream = selectedItem(multistreamSelection.spinner)
+        val videoCodec = selectedItem(videoCodecSelection.spinner)
+        val videoEnabled = selectedItem(videoEnabledSelection.spinner)
+        val audioCodec = selectedItem(audioCodecSelection.spinner)
+        val audioEnabled = selectedItem(audioEnabledSelection.spinner)
+        val audioBitRate = selectedItem(audioBitRateSelection.spinner)
+        val audioStereo = selectedItem(audioStereoSelection.spinner)
+        val videoBitRate = selectedItem(videoBitRateSelection.spinner)
+        val videoSize = selectedItem(videoSizeSelection.spinner)
+        val fps = selectedItem(fpsSelection.spinner)
+        val resolutionChange = selectedItem(resolutionChangeSelection.spinner)
+
+        val intent = Intent(this, klass)
+        intent.putExtra("CHANNEL_NAME", channelName)
+        intent.putExtra("ROLE", role)
+        intent.putExtra("MULTISTREAM", multistream)
+        intent.putExtra("VIDEO_CODEC", videoCodec)
+        intent.putExtra("VIDEO_ENABLED", videoEnabled)
+        intent.putExtra("AUDIO_CODEC", audioCodec)
+        intent.putExtra("AUDIO_ENABLED", audioEnabled)
+        intent.putExtra("AUDIO_BIT_RATE", audioBitRate)
+        intent.putExtra("AUDIO_STEREO", audioStereo)
+        intent.putExtra("VIDEO_BIT_RATE", videoBitRate)
+        intent.putExtra("VIDEO_SIZE", videoSize)
+        intent.putExtra("FPS", fps)
+        intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
+
+        return intent
+    }
+
+    private fun selectedItem(spinner: MaterialSpinner): String {
+        return spinner.getItems<String>()[spinner.selectedIndex]
+    }
+
+    private fun showInputError() {
+        Snackbar.make(rootLayout,
+                "チャネル名 を適切に入力してください",
+                Snackbar.LENGTH_LONG)
+                .setAction("OK") { }
+                .show()
     }
 
 }
