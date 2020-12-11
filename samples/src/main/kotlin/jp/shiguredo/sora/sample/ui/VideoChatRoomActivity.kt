@@ -25,7 +25,14 @@ import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import jp.shiguredo.sora.sdk2.*
+import kotlinx.android.synthetic.main.activity_simulcast.*
 import kotlinx.android.synthetic.main.activity_video_chat_room.*
+import kotlinx.android.synthetic.main.activity_video_chat_room.channelNameText
+import kotlinx.android.synthetic.main.activity_video_chat_room.closeButton
+import kotlinx.android.synthetic.main.activity_video_chat_room.localRendererContainer
+import kotlinx.android.synthetic.main.activity_video_chat_room.rendererContainer
+import kotlinx.android.synthetic.main.activity_video_chat_room.switchCameraButton
+import kotlinx.android.synthetic.main.activity_video_chat_room.toggleMuteButton
 import org.webrtc.SurfaceViewRenderer
 import java.util.*
 
@@ -151,28 +158,35 @@ class VideoChatRoomActivity : SampleAppActivity() {
     private fun connectChannel() {
         Log.d(TAG, "openChannel")
 
-        channel = VideoChannel(
-                context           = this,
-                handler           = Handler(Looper.myLooper()!!),
-                configuration = Configuration(this,
-                        BuildConfig.SIGNALING_ENDPOINT, channelName, role).also {
-                    it.multistreamEnabled = multistreamEnabled
-                    it.videoCodec = videoCodec
-                    it.videoBitRate = videoBitRate
-                    it.videoFps = videoFps
-                    it.videoFrameSize = videoFrameSize
-                    it.audioEnabled = audioEnabled
-                    it.audioCodec = audioCodec
-                    it.audioBitRate = audioBitRate
-                    it.inputAudioSound = audioSound
-                    it.spotlightEnabled = spotlight != 0
-                    it.activeSpeakerLimit = spotlight
-                },
-                fixedResolution   = fixedResolution,
-                cameraFacing      = cameraFacing,
-                listener          = channelListener,
-        )
-        channel!!.connect()
+        val configuration = Configuration(this,
+                BuildConfig.SIGNALING_ENDPOINT, channelName, role).also {
+            it.multistreamEnabled = multistreamEnabled
+            it.videoCodec = videoCodec
+            it.videoBitRate = videoBitRate
+            it.videoFps = videoFps
+            it.videoFrameSize = videoFrameSize
+            it.audioEnabled = audioEnabled
+            it.audioCodec = audioCodec
+            it.audioBitRate = audioBitRate
+            it.inputAudioSound = audioSound
+            it.spotlightEnabled = spotlight != 0
+            it.activeSpeakerLimit = spotlight
+        }
+
+        Sora.connect(configuration) { result ->
+            result
+                    .onFailure {
+                        Log.d(TAG, "connection failed => $it")
+                    }.onSuccess {
+                        Log.d(TAG, "connected")
+                        this.mediaChannel = it
+                        // TODO: local renderer
+                        it.streams.firstOrNull()?.videoRenderer = localRendererContainer
+                    }
+        }
+
+
+
     }
 
     private fun disconnectChannel() {
@@ -227,10 +241,13 @@ class VideoChatRoomActivityUI(
     }
 
     internal fun addLocalRenderer(renderer: SurfaceViewRenderer) {
+        /*
         renderer.layoutParams =
                 FrameLayout.LayoutParams(dp2px(100), dp2px(100))
         activity.localRendererContainer.addView(renderer)
         renderer.setMirror(true)
+
+         */
     }
 
     internal fun addRenderer(renderer: SurfaceViewRenderer) {

@@ -121,4 +121,6 @@ open class SampleAppActivity: AppCompatActivity() {
         }
     }
 
+    var mediaChannel: MediaChannel? = null
+
 }
