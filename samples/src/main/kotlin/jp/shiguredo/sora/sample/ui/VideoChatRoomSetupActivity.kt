@@ -15,16 +15,7 @@ class VideoChatRoomSetupActivity : SampleAppSetupActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_video_chat_room_setup)
-
-        start.setOnClickListener { startVideoChat() }
-    }
-
-    private fun startVideoChat() {
-        val intent = createIntent(VideoChatRoomActivity::class.java)
-        if (intent != null) {
-            startActivity(intent)
-        }
+        setContentView(R.layout.activity_video_chat_room_setup, VideoChatRoomActivity::class.java)
     }
 
 }

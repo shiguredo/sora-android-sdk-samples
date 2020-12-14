@@ -29,6 +29,17 @@ open class SampleAppSetupActivity: AppCompatActivity() {
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("可変", "固定")
 
+    internal fun <T> setContentView(layoutResID: Int, intentClass: Class<T>) {
+        setContentView(layoutResID)
+
+        start.setOnClickListener {
+            val intent = createIntent(VideoChatRoomActivity::class.java)
+            if (intent != null) {
+                startActivity(intent)
+            }
+        }
+    }
+
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
 
