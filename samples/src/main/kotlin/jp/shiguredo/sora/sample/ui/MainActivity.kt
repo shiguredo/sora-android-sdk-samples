@@ -2,7 +2,9 @@ package jp.shiguredo.sora.sample.ui
 
 import android.Manifest
 import android.annotation.TargetApi
+import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AlertDialog
@@ -52,6 +54,10 @@ class MainActivity : AppCompatActivity() {
         featureList.setHasFixedSize(true)
         featureList.layoutManager = llm
         featureList.adapter = adapter
+
+        val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        Log.d(TAG, "audio mode => ${audioManager.mode}")
+
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
