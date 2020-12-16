@@ -276,8 +276,7 @@ open class SampleAppActivity: AppCompatActivity() {
             ui?.showUnmuteButton()
         }
         muted = !muted
-
-        // TODO: mute track
+        mediaChannel?.senderStream?.isMuted = muted
     }
 
 }
