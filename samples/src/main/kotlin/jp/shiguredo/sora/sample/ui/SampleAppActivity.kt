@@ -17,8 +17,11 @@ import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.camera.CameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.camera.DefaultCameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.facade.VideoChannel
+import jp.shiguredo.sora.sample.ui.VideoChatActivityUI
+import jp.shiguredo.sora.sdk.util.SoraLogger
 import jp.shiguredo.sora.sdk2.*
 import kotlinx.android.synthetic.main.activity_video_chat_room.*
+import org.webrtc.CameraVideoCapturer
 
 open class SampleAppActivity: AppCompatActivity() {
 
@@ -202,10 +205,6 @@ open class SampleAppActivity: AppCompatActivity() {
         close()
     }
 
-    fun createCapturerFactory(): CameraVideoCapturerFactory {
-        return DefaultCameraVideoCapturerFactory(this, fixedResolution, cameraFacing)
-    }
-
     internal fun close() {
         Log.d(TAG, "close")
         disconnect()
@@ -248,8 +247,22 @@ open class SampleAppActivity: AppCompatActivity() {
         mediaChannel?.disconnect()
     }
 
-    internal fun switchCamera() {
-        //channel?.switchCamera()
+    private val cameraSwitchHandler = object : CameraVideoCapturer.CameraSwitchHandler {
+
+        override fun onCameraSwitchDone(isFront: Boolean) {
+            Log.d(TAG, "camera switched.")
+        }
+
+        override fun onCameraSwitchError(msg: String?) {
+            Log.w(TAG, "failed to switch camera ${msg}")
+        }
+    }
+
+    fun switchCamera() {
+        Log.d(TAG, "switch camera => ${mediaChannel}, ${mediaChannel?.videoCapturer}")
+        mediaChannel?.videoCapturer?.let {
+            (it as? CameraVideoCapturer)?.switchCamera(cameraSwitchHandler)
+        }
     }
 
     internal var ui: VideoChatActivityUI? = null
