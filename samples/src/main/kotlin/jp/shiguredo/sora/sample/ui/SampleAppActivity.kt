@@ -14,11 +14,6 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
-import jp.shiguredo.sora.sample.camera.CameraVideoCapturerFactory
-import jp.shiguredo.sora.sample.camera.DefaultCameraVideoCapturerFactory
-import jp.shiguredo.sora.sample.facade.VideoChannel
-import jp.shiguredo.sora.sample.ui.VideoChatActivityUI
-import jp.shiguredo.sora.sdk.util.SoraLogger
 import jp.shiguredo.sora.sdk2.*
 import kotlinx.android.synthetic.main.activity_video_chat_room.*
 import org.webrtc.CameraVideoCapturer
@@ -74,11 +69,14 @@ open class SampleAppActivity: AppCompatActivity() {
                 else -> VideoFrameSize.VGA.portrate
             }
 
-    val videoEnabled: Boolean
+    var videoEnabled: Boolean
         get() = when (intent.getStringExtra("VIDEO_ENABLED")) {
             "有効" -> true
             "無効" -> false
             else -> true
+        }
+        set(value) {
+            intent.putExtra("VIDEO_ENABLED", value)
         }
 
     val videoCodec: VideoCodec
@@ -157,16 +155,19 @@ open class SampleAppActivity: AppCompatActivity() {
         setupWindow()
         setRequestedOrientation()
 
-        ui = VideoChatActivityUI(
-                activity        = this,
-                layout = R.layout.activity_video_chat_room,
-                channelName     = channelName,
-                resources       = resources,
-                videoViewWidth  = 100,
-                videoViewHeight = 100,
-                videoViewMargin = 10,
-                density         = this.resources.displayMetrics.density
-        )
+        if (videoEnabled) {
+            ui = VideoChatActivityUI(
+                    activity = this,
+                    layout = R.layout.activity_video_chat_room,
+                    channelName = channelName,
+                    resources = resources,
+                    videoViewWidth = 100,
+                    videoViewHeight = 100,
+                    videoViewMargin = 10,
+                    density = this.resources.displayMetrics.density)
+        } else {
+            setContentView(R.layout.activity_voice_chat_room)
+        }
 
         connect()
     }
@@ -211,6 +212,8 @@ open class SampleAppActivity: AppCompatActivity() {
         finish()
     }
 
+    open fun onConnectionConfiguration(configuration: jp.shiguredo.sora.sdk2.Configuration) {}
+
     internal fun connect() {
         Log.d(TAG, "connect")
 
@@ -228,6 +231,7 @@ open class SampleAppActivity: AppCompatActivity() {
             it.spotlightEnabled = spotlight != 0
             it.activeSpeakerLimit = spotlight
         }
+        onConnectionConfiguration(configuration)
 
         Sora.connect(configuration) { result ->
             result

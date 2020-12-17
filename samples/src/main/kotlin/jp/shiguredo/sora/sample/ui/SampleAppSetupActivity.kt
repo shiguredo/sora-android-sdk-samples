@@ -1,6 +1,7 @@
 package jp.shiguredo.sora.sample.ui
 
 import android.content.Intent
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.materialspinner.MaterialSpinner
@@ -8,6 +9,10 @@ import kotlinx.android.synthetic.main.activity_video_chat_room_setup.*
 import kotlinx.android.synthetic.main.signaling_selection.view.*
 
 open class SampleAppSetupActivity: AppCompatActivity() {
+
+    companion object {
+        val TAG = SampleAppSetupActivity::class.simpleName
+    }
 
     private val videoCodecOptions = listOf("VP9", "VP8", "H264")
     private val videoEnabledOptions = listOf("有効", "無効")
@@ -33,7 +38,7 @@ open class SampleAppSetupActivity: AppCompatActivity() {
         setContentView(layoutResID)
 
         start.setOnClickListener {
-            val intent = createIntent(VideoChatRoomActivity::class.java)
+            val intent = createIntent(intentClass)
             if (intent != null) {
                 startActivity(intent)
             }
@@ -113,16 +118,16 @@ open class SampleAppSetupActivity: AppCompatActivity() {
 
         val role = selectedItem(roleSelection.spinner)
         val multistream = selectedItem(multistreamSelection.spinner)
-        val videoCodec = selectedItem(videoCodecSelection.spinner)
-        val videoEnabled = selectedItem(videoEnabledSelection.spinner)
-        val audioCodec = selectedItem(audioCodecSelection.spinner)
-        val audioEnabled = selectedItem(audioEnabledSelection.spinner)
-        val audioBitRate = selectedItem(audioBitRateSelection.spinner)
-        val audioStereo = selectedItem(audioStereoSelection.spinner)
-        val videoBitRate = selectedItem(videoBitRateSelection.spinner)
-        val videoSize = selectedItem(videoSizeSelection.spinner)
-        val fps = selectedItem(fpsSelection.spinner)
-        val resolutionChange = selectedItem(resolutionChangeSelection.spinner)
+        val videoCodec = videoCodecSelection?.run { selectedItem(spinner) }
+        val videoEnabled = videoEnabledSelection?.run { selectedItem(spinner) }
+        val audioCodec = audioCodecSelection?.run { selectedItem(spinner) }
+        val audioEnabled = audioEnabledSelection?.run { selectedItem(spinner) }
+        val audioBitRate = audioBitRateSelection?.run { selectedItem(spinner) }
+        val audioStereo = audioStereoSelection?.run { selectedItem(spinner) }
+        val videoBitRate = videoBitRateSelection?.run { selectedItem(spinner) }
+        val videoSize = videoSizeSelection?.run { selectedItem(spinner) }
+        val fps = fpsSelection?.run { selectedItem(spinner) }
+        val resolutionChange = resolutionChangeSelection?.run { selectedItem(spinner) }
 
         val intent = Intent(this, klass)
         intent.putExtra("CHANNEL_NAME", channelName)
