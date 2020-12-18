@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.materialspinner.MaterialSpinner
-import kotlinx.android.synthetic.main.activity_video_chat_room_setup.*
+import kotlinx.android.synthetic.main.activity_sample_app_setup.*
 import kotlinx.android.synthetic.main.signaling_selection.view.*
 
 open class SampleAppSetupActivity: AppCompatActivity() {
@@ -33,6 +33,7 @@ open class SampleAppSetupActivity: AppCompatActivity() {
             "Res3840x1920", "UHD3840x2160")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("可変", "固定")
+    private val activeSpeakerLimitOptions = listOf("1", "2", "3", "4", "5")
 
     internal fun <T> setContentView(layoutResID: Int, intentClass: Class<T>) {
         setContentView(layoutResID)
@@ -106,6 +107,12 @@ open class SampleAppSetupActivity: AppCompatActivity() {
         if (resolutionChangeSelection != null) {
             resolutionChangeSelection.name.text = "解像度の変更"
             resolutionChangeSelection.spinner.setItems(resolutionChangeOptions)
+        }
+
+        if (activeSpeakerLimitSelection != null) {
+            activeSpeakerLimitSelection.name.text = "アクティブ配信数"
+            activeSpeakerLimitSelection.spinner.setItems(activeSpeakerLimitOptions)
+            activeSpeakerLimitSelection.spinner.selectedIndex = 1
         }
     }
 

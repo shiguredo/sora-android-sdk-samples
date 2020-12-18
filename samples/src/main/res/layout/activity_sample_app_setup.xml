@@ -54,16 +54,13 @@
                     android:id="@+id/activeSpeakerLimitSelection"/>
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/videoCodecSelection"/>
-                <include
-                    layout="@layout/signaling_selection"
                     android:id="@+id/videoEnabledSelection"/>
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/audioCodecSelection"/>
+                    android:id="@+id/audioEnabledSelection"/>
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/audioEnabledSelection"/>
+                    android:id="@+id/videoCodecSelection"/>
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/videoBitRateSelection"/>
@@ -75,7 +72,16 @@
                     android:id="@+id/fpsSelection"/>
                 <include
                     layout="@layout/signaling_selection"
+                    android:id="@+id/resolutionChangeSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/audioCodecSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
                     android:id="@+id/audioBitRateSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/audioStereoSelection"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
