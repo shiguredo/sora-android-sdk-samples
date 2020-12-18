@@ -220,6 +220,7 @@ open class SampleAppActivity: AppCompatActivity() {
         val configuration = Configuration(this,
                 BuildConfig.SIGNALING_ENDPOINT, channelName, role).also {
             it.multistreamEnabled = multistreamEnabled
+            it.videoEnabled = videoEnabled
             it.videoCodec = videoCodec
             it.videoBitRate = videoBitRate
             it.videoFps = videoFps
