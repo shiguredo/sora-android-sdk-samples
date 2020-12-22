@@ -82,6 +82,9 @@
             android:name=".ui.VoiceChatRoomActivity"
             android:label="ボイスチャット"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.SpotlightRoomActivity"
+            android:label="スポットライト" />
         <service
             android:name=".screencast.SoraScreencastService"
             android:enabled="true" />
