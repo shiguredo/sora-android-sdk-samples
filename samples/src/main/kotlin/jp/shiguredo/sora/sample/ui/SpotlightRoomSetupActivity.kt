@@ -10,12 +10,15 @@ class SpotlightRoomSetupActivity : SampleAppSetupActivity() {
         private val TAG = SpotlightRoomSetupActivity::class.simpleName
     }
 
+    init {
+        videoCodecOptions = listOf("VP8", "H264")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_spotlight_room_setup, VideoChatRoomActivity::class.java)
+        setContentView(R.layout.activity_spotlight_room_setup, SpotlightRoomActivity::class.java)
     }
 
 }

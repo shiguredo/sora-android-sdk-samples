@@ -14,7 +14,7 @@ open class SampleAppSetupActivity: AppCompatActivity() {
         val TAG = SampleAppSetupActivity::class.simpleName
     }
 
-    private val videoCodecOptions = listOf("VP9", "VP8", "H264")
+    internal var videoCodecOptions = listOf("VP9", "VP8", "H264")
     private val videoEnabledOptions = listOf("有効", "無効")
     private val audioCodecOptions = listOf("OPUS", "PCMU")
     private val audioEnabledOptions = listOf("有効", "無効")
