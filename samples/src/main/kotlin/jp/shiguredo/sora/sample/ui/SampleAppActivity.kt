@@ -45,8 +45,8 @@ open class SampleAppActivity: AppCompatActivity() {
             else -> false
         }
 
-    val spotlight: Int
-        get() = intent.getIntExtra("SPOTLIGHT", 0)
+    val activeSpeakerLimit: Int
+        get() = intent.getStringExtra("SPOTLIGHT")?.toInt() ?: 3
 
     val videoFrameSize: VideoFrameSize
         get() =
@@ -229,8 +229,8 @@ open class SampleAppActivity: AppCompatActivity() {
             it.audioCodec = audioCodec
             it.audioBitRate = audioBitRate
             it.inputAudioSound = audioSound
-            it.spotlightEnabled = spotlight != 0
-            it.activeSpeakerLimit = spotlight
+            it.spotlightEnabled = activeSpeakerLimit != 0
+            it.activeSpeakerLimit = activeSpeakerLimit
         }
         onConnectionConfiguration(configuration)
 

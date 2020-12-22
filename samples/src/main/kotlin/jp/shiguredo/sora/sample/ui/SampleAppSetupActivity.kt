@@ -135,6 +135,7 @@ open class SampleAppSetupActivity: AppCompatActivity() {
         val videoSize = videoSizeSelection?.run { selectedItem(spinner) }
         val fps = fpsSelection?.run { selectedItem(spinner) }
         val resolutionChange = resolutionChangeSelection?.run { selectedItem(spinner) }
+        val activeSpeakerLimit = activeSpeakerLimitSelection?.run { selectedItem(spinner) }
 
         val intent = Intent(this, klass)
         intent.putExtra("CHANNEL_NAME", channelName)
@@ -150,6 +151,7 @@ open class SampleAppSetupActivity: AppCompatActivity() {
         intent.putExtra("VIDEO_SIZE", videoSize)
         intent.putExtra("FPS", fps)
         intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
+        intent.putExtra("SPOTLIGHT", activeSpeakerLimit)
 
         return intent
     }
