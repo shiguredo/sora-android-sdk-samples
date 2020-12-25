@@ -156,20 +156,24 @@ open class SampleAppActivity: AppCompatActivity() {
         setRequestedOrientation()
 
         if (videoEnabled) {
-            ui = VideoChatActivityUI(
-                    activity = this,
-                    layout = R.layout.activity_video_chat_room,
-                    channelName = channelName,
-                    resources = resources,
-                    videoViewWidth = 100,
-                    videoViewHeight = 100,
-                    videoViewMargin = 10,
-                    density = this.resources.displayMetrics.density)
+            ui = createUI()
         } else {
             setContentView(R.layout.activity_voice_chat_room)
         }
 
         connect()
+    }
+
+    internal open fun createUI(): VideoChatActivityUI {
+        return VideoChatActivityUI(
+                activity = this,
+                layout = R.layout.activity_video_chat_room,
+                channelName = channelName,
+                resources = resources,
+                videoViewWidth = 100,
+                videoViewHeight = 100,
+                videoViewMargin = 10,
+                density = this.resources.displayMetrics.density)
     }
 
     internal fun setupWindow() {

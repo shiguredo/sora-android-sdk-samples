@@ -49,22 +49,22 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/lowQualityButton"
+                android:id="@+id/r0Button"
                 android:layout_width="120dp"
                 android:layout_height="50dp"
-                android:text="Low" />
+                android:text="r0" />
 
             <Button
-                android:id="@+id/middleQualityButton"
+                android:id="@+id/r1Button"
                 android:layout_width="120dp"
                 android:layout_height="50dp"
-                android:text="Middle" />
+                android:text="r1" />
 
             <Button
-                android:id="@+id/highQualityButton"
+                android:id="@+id/r2Button"
                 android:layout_width="120dp"
                 android:layout_height="50dp"
-                android:text="High" />
+                android:text="r2" />
         </LinearLayout>
 
     </RelativeLayout>
