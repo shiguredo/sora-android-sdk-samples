@@ -5,6 +5,7 @@ import android.util.Log
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sdk.channel.signaling.message.SimulcastRid
+import jp.shiguredo.sora.sdk2.Configuration
 import kotlinx.android.synthetic.main.activity_simulcast.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -26,6 +27,10 @@ class SimulcastActivity: SampleAppActivity() {
         r0Button.setOnClickListener { changeRid(SimulcastRid.R0) }
         r1Button.setOnClickListener { changeRid(SimulcastRid.R1) }
         r2Button.setOnClickListener { changeRid(SimulcastRid.R2) }
+    }
+
+    override fun onConnectionConfiguration(configuration: Configuration) {
+        configuration.simulcastEnabled = true
     }
 
     override fun createUI(): VideoChatActivityUI {
