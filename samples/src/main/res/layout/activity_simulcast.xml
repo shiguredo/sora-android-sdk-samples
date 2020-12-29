@@ -75,7 +75,7 @@
         android:background="#C8000000"
         android:padding="10dp">
 
-        <FrameLayout
+        <jp.shiguredo.sora.sdk2.VideoView
             android:id="@+id/localRendererContainer"
             android:background="@android:color/darker_gray"
             android:layout_width="80dp"
