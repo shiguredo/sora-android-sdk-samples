@@ -2,6 +2,7 @@ package jp.shiguredo.sora.sample.ui
 
 import android.content.res.Resources
 import android.graphics.Color
+import android.util.Log
 import android.widget.RelativeLayout
 import androidx.core.content.res.ResourcesCompat
 import jp.shiguredo.sora.sample.R
@@ -21,9 +22,13 @@ class VideoChatActivityUI(
         val density:         Float
 ) {
 
+    companion object {
+        private val TAG = VideoChatActivityUI::class.simpleName
+    }
     private val renderersLayoutCalculator: RendererLayoutCalculator
 
     init {
+        Log.d(TAG, "init")
         activity.setContentView(layout)
         activity.channelNameText.text = channelName
         this.renderersLayoutCalculator = RendererLayoutCalculator(
