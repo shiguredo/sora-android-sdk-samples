@@ -23,6 +23,7 @@ class SimulcastSetupActivity : SampleAppSetupActivity() {
 
         setContentView(R.layout.activity_simulcast_setup, SimulcastActivity::class.java)
         videoBitRateSelection.spinner.selectedIndex = 6
+        videoSizeSelection.spinner.selectedIndex = 6
     }
 
 }
