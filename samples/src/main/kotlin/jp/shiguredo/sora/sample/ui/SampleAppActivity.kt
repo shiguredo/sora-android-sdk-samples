@@ -233,7 +233,6 @@ open class SampleAppActivity: AppCompatActivity() {
             it.audioCodec = audioCodec
             it.audioBitRate = audioBitRate
             it.inputAudioSound = audioSound
-            it.spotlightEnabled = activeSpeakerLimit != 0
             it.activeSpeakerLimit = activeSpeakerLimit
         }
         onConnectionConfiguration(configuration)
