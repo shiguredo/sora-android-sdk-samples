@@ -25,6 +25,13 @@ class VideoChatActivityUI(
     companion object {
         private val TAG = VideoChatActivityUI::class.simpleName
     }
+
+    enum class State(val colorCode: String) {
+        CONNECTED("#00C853"),
+        DISCONNECTED("#37474F"),
+        ERROR("#DD2C00")
+    }
+
     private val renderersLayoutCalculator: RendererLayoutCalculator
 
     init {
@@ -40,8 +47,12 @@ class VideoChatActivityUI(
         activity.closeButton.setOnClickListener { activity.close() }
     }
 
-    internal fun changeState(colorCode: String) {
-        activity.channelNameText.setBackgroundColor(Color.parseColor(colorCode))
+    var state: State = State.DISCONNECTED
+        set(value) {
+            Log.d(TAG, "change state => $value")
+            field = value
+            activity.channelNameText.setBackgroundColor(Color.parseColor(value.colorCode))
+        }
     }
 
     internal fun addLocalRenderer(renderer: SurfaceViewRenderer) {
