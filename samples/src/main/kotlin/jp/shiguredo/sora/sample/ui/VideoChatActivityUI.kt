@@ -8,6 +8,7 @@ import androidx.core.content.res.ResourcesCompat
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.ui.util.RendererLayoutCalculator
 import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
+import jp.shiguredo.sora.sdk2.VideoView
 import kotlinx.android.synthetic.main.activity_video_chat_room.*
 import org.webrtc.SurfaceViewRenderer
 
@@ -53,6 +54,19 @@ class VideoChatActivityUI(
             field = value
             activity.channelNameText.setBackgroundColor(Color.parseColor(value.colorCode))
         }
+
+   private val videoViews = HashMap<String, VideoView>()
+
+    fun addVideoView(videoView: VideoView, streamId: String) {
+        Log.d(TAG, "@addVideoView => $streamId")
+        videoViews[streamId] = videoView
+        videoView.layoutParams = rendererLayoutParams()
+        activity.rendererContainer.addView(videoView)
+        renderersLayoutCalculator.add(videoView)
+    }
+
+    fun removeVideoView(streamId: String) {
+        videoViews.remove(streamId)
     }
 
     internal fun addLocalRenderer(renderer: SurfaceViewRenderer) {

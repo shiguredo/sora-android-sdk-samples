@@ -8,6 +8,7 @@ import android.content.res.Configuration
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
@@ -23,6 +24,8 @@ open class SampleAppActivity: AppCompatActivity() {
     companion object {
         private val TAG = SampleAppActivity::class.simpleName
     }
+
+    private val handler = Handler()
 
     // 本アプリ外の音声モードです。
     // ユーザーが本アプリから別のアプリに切り替えたとき、音声モードはこの値に変更されます。
@@ -244,8 +247,42 @@ open class SampleAppActivity: AppCompatActivity() {
                     }.onSuccess {
                         Log.d(TAG, "connected")
                         this.mediaChannel = it
-                        // TODO: get sender stream
-                        it.streams.firstOrNull()?.videoRenderer = localRendererContainer
+
+                        it.onDisconnect {
+                            handler.post {
+                                ui?.state = VideoChatActivityUI.State.DISCONNECTED
+                            }
+                        }
+
+                        it.onFailure { error ->
+                            Log.d(TAG, "@onFailure => $error")
+                            handler.post {
+                                ui?.state = VideoChatActivityUI.State.ERROR
+                            }
+                        }
+
+                        it.onAddRemoteStream { stream ->
+                            Log.d(TAG, "@onAddRemoteStream=> ${stream.id}")
+                            handler.post {
+                                if (ui == null) {
+                                    return@post
+                                }
+                                val videoView = createVideoView() ?: return@post
+                                ui!!.addVideoView(videoView!!, stream.id)
+                            }
+                        }
+
+                        it.onRemoveRemoteStream { label ->
+                            Log.d(TAG, "@onRemoveRemoteStream=> $label")
+                            handler.post {
+                                ui?.removeVideoView(label)
+                            }
+                        }
+
+                        handler.post {
+                            it.senderStream?.videoRenderer = localRendererContainer
+                            ui?.state = VideoChatActivityUI.State.CONNECTED
+                        }
                     }
         }
     }
@@ -274,6 +311,15 @@ open class SampleAppActivity: AppCompatActivity() {
     }
 
     internal var ui: VideoChatActivityUI? = null
+
+    private fun createVideoView(): VideoView? {
+        if (mediaChannel == null) {
+            return null
+        }
+        val videoView = VideoView(this)
+        videoView.initialize(mediaChannel!!.configuration.sharedVideoRenderingContext)
+        return videoView
+    }
 
     internal var muted = false
 
