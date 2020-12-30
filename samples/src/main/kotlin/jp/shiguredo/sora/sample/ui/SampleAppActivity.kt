@@ -267,8 +267,9 @@ open class SampleAppActivity: AppCompatActivity() {
                                 if (ui == null) {
                                     return@post
                                 }
-                                val videoView = createVideoView() ?: return@post
-                                ui!!.addVideoView(videoView!!, stream.id)
+                                val videoView = VideoView(this)
+                                stream.videoRenderer = videoView
+                                ui!!.addVideoView(videoView, stream.id)
                             }
                         }
 
@@ -311,15 +312,6 @@ open class SampleAppActivity: AppCompatActivity() {
     }
 
     internal var ui: VideoChatActivityUI? = null
-
-    private fun createVideoView(): VideoView? {
-        if (mediaChannel == null) {
-            return null
-        }
-        val videoView = VideoView(this)
-        videoView.initialize(mediaChannel!!.configuration.sharedVideoRenderingContext)
-        return videoView
-    }
 
     internal var muted = false
 
