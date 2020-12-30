@@ -30,7 +30,7 @@ class VideoChannel(
     }
 
     private val egl: EglBase?
-        get() = configuration.videoCapturerVideoRenderingContext?.eglBase
+        get() = EglBase.create()
 
     interface Listener {
         fun onConnect(channel: VideoChannel) {}
