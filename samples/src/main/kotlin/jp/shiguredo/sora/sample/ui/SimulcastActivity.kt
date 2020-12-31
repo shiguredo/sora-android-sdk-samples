@@ -53,6 +53,7 @@ class SimulcastActivity: SampleAppActivity() {
 
        GlobalScope.launch {
             withContext(Dispatchers.IO) {
+                Log.d(TAG, "send request to change simulcast quality => $quality")
                 val host = URI(BuildConfig.SIGNALING_ENDPOINT).host
                 val url = URL("http://$host:3000")
                 val conn = url.openConnection() as HttpURLConnection
