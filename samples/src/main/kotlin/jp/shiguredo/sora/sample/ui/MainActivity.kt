@@ -34,14 +34,14 @@ class MainActivity : AppCompatActivity() {
                         description = "ビデオチャットのデモです。複数人でのグループチャットも可能です。"),
                 Feature(title = "ボイスチャット",
                         description = "ボイスチャットのデモです。複数人でのグループチャットも可能です。"),
+                Feature(title = "サイマルキャスト",
+                        description = "サイマルキャストのデモです。") ,
                 Feature(title = "スポットライト",
                         description = "スポットライトのデモです。アクティブ配信数を固定したチャットが可能です。"),
                 Feature(title = "スクリーンキャスト",
                         description = "スクリーンキャストのデモです。"),
                 Feature(title = "ビデオエフェクト",
-                        description = "エフェクト付きのビデオチャットのデモです"),
-                Feature(title = "サイマルキャスト",
-                        description = "サイマルキャストのデモです。")))
+                        description = "エフェクト付きのビデオチャットのデモです")))
 
         adapter.setOnItemClickListener(object: FeatureListAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
@@ -65,10 +65,10 @@ class MainActivity : AppCompatActivity() {
         when (position) {
             0 -> goToVideoRoomDemoWithPermissionCheck()
             1 -> goToVoiceRoomDemoWithPermissionCheck()
-            2 -> goToSpotlightWithPermissionCheck()
-            3 -> goToScreencastActivityWithPermissionCheck()
-            4 -> goToEffectedVideoRoomDemoWithPermissionCheck()
-            5 -> goToSimulcastWithPermissionCheck()
+            2 -> goToSimulcastWithPermissionCheck()
+            3 -> goToSpotlightWithPermissionCheck()
+            4 -> goToScreencastActivityWithPermissionCheck()
+            5 -> goToEffectedVideoRoomDemoWithPermissionCheck()
             else -> {
                 Log.w(TAG, "must not come here")
             }
