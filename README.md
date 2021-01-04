@@ -24,7 +24,7 @@ Sora Android SDK は [WebRTC SFU Sora](https://sora.shiguredo.jp) の Android �
 
 - Android 5.0 以降 (シミュレーターは不可)
 - Android Studio 2.3.3 以降
-- WebRTC SFU Sora ２０２０．３ 以降
+- WebRTC SFU Sora 2020.3 以降
 - Sora Android SDK 1.1.0 以降
 
 ## 参考リンク
