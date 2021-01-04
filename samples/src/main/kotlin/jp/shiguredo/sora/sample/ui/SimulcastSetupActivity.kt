@@ -25,8 +25,8 @@ class SimulcastSetupActivity : AppCompatActivity() {
     private val audioStereoOptions = listOf("モノラル", "ステレオ")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
     private val multistreamOptions = listOf("有効", "無効")
-    private val videoBitRateOptions = listOf("未指定", "100", "300", "500", "800", "1000", "1500",
-            "2000", "2500", "3000", "5000", "10000", "15000", "20000", "30000")
+    private val videoBitRateOptions = listOf("200", "500", "700", "1200", "2500", "4000", "5000", "10000", "15000", "20000", "30000")
+
     private val videoSizeOptions = listOf(
             // Portrait
             "VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD",
@@ -67,6 +67,9 @@ class SimulcastSetupActivity : AppCompatActivity() {
         fpsSelection.spinner.setItems(fpsOptions)
         resolutionChangeSelection.name.text = "解像度の変更"
         resolutionChangeSelection.spinner.setItems(resolutionChangeOptions)
+
+        videoBitRateSelection.spinner.selectedIndex = 6
+        videoSizeSelection.spinner.selectedIndex = 6
     }
 
     private fun startVideoChat() {
