@@ -126,7 +126,7 @@ class SoraVideoChannel(
             }
         }
 
-        override fun onAddLocalStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
+        override fun onAddLocalStream(mediaChannel: SoraMediaChannel, ms: MediaStream, videoSource: VideoSource?) {
             SoraLogger.d(TAG, "[video_channel] @onAddLocalStream")
 
             if (ms.audioTracks.size > 0) {
@@ -239,7 +239,11 @@ class SoraVideoChannel(
                 // hardware encoder では動かせていない、ソフトウェアを指定する
                 videoEncoderFactory = SoftwareVideoEncoderFactory()
             }
-            spotlight    = this@SoraVideoChannel.spotlight
+
+            if (this@SoraVideoChannel.spotlight > 0) {
+                enableSpotlight(this@SoraVideoChannel.spotlight)
+            }
+
             videoCodec   = this@SoraVideoChannel.videoCodec
             videoBitrate = this@SoraVideoChannel.videoBitRate
 

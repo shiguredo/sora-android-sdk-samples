@@ -11,6 +11,7 @@ import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import org.webrtc.AudioTrack
 import org.webrtc.MediaStream
+import org.webrtc.VideoSource
 
 class SoraAudioChannel(
         private val context:           Context,
@@ -54,7 +55,7 @@ class SoraAudioChannel(
             disconnect()
         }
 
-        override fun onAddLocalStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
+        override fun onAddLocalStream(mediaChannel: SoraMediaChannel, ms: MediaStream, videoSource: VideoSource?) {
             SoraLogger.d(TAG, "[audio_channel] @onAddLocalStream")
             if (ms.audioTracks.size > 0) {
                 localAudioTrack = ms.audioTracks[0]
