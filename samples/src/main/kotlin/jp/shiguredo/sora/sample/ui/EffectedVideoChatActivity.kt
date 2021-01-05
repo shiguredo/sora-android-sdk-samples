@@ -36,7 +36,7 @@ class EffectedVideoChatActivity : AppCompatActivity() {
         private val TAG = EffectedVideoChatActivity::class.simpleName
     }
 
-    private var channelName = ""
+    private var channelName: String? = ""
     private var role = SoraRoleType.SENDRECV
     private var ui: EffectedVideoChatActivityUI? = null
     private var effector: RTCVideoEffector? = null
@@ -230,7 +230,7 @@ class EffectedVideoChatActivity : AppCompatActivity() {
 
 class EffectedVideoChatActivityUI(
         val activity:        EffectedVideoChatActivity,
-        val channelName:     String,
+        val channelName:     String?,
         val resources:       Resources,
         val videoViewWidth:  Int,
         val videoViewHeight: Int,
