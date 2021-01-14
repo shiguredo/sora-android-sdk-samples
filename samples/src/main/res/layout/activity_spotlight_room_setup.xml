@@ -48,10 +48,10 @@
                     android:id="@+id/roleSelection"/>
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/multistreamSelection"/>
+                    android:id="@+id/legacySelection"/>
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/spotlightNumberSelection"/>
+                    android:id="@+id/activeSpeakerLimitSelection"/>
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/videoCodecSelection"/>

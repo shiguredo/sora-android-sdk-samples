@@ -23,6 +23,7 @@ import jp.shiguredo.sora.sample.ui.util.RendererLayoutCalculator
 import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
+import jp.shiguredo.sora.sdk.channel.option.SoraSpotlightOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
@@ -37,7 +38,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
     }
 
     private var channelName = ""
-    private var spotlight = 0
     private var videoEnabled = true
     private var videoCodec:  SoraVideoOption.Codec = SoraVideoOption.Codec.VP9
     private var audioCodec:  SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
@@ -48,6 +48,9 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x
     private var videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y
     private var multistream = true
+    private var spotlight = false
+    private var activeSpeakerLimit: Int? = null
+    private var spotlightLegacy = true
     private var fps: Int = 30
     private var fixedResolution = false
     private var cameraFacing = true
@@ -70,8 +73,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
         setupWindow()
 
         channelName = intent.getStringExtra("CHANNEL_NAME") ?: getString(R.string.channelId)
-
-        spotlight = intent.getIntExtra("SPOTLIGHT", 0)
 
         videoEnabled = when (intent.getStringExtra("VIDEO_ENABLED")) {
             "有効" -> true
@@ -123,6 +124,20 @@ class VideoChatRoomActivity : AppCompatActivity() {
             "有効" -> true
             else      -> false
         }
+
+        spotlight = when (intent.getStringExtra("SPOTLIGHT")) {
+            "有効" -> true
+            else      -> false
+        }
+
+        activeSpeakerLimit = intent.getStringExtra("SPOTLIGHT_NUMBER")?.toInt()
+
+        spotlightLegacy = when (intent.getStringExtra("SPOTLIGHT_LEGACY")) {
+            "有効" -> true
+            else      -> false
+        }
+
+        Log.d(TAG, "spotlight => $spotlight, $activeSpeakerLimit, $spotlightLegacy")
 
         fixedResolution = when (intent.getStringExtra("RESOLUTION_CHANGE")) {
             "可変" -> false
@@ -275,7 +290,13 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
                 channelId         = channelName,
                 signalingMetadata = "",
-                spotlight         = spotlight,
+                spotlight         = if (spotlight) {
+                    SoraSpotlightOption().also {
+                        // TODO: simulcast rid
+                        it.activeSpeakerLimit = activeSpeakerLimit
+                        it.legacyEnabled = spotlightLegacy
+                    }
+                } else null,
                 videoEnabled      = videoEnabled,
                 videoWidth        = videoWidth,
                 videoHeight       = videoHeight,

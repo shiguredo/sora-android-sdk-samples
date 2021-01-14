@@ -16,7 +16,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         private val TAG = SpotlightRoomSetupActivity::class.simpleName
     }
 
-    private val spotlightNumberOptions = listOf("2", "1", "3", "4", "5")
+    private val activeSpeakerLimitOptions = listOf("1", "2", "3", "4", "5", "6", "7", "8")
     private val videoCodecOptions = listOf("VP9", "VP8", "H264")
     private val audioCodecOptions = listOf("OPUS", "PCMU")
     private val audioBitRateOptions = listOf("未指定", "8", "16", "24", "32",
@@ -24,9 +24,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     private val videoEnabledOptions = listOf("有効", "無効")
     private val audioEnabledOptions = listOf("有効", "無効")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
-    private val multistreamOptions = listOf("有効", "無効")
-    private val videoBitRateOptions = listOf("1000", "未指定", "100", "300", "500", "800",
-            "1500", "2000", "2500")
+    private val legacyOptions = listOf("有効", "無効")
+    private val videoBitRateOptions = listOf("30", "150", "200", "350", "450", "600", "700", "1200", "2500", "4000", "5000")
     private val videoSizeOptions = listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
 
@@ -38,14 +37,17 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
 
         start.setOnClickListener { startSpotlightChat() }
 
-        spotlightNumberSelection.name.text = "スポットライト"
-        spotlightNumberSelection.spinner.setItems(spotlightNumberOptions)
+        activeSpeakerLimitSelection.name.text = "アクティブ配信数"
+        activeSpeakerLimitSelection.spinner.setItems(activeSpeakerLimitOptions)
+        activeSpeakerLimitSelection.spinner.selectedIndex = 2 // 3
         roleSelection.name.text = "ロール"
         roleSelection.spinner.setItems(roleOptions)
-        multistreamSelection.name.text = "マルチストリーム"
-        multistreamSelection.spinner.setItems(multistreamOptions)
+        legacySelection.name.text = "レガシー機能"
+        legacySelection.spinner.setItems(legacyOptions)
+        legacySelection.spinner.selectedIndex = 1 // 無効
         videoCodecSelection.name.text = "映像コーデック"
         videoCodecSelection.spinner.setItems(videoCodecOptions)
+        videoCodecSelection.spinner.selectedIndex = 1 // VP8
         videoEnabledSelection.name.text = "映像の有無"
         videoEnabledSelection.spinner.setItems(videoEnabledOptions)
         audioCodecSelection.name.text = "音声コーデック"
@@ -56,8 +58,10 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         audioBitRateSelection.spinner.setItems(audioBitRateOptions)
         videoBitRateSelection.name.text = "映像ビットレート"
         videoBitRateSelection.spinner.setItems(videoBitRateOptions)
+        videoBitRateSelection.spinner.selectedIndex = 7 // 1200
         videoSizeSelection.name.text = "映像サイズ"
         videoSizeSelection.spinner.setItems(videoSizeOptions)
+        videoSizeSelection.spinner.selectedIndex = 6 // FHD
         fpsSelection.name.text = "フレームレート"
         fpsSelection.spinner.setItems(fpsOptions)
     }
@@ -69,9 +73,9 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
             return
         }
 
-        val spotlightNumber = selectedItem(spotlightNumberSelection.spinner).toInt()
+        val activeSpeakerLimit = selectedItem(activeSpeakerLimitSelection.spinner)
         val role = selectedItem(roleSelection.spinner)
-        val multistream = selectedItem(multistreamSelection.spinner)
+        val legacy = selectedItem(legacySelection.spinner)
         val videoCodec = selectedItem(videoCodecSelection.spinner)
         val audioCodec = selectedItem(audioCodecSelection.spinner)
         val audioBitRate = selectedItem(audioBitRateSelection.spinner)
@@ -83,9 +87,11 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
 
         val intent = Intent(this, VideoChatRoomActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
-        intent.putExtra("SPOTLIGHT", spotlightNumber)
+        intent.putExtra("SPOTLIGHT", "有効")
+        intent.putExtra("SPOTLIGHT_NUMBER", activeSpeakerLimit)
+        intent.putExtra("SPOTLIGHT_LEGACY", legacy)
         intent.putExtra("ROLE", role)
-        intent.putExtra("MULTISTREAM", multistream)
+        intent.putExtra("LEGACY", legacy)
         intent.putExtra("VIDEO_CODEC", videoCodec)
         intent.putExtra("AUDIO_CODEC", audioCodec)
         intent.putExtra("AUDIO_BIT_RATE", audioBitRate)

@@ -77,8 +77,6 @@ class SimulcastActivity : AppCompatActivity() {
 
         channelName = intent.getStringExtra("CHANNEL_NAME") ?: getString(R.string.channelId)
 
-        spotlight = intent.getIntExtra("SPOTLIGHT", 0)
-
         videoEnabled = when (intent.getStringExtra("VIDEO_ENABLED")) {
             "有効" -> true
             "無効"  -> false
@@ -267,7 +265,7 @@ class SimulcastActivity : AppCompatActivity() {
                 signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
                 channelId         = channelName,
                 signalingMetadata = "",
-                spotlight         = spotlight,
+                spotlight         = null,
                 videoEnabled      = videoEnabled,
                 videoWidth        = videoWidth,
                 videoHeight       = videoHeight,
