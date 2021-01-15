@@ -17,7 +17,7 @@ class SoraAudioChannel(
         private val context:           Context,
         private val handler:           Handler,
         private val signalingEndpoint: String,
-        private val channelId:         String,
+        private val channelId:         String?,
         private val signalingMetadata: String = "",
         private var role:              SoraRoleType,
         private var multistream:       Boolean = true,

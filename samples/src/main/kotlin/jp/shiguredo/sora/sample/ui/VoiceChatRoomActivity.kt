@@ -26,7 +26,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         private val TAG = VoiceChatRoomActivity::class.simpleName
     }
 
-    private var channelName: String = ""
+    private var channelName: String? = ""
 
     private var audioCodec:  SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
     private var audioBitRate: Int? = null
@@ -44,8 +44,11 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
         channelName = intent.getStringExtra("CHANNEL_NAME")
 
-        audioCodec = SoraAudioOption.Codec.valueOf(
-                intent.getStringExtra("AUDIO_CODEC"))
+        audioCodec = when (intent.getStringExtra("AUDIO_CODEC")) {
+            "OPUS" -> SoraAudioOption.Codec.OPUS
+            "PCMU" -> SoraAudioOption.Codec.PCMU
+            else   -> SoraAudioOption.Codec.OPUS
+        }
 
         audioBitRate = when (intent.getStringExtra("AUDIO_BIT_RATE")) {
             "未指定" -> null

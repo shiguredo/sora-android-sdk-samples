@@ -21,7 +21,7 @@ class SoraVideoChannel(
         private val context:                 Context,
         private val handler:                 Handler,
         private val signalingEndpoint:       String,
-        private val channelId:               String,
+        private val channelId:               String?,
         private val signalingMetadata:       Any? = "",
         private val signalingNotifyMetatada: Any? = null,
         private val clientId:                String? = null,
