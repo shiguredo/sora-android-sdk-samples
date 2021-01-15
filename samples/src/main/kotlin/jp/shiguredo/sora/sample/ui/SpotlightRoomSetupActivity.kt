@@ -85,7 +85,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         val videoSize = selectedItem(videoSizeSelection.spinner)
         val fps = selectedItem(fpsSelection.spinner)
 
-        val intent = Intent(this, VideoChatRoomActivity::class.java)
+        val intent = Intent(this, SimulcastActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
         intent.putExtra("SPOTLIGHT", "有効")
         intent.putExtra("SPOTLIGHT_NUMBER", activeSpeakerLimit)
