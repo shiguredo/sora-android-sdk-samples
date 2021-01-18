@@ -25,7 +25,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     private val audioEnabledOptions = listOf("有効", "無効")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
     private val legacyOptions = listOf("有効", "無効")
-    private val videoBitRateOptions = listOf("30", "150", "200", "350", "450", "600", "700", "1200", "2500", "4000", "5000")
+    private val videoBitRateOptions = listOf("200", "500", "700", "1200", "2500", "4000", "5000", "10000", "15000", "20000", "30000")
     private val videoSizeOptions = listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
 
@@ -39,15 +39,12 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
 
         activeSpeakerLimitSelection.name.text = "アクティブ配信数"
         activeSpeakerLimitSelection.spinner.setItems(activeSpeakerLimitOptions)
-        activeSpeakerLimitSelection.spinner.selectedIndex = 2 // 3
         roleSelection.name.text = "ロール"
         roleSelection.spinner.setItems(roleOptions)
         legacySelection.name.text = "レガシー機能"
         legacySelection.spinner.setItems(legacyOptions)
-        legacySelection.spinner.selectedIndex = 1 // 無効
         videoCodecSelection.name.text = "映像コーデック"
         videoCodecSelection.spinner.setItems(videoCodecOptions)
-        videoCodecSelection.spinner.selectedIndex = 1 // VP8
         videoEnabledSelection.name.text = "映像の有無"
         videoEnabledSelection.spinner.setItems(videoEnabledOptions)
         audioCodecSelection.name.text = "音声コーデック"
@@ -58,12 +55,16 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         audioBitRateSelection.spinner.setItems(audioBitRateOptions)
         videoBitRateSelection.name.text = "映像ビットレート"
         videoBitRateSelection.spinner.setItems(videoBitRateOptions)
-        videoBitRateSelection.spinner.selectedIndex = 7 // 1200
         videoSizeSelection.name.text = "映像サイズ"
         videoSizeSelection.spinner.setItems(videoSizeOptions)
-        videoSizeSelection.spinner.selectedIndex = 6 // FHD
         fpsSelection.name.text = "フレームレート"
         fpsSelection.spinner.setItems(fpsOptions)
+
+        legacySelection.spinner.selectedIndex = 1 // 無効
+        activeSpeakerLimitSelection.spinner.selectedIndex = 2 // 3
+        videoCodecSelection.spinner.selectedIndex = 1 // VP8
+        videoBitRateSelection.spinner.selectedIndex = 3 // 1200
+        videoSizeSelection.spinner.selectedIndex = 6 // FHD
     }
 
     private fun startSpotlightChat() {
