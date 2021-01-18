@@ -298,6 +298,7 @@ class SoraVideoChannel(
     fun startCapturer() {
         capturer?.let {
             if (!capturing) {
+                SoraLogger.d(TAG, "start capturer => width: $videoWidth, height: $videoHeight, fps: $videoFPS")
                 capturing = true
                 it.startCapture(videoWidth, videoHeight, videoFPS)
             }

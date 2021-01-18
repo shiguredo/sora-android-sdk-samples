@@ -334,7 +334,7 @@ class SimulcastActivity : AppCompatActivity() {
                 conn.outputStream.close()
 
                 val status = conn.responseCode
-                SoraLogger.d(TAG, "change rid: response $status")
+                SoraLogger.d(TAG, "change rid => $rid, response: $status")
             }
         }
     }
