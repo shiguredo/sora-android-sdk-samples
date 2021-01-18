@@ -62,7 +62,7 @@ class SimulcastActivity : AppCompatActivity() {
     private var fps: Int = 30
     private var fixedResolution = false
 
-    private var oldAudioMode: Int = AudioManager.MODE_INVALID
+    private var oldAudioMode: Int = AudioManager.MODE_NORMAL
 
     private var role = SoraRoleType.SENDRECV
 

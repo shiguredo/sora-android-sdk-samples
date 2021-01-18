@@ -56,7 +56,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var cameraFacing = true
     private var clientId: String? = null
 
-    private var oldAudioMode: Int = AudioManager.MODE_INVALID
+    private var oldAudioMode: Int = AudioManager.MODE_NORMAL
 
     private var role = SoraRoleType.SENDRECV
 
