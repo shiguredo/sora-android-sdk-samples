@@ -25,7 +25,9 @@ class SoraVideoChannel(
         private val signalingMetadata:       Any? = "",
         private val signalingNotifyMetatada: Any? = null,
         private val clientId:                String? = null,
-        private val spotlight:               SoraSpotlightOption? = null,
+        private val spotlight: Boolean = false,
+        private val spotlightLegacy: Boolean = false,
+        private val activeSpeakerLimit: Int? = null,
         private var role:                    SoraRoleType = SoraRoleType.SENDRECV,
         private var multistream:             Boolean = true,
         private var videoEnabled:            Boolean = true,
@@ -240,8 +242,11 @@ class SoraVideoChannel(
                 videoEncoderFactory = SoftwareVideoEncoderFactory()
             }
 
-            if (this@SoraVideoChannel.spotlight != null) {
-                enableSpotlight(this@SoraVideoChannel.spotlight)
+            if (this@SoraVideoChannel.spotlight) {
+                val option = SoraSpotlightOption()
+                option.activeSpeakerLimit = activeSpeakerLimit
+                option.legacyEnabled = spotlightLegacy
+                enableSpotlight(option)
             }
 
             videoCodec   = this@SoraVideoChannel.videoCodec

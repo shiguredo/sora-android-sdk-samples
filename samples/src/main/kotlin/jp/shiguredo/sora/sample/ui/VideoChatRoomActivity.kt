@@ -290,13 +290,9 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
                 channelId         = channelName,
                 signalingMetadata = "",
-                spotlight         = if (spotlight) {
-                    SoraSpotlightOption().also {
-                        // TODO: simulcast rid
-                        it.activeSpeakerLimit = activeSpeakerLimit
-                        it.legacyEnabled = spotlightLegacy
-                    }
-                } else null,
+                spotlight         = spotlight,
+                spotlightLegacy = spotlightLegacy,
+                activeSpeakerLimit = activeSpeakerLimit,
                 videoEnabled      = videoEnabled,
                 videoWidth        = videoWidth,
                 videoHeight       = videoHeight,

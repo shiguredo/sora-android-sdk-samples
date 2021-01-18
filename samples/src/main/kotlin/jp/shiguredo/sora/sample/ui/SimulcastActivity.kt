@@ -23,6 +23,7 @@ import jp.shiguredo.sora.sample.ui.util.RendererLayoutCalculator
 import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
+import jp.shiguredo.sora.sdk.channel.option.SoraSpotlightOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
@@ -45,7 +46,6 @@ class SimulcastActivity : AppCompatActivity() {
     }
 
     private var channelName = ""
-    private var spotlight = 0
     private var videoEnabled = true
     private var videoCodec:  SoraVideoOption.Codec = SoraVideoOption.Codec.VP9
     private var audioCodec:  SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
@@ -56,6 +56,9 @@ class SimulcastActivity : AppCompatActivity() {
     private var videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x
     private var videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y
     private var multistream = true
+    private var spotlight = false
+    private var activeSpeakerLimit: Int? = null
+    private var spotlightLegacy = true
     private var fps: Int = 30
     private var fixedResolution = false
 
@@ -124,6 +127,18 @@ class SimulcastActivity : AppCompatActivity() {
         videoHeight = videoSize.y
 
         multistream = when (intent.getStringExtra("MULTISTREAM")) {
+            "有効" -> true
+            else      -> false
+        }
+
+        spotlight = when (intent.getStringExtra("SPOTLIGHT")) {
+            "有効" -> true
+            else      -> false
+        }
+
+        activeSpeakerLimit = intent.getStringExtra("SPOTLIGHT_NUMBER")?.toInt()
+
+        spotlightLegacy = when (intent.getStringExtra("SPOTLIGHT_LEGACY")) {
             "有効" -> true
             else      -> false
         }
@@ -265,7 +280,9 @@ class SimulcastActivity : AppCompatActivity() {
                 signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
                 channelId         = channelName,
                 signalingMetadata = "",
-                spotlight         = null,
+                spotlight         = spotlight,
+                spotlightLegacy = spotlightLegacy,
+                activeSpeakerLimit = activeSpeakerLimit,
                 videoEnabled      = videoEnabled,
                 videoWidth        = videoWidth,
                 videoHeight       = videoHeight,
