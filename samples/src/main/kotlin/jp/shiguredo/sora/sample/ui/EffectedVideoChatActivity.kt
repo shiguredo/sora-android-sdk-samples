@@ -41,7 +41,7 @@ class EffectedVideoChatActivity : AppCompatActivity() {
     private var ui: EffectedVideoChatActivityUI? = null
     private var effector: RTCVideoEffector? = null
 
-    private var oldAudioMode: Int = AudioManager.MODE_INVALID
+    private var oldAudioMode: Int = AudioManager.MODE_NORMAL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
