@@ -15,6 +15,7 @@ import jp.shiguredo.sora.sdk.util.SoraLogger
 import org.webrtc.*
 import android.os.Handler
 import jp.shiguredo.sora.sample.stats.VideoUpstreamLatencyStatsCollector
+import jp.shiguredo.sora.sdk.Sora
 import jp.shiguredo.sora.sdk.channel.option.*
 
 class SoraVideoChannel(
@@ -245,7 +246,7 @@ class SoraVideoChannel(
             if (this@SoraVideoChannel.spotlight) {
                 val option = SoraSpotlightOption()
                 option.spotlightNumber = spotlightNumber
-                option.legacyEnabled = spotlightLegacy
+                Sora.usesSpotlightLegacy = spotlightLegacy
                 enableSpotlight(option)
             }
 
