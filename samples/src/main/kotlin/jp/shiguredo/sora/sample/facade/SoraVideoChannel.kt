@@ -27,7 +27,7 @@ class SoraVideoChannel(
         private val clientId:                String? = null,
         private val spotlight: Boolean = false,
         private val spotlightLegacy: Boolean = false,
-        private val activeSpeakerLimit: Int? = null,
+        private val spotlightNumber: Int? = null,
         private var role:                    SoraRoleType = SoraRoleType.SENDRECV,
         private var multistream:             Boolean = true,
         private var videoEnabled:            Boolean = true,
@@ -244,7 +244,7 @@ class SoraVideoChannel(
 
             if (this@SoraVideoChannel.spotlight) {
                 val option = SoraSpotlightOption()
-                option.activeSpeakerLimit = activeSpeakerLimit
+                option.spotlightNumber = spotlightNumber
                 option.legacyEnabled = spotlightLegacy
                 enableSpotlight(option)
             }

@@ -57,7 +57,7 @@ class SimulcastActivity : AppCompatActivity() {
     private var videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y
     private var multistream = true
     private var spotlight = false
-    private var activeSpeakerLimit: Int? = null
+    private var spotlightNumber: Int? = null
     private var spotlightLegacy = true
     private var fps: Int = 30
     private var fixedResolution = false
@@ -136,7 +136,7 @@ class SimulcastActivity : AppCompatActivity() {
             else      -> false
         }
 
-        activeSpeakerLimit = intent.getStringExtra("SPOTLIGHT_NUMBER")?.toInt()
+        spotlightNumber = intent.getStringExtra("SPOTLIGHT_NUMBER")?.toInt()
 
         spotlightLegacy = when (intent.getStringExtra("SPOTLIGHT_LEGACY")) {
             "有効" -> true
@@ -282,7 +282,7 @@ class SimulcastActivity : AppCompatActivity() {
                 signalingMetadata = "",
                 spotlight         = spotlight,
                 spotlightLegacy = spotlightLegacy,
-                activeSpeakerLimit = activeSpeakerLimit,
+                spotlightNumber = spotlightNumber,
                 videoEnabled      = videoEnabled,
                 videoWidth        = videoWidth,
                 videoHeight       = videoHeight,

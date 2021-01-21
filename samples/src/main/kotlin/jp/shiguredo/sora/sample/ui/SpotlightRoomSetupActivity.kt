@@ -16,7 +16,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         private val TAG = SpotlightRoomSetupActivity::class.simpleName
     }
 
-    private val activeSpeakerLimitOptions = listOf("1", "2", "3", "4", "5", "6", "7", "8")
+    private val spotlightNumberOptions = listOf("1", "2", "3", "4", "5", "6", "7", "8")
     private val videoCodecOptions = listOf("VP9", "VP8", "H264")
     private val audioCodecOptions = listOf("OPUS", "PCMU")
     private val audioBitRateOptions = listOf("未指定", "8", "16", "24", "32",
@@ -37,8 +37,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
 
         start.setOnClickListener { startSpotlightChat() }
 
-        activeSpeakerLimitSelection.name.text = "アクティブ配信数"
-        activeSpeakerLimitSelection.spinner.setItems(activeSpeakerLimitOptions)
+        spotlightNumberSelection.name.text = "アクティブ配信数"
+        spotlightNumberSelection.spinner.setItems(spotlightNumberOptions)
         roleSelection.name.text = "ロール"
         roleSelection.spinner.setItems(roleOptions)
         legacySelection.name.text = "レガシー機能"
@@ -61,7 +61,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         fpsSelection.spinner.setItems(fpsOptions)
 
         legacySelection.spinner.selectedIndex = 1 // 無効
-        activeSpeakerLimitSelection.spinner.selectedIndex = 2 // 3
+        spotlightNumberSelection.spinner.selectedIndex = 2 // 3
         videoCodecSelection.spinner.selectedIndex = 1 // VP8
         videoBitRateSelection.spinner.selectedIndex = 3 // 1200
         videoSizeSelection.spinner.selectedIndex = 6 // FHD
@@ -74,7 +74,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
             return
         }
 
-        val activeSpeakerLimit = selectedItem(activeSpeakerLimitSelection.spinner)
+        val spotlightNumber = selectedItem(spotlightNumberSelection.spinner)
         val role = selectedItem(roleSelection.spinner)
         val legacy = selectedItem(legacySelection.spinner)
         val videoCodec = selectedItem(videoCodecSelection.spinner)
@@ -89,7 +89,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         val intent = Intent(this, SimulcastActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
         intent.putExtra("SPOTLIGHT", "有効")
-        intent.putExtra("SPOTLIGHT_NUMBER", activeSpeakerLimit)
+        intent.putExtra("SPOTLIGHT_NUMBER", spotlightNumber)
         intent.putExtra("SPOTLIGHT_LEGACY", legacy)
         intent.putExtra("ROLE", role)
         intent.putExtra("LEGACY", legacy)

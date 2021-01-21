@@ -49,7 +49,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y
     private var multistream = true
     private var spotlight = false
-    private var activeSpeakerLimit: Int? = null
+    private var spotlightNumber: Int? = null
     private var spotlightLegacy = true
     private var fps: Int = 30
     private var fixedResolution = false
@@ -130,14 +130,14 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else      -> false
         }
 
-        activeSpeakerLimit = intent.getStringExtra("SPOTLIGHT_NUMBER")?.toInt()
+        spotlightNumber = intent.getStringExtra("SPOTLIGHT_NUMBER")?.toInt()
 
         spotlightLegacy = when (intent.getStringExtra("SPOTLIGHT_LEGACY")) {
             "有効" -> true
             else      -> false
         }
 
-        Log.d(TAG, "spotlight => $spotlight, $activeSpeakerLimit, $spotlightLegacy")
+        Log.d(TAG, "spotlight => $spotlight, $spotlightNumber, $spotlightLegacy")
 
         fixedResolution = when (intent.getStringExtra("RESOLUTION_CHANGE")) {
             "可変" -> false
@@ -292,7 +292,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 signalingMetadata = "",
                 spotlight         = spotlight,
                 spotlightLegacy = spotlightLegacy,
-                activeSpeakerLimit = activeSpeakerLimit,
+                spotlightNumber = spotlightNumber,
                 videoEnabled      = videoEnabled,
                 videoWidth        = videoWidth,
                 videoHeight       = videoHeight,

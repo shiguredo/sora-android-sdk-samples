@@ -51,7 +51,7 @@
                     android:id="@+id/legacySelection"/>
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/activeSpeakerLimitSelection"/>
+                    android:id="@+id/spotlightNumberSelection"/>
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/videoCodecSelection"/>
