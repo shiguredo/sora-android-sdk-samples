@@ -238,16 +238,16 @@ class SoraVideoChannel(
             }
 
             if(this@SoraVideoChannel.simulcast) {
-                enableSimulcast()
+                enableSimulcast(null, egl!!.eglBaseContext)
                 // hardware encoder では動かせていない、ソフトウェアを指定する
-                videoEncoderFactory = SoftwareVideoEncoderFactory()
+                //videoEncoderFactory = SoftwareVideoEncoderFactory()
             }
 
             if (this@SoraVideoChannel.spotlight) {
                 val option = SoraSpotlightOption()
                 option.spotlightNumber = spotlightNumber
                 Sora.usesSpotlightLegacy = spotlightLegacy
-                enableSpotlight(option)
+                enableSpotlight(option, egl!!.eglBaseContext)
             }
 
             videoCodec   = this@SoraVideoChannel.videoCodec
