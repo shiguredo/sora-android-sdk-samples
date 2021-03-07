@@ -239,8 +239,6 @@ class SoraVideoChannel(
 
             if(this@SoraVideoChannel.simulcast) {
                 enableSimulcast(null, egl!!.eglBaseContext)
-                // hardware encoder では動かせていない、ソフトウェアを指定する
-                //videoEncoderFactory = SoftwareVideoEncoderFactory()
             }
 
             if (this@SoraVideoChannel.spotlight) {
