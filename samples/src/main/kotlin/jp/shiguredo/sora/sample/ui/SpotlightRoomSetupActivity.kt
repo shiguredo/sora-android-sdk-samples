@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.R
+import jp.shiguredo.sora.sdk.Sora
 import kotlinx.android.synthetic.main.activity_spotlight_room_setup.*
 import kotlinx.android.synthetic.main.signaling_selection.view.*
 
@@ -86,7 +87,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         val videoSize = selectedItem(videoSizeSelection.spinner)
         val fps = selectedItem(fpsSelection.spinner)
 
-        val intent = Intent(this, SimulcastActivity::class.java)
+        val intentActivityClass = if (Sora.usesSpotlightLegacy) VideoChatRoomActivity::class.java else SimulcastActivity::class.java
+        val intent = Intent(this, intentActivityClass)
         intent.putExtra("CHANNEL_NAME", channelName)
         intent.putExtra("SPOTLIGHT", "有効")
         intent.putExtra("SPOTLIGHT_NUMBER", spotlightNumber)
