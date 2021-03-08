@@ -18,7 +18,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     }
 
     private val spotlightNumberOptions = listOf("1", "2", "3", "4", "5", "6", "7", "8")
-    private val videoCodecOptions = listOf("VP9", "VP8", "H264")
+    private val videoCodecOptions = listOf("VP8", "H264")
     private val audioCodecOptions = listOf("OPUS", "PCMU")
     private val audioBitRateOptions = listOf("未指定", "8", "16", "24", "32",
             "64", "96", "128", "256")
@@ -63,7 +63,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
 
         legacySelection.spinner.selectedIndex = 1 // 無効
         spotlightNumberSelection.spinner.selectedIndex = 2 // 3
-        videoCodecSelection.spinner.selectedIndex = 1 // VP8
+        videoCodecSelection.spinner.selectedIndex = 0 // VP8
         videoBitRateSelection.spinner.selectedIndex = 3 // 1200
         videoSizeSelection.spinner.selectedIndex = 6 // FHD
     }
