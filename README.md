@@ -19,6 +19,10 @@ Please read https://github.com/shiguredo/oss before use.
 - WebRTC SFU Sora 2020.3 以降
 - Sora Android SDK 1.1.0 以降
 
+## サンプルの使い方
+
+最新 Releases をダウンロードしてください。
+
 ## サンプルの紹介
 
 ### VideoChatRoom
