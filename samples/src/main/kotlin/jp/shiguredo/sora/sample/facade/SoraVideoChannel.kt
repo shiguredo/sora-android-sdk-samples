@@ -238,14 +238,14 @@ class SoraVideoChannel(
             }
 
             if(this@SoraVideoChannel.simulcast) {
-                enableSimulcast(null, egl!!.eglBaseContext)
+                enableSimulcast(null)
             }
 
             if (this@SoraVideoChannel.spotlight) {
                 val option = SoraSpotlightOption()
                 option.spotlightNumber = spotlightNumber
                 Sora.usesSpotlightLegacy = spotlightLegacy
-                enableSpotlight(option, egl!!.eglBaseContext)
+                enableSpotlight(option)
             }
 
             videoCodec   = this@SoraVideoChannel.videoCodec
