@@ -14,36 +14,40 @@ Please read https://github.com/shiguredo/oss before use.
 
 ## システム条件
 
-- Android 5.0 以降 (シミュレーターは不可)
-- Android Studio 2.3.3 以降
+- Android 5.0 以降 (エミュレーターでの動作は保証しません)
+- Android Studio 4.0 以降
 - WebRTC SFU Sora 2020.3 以降
-- Sora Android SDK 1.1.0 以降
+- Sora Android SDK 2020.1 以降
 
 ## サンプルの使い方
 
-最新 Releases をダウンロードしてください。
+最新 [Releases](https://github.com/shiguredo/sora-android-sdk-samples/releases) をダウンロードしてください。
 
 ## サンプルの紹介
 
-### VideoChatRoom
+### ビデオチャット
 
-ビデオチャットのデモです。複数人でのグループチャットやサイマルキャストも利用可能です。
+ビデオチャットのデモです。複数人でのグループチャットも可能です。
 
-### VoiceChatRoom
+### ボイスチャット
 
 ボイスチャットのデモです。複数人でのグループチャットも可能です。
 
-### SpotlightRoom
+### サイマルキャスト
+
+サイマルキャストのデモです。
+
+### スポットライト
 
 スポットライトのデモです。アクティブ配信数を固定したチャットが可能です。
 
-### Screencast
+### スクリーンキャスト
 
 クライアント端末の画面を動画配信するデモです。
 
-### EffectedVideoChat
+### ビデオエフェクト
 
-カメラで撮影した動画をクライアントサイドで加工して動画配信するデモです。
+エフェクト付きのビデオチャットのデモです。
 
 ## Copyright
 
