@@ -55,7 +55,7 @@ class SoraAudioChannel(
             disconnect()
         }
 
-        override fun onAddLocalStream(mediaChannel: SoraMediaChannel, ms: MediaStream, videoSource: VideoSource?) {
+        override fun onAddLocalStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
             SoraLogger.d(TAG, "[audio_channel] @onAddLocalStream")
             if (ms.audioTracks.size > 0) {
                 localAudioTrack = ms.audioTracks[0]
