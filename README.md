@@ -1,8 +1,6 @@
 # Sora Android SDK サンプルアプリケーション
 
-このリポジトリは Sora Android SDK を利用するサンプル Android アプリケーションを
-提供します。
-使い方は [Sora Android SDK ドキュメント](https://sora-android-sdk.shiguredo.jp/) を参照してください。
+このリポジトリは [Sora Android SDK](https://github.com/shiguredo/sora-android-sdk) を利用したサンプルアプリケーションを提供しています。Sora Android SDK の使い方は [Sora Android SDK ドキュメント](https://sora-android-sdk.shiguredo.jp/)を参照してください。
 
 ## About Shiguredo's open source software
 
@@ -14,24 +12,42 @@ Please read https://github.com/shiguredo/oss before use.
 
 利用前に https://github.com/shiguredo/oss をお読みください。
 
-## Sora Android SDK
-
-Sora Android SDK は [WebRTC SFU Sora](https://sora.shiguredo.jp) の Android クラ
-イアントアプリケーションを開発するためのライブラリです。Sora Android SDK の使い
-方は [Sora Android SDK ドキュメント](https://sora-android-sdk.shiguredo.jp/)
-を参照してください。
-
 ## システム条件
 
-- Android 5.0 以降 (シミュレーターは不可)
-- Android Studio 2.3.3 以降
+- Android 5.0 以降 (エミュレーターでの動作は保証しません)
+- Android Studio 4.0 以降
 - WebRTC SFU Sora 2020.3 以降
-- Sora Android SDK 1.1.0 以降
+- Sora Android SDK 2020.1 以降
 
-## 参考リンク
+## サンプルの使い方
 
-- [Sora Android SDK ドキュメント](https://sora-android-sdk.shiguredo.jp/)
-- [クイックスタート](https://github.com/shiguredo/sora-android-sdk-quickstart)
+最新 [Releases](https://github.com/shiguredo/sora-android-sdk-samples/releases) をダウンロードしてください。
+
+## サンプルの紹介
+
+### ビデオチャット
+
+ビデオチャットのデモです。複数人でのグループチャットも可能です。
+
+### ボイスチャット
+
+ボイスチャットのデモです。複数人でのグループチャットも可能です。
+
+### サイマルキャスト
+
+サイマルキャストのデモです。
+
+### スポットライト
+
+スポットライトのデモです。アクティブ配信数を固定したチャットが可能です。
+
+### スクリーンキャスト
+
+クライアント端末の画面を動画配信するデモです。
+
+### ビデオエフェクト
+
+エフェクト付きのビデオチャットのデモです。
 
 ## Copyright
 
