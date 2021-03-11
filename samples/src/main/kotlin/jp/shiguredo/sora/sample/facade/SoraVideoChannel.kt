@@ -129,7 +129,7 @@ class SoraVideoChannel(
             }
         }
 
-        override fun onAddLocalStream(mediaChannel: SoraMediaChannel, ms: MediaStream, videoSource: VideoSource?) {
+        override fun onAddLocalStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
             SoraLogger.d(TAG, "[video_channel] @onAddLocalStream")
 
             if (ms.audioTracks.size > 0) {
