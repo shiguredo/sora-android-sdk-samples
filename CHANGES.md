@@ -12,6 +12,30 @@
 
 ## develop
 
+### UPDATE
+
+- 新しいスポットライトに対応する
+- Kotlin を 1.4.31 に更新する
+- Gradle を 6.8.3 に更新する
+- 依存ライブラリを更新する
+  - com.github.ben-manes:gradle-versions-plugin を 0.38.0 に更新する
+  - com.android.tools.build:gradle を 4.1.2 に更新する
+  - com.google.android.material:material を 1.3.0 に更新する
+  - androidx.navigation:navigation-fragment-ktx を 2.3.3 に更新する
+  - androidx.navigation:navigation-ui-ktx を 2.3.3 に更新する
+  - jp.co.cyberagent.android:gpuimage を 2.1.0 に更新する
+
+### ADD
+
+- サイマルキャスト画面を新規に追加する
+
+### CHANGE
+
+- 新しいスポットライトがデフォルトで利用されるように修正する
+- サイマルキャスト画面の追加に伴い、 video chat room からサイマルキャストの設定を削除する
+- スポットライト画面の映像コーデックから VP9 を外す
+- 設定項目名を日本語に変更する
+
 ## 2020.1
 
 ## 1.10.0
