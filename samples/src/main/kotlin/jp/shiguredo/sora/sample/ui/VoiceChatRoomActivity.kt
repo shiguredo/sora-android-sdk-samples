@@ -60,7 +60,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
         multistream = when (intent.getStringExtra("MULTISTREAM")) {
             "有効" -> true
-            else      -> false
+            else   -> false
         }
 
         channelNameText.text = channelName
