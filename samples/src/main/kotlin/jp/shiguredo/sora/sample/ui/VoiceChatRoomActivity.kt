@@ -58,6 +58,11 @@ class VoiceChatRoomActivity : AppCompatActivity() {
             else       -> SoraRoleType.SENDRECV
         }
 
+        multistream = when (intent.getStringExtra("MULTISTREAM")) {
+            "有効" -> true
+            else      -> false
+        }
+
         channelNameText.text = channelName
         closeButton.setOnClickListener { close() }
 
