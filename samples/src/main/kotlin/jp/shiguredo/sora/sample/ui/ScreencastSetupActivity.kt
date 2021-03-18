@@ -28,7 +28,7 @@ class ScreencastSetupActivity : AppCompatActivity() {
     }
 
     private val videoCodecOptions  = listOf("VP9", "VP8", "H264")
-    private val audioCodecOptions  = listOf("OPUS", "PCMU")
+    private val audioCodecOptions  = listOf("OPUS")
     private val multistreamOptions = listOf("有効", "無効")
 
     private var screencastStarter: SoraScreencastServiceStarter? = null
