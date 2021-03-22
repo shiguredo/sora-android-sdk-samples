@@ -230,7 +230,9 @@ class SoraVideoChannel(
                 if (audioEnabled) {
                     enableAudioDownstream()
                 }
-                enableVideoDownstream(egl!!.eglBaseContext)
+                if (videoEnabled) {
+                    enableVideoDownstream(egl!!.eglBaseContext)
+                }
             }
 
             if (multistream) {
