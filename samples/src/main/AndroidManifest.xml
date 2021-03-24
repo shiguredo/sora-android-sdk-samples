@@ -84,6 +84,7 @@
             android:screenOrientation="portrait" />
         <service
             android:name=".screencast.SoraScreencastService"
+            android:foregroundServiceType="mediaProjection"
             android:enabled="true" />
         <activity
             android:name=".ui.EffectedVideoChatActivity"
