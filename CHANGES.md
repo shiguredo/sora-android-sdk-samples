@@ -42,6 +42,8 @@
 - ボイスチャット画面でマルチストリームが無効にできない問題を修正する
 - 音声のみを受信するよう設定したにも関わらず、映像を受信してしまう問題を修正する
 - スクリーンキャスト画面がクラッシュしていた問題を修正する
+  - Android 10 からは、特定のサービスを定義する際に、マニフェストに foregroundServiceType を定義する必要がある
+  - 参考: https://developer.android.com/about/versions/10/features?hl=ja#fg-service-types
 
 ## 2020.1
 
