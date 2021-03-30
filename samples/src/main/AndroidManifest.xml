@@ -39,25 +39,28 @@
         </activity>
         <activity
             android:name=".ui.VoiceChatRoomSetupActivity"
-            android:label="ボイスチャット" />
+            android:label="ボイスチャット"
+            android:configChanges="orientation|screenSize" />
         <activity
             android:name=".ui.VideoChatRoomSetupActivity"
-            android:label="ビデオチャット" />
+            android:label="ビデオチャット"
+            android:configChanges="orientation|screenSize" />
         <activity
             android:name=".ui.SpotlightRoomSetupActivity"
-            android:label="スポットライト" />
+            android:label="スポットライト"
+            android:configChanges="orientation|screenSize" />
         <activity
             android:name=".ui.ScreencastSetupActivity"
             android:label="スクリーンキャスト"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|screenSize" />
         <activity
             android:name=".ui.EffectedVideoChatSetupActivity"
             android:label="ビデオエフェクト"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|screenSize" />
         <activity
             android:name=".ui.SimulcastSetupActivity"
             android:label="サイマルキャスト"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|screenSize" />
         <!--
             以下は実際にWebRTCを利用して動画/音声の通話を行うActivity
             セッション中にActivityが破壊されないように次のどちらかの設定を行う
@@ -81,19 +84,20 @@
         <activity
             android:name=".ui.VoiceChatRoomActivity"
             android:label="ボイスチャット"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|screenSize" />
         <service
             android:name=".screencast.SoraScreencastService"
             android:foregroundServiceType="mediaProjection"
+            android:configChanges="orientation|screenSize"
             android:enabled="true" />
         <activity
             android:name=".ui.EffectedVideoChatActivity"
             android:label="エフェクト付きビデオチャット"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|screenSize" />
         <activity
             android:name=".ui.SimulcastActivity"
             android:label="Simulcast"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|screenSize" />
     </application>
 
 </manifest>

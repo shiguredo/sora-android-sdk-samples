@@ -165,14 +165,9 @@ class SimulcastActivity : AppCompatActivity() {
         }
 
         // ステレオでは landscape にしたほうが内蔵マイクを使うときに自然な向きとなる。
-        // それ以外は、リモート映像の分割が簡単になるように portrait で動かす。
         if (audioStereo) {
             if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-            }
-        } else {
-            if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             }
         }
 
