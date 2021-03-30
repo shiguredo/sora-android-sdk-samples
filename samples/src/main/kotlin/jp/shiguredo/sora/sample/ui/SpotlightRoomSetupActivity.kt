@@ -25,7 +25,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     private val videoEnabledOptions = listOf("有効", "無効")
     private val audioEnabledOptions = listOf("有効", "無効")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
-    private val legacyOptions = listOf("有効", "無効")
+    private val legacyOptions = listOf("無効", "有効")
     private val videoBitRateOptions = listOf("200", "500", "700", "1200", "2500", "4000", "5000", "10000", "15000", "20000", "30000")
     private val videoSizeOptions = listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
@@ -61,11 +61,9 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         fpsSelection.name.text = "フレームレート"
         fpsSelection.spinner.setItems(fpsOptions)
 
-        legacySelection.spinner.selectedIndex = 1 // 無効
         spotlightNumberSelection.spinner.selectedIndex = 2 // 3
         videoCodecSelection.spinner.selectedIndex = 0 // VP8
-        videoBitRateSelection.spinner.selectedIndex = 3 // 1200
-        videoSizeSelection.spinner.selectedIndex = 6 // FHD
+        videoBitRateSelection.spinner.selectedIndex = 1 // 500
     }
 
     private fun startSpotlightChat() {
