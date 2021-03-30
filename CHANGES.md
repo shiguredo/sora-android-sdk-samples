@@ -44,6 +44,7 @@
 - スクリーンキャスト画面がクラッシュしていた問題を修正する
   - Android 10 からは、特定のサービスを定義する際に、マニフェストに foregroundServiceType を定義する必要がある
   - 参考: https://developer.android.com/about/versions/10/features?hl=ja#fg-service-types
+- ビデオチャット画面の起動時に縦固定となる問題を修正する
 
 ## 2020.1
 
