@@ -14,12 +14,11 @@ import android.widget.Toast
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.facade.SoraAudioChannel
-import jp.shiguredo.sora.sample.option.SoraStreamType
+import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import kotlinx.android.synthetic.main.activity_voice_chat_room.*
-import org.webrtc.PeerConnection
 
 class VoiceChatRoomActivity : AppCompatActivity() {
 
@@ -27,11 +26,12 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         private val TAG = VoiceChatRoomActivity::class.simpleName
     }
 
-    private var channelName: String = ""
+    private var channelName: String? = ""
 
     private var audioCodec:  SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
     private var audioBitRate: Int? = null
-    private var streamType   = SoraStreamType.BIDIRECTIONAL
+    private var role   = SoraRoleType.SENDRECV
+    private var multistream: Boolean = true
 
     private var oldAudioMode: Int = AudioManager.MODE_INVALID
 
@@ -44,20 +44,23 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
         channelName = intent.getStringExtra("CHANNEL_NAME")
 
-        audioCodec = SoraAudioOption.Codec.valueOf(
-                intent.getStringExtra("AUDIO_CODEC"))
+        audioCodec = SoraAudioOption.Codec.valueOf(intent.getStringExtra("AUDIO_CODEC") ?: "OPUS")
 
         audioBitRate = when (intent.getStringExtra("AUDIO_BIT_RATE")) {
-            "UNDEFINED" -> null
+            "未指定" -> null
             else -> intent.getStringExtra("AUDIO_BIT_RATE")?.toInt()
         }
 
-        streamType = when (intent.getStringExtra("STREAM_TYPE")) {
-            "BIDIRECTIONAL" -> SoraStreamType.BIDIRECTIONAL
-            "SINGLE-UP"     -> SoraStreamType.SINGLE_UP
-            "SINGLE-DOWN"   -> SoraStreamType.SINGLE_DOWN
-            "MULTI-DOWN"    -> SoraStreamType.MULTI_DOWN
-            else            -> SoraStreamType.BIDIRECTIONAL
+        role = when (intent.getStringExtra("ROLE")) {
+            "SENDRECV" -> SoraRoleType.SENDRECV
+            "SENDONLY" -> SoraRoleType.SENDONLY
+            "RECVONLY" -> SoraRoleType.RECVONLY
+            else       -> SoraRoleType.SENDRECV
+        }
+
+        multistream = when (intent.getStringExtra("MULTISTREAM")) {
+            "有効" -> true
+            else   -> false
         }
 
         channelNameText.text = channelName
@@ -141,9 +144,10 @@ class VoiceChatRoomActivity : AppCompatActivity() {
                 signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
                 channelId         = channelName,
                 signalingMetadata = "",
-                audioCodec             = audioCodec,
-                audioBitRate           = audioBitRate,
-                streamType        = streamType,
+                audioCodec        = audioCodec,
+                audioBitRate      = audioBitRate,
+                role              = role,
+                multistream       = multistream,
                 listener          = channelListener
         )
         channel!!.connect()

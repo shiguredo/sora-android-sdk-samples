@@ -1,53 +1,53 @@
 # Sora Android SDK サンプルアプリケーション
 
-[![CircleCI](https://circleci.com/gh/shiguredo/sora-android-sdk-samples.svg?style=svg)](https://circleci.com/gh/shiguredo/sora-android-sdk-samples)
+このリポジトリは [Sora Android SDK](https://github.com/shiguredo/sora-android-sdk) を利用したサンプルアプリケーションを提供しています。Sora Android SDK の使い方は [Sora Android SDK ドキュメント](https://sora-android-sdk.shiguredo.jp/)を参照してください。
 
-このリポジトリは Sora Android SDK を利用するサンプル Android アプリケーションを
-提供します。
-使い方は [Sora Android SDK ドキュメント](https://sora.shiguredo.jp/android-sdk-doc/) を参照してください。
+## About Shiguredo's open source software
 
-## About Support
+We will not respond to PRs or issues that have not been discussed on Discord. Also, Discord is only available in Japanese.
 
-We check PRs or Issues only when written in JAPANESE.
-In other languages, we won't be able to deal with them. Thank you for your understanding.
+Please read https://github.com/shiguredo/oss before use.
 
-## Sora Android SDK
+## 時雨堂のオープンソースソフトウェアについて
 
-Sora Android SDK は [WebRTC SFU Sora](https://sora.shiguredo.jp) の Android クラ
-イアントアプリケーションを開発するためのライブラリです。Sora Android SDK の使い
-方は [Sora Android SDK ドキュメント](https://sora.shiguredo.jp/android-sdk-doc/)
-を参照してください。
-
+利用前に https://github.com/shiguredo/oss をお読みください。
 
 ## システム条件
 
-- Android 5.0 以降 (シミュレーターは不可)
-- Android Studio 2.3.3 以降
-- WebRTC SFU Sora 17.08 以降
-- Sora Android SDK 1.1.0 以降
+- Android 5.0 以降 (エミュレーターでの動作は保証しません)
+- Android Studio 4.0 以降
+- WebRTC SFU Sora 2020.3 以降
+- Sora Android SDK 2021.1 以降
 
-## 参考リンク
+## サンプルの使い方
 
-- [Sora Android SDK ドキュメント](https://sora.shiguredo.jp/android-sdk-doc/)
-- [クイックスタート](https://github.com/shiguredo/sora-android-sdk-quickstart)
+最新 [Releases](https://github.com/shiguredo/sora-android-sdk-samples/releases) をダウンロードしてください。
 
-## サポートについて
+## サンプルの紹介
 
-Sora Android SDK に関する質問・要望・バグなどの報告は Issues の利用をお願いします。
-ただし、 Sora のライセンス契約の有無に関わらず、 Issue への応答時間と問題の解決を保証しませんのでご了承ください。
+### ビデオチャット
 
-Sora Android SDK に対する有償のサポートについては現在提供しておりません。
+ビデオチャットのデモです。複数人でのグループチャットも可能です。
 
-## Issues について
+### ボイスチャット
 
-質問やバグ報告の場合は、次の開発環境のバージョンを **「メジャーバージョン、マイナーバージョン、メンテナンスバージョン」** まで含めて書いてください (2.3.3 など) 。
-これらの開発環境はメンテナンスバージョンの違いでも Sora Android SDK の挙動が変わる可能性があります。
+ボイスチャットのデモです。複数人でのグループチャットも可能です。
 
-- Sora Android SDK
-- 開発環境の OS
-- Android Studio
-- Kotlin / Java
-- Android OS
+### サイマルキャスト
+
+サイマルキャストのデモです。
+
+### スポットライト
+
+スポットライトのデモです。アクティブ配信数を固定したチャットが可能です。
+
+### スクリーンキャスト
+
+クライアント端末の画面を動画配信するデモです。
+
+### ビデオエフェクト
+
+エフェクト付きのビデオチャットのデモです。
 
 ## Copyright
 

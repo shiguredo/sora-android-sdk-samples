@@ -10,7 +10,43 @@
     - バグ修正
 
 
-## develop
+## 2021.1
+
+### UPDATE
+
+- SDK のバージョンを 2021.1 に上げる
+- 新しいスポットライトに対応する
+- Kotlin を 1.4.31 に更新する
+- Gradle を 6.8.3 に更新する
+- 依存ライブラリを更新する
+  - com.github.ben-manes:gradle-versions-plugin を 0.38.0 に更新する
+  - com.android.tools.build:gradle を 4.1.2 に更新する
+  - com.google.android.material:material を 1.3.0 に更新する
+  - androidx.navigation:navigation-fragment-ktx を 2.3.3 に更新する
+  - androidx.navigation:navigation-ui-ktx を 2.3.3 に更新する
+  - jp.co.cyberagent.android:gpuimage を 2.1.0 に更新する
+
+### ADD
+
+- サイマルキャスト画面を新規に追加する
+
+### CHANGE
+
+- 新しいスポットライトがデフォルトで利用されるように修正する
+- サイマルキャスト画面の追加に伴い、 video chat room からサイマルキャストの設定を削除する
+- スポットライト画面の映像コーデックから VP9 を外す
+- 設定項目名を日本語に変更する
+- 音声コーデックから PCMU を外す
+
+### FIX
+
+- ボイスチャット画面でマルチストリームが無効にできない問題を修正する
+- 音声のみを受信するよう設定したにも関わらず、映像を受信してしまう問題を修正する
+- スクリーンキャスト画面がクラッシュしていた問題を修正する
+  - Android 10 からは、特定のサービスを定義する際に、マニフェストに foregroundServiceType を定義する必要がある
+  - 参考: https://developer.android.com/about/versions/10/features?hl=ja#fg-service-types
+- ビデオチャット画面の起動時に縦固定となる問題を修正する
+- 各画面で端末回転に追随しない問題を修正する
 
 ## 2020.1
 

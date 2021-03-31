@@ -32,7 +32,7 @@
                     android:layout_weight="1"
                     android:text="@string/channelId"
                     android:inputType="text"
-                    android:hint="Channel Name" />
+                    android:hint="チャネル名" />
 
                 <Button
                     android:id="@+id/start"
@@ -41,14 +41,17 @@
                     android:textColor="@android:color/white"
                     android:background="#F06292"
                     android:layout_margin="10dp"
-                    android:text="START" />
+                    android:text="接続する" />
 
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/audioCodecSelection"/>
+                    android:id="@+id/roleSelection"/>
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/streamTypeSelection"/>
+                    android:id="@+id/multistreamSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/audioCodecSelection"/>
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/audioBitRateSelection"/>

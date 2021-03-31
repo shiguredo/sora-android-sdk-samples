@@ -2,9 +2,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
     defaultConfig {
-        targetSdkVersion 28
+        targetSdkVersion 30
         minSdkVersion 21
         externalNativeBuild {
             cmake {
@@ -14,6 +14,10 @@ android {
         ndk {
             //abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
             abiFilters 'armeabi-v7a', 'arm64-v8a'
+        }
+        packagingOptions {
+            pickFirst 'lib/armeabi-v7a/libyuv.so'
+            pickFirst 'lib/arm64-v8a/libyuv.so'
         }
     }
     sourceSets {
@@ -52,7 +56,7 @@ dependencies {
         }
     }
 
-    api 'jp.co.cyberagent.android:gpuimage:2.0.3'
+    api 'jp.co.cyberagent.android:gpuimage:2.1.0'
 }
 
 configurations.all {
