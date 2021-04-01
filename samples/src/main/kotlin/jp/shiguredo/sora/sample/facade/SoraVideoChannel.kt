@@ -323,6 +323,11 @@ class SoraVideoChannel(
     private val cameraSwitchHandler = object : CameraVideoCapturer.CameraSwitchHandler {
 
         override fun onCameraSwitchDone(isFront: Boolean) {
+            // リアカメラのプレビューが意図せずに左右反転してしまう問題への対応
+            if (!isFront) {
+                localRenderer?.setMirror(false)
+            }
+            
             SoraLogger.d(TAG, "camera switched.")
         }
 
