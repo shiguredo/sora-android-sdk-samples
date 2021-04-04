@@ -387,7 +387,6 @@ class SimulcastActivityUI(
         renderer.layoutParams =
                 FrameLayout.LayoutParams(dp2px(100), dp2px(100))
         activity.localRendererContainer.addView(renderer)
-        renderer.setMirror(true)
     }
 
     internal fun addRenderer(renderer: SurfaceViewRenderer) {
