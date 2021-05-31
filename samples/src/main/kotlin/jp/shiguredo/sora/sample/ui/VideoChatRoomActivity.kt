@@ -54,6 +54,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var fixedResolution = false
     private var cameraFacing = true
     private var clientId: String? = null
+    private var dataChannelSignaling: Boolean? = null
+    private var ignoreDisconnectWebSocket: Boolean? = null
 
     private var oldAudioMode: Int = AudioManager.MODE_NORMAL
 
@@ -174,6 +176,18 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else -> null
         }
 
+        dataChannelSignaling = when (intent.getStringExtra("DATA_CHANNEL_SIGNALING")) {
+            "無効" -> false
+            "有効" -> true
+            else   -> false
+        }
+
+        ignoreDisconnectWebSocket = when (intent.getStringExtra("IGNORE_DISCONNECT_WEBSOCKET")) {
+            "無効" -> false
+            "有効" -> true
+            else   -> false
+        }
+
         // ステレオでは landscape にしたほうが内蔵マイクを使うときに自然な向きとなる。
         if (audioStereo) {
             if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -284,6 +298,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
                 channelId         = channelName,
                 signalingMetadata = "",
+                dataChannelSignaling = dataChannelSignaling,
+                ignoreDisconnectWebsocket = ignoreDisconnectWebSocket,
                 spotlight         = spotlight,
                 spotlightLegacy = spotlightLegacy,
                 spotlightNumber = spotlightNumber,

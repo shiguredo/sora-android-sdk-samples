@@ -23,6 +23,8 @@ class SoraVideoChannel(
         private val handler:                 Handler,
         private val signalingEndpoint:       String,
         private val channelId:               String?,
+        private val dataChannelSignaling:    Boolean?,
+        private val ignoreDisconnectWebsocket: Boolean?,
         private val signalingMetadata:       Any? = "",
         private val signalingNotifyMetatada: Any? = null,
         private val clientId:                String? = null,
