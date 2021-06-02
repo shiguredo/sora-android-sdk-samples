@@ -177,15 +177,17 @@ class VideoChatRoomActivity : AppCompatActivity() {
         }
 
         dataChannelSignaling = when (intent.getStringExtra("DATA_CHANNEL_SIGNALING")) {
-            "無効" -> false
-            "有効" -> true
-            else   -> false
+            "無効"   -> false
+            "有効"   -> true
+            "未指定" -> null
+            else     -> null
         }
 
         ignoreDisconnectWebSocket = when (intent.getStringExtra("IGNORE_DISCONNECT_WEBSOCKET")) {
-            "無効" -> false
-            "有効" -> true
-            else   -> false
+            "無効"   -> false
+            "有効"   -> true
+            "未指定" -> null
+            else     -> null
         }
 
         // ステレオでは landscape にしたほうが内蔵マイクを使うときに自然な向きとなる。

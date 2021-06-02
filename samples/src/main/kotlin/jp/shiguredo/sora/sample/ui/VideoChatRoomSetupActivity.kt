@@ -37,8 +37,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     private val resolutionChangeOptions = listOf("可変", "固定")
     private val cameraFacingOptions = listOf("前面", "背面")
     private val clientIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
-    private val dataChannelSignalingOptions = listOf("無効", "有効")
-    private val ignoreDisconnectWebSocketOptions = listOf("無効", "有効")
+    private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
+    private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
