@@ -37,7 +37,7 @@
 - サイマルキャスト画面を新規に追加する
 - データチャネルシグナリングに対応する
   - ビデオチャット、ボイスチャット、サイマルキャスト、スポットライトが対象
-  -  data_channel_signlaing, ignore_disconnect_websocket パラメータ設定を追加する
+  - data_channel_signlaing, ignore_disconnect_websocket パラメータ設定を追加する
   - @shino
 
 ### CHANGE
