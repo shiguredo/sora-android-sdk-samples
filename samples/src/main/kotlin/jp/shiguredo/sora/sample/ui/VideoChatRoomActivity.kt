@@ -301,7 +301,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 channelId         = channelName,
                 signalingMetadata = "",
                 dataChannelSignaling = dataChannelSignaling,
-                ignoreDisconnectWebsocket = ignoreDisconnectWebSocket,
+                ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
                 spotlight         = spotlight,
                 spotlightLegacy = spotlightLegacy,
                 spotlightNumber = spotlightNumber,

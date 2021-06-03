@@ -24,7 +24,7 @@ class SoraVideoChannel(
         private val signalingEndpoint:       String,
         private val channelId:               String?,
         private val dataChannelSignaling:    Boolean? = null,
-        private val ignoreDisconnectWebsocket: Boolean? = null,
+        private val ignoreDisconnectWebSocket: Boolean? = null,
         private val signalingMetadata:       Any? = "",
         private val signalingNotifyMetatada: Any? = null,
         private val clientId:                String? = null,
@@ -218,9 +218,6 @@ class SoraVideoChannel(
 
         val mediaOption = SoraMediaOption().apply {
 
-            dataChannelSignaling = this@SoraVideoChannel.dataChannelSignaling
-            ignoreDisconnectWebSocket = this@SoraVideoChannel.ignoreDisconnectWebsocket
-
             if (role.hasUpstream()) {
                 if (audioEnabled) {
                     enableAudioUpstream()
@@ -296,6 +293,8 @@ class SoraVideoChannel(
                 context                 = context,
                 signalingEndpoint       = signalingEndpoint,
                 channelId               = channelId,
+                dataChannelSignaling    = dataChannelSignaling,
+                ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
                 signalingMetadata       = signalingMetadata,
                 signalingNotifyMetadata = signalingNotifyMetatada,
                 mediaOption             = mediaOption,
