@@ -18,6 +18,8 @@ class SoraAudioChannel(
         private val handler:           Handler,
         private val signalingEndpoint: String,
         private val channelId:         String?,
+        private val dataChannelSignaling:      Boolean? = null,
+        private val ignoreDisconnectWebSocket: Boolean? = null,
         private val signalingMetadata: String = "",
         private var role:              SoraRoleType,
         private var multistream:       Boolean = true,
@@ -98,6 +100,8 @@ class SoraAudioChannel(
                 context           = context,
                 signalingEndpoint = signalingEndpoint,
                 channelId         = channelId,
+                dataChannelSignaling      = dataChannelSignaling,
+                ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
                 signalingMetadata = signalingMetadata,
                 mediaOption       = mediaOption,
                 listener          = channelListener
