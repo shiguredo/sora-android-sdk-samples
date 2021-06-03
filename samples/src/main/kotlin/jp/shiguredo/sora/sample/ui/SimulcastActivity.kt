@@ -60,6 +60,8 @@ class SimulcastActivity : AppCompatActivity() {
     private var spotlightLegacy = true
     private var fps: Int = 30
     private var fixedResolution = false
+    private var dataChannelSignaling: Boolean? = null
+    private var ignoreDisconnectWebSocket: Boolean? = null
 
     private var oldAudioMode: Int = AudioManager.MODE_NORMAL
 
@@ -171,6 +173,20 @@ class SimulcastActivity : AppCompatActivity() {
             }
         }
 
+        dataChannelSignaling = when (intent.getStringExtra("DATA_CHANNEL_SIGNALING")) {
+            "無効"   -> false
+            "有効"   -> true
+            "未指定" -> null
+            else     -> null
+        }
+
+        ignoreDisconnectWebSocket = when (intent.getStringExtra("IGNORE_DISCONNECT_WEBSOCKET")) {
+            "無効"   -> false
+            "有効"   -> true
+            "未指定" -> null
+            else     -> null
+        }
+
         ui = SimulcastActivityUI(
                 activity        = this,
                 channelName     = channelName,
@@ -269,30 +285,32 @@ class SimulcastActivity : AppCompatActivity() {
         Log.d(TAG, "openChannel")
 
         channel = SoraVideoChannel(
-                context           = this,
-                handler           = Handler(),
-                signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
-                channelId         = channelName,
-                signalingMetadata = "",
-                spotlight         = spotlight,
-                spotlightLegacy = spotlightLegacy,
-                spotlightNumber = spotlightNumber,
-                videoEnabled      = videoEnabled,
-                videoWidth        = videoWidth,
-                videoHeight       = videoHeight,
-                simulcast         = true,
-                videoFPS          = fps,
-                fixedResolution   = fixedResolution,
-                videoCodec        = videoCodec,
-                videoBitRate      = videoBitRate,
-                audioEnabled      = audioEnabled,
-                audioCodec        = audioCodec,
-                audioBitRate      = audioBitRate,
-                audioStereo       = audioStereo,
-                role              = role,
-                multistream       = multistream,
-                listener          = channelListener,
-                needLocalRenderer = true
+                context                   = this,
+                handler                   = Handler(),
+                signalingEndpoint         = BuildConfig.SIGNALING_ENDPOINT,
+                channelId                 = channelName,
+                dataChannelSignaling      = dataChannelSignaling,
+                ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
+                signalingMetadata         = "",
+                spotlight                 = spotlight,
+                spotlightLegacy           = spotlightLegacy,
+                spotlightNumber           = spotlightNumber,
+                videoEnabled              = videoEnabled,
+                videoWidth                = videoWidth,
+                videoHeight               = videoHeight,
+                simulcast                 = true,
+                videoFPS                  = fps,
+                fixedResolution           = fixedResolution,
+                videoCodec                = videoCodec,
+                videoBitRate              = videoBitRate,
+                audioEnabled              = audioEnabled,
+                audioCodec                = audioCodec,
+                audioBitRate              = audioBitRate,
+                audioStereo               = audioStereo,
+                role                      = role,
+                multistream               = multistream,
+                listener                  = channelListener,
+                needLocalRenderer         = true
         )
         channel!!.connect()
     }

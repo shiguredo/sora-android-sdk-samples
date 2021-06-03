@@ -29,6 +29,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     private val videoBitRateOptions = listOf("200", "500", "700", "1200", "2500", "4000", "5000", "10000", "15000", "20000", "30000")
     private val videoSizeOptions = listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
+    private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
+    private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -60,6 +62,10 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         videoSizeSelection.spinner.setItems(videoSizeOptions)
         fpsSelection.name.text = "フレームレート"
         fpsSelection.spinner.setItems(fpsOptions)
+        dataChannelSignalingSelection.name.text = "データチャネル"
+        dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
+        ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
+        ignoreDisconnectWebSocketSelection.spinner.setItems(ignoreDisconnectWebSocketOptions)
 
         spotlightNumberSelection.spinner.selectedIndex = 2 // 3
         videoCodecSelection.spinner.selectedIndex = 0 // VP8
@@ -84,6 +90,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         val videoBitRate = selectedItem(videoBitRateSelection.spinner)
         val videoSize = selectedItem(videoSizeSelection.spinner)
         val fps = selectedItem(fpsSelection.spinner)
+        val dataChannelSignaling = selectedItem(dataChannelSignalingSelection.spinner)
+        val ignoreDisconnectWebSocket = selectedItem(ignoreDisconnectWebSocketSelection.spinner)
 
         val intentActivityClass = if (Sora.usesSpotlightLegacy) VideoChatRoomActivity::class.java else SimulcastActivity::class.java
         val intent = Intent(this, intentActivityClass)
@@ -101,6 +109,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("VIDEO_BIT_RATE", videoBitRate)
         intent.putExtra("VIDEO_SIZE", videoSize)
         intent.putExtra("FPS", fps)
+        intent.putExtra("DATA_CHANNEL_SIGNALING", dataChannelSignaling)
+        intent.putExtra("IGNORE_DISCONNECT_WEBSOCKET", ignoreDisconnectWebSocket)
 
         startActivity(intent)
     }
