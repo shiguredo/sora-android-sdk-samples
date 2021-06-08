@@ -78,6 +78,12 @@
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/audioStereoSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/dataChannelSignalingSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/ignoreDisconnectWebSocketSelection"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
