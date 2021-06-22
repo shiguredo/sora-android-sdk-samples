@@ -40,7 +40,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
 
         start.setOnClickListener { startSpotlightChat() }
 
-        spotlightNumberSelection.name.text = "アクティブ配信数"
+        spotlightNumberSelection.name.text = "スポットライト数"
         spotlightNumberSelection.spinner.setItems(spotlightNumberOptions)
         roleSelection.name.text = "ロール"
         roleSelection.spinner.setItems(roleOptions)
