@@ -131,7 +131,10 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else      -> false
         }
 
-        spotlightNumber = intent.getStringExtra("SPOTLIGHT_NUMBER")?.toInt()
+        spotlightNumber = when (val stringValue = intent.getStringExtra("SPOTLIGHT_NUMBER")) {
+            "未指定" -> null
+            else -> stringValue?.toInt()
+        }
 
         spotlightLegacy = when (intent.getStringExtra("SPOTLIGHT_LEGACY")) {
             "有効" -> true

@@ -17,7 +17,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         private val TAG = SpotlightRoomSetupActivity::class.simpleName
     }
 
-    private val spotlightNumberOptions = listOf("1", "2", "3", "4", "5", "6", "7", "8")
+    private val spotlightNumberOptions = listOf("未指定", "1", "2", "3", "4", "5", "6", "7", "8")
     private val videoCodecOptions = listOf("VP8", "H264")
     private val audioCodecOptions = listOf("OPUS")
     private val audioBitRateOptions = listOf("未指定", "8", "16", "24", "32",
@@ -26,7 +26,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     private val audioEnabledOptions = listOf("有効", "無効")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
     private val legacyOptions = listOf("無効", "有効")
-    private val videoBitRateOptions = listOf("200", "500", "700", "1200", "2500", "4000", "5000", "10000", "15000", "20000", "30000")
+    private val videoBitRateOptions = listOf("500", "200", "700", "1200", "2500", "4000", "5000",
+            "10000", "15000", "20000", "30000")
     private val videoSizeOptions = listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
@@ -66,10 +67,6 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
         ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
         ignoreDisconnectWebSocketSelection.spinner.setItems(ignoreDisconnectWebSocketOptions)
-
-        spotlightNumberSelection.spinner.selectedIndex = 2 // 3
-        videoCodecSelection.spinner.selectedIndex = 0 // VP8
-        videoBitRateSelection.spinner.selectedIndex = 1 // 500
     }
 
     private fun startSpotlightChat() {
