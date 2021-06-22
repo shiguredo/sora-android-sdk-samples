@@ -19,7 +19,7 @@
 ### UPDATE
 
 - sdk が channel_id を必須にした変更に追従する
-- spotlight_nubmer は未指定をデフォルトにする
+- spotlight_number は未指定をデフォルトにする
 
 ## 2021.1
 
