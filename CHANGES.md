@@ -20,6 +20,12 @@
 
 - sdk が channel_id を必須にした変更に追従する
 - spotlight_number は未指定をデフォルトにする
+=======
+## sora-android-sdk-2021.1.1
+
+### UPDATE
+
+- SDK のバージョンを 2021.1.1 に上げる
 
 ## 2021.1
 
