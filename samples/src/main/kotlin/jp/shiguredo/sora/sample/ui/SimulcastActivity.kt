@@ -60,6 +60,7 @@ class SimulcastActivity : AppCompatActivity() {
     private var spotlightLegacy = true
     private var fps: Int = 30
     private var fixedResolution = false
+    private var simulcastRid: SoraVideoOption.SimulcastRid? = null
     private var dataChannelSignaling: Boolean? = null
     private var ignoreDisconnectWebSocket: Boolean? = null
 
@@ -174,6 +175,13 @@ class SimulcastActivity : AppCompatActivity() {
             if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             }
+        }
+
+        simulcastRid = when (intent.getStringExtra("SIMULCAST_RID")) {
+            "r0" -> SoraVideoOption.SimulcastRid.R0
+            "r1" -> SoraVideoOption.SimulcastRid.R1
+            "r2" -> SoraVideoOption.SimulcastRid.R2
+            else -> null
         }
 
         dataChannelSignaling = when (intent.getStringExtra("DATA_CHANNEL_SIGNALING")) {
@@ -302,6 +310,7 @@ class SimulcastActivity : AppCompatActivity() {
                 videoWidth                = videoWidth,
                 videoHeight               = videoHeight,
                 simulcast                 = true,
+                simulcastRid              = simulcastRid,
                 videoFPS                  = fps,
                 fixedResolution           = fixedResolution,
                 videoCodec                = videoCodec,

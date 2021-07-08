@@ -37,6 +37,7 @@ class SoraVideoChannel(
         private val videoWidth:                Int = SoraVideoOption.FrameSize.Portrait.VGA.x,
         private val videoHeight:               Int = SoraVideoOption.FrameSize.Portrait.VGA.y,
         private val simulcast:                 Boolean = false,
+        private val simulcastRid:              SoraVideoOption.SimulcastRid? = null,
         private val videoFPS:                  Int =  30,
         private val fixedResolution:           Boolean = false,
         private val cameraFacing:              Boolean = true,
@@ -242,7 +243,7 @@ class SoraVideoChannel(
             }
 
             if(this@SoraVideoChannel.simulcast) {
-                enableSimulcast(null)
+                enableSimulcast(simulcastRid)
             }
 
             if (this@SoraVideoChannel.spotlight) {
