@@ -20,6 +20,7 @@
 ### FIX
 
 - 自身の映像プレビューが反転している問題を修正する
+- gradle.properties で指定した usesCleartextTraffic が参照されずに、常に true になっていた問題を修正する
 
 ### UPDATE
 
