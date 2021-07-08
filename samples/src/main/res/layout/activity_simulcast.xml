@@ -38,39 +38,6 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:padding="10dp"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/r0Button"
-                android:layout_width="120dp"
-                android:layout_height="50dp"
-                android:text="R0" />
-
-            <Button
-                android:id="@+id/r1Button"
-                android:layout_width="120dp"
-                android:layout_height="50dp"
-                android:text="R1" />
-
-            <Button
-                android:id="@+id/r2Button"
-                android:layout_width="120dp"
-                android:layout_height="50dp"
-                android:text="R2" />
-        </LinearLayout>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="#C8000000"
         android:padding="10dp">
