@@ -49,9 +49,9 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         roleSelection.spinner.setItems(roleOptions)
         legacySelection.name.text = "レガシー機能"
         legacySelection.spinner.setItems(legacyOptions)
-        spotlightFocusRidSelection.name.text = "フォーカス時の RID"
+        spotlightFocusRidSelection.name.text = "フォーカス時の rid"
         spotlightFocusRidSelection.spinner.setItems(spotlightFocusRidOptions)
-        spotlightUnfocusRidSelection.name.text = "非フォーカス時の RID"
+        spotlightUnfocusRidSelection.name.text = "非フォーカス時の rid"
         spotlightUnfocusRidSelection.spinner.setItems(spotlightUnfocusRidOptions)
         videoCodecSelection.name.text = "映像コーデック"
         videoCodecSelection.spinner.setItems(videoCodecOptions)

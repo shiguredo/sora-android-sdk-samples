@@ -70,7 +70,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
         fpsSelection.spinner.setItems(fpsOptions)
         resolutionChangeSelection.name.text = "解像度の変更"
         resolutionChangeSelection.spinner.setItems(resolutionChangeOptions)
-        simulcastRidSelection.name.text = "受信する RID"
+        simulcastRidSelection.name.text = "受信する rid"
         simulcastRidSelection.spinner.setItems(simulcastRidOptions)
         dataChannelSignalingSelection.name.text = "データチャネル"
         dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
