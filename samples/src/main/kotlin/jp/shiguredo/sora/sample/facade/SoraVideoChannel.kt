@@ -31,6 +31,8 @@ class SoraVideoChannel(
         private val spotlight:                 Boolean = false,
         private val spotlightLegacy:           Boolean = false,
         private val spotlightNumber:           Int? = null,
+        private val spotlightFocusRid:         SoraVideoOption.SpotlightRid? = null,
+        private val spotlightUnfocusRid:       SoraVideoOption.SpotlightRid? = null,
         private var role:                      SoraRoleType = SoraRoleType.SENDRECV,
         private var multistream:               Boolean = true,
         private var videoEnabled:              Boolean = true,
@@ -250,6 +252,8 @@ class SoraVideoChannel(
                 val option = SoraSpotlightOption()
                 option.spotlightNumber = spotlightNumber
                 Sora.usesSpotlightLegacy = spotlightLegacy
+                option.spotlightFocusRid = spotlightFocusRid
+                option.spotlightUnfocusRid = spotlightUnfocusRid
                 enableSpotlight(option)
             }
 

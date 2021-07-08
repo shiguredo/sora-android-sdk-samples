@@ -58,6 +58,8 @@ class SimulcastActivity : AppCompatActivity() {
     private var spotlight = false
     private var spotlightNumber: Int? = null
     private var spotlightLegacy = true
+    private var spotlightFocusRid: SoraVideoOption.SpotlightRid? = null
+    private var spotlightUnfocusRid: SoraVideoOption.SpotlightRid? = null
     private var fps: Int = 30
     private var fixedResolution = false
     private var simulcastRid: SoraVideoOption.SimulcastRid? = null
@@ -146,6 +148,22 @@ class SimulcastActivity : AppCompatActivity() {
         spotlightLegacy = when (intent.getStringExtra("SPOTLIGHT_LEGACY")) {
             "有効" -> true
             else      -> false
+        }
+
+        spotlightFocusRid = when (intent.getStringExtra("SPOTLIGHT_FOCUS_RID")) {
+            "none" -> SoraVideoOption.SpotlightRid.NONE
+            "r0"   -> SoraVideoOption.SpotlightRid.R0
+            "r1"   -> SoraVideoOption.SpotlightRid.R1
+            "r2"   -> SoraVideoOption.SpotlightRid.R2
+            else   -> null
+        }
+
+        spotlightUnfocusRid = when (intent.getStringExtra("SPOTLIGHT_UNFOCUS_RID")) {
+            "none" -> SoraVideoOption.SpotlightRid.NONE
+            "r0"   -> SoraVideoOption.SpotlightRid.R0
+            "r1"   -> SoraVideoOption.SpotlightRid.R1
+            "r2"   -> SoraVideoOption.SpotlightRid.R2
+            else   -> null
         }
 
         fixedResolution = when (intent.getStringExtra("RESOLUTION_CHANGE")) {
@@ -306,6 +324,8 @@ class SimulcastActivity : AppCompatActivity() {
                 spotlight                 = spotlight,
                 spotlightLegacy           = spotlightLegacy,
                 spotlightNumber           = spotlightNumber,
+                spotlightFocusRid         = spotlightFocusRid,
+                spotlightUnfocusRid       = spotlightUnfocusRid,
                 videoEnabled              = videoEnabled,
                 videoWidth                = videoWidth,
                 videoHeight               = videoHeight,
