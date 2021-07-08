@@ -368,38 +368,6 @@ class SimulcastActivity : AppCompatActivity() {
         channel?.mute(muted)
     }
 
-    internal fun changeRid(rid: String) {
-        val connectionId = channel?.mediaChannel?.connectionId
-        if (connectionId == null) {
-            SoraLogger.d(TAG, "cannot change rid: connection ID is not found")
-            return
-        }
-
-        GlobalScope.launch {
-            withContext(Dispatchers.IO) {
-                val host = URI(BuildConfig.SIGNALING_ENDPOINT).host
-                val url = URL("http://$host:3000")
-                val conn = url.openConnection() as HttpURLConnection
-                conn.requestMethod = "POST"
-                conn.setRequestProperty("x-sora-target", "Sora_20201005.RequestRtpStream")
-                conn.doOutput = true
-                conn.connect()
-                val buffer = BufferedOutputStream(conn.outputStream)
-                buffer.write("{\n".toByteArray())
-                buffer.write("    \"channel_id\": \"$channelName\",\n".toByteArray())
-                buffer.write("    \"recv_connection_id\": \"$connectionId\",\n".toByteArray())
-                buffer.write("    \"rid\": \"$rid\"\n".toByteArray())
-                buffer.write("}".toByteArray())
-                buffer.flush()
-                buffer.close()
-                conn.outputStream.close()
-
-                val status = conn.responseCode
-                SoraLogger.d(TAG, "change rid => $rid, response: $status")
-            }
-        }
-    }
-
 }
 
 class SimulcastActivityUI(
@@ -424,9 +392,6 @@ class SimulcastActivityUI(
         activity.toggleMuteButton.setOnClickListener { activity.toggleMuted() }
         activity.switchCameraButton.setOnClickListener { activity.switchCamera() }
         activity.closeButton.setOnClickListener { activity.close() }
-        activity.r0Button.setOnClickListener { activity.changeRid("r0") }
-        activity.r1Button.setOnClickListener { activity.changeRid("r1") }
-        activity.r2Button.setOnClickListener { activity.changeRid("r2") }
     }
 
     internal fun changeState(colorCode: String) {
