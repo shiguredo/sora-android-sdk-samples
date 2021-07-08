@@ -26,6 +26,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     private val audioEnabledOptions = listOf("有効", "無効")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
     private val legacyOptions = listOf("無効", "有効")
+    private val spotlightFocusRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
+    private val spotlightUnfocusRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
     private val videoBitRateOptions = listOf("500", "200", "700", "1200", "2500", "4000", "5000",
             "10000", "15000", "20000", "30000")
     private val videoSizeOptions = listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
@@ -47,6 +49,10 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         roleSelection.spinner.setItems(roleOptions)
         legacySelection.name.text = "レガシー機能"
         legacySelection.spinner.setItems(legacyOptions)
+        spotlightFocusRidSelection.name.text = "フォーカス時の rid"
+        spotlightFocusRidSelection.spinner.setItems(spotlightFocusRidOptions)
+        spotlightUnfocusRidSelection.name.text = "非フォーカス時の rid"
+        spotlightUnfocusRidSelection.spinner.setItems(spotlightUnfocusRidOptions)
         videoCodecSelection.name.text = "映像コーデック"
         videoCodecSelection.spinner.setItems(videoCodecOptions)
         videoEnabledSelection.name.text = "映像の有無"
@@ -79,6 +85,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         val spotlightNumber = selectedItem(spotlightNumberSelection.spinner)
         val role = selectedItem(roleSelection.spinner)
         val legacy = selectedItem(legacySelection.spinner)
+        var spotlightFocusRid = selectedItem(spotlightFocusRidSelection.spinner)
+        var spotlightUnfocusRid = selectedItem(spotlightUnfocusRidSelection.spinner)
         val videoCodec = selectedItem(videoCodecSelection.spinner)
         val audioCodec = selectedItem(audioCodecSelection.spinner)
         val audioBitRate = selectedItem(audioBitRateSelection.spinner)
@@ -96,6 +104,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("SPOTLIGHT", "有効")
         intent.putExtra("SPOTLIGHT_NUMBER", spotlightNumber)
         intent.putExtra("SPOTLIGHT_LEGACY", legacy)
+        intent.putExtra("SPOTLIGHT_FOCUS_RID", spotlightFocusRid)
+        intent.putExtra("SPOTLIGHT_UNFOCUS_RID", spotlightUnfocusRid)
         intent.putExtra("ROLE", role)
         intent.putExtra("LEGACY", legacy)
         intent.putExtra("VIDEO_CODEC", videoCodec)

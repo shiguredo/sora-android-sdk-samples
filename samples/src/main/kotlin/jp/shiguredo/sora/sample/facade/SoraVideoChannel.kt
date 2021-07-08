@@ -31,12 +31,15 @@ class SoraVideoChannel(
         private val spotlight:                 Boolean = false,
         private val spotlightLegacy:           Boolean = false,
         private val spotlightNumber:           Int? = null,
+        private val spotlightFocusRid:         SoraVideoOption.SpotlightRid? = null,
+        private val spotlightUnfocusRid:       SoraVideoOption.SpotlightRid? = null,
         private var role:                      SoraRoleType = SoraRoleType.SENDRECV,
         private var multistream:               Boolean = true,
         private var videoEnabled:              Boolean = true,
         private val videoWidth:                Int = SoraVideoOption.FrameSize.Portrait.VGA.x,
         private val videoHeight:               Int = SoraVideoOption.FrameSize.Portrait.VGA.y,
         private val simulcast:                 Boolean = false,
+        private val simulcastRid:              SoraVideoOption.SimulcastRid? = null,
         private val videoFPS:                  Int =  30,
         private val fixedResolution:           Boolean = false,
         private val cameraFacing:              Boolean = true,
@@ -242,13 +245,15 @@ class SoraVideoChannel(
             }
 
             if(this@SoraVideoChannel.simulcast) {
-                enableSimulcast(null)
+                enableSimulcast(simulcastRid)
             }
 
             if (this@SoraVideoChannel.spotlight) {
                 val option = SoraSpotlightOption()
                 option.spotlightNumber = spotlightNumber
                 Sora.usesSpotlightLegacy = spotlightLegacy
+                option.spotlightFocusRid = spotlightFocusRid
+                option.spotlightUnfocusRid = spotlightUnfocusRid
                 enableSpotlight(option)
             }
 
