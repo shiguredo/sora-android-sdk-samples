@@ -12,6 +12,11 @@
 
 ## develop
 
+## ADD
+
+- サイマルキャストの接続時に simulcast_rid を指定できるようにする
+- スポットライトの接続時に spotlight_focus_rid / spotlight_unfocus_rid を指定できるようにする
+
 ### FIX
 
 - 自身の映像プレビューが反転している問題を修正する
