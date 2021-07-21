@@ -18,7 +18,7 @@
 - spotlight_number は未指定をデフォルトにする
 - 依存ライブラリーのバージョンを上げる
   - `com.android.tools.build:gradle` を 4.2.2 に上げる
-- jCenter への参照を取り除く
+- JCenter への参照を取り除く
 
 ## ADD
 
