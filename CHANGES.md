@@ -12,6 +12,14 @@
 
 ## develop
 
+### UPDATE
+
+- sdk が channel_id を必須にした変更に追従する
+- spotlight_number は未指定をデフォルトにする
+- 依存ライブラリーのバージョンを上げる
+  - `com.android.tools.build:gradle` を 4.2.2 に上げる
+- JCenter への参照を取り除く
+
 ## ADD
 
 - サイマルキャストの接続時に simulcast_rid を指定できるようにする
@@ -26,10 +34,6 @@
 - 自身の映像プレビューが反転している問題を修正する
 - gradle.properties で指定した usesCleartextTraffic が参照されずに、常に true になっていた問題を修正する
 
-### UPDATE
-
-- sdk が channel_id を必須にした変更に追従する
-- spotlight_number は未指定をデフォルトにする
 =======
 ## sora-android-sdk-2021.1.1
 
