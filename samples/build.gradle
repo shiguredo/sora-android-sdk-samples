@@ -72,7 +72,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.3'
 
     ext.pd_version = '4.8.0'
-    implementation "com.github.permissions-dispatcher.permissionsdispatcher:permissionsdispatcher:${pd_version}"
+    implementation "com.github.permissions-dispatcher:permissionsdispatcher:${pd_version}"
     kapt "com.github.permissions-dispatcher:permissionsdispatcher-processor:${pd_version}"
 
     implementation project(path: ':webrtc-video-effector')
