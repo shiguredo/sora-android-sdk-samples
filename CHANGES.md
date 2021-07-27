@@ -19,6 +19,7 @@
 - 依存ライブラリーのバージョンを上げる
   - `com.android.tools.build:gradle` を 4.2.2 に上げる
 - JCenter への参照を取り除く
+- シグナリングエンドポイント URL の設定を `/build.gradle` から `/gradle.properties.example` に移動する
 
 ## ADD
 
