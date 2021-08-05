@@ -54,6 +54,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var fixedResolution = false
     private var cameraFacing = true
     private var clientId: String? = null
+    private var dataChannelSignaling: Boolean? = null
+    private var ignoreDisconnectWebSocket: Boolean? = null
 
     private var oldAudioMode: Int = AudioManager.MODE_NORMAL
 
@@ -129,7 +131,10 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else      -> false
         }
 
-        spotlightNumber = intent.getStringExtra("SPOTLIGHT_NUMBER")?.toInt()
+        spotlightNumber = when (val stringValue = intent.getStringExtra("SPOTLIGHT_NUMBER")) {
+            "未指定" -> null
+            else -> stringValue?.toInt()
+        }
 
         spotlightLegacy = when (intent.getStringExtra("SPOTLIGHT_LEGACY")) {
             "有効" -> true
@@ -172,6 +177,20 @@ class VideoChatRoomActivity : AppCompatActivity() {
             "時雨堂"      -> "🍖時雨堂🍗"
             "ランダム" -> UUID.randomUUID().toString()
             else -> null
+        }
+
+        dataChannelSignaling = when (intent.getStringExtra("DATA_CHANNEL_SIGNALING")) {
+            "無効"   -> false
+            "有効"   -> true
+            "未指定" -> null
+            else     -> null
+        }
+
+        ignoreDisconnectWebSocket = when (intent.getStringExtra("IGNORE_DISCONNECT_WEBSOCKET")) {
+            "無効"   -> false
+            "有効"   -> true
+            "未指定" -> null
+            else     -> null
         }
 
         // ステレオでは landscape にしたほうが内蔵マイクを使うときに自然な向きとなる。
@@ -284,6 +303,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
                 channelId         = channelName,
                 signalingMetadata = "",
+                dataChannelSignaling = dataChannelSignaling,
+                ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
                 spotlight         = spotlight,
                 spotlightLegacy = spotlightLegacy,
                 spotlightNumber = spotlightNumber,
@@ -363,7 +384,6 @@ class VideoChatRoomActivityUI(
         renderer.layoutParams =
                 FrameLayout.LayoutParams(dp2px(100), dp2px(100))
         activity.localRendererContainer.addView(renderer)
-        renderer.setMirror(true)
     }
 
     internal fun addRenderer(renderer: SurfaceViewRenderer) {

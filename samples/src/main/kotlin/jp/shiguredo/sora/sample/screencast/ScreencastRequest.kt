@@ -9,7 +9,7 @@ import android.os.Parcelable
 class ScreencastRequest(
         val data:              Intent?,
         val signalingEndpoint: String?,
-        val channelId:         String?,
+        val channelId:         String,
         val signalingMetadata: String?,
         val videoScale:        Float,
         val videoFPS:          Int,
@@ -25,7 +25,7 @@ class ScreencastRequest(
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(Intent::class.java.classLoader),
             parcel.readString(),
-            parcel.readString(),
+            parcel.readString()!!,
             parcel.readString(),
             parcel.readFloat(),
             parcel.readInt(),

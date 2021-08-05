@@ -17,7 +17,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         private val TAG = SpotlightRoomSetupActivity::class.simpleName
     }
 
-    private val spotlightNumberOptions = listOf("1", "2", "3", "4", "5", "6", "7", "8")
+    private val spotlightNumberOptions = listOf("未指定", "1", "2", "3", "4", "5", "6", "7", "8")
     private val videoCodecOptions = listOf("VP8", "H264")
     private val audioCodecOptions = listOf("OPUS")
     private val audioBitRateOptions = listOf("未指定", "8", "16", "24", "32",
@@ -26,9 +26,14 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     private val audioEnabledOptions = listOf("有効", "無効")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
     private val legacyOptions = listOf("無効", "有効")
-    private val videoBitRateOptions = listOf("200", "500", "700", "1200", "2500", "4000", "5000", "10000", "15000", "20000", "30000")
+    private val spotlightFocusRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
+    private val spotlightUnfocusRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
+    private val videoBitRateOptions = listOf("500", "200", "700", "1200", "2500", "4000", "5000",
+            "10000", "15000", "20000", "30000")
     private val videoSizeOptions = listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
+    private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
+    private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -38,12 +43,16 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
 
         start.setOnClickListener { startSpotlightChat() }
 
-        spotlightNumberSelection.name.text = "アクティブ配信数"
+        spotlightNumberSelection.name.text = "スポットライト数"
         spotlightNumberSelection.spinner.setItems(spotlightNumberOptions)
         roleSelection.name.text = "ロール"
         roleSelection.spinner.setItems(roleOptions)
         legacySelection.name.text = "レガシー機能"
         legacySelection.spinner.setItems(legacyOptions)
+        spotlightFocusRidSelection.name.text = "フォーカス時の rid"
+        spotlightFocusRidSelection.spinner.setItems(spotlightFocusRidOptions)
+        spotlightUnfocusRidSelection.name.text = "非フォーカス時の rid"
+        spotlightUnfocusRidSelection.spinner.setItems(spotlightUnfocusRidOptions)
         videoCodecSelection.name.text = "映像コーデック"
         videoCodecSelection.spinner.setItems(videoCodecOptions)
         videoEnabledSelection.name.text = "映像の有無"
@@ -60,10 +69,10 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         videoSizeSelection.spinner.setItems(videoSizeOptions)
         fpsSelection.name.text = "フレームレート"
         fpsSelection.spinner.setItems(fpsOptions)
-
-        spotlightNumberSelection.spinner.selectedIndex = 2 // 3
-        videoCodecSelection.spinner.selectedIndex = 0 // VP8
-        videoBitRateSelection.spinner.selectedIndex = 1 // 500
+        dataChannelSignalingSelection.name.text = "データチャネル"
+        dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
+        ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
+        ignoreDisconnectWebSocketSelection.spinner.setItems(ignoreDisconnectWebSocketOptions)
     }
 
     private fun startSpotlightChat() {
@@ -76,6 +85,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         val spotlightNumber = selectedItem(spotlightNumberSelection.spinner)
         val role = selectedItem(roleSelection.spinner)
         val legacy = selectedItem(legacySelection.spinner)
+        var spotlightFocusRid = selectedItem(spotlightFocusRidSelection.spinner)
+        var spotlightUnfocusRid = selectedItem(spotlightUnfocusRidSelection.spinner)
         val videoCodec = selectedItem(videoCodecSelection.spinner)
         val audioCodec = selectedItem(audioCodecSelection.spinner)
         val audioBitRate = selectedItem(audioBitRateSelection.spinner)
@@ -84,6 +95,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         val videoBitRate = selectedItem(videoBitRateSelection.spinner)
         val videoSize = selectedItem(videoSizeSelection.spinner)
         val fps = selectedItem(fpsSelection.spinner)
+        val dataChannelSignaling = selectedItem(dataChannelSignalingSelection.spinner)
+        val ignoreDisconnectWebSocket = selectedItem(ignoreDisconnectWebSocketSelection.spinner)
 
         val intentActivityClass = if (Sora.usesSpotlightLegacy) VideoChatRoomActivity::class.java else SimulcastActivity::class.java
         val intent = Intent(this, intentActivityClass)
@@ -91,6 +104,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("SPOTLIGHT", "有効")
         intent.putExtra("SPOTLIGHT_NUMBER", spotlightNumber)
         intent.putExtra("SPOTLIGHT_LEGACY", legacy)
+        intent.putExtra("SPOTLIGHT_FOCUS_RID", spotlightFocusRid)
+        intent.putExtra("SPOTLIGHT_UNFOCUS_RID", spotlightUnfocusRid)
         intent.putExtra("ROLE", role)
         intent.putExtra("LEGACY", legacy)
         intent.putExtra("VIDEO_CODEC", videoCodec)
@@ -101,6 +116,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("VIDEO_BIT_RATE", videoBitRate)
         intent.putExtra("VIDEO_SIZE", videoSize)
         intent.putExtra("FPS", fps)
+        intent.putExtra("DATA_CHANNEL_SIGNALING", dataChannelSignaling)
+        intent.putExtra("IGNORE_DISCONNECT_WEBSOCKET", ignoreDisconnectWebSocket)
 
         startActivity(intent)
     }

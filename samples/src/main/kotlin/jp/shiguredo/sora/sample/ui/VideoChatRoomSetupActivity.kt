@@ -37,6 +37,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     private val resolutionChangeOptions = listOf("可変", "固定")
     private val cameraFacingOptions = listOf("前面", "背面")
     private val clientIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
+    private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
+    private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -73,6 +75,10 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         cameraFacingSelection.spinner.setItems(cameraFacingOptions)
         clientIdSelection.name.text = "クライアント ID"
         clientIdSelection.spinner.setItems(clientIdOptions)
+        dataChannelSignalingSelection.name.text = "データチャネル"
+        dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
+        ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
+        ignoreDisconnectWebSocketSelection.spinner.setItems(ignoreDisconnectWebSocketOptions)
     }
 
     private fun startVideoChat() {
@@ -96,6 +102,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val resolutionChange = selectedItem(resolutionChangeSelection.spinner)
         val cameraFacing = selectedItem(cameraFacingSelection.spinner)
         val clientId = selectedItem(clientIdSelection.spinner)
+        val dataChannelSignaling = selectedItem(dataChannelSignalingSelection.spinner)
+        val ignoreDisconnectWebSocket = selectedItem(ignoreDisconnectWebSocketSelection.spinner)
 
         val intent = Intent(this, VideoChatRoomActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
@@ -113,6 +121,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
         intent.putExtra("CAMERA_FACING", cameraFacing)
         intent.putExtra("CLIENT_ID", clientId)
+        intent.putExtra("DATA_CHANNEL_SIGNALING", dataChannelSignaling)
+        intent.putExtra("IGNORE_DISCONNECT_WEBSOCKET", ignoreDisconnectWebSocket)
 
         startActivity(intent)
     }

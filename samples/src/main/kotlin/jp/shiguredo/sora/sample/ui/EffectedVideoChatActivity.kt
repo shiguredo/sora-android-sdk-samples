@@ -36,7 +36,7 @@ class EffectedVideoChatActivity : AppCompatActivity() {
         private val TAG = EffectedVideoChatActivity::class.simpleName
     }
 
-    private var channelName: String? = ""
+    private var channelName: String = ""
     private var role = SoraRoleType.SENDRECV
     private var ui: EffectedVideoChatActivityUI? = null
     private var effector: RTCVideoEffector? = null
@@ -91,7 +91,7 @@ class EffectedVideoChatActivity : AppCompatActivity() {
             }
         }
 
-        channelName = intent.getStringExtra("CHANNEL_NAME")
+        channelName = intent.getStringExtra("CHANNEL_NAME") ?: getString(R.string.channelId)
         ui = EffectedVideoChatActivityUI(
                 activity        = this,
                 channelName     = channelName,
@@ -259,7 +259,6 @@ class EffectedVideoChatActivityUI(
     internal fun addLocalRenderer(renderer: SurfaceViewRenderer) {
         renderer.layoutParams = FrameLayout.LayoutParams(dp2px(100), dp2px(100))
         activity.localRendererContainer.addView(renderer)
-        renderer.setMirror(true)
     }
 
     internal fun addRenderer(renderer: SurfaceViewRenderer) {

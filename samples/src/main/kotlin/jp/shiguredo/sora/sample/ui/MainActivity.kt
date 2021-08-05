@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
                 Feature(title = "サイマルキャスト",
                         description = "サイマルキャストのデモです。") ,
                 Feature(title = "スポットライト",
-                        description = "スポットライトのデモです。アクティブ配信数を固定したチャットが可能です。"),
+                        description = "スポットライトのデモです。スポットライト数を固定したチャットが可能です。"),
                 Feature(title = "スクリーンキャスト",
                         description = "スクリーンキャストのデモです。"),
                 Feature(title = "ビデオエフェクト",

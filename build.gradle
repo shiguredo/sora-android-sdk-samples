@@ -2,24 +2,20 @@ apply plugin: "com.github.ben-manes.versions"
 
 buildscript {
     ext.kotlin_version = '1.4.31'
-    ext.sora_android_sdk_version = '2021.1.1'
+    ext.sora_android_sdk_version = '2021.2'
 
     repositories {
-        jcenter()
         google()
         gradlePluginPortal()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.2'
+        classpath 'com.android.tools.build:gradle:4.2.2'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_version}"
 
         classpath "com.github.ben-manes:gradle-versions-plugin:0.38.0"
     }
-
-    // アプリから参照する設定項目
-    ext.signaling_endpoint = "wss://sora.example.com/signaling"
-    ext.channel_id         = "sora"
 
     // デバッグ用: true に設定すると wss ではなく ws で接続できる
     ext.usesCleartextTraffic = false
@@ -27,8 +23,8 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
         google()
+        mavenCentral()
         maven { url 'https://jitpack.io' }
     }
 }

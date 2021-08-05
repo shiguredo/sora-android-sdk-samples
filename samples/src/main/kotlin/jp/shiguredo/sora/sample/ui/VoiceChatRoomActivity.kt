@@ -26,12 +26,14 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         private val TAG = VoiceChatRoomActivity::class.simpleName
     }
 
-    private var channelName: String? = ""
+    private var channelName: String = ""
 
     private var audioCodec:  SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
     private var audioBitRate: Int? = null
     private var role   = SoraRoleType.SENDRECV
     private var multistream: Boolean = true
+    private var dataChannelSignaling: Boolean? = null
+    private var ignoreDisconnectWebSocket: Boolean? = null
 
     private var oldAudioMode: Int = AudioManager.MODE_INVALID
 
@@ -42,7 +44,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_voice_chat_room)
 
-        channelName = intent.getStringExtra("CHANNEL_NAME")
+        channelName = intent.getStringExtra("CHANNEL_NAME") ?: getString(R.string.channelId)
 
         audioCodec = SoraAudioOption.Codec.valueOf(intent.getStringExtra("AUDIO_CODEC") ?: "OPUS")
 
@@ -61,6 +63,20 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         multistream = when (intent.getStringExtra("MULTISTREAM")) {
             "有効" -> true
             else   -> false
+        }
+
+        dataChannelSignaling = when (intent.getStringExtra("DATA_CHANNEL_SIGNALING")) {
+            "無効"   -> false
+            "有効"   -> true
+            "未指定" -> null
+            else     -> null
+        }
+
+        ignoreDisconnectWebSocket = when (intent.getStringExtra("IGNORE_DISCONNECT_WEBSOCKET")) {
+            "無効"   -> false
+            "有効"   -> true
+            "未指定" -> null
+            else     -> null
         }
 
         channelNameText.text = channelName
@@ -139,16 +155,18 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         Log.d(TAG, "connectChannel")
 
         channel = SoraAudioChannel(
-                context           = this,
-                handler           = Handler(),
-                signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
-                channelId         = channelName,
-                signalingMetadata = "",
-                audioCodec        = audioCodec,
-                audioBitRate      = audioBitRate,
-                role              = role,
-                multistream       = multistream,
-                listener          = channelListener
+                context                   = this,
+                handler                   = Handler(),
+                signalingEndpoint         = BuildConfig.SIGNALING_ENDPOINT,
+                channelId                 = channelName,
+                dataChannelSignaling      = dataChannelSignaling,
+                ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
+                signalingMetadata         = "",
+                audioCodec                = audioCodec,
+                audioBitRate              = audioBitRate,
+                role                      = role,
+                multistream               = multistream,
+                listener                  = channelListener
         )
         channel!!.connect()
     }

@@ -35,6 +35,9 @@ class SimulcastSetupActivity : AppCompatActivity() {
             "Res3840x1920", "UHD3840x2160")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("可変", "固定")
+    private val simulcastRidOptions = listOf("未指定", "r0", "r1", "r2")
+    private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
+    private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -67,6 +70,12 @@ class SimulcastSetupActivity : AppCompatActivity() {
         fpsSelection.spinner.setItems(fpsOptions)
         resolutionChangeSelection.name.text = "解像度の変更"
         resolutionChangeSelection.spinner.setItems(resolutionChangeOptions)
+        simulcastRidSelection.name.text = "受信する rid"
+        simulcastRidSelection.spinner.setItems(simulcastRidOptions)
+        dataChannelSignalingSelection.name.text = "データチャネル"
+        dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
+        ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
+        ignoreDisconnectWebSocketSelection.spinner.setItems(ignoreDisconnectWebSocketOptions)
 
         videoBitRateSelection.spinner.selectedIndex = 6
         videoSizeSelection.spinner.selectedIndex = 6
@@ -91,6 +100,9 @@ class SimulcastSetupActivity : AppCompatActivity() {
         val videoSize = selectedItem(videoSizeSelection.spinner)
         val fps = selectedItem(fpsSelection.spinner)
         val resolutionChange = selectedItem(resolutionChangeSelection.spinner)
+        val simulcastRid = selectedItem(simulcastRidSelection.spinner)
+        val dataChannelSignaling = selectedItem(dataChannelSignalingSelection.spinner)
+        val ignoreDisconnectWebSocket = selectedItem(ignoreDisconnectWebSocketSelection.spinner)
 
         val intent = Intent(this, SimulcastActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
@@ -107,6 +119,9 @@ class SimulcastSetupActivity : AppCompatActivity() {
         intent.putExtra("SIMULCAST", true)
         intent.putExtra("FPS", fps)
         intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
+        intent.putExtra("SIMULCAST_RID", simulcastRid)
+        intent.putExtra("DATA_CHANNEL_SIGNALING", dataChannelSignaling)
+        intent.putExtra("IGNORE_DISCONNECT_WEBSOCKET", ignoreDisconnectWebSocket)
 
         startActivity(intent)
     }

@@ -58,8 +58,13 @@ class SimulcastActivity : AppCompatActivity() {
     private var spotlight = false
     private var spotlightNumber: Int? = null
     private var spotlightLegacy = true
+    private var spotlightFocusRid: SoraVideoOption.SpotlightRid? = null
+    private var spotlightUnfocusRid: SoraVideoOption.SpotlightRid? = null
     private var fps: Int = 30
     private var fixedResolution = false
+    private var simulcastRid: SoraVideoOption.SimulcastRid? = null
+    private var dataChannelSignaling: Boolean? = null
+    private var ignoreDisconnectWebSocket: Boolean? = null
 
     private var oldAudioMode: Int = AudioManager.MODE_NORMAL
 
@@ -135,11 +140,30 @@ class SimulcastActivity : AppCompatActivity() {
             else      -> false
         }
 
-        spotlightNumber = intent.getStringExtra("SPOTLIGHT_NUMBER")?.toInt()
+        spotlightNumber = when (val stringValue = intent.getStringExtra("SPOTLIGHT_NUMBER")) {
+            "未指定" -> null
+            else -> stringValue?.toInt()
+        }
 
         spotlightLegacy = when (intent.getStringExtra("SPOTLIGHT_LEGACY")) {
             "有効" -> true
             else      -> false
+        }
+
+        spotlightFocusRid = when (intent.getStringExtra("SPOTLIGHT_FOCUS_RID")) {
+            "none" -> SoraVideoOption.SpotlightRid.NONE
+            "r0"   -> SoraVideoOption.SpotlightRid.R0
+            "r1"   -> SoraVideoOption.SpotlightRid.R1
+            "r2"   -> SoraVideoOption.SpotlightRid.R2
+            else   -> null
+        }
+
+        spotlightUnfocusRid = when (intent.getStringExtra("SPOTLIGHT_UNFOCUS_RID")) {
+            "none" -> SoraVideoOption.SpotlightRid.NONE
+            "r0"   -> SoraVideoOption.SpotlightRid.R0
+            "r1"   -> SoraVideoOption.SpotlightRid.R1
+            "r2"   -> SoraVideoOption.SpotlightRid.R2
+            else   -> null
         }
 
         fixedResolution = when (intent.getStringExtra("RESOLUTION_CHANGE")) {
@@ -169,6 +193,27 @@ class SimulcastActivity : AppCompatActivity() {
             if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             }
+        }
+
+        simulcastRid = when (intent.getStringExtra("SIMULCAST_RID")) {
+            "r0" -> SoraVideoOption.SimulcastRid.R0
+            "r1" -> SoraVideoOption.SimulcastRid.R1
+            "r2" -> SoraVideoOption.SimulcastRid.R2
+            else -> null
+        }
+
+        dataChannelSignaling = when (intent.getStringExtra("DATA_CHANNEL_SIGNALING")) {
+            "無効"   -> false
+            "有効"   -> true
+            "未指定" -> null
+            else     -> null
+        }
+
+        ignoreDisconnectWebSocket = when (intent.getStringExtra("IGNORE_DISCONNECT_WEBSOCKET")) {
+            "無効"   -> false
+            "有効"   -> true
+            "未指定" -> null
+            else     -> null
         }
 
         ui = SimulcastActivityUI(
@@ -269,30 +314,35 @@ class SimulcastActivity : AppCompatActivity() {
         Log.d(TAG, "openChannel")
 
         channel = SoraVideoChannel(
-                context           = this,
-                handler           = Handler(),
-                signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
-                channelId         = channelName,
-                signalingMetadata = "",
-                spotlight         = spotlight,
-                spotlightLegacy = spotlightLegacy,
-                spotlightNumber = spotlightNumber,
-                videoEnabled      = videoEnabled,
-                videoWidth        = videoWidth,
-                videoHeight       = videoHeight,
-                simulcast         = true,
-                videoFPS          = fps,
-                fixedResolution   = fixedResolution,
-                videoCodec        = videoCodec,
-                videoBitRate      = videoBitRate,
-                audioEnabled      = audioEnabled,
-                audioCodec        = audioCodec,
-                audioBitRate      = audioBitRate,
-                audioStereo       = audioStereo,
-                role              = role,
-                multistream       = multistream,
-                listener          = channelListener,
-                needLocalRenderer = true
+                context                   = this,
+                handler                   = Handler(),
+                signalingEndpoint         = BuildConfig.SIGNALING_ENDPOINT,
+                channelId                 = channelName,
+                dataChannelSignaling      = dataChannelSignaling,
+                ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
+                signalingMetadata         = "",
+                spotlight                 = spotlight,
+                spotlightLegacy           = spotlightLegacy,
+                spotlightNumber           = spotlightNumber,
+                spotlightFocusRid         = spotlightFocusRid,
+                spotlightUnfocusRid       = spotlightUnfocusRid,
+                videoEnabled              = videoEnabled,
+                videoWidth                = videoWidth,
+                videoHeight               = videoHeight,
+                simulcast                 = true,
+                simulcastRid              = simulcastRid,
+                videoFPS                  = fps,
+                fixedResolution           = fixedResolution,
+                videoCodec                = videoCodec,
+                videoBitRate              = videoBitRate,
+                audioEnabled              = audioEnabled,
+                audioCodec                = audioCodec,
+                audioBitRate              = audioBitRate,
+                audioStereo               = audioStereo,
+                role                      = role,
+                multistream               = multistream,
+                listener                  = channelListener,
+                needLocalRenderer         = true
         )
         channel!!.connect()
     }
@@ -316,38 +366,6 @@ class SimulcastActivity : AppCompatActivity() {
         }
         muted = !muted
         channel?.mute(muted)
-    }
-
-    internal fun changeRid(rid: String) {
-        val connectionId = channel?.mediaChannel?.connectionId
-        if (connectionId == null) {
-            SoraLogger.d(TAG, "cannot change rid: connection ID is not found")
-            return
-        }
-
-        GlobalScope.launch {
-            withContext(Dispatchers.IO) {
-                val host = URI(BuildConfig.SIGNALING_ENDPOINT).host
-                val url = URL("http://$host:3000")
-                val conn = url.openConnection() as HttpURLConnection
-                conn.requestMethod = "POST"
-                conn.setRequestProperty("x-sora-target", "Sora_20201005.RequestRtpStream")
-                conn.doOutput = true
-                conn.connect()
-                val buffer = BufferedOutputStream(conn.outputStream)
-                buffer.write("{\n".toByteArray())
-                buffer.write("    \"channel_id\": \"$channelName\",\n".toByteArray())
-                buffer.write("    \"recv_connection_id\": \"$connectionId\",\n".toByteArray())
-                buffer.write("    \"rid\": \"$rid\"\n".toByteArray())
-                buffer.write("}".toByteArray())
-                buffer.flush()
-                buffer.close()
-                conn.outputStream.close()
-
-                val status = conn.responseCode
-                SoraLogger.d(TAG, "change rid => $rid, response: $status")
-            }
-        }
     }
 
 }
@@ -374,9 +392,6 @@ class SimulcastActivityUI(
         activity.toggleMuteButton.setOnClickListener { activity.toggleMuted() }
         activity.switchCameraButton.setOnClickListener { activity.switchCamera() }
         activity.closeButton.setOnClickListener { activity.close() }
-        activity.r0Button.setOnClickListener { activity.changeRid("r0") }
-        activity.r1Button.setOnClickListener { activity.changeRid("r1") }
-        activity.r2Button.setOnClickListener { activity.changeRid("r2") }
     }
 
     internal fun changeState(colorCode: String) {
@@ -387,7 +402,6 @@ class SimulcastActivityUI(
         renderer.layoutParams =
                 FrameLayout.LayoutParams(dp2px(100), dp2px(100))
         activity.localRendererContainer.addView(renderer)
-        renderer.setMirror(true)
     }
 
     internal fun addRenderer(renderer: SurfaceViewRenderer) {

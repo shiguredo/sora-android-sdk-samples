@@ -14,16 +14,18 @@ import org.webrtc.MediaStream
 import org.webrtc.VideoSource
 
 class SoraAudioChannel(
-        private val context:           Context,
-        private val handler:           Handler,
-        private val signalingEndpoint: String,
-        private val channelId:         String?,
-        private val signalingMetadata: String = "",
-        private var role:              SoraRoleType,
-        private var multistream:       Boolean = true,
-        private var audioCodec:        SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
-        private val audioBitRate:      Int? = null,
-        private var listener:          Listener?
+        private val context:                   Context,
+        private val handler:                   Handler,
+        private val signalingEndpoint:         String,
+        private val channelId:                 String,
+        private val dataChannelSignaling:      Boolean? = null,
+        private val ignoreDisconnectWebSocket: Boolean? = null,
+        private val signalingMetadata:         String = "",
+        private var role:                      SoraRoleType,
+        private var multistream:               Boolean = true,
+        private var audioCodec:                SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
+        private val audioBitRate:              Int? = null,
+        private var listener:                  Listener?
 ) {
 
     companion object {
@@ -95,12 +97,14 @@ class SoraAudioChannel(
         }
 
         mediaChannel = SoraMediaChannel(
-                context           = context,
-                signalingEndpoint = signalingEndpoint,
-                channelId         = channelId,
-                signalingMetadata = signalingMetadata,
-                mediaOption       = mediaOption,
-                listener          = channelListener
+                context                   = context,
+                signalingEndpoint         = signalingEndpoint,
+                channelId                 = channelId,
+                dataChannelSignaling      = dataChannelSignaling,
+                ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
+                signalingMetadata         = signalingMetadata,
+                mediaOption               = mediaOption,
+                listener                  = channelListener
         )
 
         mediaChannel!!.connect()
