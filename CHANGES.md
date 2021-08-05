@@ -10,8 +10,13 @@
     - バグ修正
 
 
-## develop
+## sora-android-sdk-2021.2
 
+- [UPDATE] システム条件を更新する
+  - Android Studio 4.2 以降
+  - WebRTC SFU Sora 2021.1 以降
+  - Sora Android SDK 2021.2 以降
+  - @miosakuma
 - [UPDATE] sdk が channel_id を必須にした変更に追従する
   - @shino
 - [UPDATE] spotlight_number は未指定をデフォルトにする
