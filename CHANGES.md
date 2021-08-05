@@ -12,35 +12,31 @@
 
 ## develop
 
-### UPDATE
+- [UPDATE] sdk が channel_id を必須にした変更に追従する
+  - @shino
+- [UPDATE] spotlight_number は未指定をデフォルトにする
+  - @shino
+- [UPDATE] `com.android.tools.build:gradle` を 4.2.2 に上げる
+  - @enm10k
+- [UPDATE] JCenter への参照を取り除く
+  - @enm10k
+- [UPDATE] シグナリングエンドポイント URL の設定を `/build.gradle` から `/gradle.properties.example` に移動する
+  - @miosakuma
+- [ADD] サイマルキャストの接続時に simulcast_rid を指定できるようにする
+  - @enm10k
+- [ADD] スポットライトの接続時に spotlight_focus_rid / spotlight_unfocus_rid を指定できるようにする
+  - @enm10k
+- [CHANGE] サイマルキャスト画面から、受信する rid を指定するボタンを削除する
+  - @enm10k
+- [FIX] 自身の映像プレビューが反転している問題を修正する
+  - @torikizi
+- [FIX] gradle.properties で指定した usesCleartextTraffic が参照されずに、常に true になっていた問題を修正する
+  - @enm10k
 
-- sdk が channel_id を必須にした変更に追従する
-- spotlight_number は未指定をデフォルトにする
-- 依存ライブラリーのバージョンを上げる
-  - `com.android.tools.build:gradle` を 4.2.2 に上げる
-- JCenter への参照を取り除く
-- シグナリングエンドポイント URL の設定を `/build.gradle` から `/gradle.properties.example` に移動する
-
-## ADD
-
-- サイマルキャストの接続時に simulcast_rid を指定できるようにする
-- スポットライトの接続時に spotlight_focus_rid / spotlight_unfocus_rid を指定できるようにする
-
-## CHNAGE
-
-- サイマルキャスト画面から、受信する rid を指定するボタンを削除する
-
-### FIX
-
-- 自身の映像プレビューが反転している問題を修正する
-- gradle.properties で指定した usesCleartextTraffic が参照されずに、常に true になっていた問題を修正する
-
-=======
 ## sora-android-sdk-2021.1.1
 
-### UPDATE
-
-- SDK のバージョンを 2021.1.1 に上げる
+- [UPDATE] SDK のバージョンを 2021.1.1 に上げる
+  - @enm10k
 
 ## 2021.1
 
