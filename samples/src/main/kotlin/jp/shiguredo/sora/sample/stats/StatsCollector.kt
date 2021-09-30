@@ -1,8 +1,8 @@
 package jp.shiguredo.sora.sample.stats
 
 import jp.shiguredo.sora.sdk.util.SoraLogger
-import org.webrtc.RTCStats
-import org.webrtc.RTCStatsReport
+import jp.shiguredo.sora.sdk.channel.SoraRTCStats
+import jp.shiguredo.sora.sdk.channel.SoraRTCStatsReport
 
 
 class VideoUpstreamLatencyStatsCollector {
@@ -11,9 +11,9 @@ class VideoUpstreamLatencyStatsCollector {
         val TAG = VideoUpstreamLatencyStatsCollector::class.simpleName
     }
 
-    private var prevReport: RTCStatsReport? = null
+    private var prevReport: SoraRTCStatsReport? = null
 
-    fun newStatsReport(statsReport: RTCStatsReport) {
+    fun newStatsReport(statsReport: SoraRTCStatsReport) {
         // upstream video は一本しかないことを前提とする
 
         val outboundVideoStats = outboundRtpVideoStreamStats(statsReport)
@@ -39,26 +39,16 @@ class VideoUpstreamLatencyStatsCollector {
         prevReport = statsReport
     }
 
-    private fun outboundRtpVideoStreamStats(statsReport: RTCStatsReport?): RTCStats? {
-        return statsReport?.statsMap?.entries?.firstOrNull {
-            val stats = it.value
-            val type = stats.type
-            val kind = stats.members["kind"]
-            type == "outbound-rtp" && kind == "video"
-        }?.value
+    private fun outboundRtpVideoStreamStats(report: SoraRTCStatsReport?): SoraRTCStats? {
+        return report?.firstOrNull()
     }
 
-    private fun nominatedIceCandidatePairStats(statsReport: RTCStatsReport?): RTCStats? {
-        return statsReport?.statsMap?.entries?.firstOrNull {
-            val stats = it.value
-            val type = stats.type
-            val nominated = stats.members["nominated"]
-            type == "candidate-pair" && nominated == true
-        }?.value
+    private fun nominatedIceCandidatePairStats(report: SoraRTCStatsReport?): SoraRTCStats? {
+        return report?.firstOrNull()
     }
 
-    private fun valueAsDouble(key: String, stats: RTCStats?): Double? {
-        return when (val value = stats?.members?.get(key)) {
+    private fun valueAsDouble(key: String, stats: SoraRTCStats?): Double? {
+        return when (val value = stats?.get(key)) {
             is Number ->
                 value.toDouble()
             else ->
@@ -66,7 +56,7 @@ class VideoUpstreamLatencyStatsCollector {
         }
     }
 
-    private fun difference(key: String, prevStats: RTCStats?, nowStats: RTCStats?): Double? {
+    private fun difference(key: String, prevStats: SoraRTCStats?, nowStats: SoraRTCStats?): Double? {
         val prevValue = valueAsDouble(key, prevStats)
         val nowValue = valueAsDouble(key, nowStats)
 
@@ -77,7 +67,7 @@ class VideoUpstreamLatencyStatsCollector {
         }
     }
 
-    private fun averageMSec(numeratorKey: String, denominatorKey: String, prevStats: RTCStats?, nowStats: RTCStats?): Double? {
+    private fun averageMSec(numeratorKey: String, denominatorKey: String, prevStats: SoraRTCStats?, nowStats: SoraRTCStats?): Double? {
         val numeratorDiff = difference(numeratorKey, prevStats, nowStats)
         val denominatorDiff = difference(denominatorKey, prevStats, nowStats)
         if (numeratorDiff == null || denominatorDiff == null) {

@@ -7,6 +7,7 @@ import jp.shiguredo.sora.sample.camera.DefaultCameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sample.ui.util.SoraRemoteRendererSlot
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
+import jp.shiguredo.sora.sdk.channel.SoraRTCStatsReport
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.signaling.message.NotificationMessage
 import jp.shiguredo.sora.sdk.channel.signaling.message.PushMessage
@@ -171,7 +172,7 @@ class SoraVideoChannel(
             SoraLogger.d(TAG, "[video_channel] @onPushMessage ${push}")
         }
 
-        override fun onPeerConnectionStatsReady(mediaChannel: SoraMediaChannel, statsReport: RTCStatsReport) {
+        override fun onPeerConnectionStatsReady(mediaChannel: SoraMediaChannel, statsReport: SoraRTCStatsReport) {
             // statsReport.statsMap.entries.forEach {
             //     SoraLogger.d(TAG, "${it.key}=${it.value}")
             // }
