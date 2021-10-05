@@ -9,6 +9,10 @@
 - FIX
     - バグ修正
 
+## develop
+
+- [FIX] sendrecv 接続時に映像の送信を無効に設定し、かつ相手が H.264 の映像を送信するとき接続が失敗する不具合を修正する
+  - @miosakuma
 
 ## sora-android-sdk-2021.2
 
