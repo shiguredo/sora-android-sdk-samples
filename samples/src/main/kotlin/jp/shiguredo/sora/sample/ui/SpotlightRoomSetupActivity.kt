@@ -46,6 +46,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         spotlightNumberSelection.spinner.setItems(spotlightNumberOptions)
         roleSelection.name.text = "ロール"
         roleSelection.spinner.setItems(roleOptions)
+        spotlightFocusRidSelection.name.text = "フォーカス時の rid"
         spotlightFocusRidSelection.spinner.setItems(spotlightFocusRidOptions)
         spotlightUnfocusRidSelection.name.text = "非フォーカス時の rid"
         spotlightUnfocusRidSelection.spinner.setItems(spotlightUnfocusRidOptions)
