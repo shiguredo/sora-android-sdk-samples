@@ -29,7 +29,6 @@ class SoraVideoChannel(
         private val signalingNotifyMetatada:   Any? = null,
         private val clientId:                  String? = null,
         private val spotlight:                 Boolean = false,
-        private val spotlightLegacy:           Boolean = false,
         private val spotlightNumber:           Int? = null,
         private val spotlightFocusRid:         SoraVideoOption.SpotlightRid? = null,
         private val spotlightUnfocusRid:       SoraVideoOption.SpotlightRid? = null,
@@ -251,7 +250,6 @@ class SoraVideoChannel(
             if (this@SoraVideoChannel.spotlight) {
                 val option = SoraSpotlightOption()
                 option.spotlightNumber = spotlightNumber
-                Sora.usesSpotlightLegacy = spotlightLegacy
                 option.spotlightFocusRid = spotlightFocusRid
                 option.spotlightUnfocusRid = spotlightUnfocusRid
                 enableSpotlight(option)
