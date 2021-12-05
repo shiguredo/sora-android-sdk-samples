@@ -9,6 +9,10 @@
 - FIX
     - バグ修正
 
+## develop
+
+- [CHANGE] スポットライトレガシーを削除する
+  - @enm10k
 
 ## sora-android-sdk-2021.3
 

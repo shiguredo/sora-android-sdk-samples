@@ -57,7 +57,6 @@ class SimulcastActivity : AppCompatActivity() {
     private var multistream = true
     private var spotlight = false
     private var spotlightNumber: Int? = null
-    private var spotlightLegacy = true
     private var spotlightFocusRid: SoraVideoOption.SpotlightRid? = null
     private var spotlightUnfocusRid: SoraVideoOption.SpotlightRid? = null
     private var fps: Int = 30
@@ -143,11 +142,6 @@ class SimulcastActivity : AppCompatActivity() {
         spotlightNumber = when (val stringValue = intent.getStringExtra("SPOTLIGHT_NUMBER")) {
             "未指定" -> null
             else -> stringValue?.toInt()
-        }
-
-        spotlightLegacy = when (intent.getStringExtra("SPOTLIGHT_LEGACY")) {
-            "有効" -> true
-            else      -> false
         }
 
         spotlightFocusRid = when (intent.getStringExtra("SPOTLIGHT_FOCUS_RID")) {
@@ -322,7 +316,6 @@ class SimulcastActivity : AppCompatActivity() {
                 ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
                 signalingMetadata         = "",
                 spotlight                 = spotlight,
-                spotlightLegacy           = spotlightLegacy,
                 spotlightNumber           = spotlightNumber,
                 spotlightFocusRid         = spotlightFocusRid,
                 spotlightUnfocusRid       = spotlightUnfocusRid,
