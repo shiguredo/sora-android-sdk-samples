@@ -234,7 +234,7 @@ class SoraVideoChannel(
                 if (audioEnabled) {
                     enableAudioDownstream()
                 }
-                if (videoEnabled) {
+                if (videoEnabled || role == SoraRoleType.SENDRECV) {
                     enableVideoDownstream(egl!!.eglBaseContext)
                 }
             }
