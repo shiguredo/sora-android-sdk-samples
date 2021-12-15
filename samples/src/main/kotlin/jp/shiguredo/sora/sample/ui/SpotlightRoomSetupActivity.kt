@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.R
-import jp.shiguredo.sora.sdk.Sora
 import kotlinx.android.synthetic.main.activity_spotlight_room_setup.*
 import kotlinx.android.synthetic.main.signaling_selection.view.*
 
