@@ -15,7 +15,6 @@ import jp.shiguredo.sora.sdk.util.SoraLogger
 import org.webrtc.*
 import android.os.Handler
 import jp.shiguredo.sora.sample.stats.VideoUpstreamLatencyStatsCollector
-import jp.shiguredo.sora.sdk.Sora
 import jp.shiguredo.sora.sdk.channel.option.*
 
 class SoraVideoChannel(
@@ -76,7 +75,7 @@ class SoraVideoChannel(
     private val channelListener = object : SoraMediaChannel.Listener {
 
         override fun onConnect(mediaChannel: SoraMediaChannel) {
-            SoraLogger.d(TAG, "[video_channel] @onConnected")
+            SoraLogger.d(TAG, "[video_channel] @onConnect connectedSignalingEndpoint:${mediaChannel.connectedSignalingEndpoint}")
             handler.post {
                 listener?.onConnect(this@SoraVideoChannel)
             }
