@@ -260,9 +260,11 @@ class SoraScreencastService : Service() {
                 audioProcessingNoiseSuppression = true
             }
         }
+
+        val signalingEndpointCandidates = req!!.signalingEndpoint!!.split(",").map{ it.trim() }
         mediaChannel = SoraMediaChannel(
                 context           = this,
-                signalingEndpoint = req!!.signalingEndpoint!!,
+                signalingEndpointCandidates = signalingEndpointCandidates,
                 channelId         = req!!.channelId,
                 signalingMetadata = req!!.signalingMetadata!!,
                 mediaOption       = mediaOption,
