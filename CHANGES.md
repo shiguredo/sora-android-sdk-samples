@@ -13,6 +13,8 @@
 
 - [CHANGE] スポットライトレガシーを削除する
   - @enm10k
+- [CHANGE] シグナリングの URL指定を `signaling_endpoint` から `signalingEndpointCandidates` に変更する
+  - @miosakuma @enm10k
 - [FIX] sendrecv 接続時に映像の送信を無効に設定し、かつ相手が H.264 の映像を送信するとき接続が失敗する不具合を修正する
   - @miosakuma
 
