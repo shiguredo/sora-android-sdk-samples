@@ -188,19 +188,19 @@ class EffectedVideoChatActivity : AppCompatActivity() {
 
     private fun connectChannel() {
         Log.d(TAG, "connectChannel")
-
+        val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map{ it.trim() }
         channel = SoraVideoChannel(
-                context           = this,
-                handler           = Handler(),
-                signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
-                channelId         = channelName,
-                signalingMetadata = "",
-                videoWidth        = 480,
-                videoHeight       = 960,
-                videoFPS          = 30,
-                role        = role,
-                capturerFactory   = EffectCameraVideoCapturerFactory(effector!!),
-                listener          = channelListener
+                context                     = this,
+                handler                     = Handler(),
+                signalingEndpointCandidates = signalingEndpointCandidates,
+                channelId                   = channelName,
+                signalingMetadata           = "",
+                videoWidth                  = 480,
+                videoHeight                 = 960,
+                videoFPS                    = 30,
+                role                        = role,
+                capturerFactory             = EffectCameraVideoCapturerFactory(effector!!),
+                listener                    = channelListener
         )
         channel!!.connect()
     }

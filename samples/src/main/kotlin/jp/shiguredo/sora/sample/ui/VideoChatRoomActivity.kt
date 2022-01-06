@@ -290,11 +290,11 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
     private fun connectChannel() {
         Log.d(TAG, "openChannel")
-
+        val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map{ it.trim() }
         channel = SoraVideoChannel(
                 context           = this,
                 handler           = Handler(),
-                signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
+                signalingEndpointCandidates = signalingEndpointCandidates,
                 channelId         = channelName,
                 signalingMetadata = "",
                 dataChannelSignaling = dataChannelSignaling,

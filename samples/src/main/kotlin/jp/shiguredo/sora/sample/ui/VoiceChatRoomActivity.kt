@@ -153,20 +153,20 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
     private fun connectChannel() {
         Log.d(TAG, "connectChannel")
-
+        val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map{ it.trim() }
         channel = SoraAudioChannel(
-                context                   = this,
-                handler                   = Handler(),
-                signalingEndpoint         = BuildConfig.SIGNALING_ENDPOINT,
-                channelId                 = channelName,
-                dataChannelSignaling      = dataChannelSignaling,
-                ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
-                signalingMetadata         = "",
-                audioCodec                = audioCodec,
-                audioBitRate              = audioBitRate,
-                role                      = role,
-                multistream               = multistream,
-                listener                  = channelListener
+                context                     = this,
+                handler                     = Handler(),
+                signalingEndpointCandidates = signalingEndpointCandidates,
+                channelId                   = channelName,
+                dataChannelSignaling        = dataChannelSignaling,
+                ignoreDisconnectWebSocket   = ignoreDisconnectWebSocket,
+                signalingMetadata           = "",
+                audioCodec                  = audioCodec,
+                audioBitRate                = audioBitRate,
+                role                        = role,
+                multistream                 = multistream,
+                listener                    = channelListener
         )
         channel!!.connect()
     }

@@ -18,7 +18,9 @@ org.gradle.jvmargs=-Xmx1536m
 
 android.useAndroidX=true
 
-# Setting Sora's signaling endpoint and channel_id
+# Setting Sora's signaling endpoint and channel_id. 
+# Mulitple signaling endpoints can be set by separating commas like below. 
+# e.g.) signaling_endpoint = wss://node-01.sora.example.com/signaling, wss://node-02.sora.example.com/signaling, wss://node-03.sora.example.com/signaling
 signaling_endpoint = wss://sora.example.com/signaling
 channel_id         = sora
 
