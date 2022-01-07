@@ -37,6 +37,8 @@ import java.net.HttpURLConnection
 import java.net.URI
 import java.net.URL
 import java.util.*
+import com.google.gson.*
+
 
 class SimulcastActivity : AppCompatActivity() {
 
@@ -307,6 +309,7 @@ class SimulcastActivity : AppCompatActivity() {
     private fun connectChannel() {
         Log.d(TAG, "openChannel")
         val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map{ it.trim() }
+        val signalingMetadata = Gson().fromJson(BuildConfig.SIGNALING_METADATA, Map::class.java)
         channel = SoraVideoChannel(
             context                     = this,
             handler                     = Handler(),
@@ -314,7 +317,7 @@ class SimulcastActivity : AppCompatActivity() {
             channelId                   = channelName,
             dataChannelSignaling        = dataChannelSignaling,
             ignoreDisconnectWebSocket   = ignoreDisconnectWebSocket,
-            signalingMetadata           = "",
+            signalingMetadata           = signalingMetadata,
             spotlight                   = spotlight,
             spotlightNumber             = spotlightNumber,
             spotlightFocusRid           = spotlightFocusRid,

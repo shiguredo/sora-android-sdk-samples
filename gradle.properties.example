@@ -24,3 +24,8 @@ android.useAndroidX=true
 signaling_endpoint = wss://sora.example.com/signaling
 channel_id         = sora
 
+# Setting for connecting Sora Labo.
+# Quotes must be double escaped.
+# This setting is required. If you do not want to use it, set it to blank.
+# e.g.) signaling_metadata =
+signaling_metadata = {\\"signaling_key\\":\\"YourSingalingKeyOfSoraLabo\\"}

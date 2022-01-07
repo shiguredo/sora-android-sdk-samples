@@ -29,6 +29,7 @@ import jp.shiguredo.webrtc.video.effector.VideoEffectorContext
 import jp.shiguredo.webrtc.video.effector.filter.GPUImageFilterWrapper
 import kotlinx.android.synthetic.main.activity_video_chat_room.*
 import org.webrtc.SurfaceViewRenderer
+import com.google.gson.*
 
 class EffectedVideoChatActivity : AppCompatActivity() {
 
@@ -189,12 +190,13 @@ class EffectedVideoChatActivity : AppCompatActivity() {
     private fun connectChannel() {
         Log.d(TAG, "connectChannel")
         val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map{ it.trim() }
+        val signalingMetadata = Gson().fromJson(BuildConfig.SIGNALING_METADATA, Map::class.java)
         channel = SoraVideoChannel(
                 context                     = this,
                 handler                     = Handler(),
                 signalingEndpointCandidates = signalingEndpointCandidates,
                 channelId                   = channelName,
-                signalingMetadata           = "",
+                signalingMetadata           = signalingMetadata,
                 videoWidth                  = 480,
                 videoHeight                 = 960,
                 videoFPS                    = 30,

@@ -29,6 +29,7 @@ import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.android.synthetic.main.activity_video_chat_room.*
 import org.webrtc.SurfaceViewRenderer
 import java.util.*
+import com.google.gson.*
 
 class VideoChatRoomActivity : AppCompatActivity() {
 
@@ -291,12 +292,13 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private fun connectChannel() {
         Log.d(TAG, "openChannel")
         val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map{ it.trim() }
+        val signalingMetadata = Gson().fromJson(BuildConfig.SIGNALING_METADATA, Map::class.java)
         channel = SoraVideoChannel(
                 context           = this,
                 handler           = Handler(),
                 signalingEndpointCandidates = signalingEndpointCandidates,
                 channelId         = channelName,
-                signalingMetadata = "",
+                signalingMetadata = signalingMetadata,
                 dataChannelSignaling = dataChannelSignaling,
                 ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
                 spotlight         = spotlight,

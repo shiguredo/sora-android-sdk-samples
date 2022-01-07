@@ -21,7 +21,7 @@ class SoraAudioChannel(
         private val channelId:                      String,
         private val dataChannelSignaling:           Boolean? = null,
         private val ignoreDisconnectWebSocket:      Boolean? = null,
-        private val signalingMetadata:              String = "",
+        private val signalingMetadata:              Any? = "",
         private var role:                           SoraRoleType,
         private var multistream:                    Boolean = true,
         private var audioCodec:                     SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,

@@ -75,7 +75,7 @@ class ScreencastSetupActivity : AppCompatActivity() {
         screencastStarter = SoraScreencastServiceStarter(
                 activity          = this,
                 signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
-                signalingMetadata = "",
+                signalingMetadata = BuildConfig.SIGNALING_METADATA,
                 channelId         = channelId,
                 videoCodec        = videoCodec,
                 audioCodec        = audioCodec,

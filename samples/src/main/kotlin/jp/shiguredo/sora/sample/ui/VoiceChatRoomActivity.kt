@@ -19,6 +19,8 @@ import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import kotlinx.android.synthetic.main.activity_voice_chat_room.*
+import com.google.gson.*
+
 
 class VoiceChatRoomActivity : AppCompatActivity() {
 
@@ -154,6 +156,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     private fun connectChannel() {
         Log.d(TAG, "connectChannel")
         val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map{ it.trim() }
+        val signalingMetadata = Gson().fromJson(BuildConfig.SIGNALING_METADATA, Map::class.java)
         channel = SoraAudioChannel(
                 context                     = this,
                 handler                     = Handler(),
@@ -161,7 +164,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
                 channelId                   = channelName,
                 dataChannelSignaling        = dataChannelSignaling,
                 ignoreDisconnectWebSocket   = ignoreDisconnectWebSocket,
-                signalingMetadata           = "",
+                signalingMetadata           = signalingMetadata,
                 audioCodec                  = audioCodec,
                 audioBitRate                = audioBitRate,
                 role                        = role,
