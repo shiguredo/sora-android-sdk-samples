@@ -26,6 +26,8 @@ import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.android.synthetic.main.screencast_service.view.*
 import org.webrtc.*
+import com.google.gson.*
+
 
 @TargetApi(21)
 class SoraScreencastService : Service() {
@@ -262,11 +264,12 @@ class SoraScreencastService : Service() {
         }
 
         val signalingEndpointCandidates = req!!.signalingEndpoint!!.split(",").map{ it.trim() }
+        val signalingMetadata = Gson().fromJson(req!!.signalingMetadata!!, Map::class.java)
         mediaChannel = SoraMediaChannel(
                 context           = this,
                 signalingEndpointCandidates = signalingEndpointCandidates,
                 channelId         = req!!.channelId,
-                signalingMetadata = req!!.signalingMetadata!!,
+                signalingMetadata = signalingMetadata,
                 mediaOption       = mediaOption,
                 listener          = channelListener
         )

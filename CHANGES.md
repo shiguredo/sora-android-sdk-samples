@@ -11,6 +11,8 @@
 
 ## develop
 
+- [ADD] シグナリング接続時に送信するメタデータを外部ファイルから設定できるようにする
+  - @miosakuma
 - [CHANGE] スポットライトレガシーを削除する
   - @enm10k
 - [CHANGE] シグナリングの URL指定を `signaling_endpoint` から `signalingEndpointCandidates` に変更する

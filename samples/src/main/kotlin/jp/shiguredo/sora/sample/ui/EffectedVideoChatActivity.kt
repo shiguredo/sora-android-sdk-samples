@@ -9,11 +9,12 @@ import android.media.effect.EffectFactory
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.*
 import jp.co.cyberagent.android.gpuimage.filter.*
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
@@ -189,12 +190,13 @@ class EffectedVideoChatActivity : AppCompatActivity() {
     private fun connectChannel() {
         Log.d(TAG, "connectChannel")
         val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map{ it.trim() }
+        val signalingMetadata = Gson().fromJson(BuildConfig.SIGNALING_METADATA, Map::class.java)
         channel = SoraVideoChannel(
                 context                     = this,
                 handler                     = Handler(),
                 signalingEndpointCandidates = signalingEndpointCandidates,
                 channelId                   = channelName,
-                signalingMetadata           = "",
+                signalingMetadata           = signalingMetadata,
                 videoWidth                  = 480,
                 videoHeight                 = 960,
                 videoFPS                    = 30,
