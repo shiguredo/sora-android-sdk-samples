@@ -3,21 +3,16 @@ package jp.shiguredo.sora.sample.ui
 import android.annotation.TargetApi
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import android.util.Log
+import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.screencast.SoraScreencastService
 import jp.shiguredo.sora.sample.screencast.SoraScreencastServiceStarter
-import kotlinx.android.synthetic.main.activity_screencast_setup.audioCodecSelection
-import kotlinx.android.synthetic.main.activity_screencast_setup.channelNameInput
-import kotlinx.android.synthetic.main.activity_screencast_setup.multistreamSelection
-import kotlinx.android.synthetic.main.activity_screencast_setup.rootLayout
-import kotlinx.android.synthetic.main.activity_screencast_setup.start
-import kotlinx.android.synthetic.main.activity_screencast_setup.videoCodecSelection
+import kotlinx.android.synthetic.main.activity_screencast_setup.*
 import kotlinx.android.synthetic.main.signaling_selection.view.*
 
 @TargetApi(21)

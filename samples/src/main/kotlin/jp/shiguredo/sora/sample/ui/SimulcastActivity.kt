@@ -10,11 +10,12 @@ import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.*
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.facade.SoraVideoChannel
@@ -27,17 +28,8 @@ import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.android.synthetic.main.activity_simulcast.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.webrtc.SurfaceViewRenderer
-import java.io.BufferedOutputStream
-import java.net.HttpURLConnection
-import java.net.URI
-import java.net.URL
 import java.util.*
-import com.google.gson.*
 
 
 class SimulcastActivity : AppCompatActivity() {

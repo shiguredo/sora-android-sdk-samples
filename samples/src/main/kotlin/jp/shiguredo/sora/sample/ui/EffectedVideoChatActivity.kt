@@ -9,11 +9,12 @@ import android.media.effect.EffectFactory
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.*
 import jp.co.cyberagent.android.gpuimage.filter.*
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
@@ -29,7 +30,6 @@ import jp.shiguredo.webrtc.video.effector.VideoEffectorContext
 import jp.shiguredo.webrtc.video.effector.filter.GPUImageFilterWrapper
 import kotlinx.android.synthetic.main.activity_video_chat_room.*
 import org.webrtc.SurfaceViewRenderer
-import com.google.gson.*
 
 class EffectedVideoChatActivity : AppCompatActivity() {
 
