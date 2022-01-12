@@ -29,6 +29,7 @@ import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.android.synthetic.main.activity_video_chat_room.*
 import org.webrtc.SurfaceViewRenderer
 import java.util.*
+import com.google.gson.*
 
 class VideoChatRoomActivity : AppCompatActivity() {
 
@@ -49,7 +50,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var multistream = true
     private var spotlight = false
     private var spotlightNumber: Int? = null
-    private var spotlightLegacy = true
     private var fps: Int = 30
     private var fixedResolution = false
     private var cameraFacing = true
@@ -136,12 +136,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else -> stringValue?.toInt()
         }
 
-        spotlightLegacy = when (intent.getStringExtra("SPOTLIGHT_LEGACY")) {
-            "有効" -> true
-            else      -> false
-        }
-
-        Log.d(TAG, "spotlight => $spotlight, $spotlightNumber, $spotlightLegacy")
+        Log.d(TAG, "spotlight => $spotlight, $spotlightNumber")
 
         fixedResolution = when (intent.getStringExtra("RESOLUTION_CHANGE")) {
             "可変" -> false
@@ -296,17 +291,17 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
     private fun connectChannel() {
         Log.d(TAG, "openChannel")
-
+        val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map{ it.trim() }
+        val signalingMetadata = Gson().fromJson(BuildConfig.SIGNALING_METADATA, Map::class.java)
         channel = SoraVideoChannel(
                 context           = this,
                 handler           = Handler(),
-                signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
+                signalingEndpointCandidates = signalingEndpointCandidates,
                 channelId         = channelName,
-                signalingMetadata = "",
+                signalingMetadata = signalingMetadata,
                 dataChannelSignaling = dataChannelSignaling,
                 ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
                 spotlight         = spotlight,
-                spotlightLegacy = spotlightLegacy,
                 spotlightNumber = spotlightNumber,
                 videoEnabled      = videoEnabled,
                 videoWidth        = videoWidth,

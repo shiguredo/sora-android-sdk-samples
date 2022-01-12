@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.R
-import jp.shiguredo.sora.sdk.Sora
 import kotlinx.android.synthetic.main.activity_spotlight_room_setup.*
 import kotlinx.android.synthetic.main.signaling_selection.view.*
 
@@ -25,7 +24,6 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     private val videoEnabledOptions = listOf("有効", "無効")
     private val audioEnabledOptions = listOf("有効", "無効")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
-    private val legacyOptions = listOf("無効", "有効")
     private val spotlightFocusRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
     private val spotlightUnfocusRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
     private val videoBitRateOptions = listOf("500", "200", "700", "1200", "2500", "4000", "5000",
@@ -47,8 +45,6 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         spotlightNumberSelection.spinner.setItems(spotlightNumberOptions)
         roleSelection.name.text = "ロール"
         roleSelection.spinner.setItems(roleOptions)
-        legacySelection.name.text = "レガシー機能"
-        legacySelection.spinner.setItems(legacyOptions)
         spotlightFocusRidSelection.name.text = "フォーカス時の rid"
         spotlightFocusRidSelection.spinner.setItems(spotlightFocusRidOptions)
         spotlightUnfocusRidSelection.name.text = "非フォーカス時の rid"
@@ -84,7 +80,6 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
 
         val spotlightNumber = selectedItem(spotlightNumberSelection.spinner)
         val role = selectedItem(roleSelection.spinner)
-        val legacy = selectedItem(legacySelection.spinner)
         var spotlightFocusRid = selectedItem(spotlightFocusRidSelection.spinner)
         var spotlightUnfocusRid = selectedItem(spotlightUnfocusRidSelection.spinner)
         val videoCodec = selectedItem(videoCodecSelection.spinner)
@@ -98,16 +93,13 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         val dataChannelSignaling = selectedItem(dataChannelSignalingSelection.spinner)
         val ignoreDisconnectWebSocket = selectedItem(ignoreDisconnectWebSocketSelection.spinner)
 
-        val intentActivityClass = if (Sora.usesSpotlightLegacy) VideoChatRoomActivity::class.java else SimulcastActivity::class.java
-        val intent = Intent(this, intentActivityClass)
+        val intent = Intent(this, SimulcastActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
         intent.putExtra("SPOTLIGHT", "有効")
         intent.putExtra("SPOTLIGHT_NUMBER", spotlightNumber)
-        intent.putExtra("SPOTLIGHT_LEGACY", legacy)
         intent.putExtra("SPOTLIGHT_FOCUS_RID", spotlightFocusRid)
         intent.putExtra("SPOTLIGHT_UNFOCUS_RID", spotlightUnfocusRid)
         intent.putExtra("ROLE", role)
-        intent.putExtra("LEGACY", legacy)
         intent.putExtra("VIDEO_CODEC", videoCodec)
         intent.putExtra("AUDIO_CODEC", audioCodec)
         intent.putExtra("AUDIO_BIT_RATE", audioBitRate)

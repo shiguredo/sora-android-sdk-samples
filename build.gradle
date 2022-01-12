@@ -2,7 +2,7 @@ apply plugin: "com.github.ben-manes.versions"
 
 buildscript {
     ext.kotlin_version = '1.4.31'
-    ext.sora_android_sdk_version = '2021.3'
+    ext.sora_android_sdk_version = '2022.1.0'
 
     repositories {
         google()

@@ -16,6 +16,7 @@ android {
         // アプリで参照する設定を BuildConfig / resource に書き込む。
         buildConfigField("String", "SIGNALING_ENDPOINT", "\"${signaling_endpoint}\"")
         resValue("string", "channelId", "\"${channel_id}\"")
+        buildConfigField("String", "SIGNALING_METADATA", "\"${signaling_metadata}\"")
 
         manifestPlaceholders = [usesCleartextTraffic: usesCleartextTraffic];
     }
@@ -60,6 +61,8 @@ configurations {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlin_version}"
     implementation "org.jetbrains.kotlin:kotlin-reflect:${kotlin_version}"
+
+    implementation 'com.google.code.gson:gson:2.8.6'
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation "androidx.cardview:cardview:1.0.0"

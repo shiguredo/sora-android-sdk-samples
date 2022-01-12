@@ -9,6 +9,20 @@
 - FIX
     - バグ修正
 
+## sora-andoroid-sdk-2022.1.0
+
+- [UPDATE] システム条件を更新する
+  - Android Studio 2020.3.1 以降
+  - Sora Android SDK 2022.1.0 以降
+  - @miosakuma
+- [ADD] シグナリング接続時に送信するメタデータを外部ファイルから設定できるようにする
+  - @miosakuma
+- [CHANGE] スポットライトレガシーを削除する
+  - @enm10k
+- [CHANGE] シグナリングの URL指定を `signaling_endpoint` から `signalingEndpointCandidates` に変更する
+  - @miosakuma @enm10k
+- [FIX] sendrecv 接続時に映像の送信を無効に設定し、かつ相手が H.264 の映像を送信するとき接続が失敗する不具合を修正する
+  - @miosakuma
 
 ## sora-android-sdk-2021.3
 

@@ -48,9 +48,6 @@
                     android:id="@+id/roleSelection"/>
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/legacySelection"/>
-                <include
-                    layout="@layout/signaling_selection"
                     android:id="@+id/spotlightNumberSelection"/>
                 <include
                     layout="@layout/signaling_selection"

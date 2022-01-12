@@ -10,11 +10,12 @@ import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.*
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.facade.SoraVideoChannel
@@ -27,16 +28,9 @@ import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.android.synthetic.main.activity_simulcast.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.webrtc.SurfaceViewRenderer
-import java.io.BufferedOutputStream
-import java.net.HttpURLConnection
-import java.net.URI
-import java.net.URL
 import java.util.*
+
 
 class SimulcastActivity : AppCompatActivity() {
 
@@ -57,7 +51,6 @@ class SimulcastActivity : AppCompatActivity() {
     private var multistream = true
     private var spotlight = false
     private var spotlightNumber: Int? = null
-    private var spotlightLegacy = true
     private var spotlightFocusRid: SoraVideoOption.SpotlightRid? = null
     private var spotlightUnfocusRid: SoraVideoOption.SpotlightRid? = null
     private var fps: Int = 30
@@ -143,11 +136,6 @@ class SimulcastActivity : AppCompatActivity() {
         spotlightNumber = when (val stringValue = intent.getStringExtra("SPOTLIGHT_NUMBER")) {
             "未指定" -> null
             else -> stringValue?.toInt()
-        }
-
-        spotlightLegacy = when (intent.getStringExtra("SPOTLIGHT_LEGACY")) {
-            "有効" -> true
-            else      -> false
         }
 
         spotlightFocusRid = when (intent.getStringExtra("SPOTLIGHT_FOCUS_RID")) {
@@ -312,37 +300,37 @@ class SimulcastActivity : AppCompatActivity() {
 
     private fun connectChannel() {
         Log.d(TAG, "openChannel")
-
+        val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map{ it.trim() }
+        val signalingMetadata = Gson().fromJson(BuildConfig.SIGNALING_METADATA, Map::class.java)
         channel = SoraVideoChannel(
-                context                   = this,
-                handler                   = Handler(),
-                signalingEndpoint         = BuildConfig.SIGNALING_ENDPOINT,
-                channelId                 = channelName,
-                dataChannelSignaling      = dataChannelSignaling,
-                ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
-                signalingMetadata         = "",
-                spotlight                 = spotlight,
-                spotlightLegacy           = spotlightLegacy,
-                spotlightNumber           = spotlightNumber,
-                spotlightFocusRid         = spotlightFocusRid,
-                spotlightUnfocusRid       = spotlightUnfocusRid,
-                videoEnabled              = videoEnabled,
-                videoWidth                = videoWidth,
-                videoHeight               = videoHeight,
-                simulcast                 = true,
-                simulcastRid              = simulcastRid,
-                videoFPS                  = fps,
-                fixedResolution           = fixedResolution,
-                videoCodec                = videoCodec,
-                videoBitRate              = videoBitRate,
-                audioEnabled              = audioEnabled,
-                audioCodec                = audioCodec,
-                audioBitRate              = audioBitRate,
-                audioStereo               = audioStereo,
-                role                      = role,
-                multistream               = multistream,
-                listener                  = channelListener,
-                needLocalRenderer         = true
+            context                     = this,
+            handler                     = Handler(),
+            signalingEndpointCandidates = signalingEndpointCandidates,
+            channelId                   = channelName,
+            dataChannelSignaling        = dataChannelSignaling,
+            ignoreDisconnectWebSocket   = ignoreDisconnectWebSocket,
+            signalingMetadata           = signalingMetadata,
+            spotlight                   = spotlight,
+            spotlightNumber             = spotlightNumber,
+            spotlightFocusRid           = spotlightFocusRid,
+            spotlightUnfocusRid         = spotlightUnfocusRid,
+            videoEnabled                = videoEnabled,
+            videoWidth                  = videoWidth,
+            videoHeight                 = videoHeight,
+            simulcast                   = true,
+            simulcastRid                = simulcastRid,
+            videoFPS                    = fps,
+            fixedResolution             = fixedResolution,
+            videoCodec                  = videoCodec,
+            videoBitRate                = videoBitRate,
+            audioEnabled                = audioEnabled,
+            audioCodec                  = audioCodec,
+            audioBitRate                = audioBitRate,
+            audioStereo                 = audioStereo,
+            role                        = role,
+            multistream                 = multistream,
+            listener                    = channelListener,
+            needLocalRenderer           = true
         )
         channel!!.connect()
     }
