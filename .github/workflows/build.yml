@@ -1,0 +1,29 @@
+name: Build
+
+on:
+  push:
+    paths-ignore:
+      - 'README.md'
+      - 'CHANGES.md'
+      - 'LICENSE'
+      - 'THANKS'
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          cache: 'gradle'
+      - name: Copy gradle.properties
+        run: cp gradle.properties.example gradle.properties
+      - name: Build with Gradle
+        run: ./gradlew build
