@@ -1,5 +1,6 @@
 package jp.shiguredo.sora.sample.ui
 
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.media.AudioManager
@@ -114,6 +115,8 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
     }
 
+    // AudioManager.MODE_INVALID が使われているため lint でエラーが出るので一時的に抑制しておく
+    @SuppressLint("WrongConstant")
     override fun onPause() {
         Log.d(TAG, "onPause")
         super.onPause()
