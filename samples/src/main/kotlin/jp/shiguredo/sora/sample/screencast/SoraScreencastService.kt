@@ -16,7 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import com.google.gson.*
+import com.google.gson.Gson
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
@@ -26,7 +26,12 @@ import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.android.synthetic.main.screencast_service.view.*
-import org.webrtc.*
+import org.webrtc.AudioTrack
+import org.webrtc.EglBase
+import org.webrtc.MediaStream
+import org.webrtc.NetworkMonitor
+import org.webrtc.ScreenCapturerAndroid
+import org.webrtc.VideoCapturer
 
 @TargetApi(21)
 class SoraScreencastService : Service() {

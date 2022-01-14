@@ -12,7 +12,11 @@ import com.google.android.material.snackbar.Snackbar
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.android.synthetic.main.activity_main.*
-import permissions.dispatcher.*
+import permissions.dispatcher.NeedsPermission
+import permissions.dispatcher.OnPermissionDenied
+import permissions.dispatcher.OnShowRationale
+import permissions.dispatcher.PermissionRequest
+import permissions.dispatcher.RuntimePermissions
 
 @RuntimePermissions
 class MainActivity : AppCompatActivity() {

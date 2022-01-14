@@ -19,7 +19,13 @@ import jp.shiguredo.sora.sdk.channel.signaling.message.NotificationMessage
 import jp.shiguredo.sora.sdk.channel.signaling.message.PushMessage
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
-import org.webrtc.*
+import org.webrtc.AudioTrack
+import org.webrtc.CameraVideoCapturer
+import org.webrtc.EglBase
+import org.webrtc.MediaStream
+import org.webrtc.RTCStatsReport
+import org.webrtc.RtpParameters
+import org.webrtc.SurfaceViewRenderer
 
 class SoraVideoChannel(
     private val context: Context,
