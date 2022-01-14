@@ -4,11 +4,11 @@ import android.Manifest
 import android.annotation.TargetApi
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import android.util.Log
+import com.google.android.material.snackbar.Snackbar
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.android.synthetic.main.activity_main.*
@@ -29,23 +29,38 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val adapter = FeatureListAdapter(arrayListOf(
-                Feature(title = "ビデオチャット",
-                        description = "ビデオチャットのデモです。複数人でのグループチャットも可能です。"),
-                Feature(title = "ボイスチャット",
-                        description = "ボイスチャットのデモです。複数人でのグループチャットも可能です。"),
-                Feature(title = "サイマルキャスト",
-                        description = "サイマルキャストのデモです。") ,
-                Feature(title = "スポットライト",
-                        description = "スポットライトのデモです。スポットライト数を固定したチャットが可能です。"),
-                Feature(title = "スクリーンキャスト",
-                        description = "スクリーンキャストのデモです。"),
-                Feature(title = "ビデオエフェクト",
-                        description = "エフェクト付きのビデオチャットのデモです")))
+        val adapter = FeatureListAdapter(
+            arrayListOf(
+                Feature(
+                    title = "ビデオチャット",
+                    description = "ビデオチャットのデモです。複数人でのグループチャットも可能です。"
+                ),
+                Feature(
+                    title = "ボイスチャット",
+                    description = "ボイスチャットのデモです。複数人でのグループチャットも可能です。"
+                ),
+                Feature(
+                    title = "サイマルキャスト",
+                    description = "サイマルキャストのデモです。"
+                ),
+                Feature(
+                    title = "スポットライト",
+                    description = "スポットライトのデモです。スポットライト数を固定したチャットが可能です。"
+                ),
+                Feature(
+                    title = "スクリーンキャスト",
+                    description = "スクリーンキャストのデモです。"
+                ),
+                Feature(
+                    title = "ビデオエフェクト",
+                    description = "エフェクト付きのビデオチャットのデモです"
+                )
+            )
+        )
 
-        adapter.setOnItemClickListener(object: FeatureListAdapter.OnItemClickListener {
+        adapter.setOnItemClickListener(object : FeatureListAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
-                Log.d(TAG, "clicked:${position}")
+                Log.d(TAG, "clicked:$position")
                 goToDemo(position)
             }
         })
@@ -116,41 +131,46 @@ class MainActivity : AppCompatActivity() {
     fun showRationaleForCameraAndAudio(request: PermissionRequest) {
         Log.d(TAG, "showRationaleForCameraAndAudio")
         showRationaleDialog(
-                "ビデオチャットを利用するには、カメラとマイクの使用許可が必要です", request)
+            "ビデオチャットを利用するには、カメラとマイクの使用許可が必要です", request
+        )
     }
 
     @OnShowRationale(Manifest.permission.RECORD_AUDIO)
     fun showRationaleForAudio(request: PermissionRequest) {
         showRationaleDialog(
-                "ボイスチャット・スクリーンキャストを利用するには、マイクの使用許可が必要です", request)
+            "ボイスチャット・スクリーンキャストを利用するには、マイクの使用許可が必要です", request
+        )
     }
 
     @OnPermissionDenied(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
     fun onCameraAndAudioDenied() {
         Log.d(TAG, "onCameraAndAudioDenied")
-        Snackbar.make(rootLayout,
-                "ビデオチャットを利用するには、カメラとマイクの使用を許可してください",
-                Snackbar.LENGTH_LONG)
-                .setAction("OK") { }
-                .show()
+        Snackbar.make(
+            rootLayout,
+            "ビデオチャットを利用するには、カメラとマイクの使用を許可してください",
+            Snackbar.LENGTH_LONG
+        )
+            .setAction("OK") { }
+            .show()
     }
 
     @OnPermissionDenied(Manifest.permission.RECORD_AUDIO)
     fun onAudioDenied() {
-        Snackbar.make(rootLayout,
-                "ボイスチャットを利用するには、マイクの使用を許可してください",
-                Snackbar.LENGTH_LONG)
-                .setAction("OK") {  }
-                .show()
+        Snackbar.make(
+            rootLayout,
+            "ボイスチャットを利用するには、マイクの使用を許可してください",
+            Snackbar.LENGTH_LONG
+        )
+            .setAction("OK") { }
+            .show()
     }
 
     private fun showRationaleDialog(message: String, request: PermissionRequest) {
         AlertDialog.Builder(this)
-                .setPositiveButton(getString(R.string.permission_button_positive)) { _, _ -> request.proceed() }
-                .setNegativeButton(getString(R.string.permission_button_negative)) { _, _ -> request.cancel() }
-                .setCancelable(false)
-                .setMessage(message)
-                .show()
+            .setPositiveButton(getString(R.string.permission_button_positive)) { _, _ -> request.proceed() }
+            .setNegativeButton(getString(R.string.permission_button_negative)) { _, _ -> request.cancel() }
+            .setCancelable(false)
+            .setMessage(message)
+            .show()
     }
-
 }

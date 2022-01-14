@@ -12,10 +12,11 @@ import android.media.projection.MediaProjection
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
-import androidx.annotation.RequiresApi
-import androidx.core.app.NotificationCompat
 import android.view.LayoutInflater
 import android.view.View
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
+import com.google.gson.*
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
@@ -26,8 +27,6 @@ import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.android.synthetic.main.screencast_service.view.*
 import org.webrtc.*
-import com.google.gson.*
-
 
 @TargetApi(21)
 class SoraScreencastService : Service() {
@@ -72,7 +71,6 @@ class SoraScreencastService : Service() {
             }
             startCapturer()
         }
-
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -102,13 +100,13 @@ class SoraScreencastService : Service() {
             }
 
         val activityIntent = createBoundActivityIntent()
-        val pendingIntent  = PendingIntent.getActivity(this, 0, activityIntent, 0)
+        val pendingIntent = PendingIntent.getActivity(this, 0, activityIntent, 0)
         val notification = NotificationCompat.Builder(this, notificationChannelId)
-                .setContentTitle(req!!.stateTitle)
-                .setContentText(req!!.stateText)
-                .setContentIntent(pendingIntent)
-                .setSmallIcon(req!!.notificationIcon)
-                .build()
+            .setContentTitle(req!!.stateTitle)
+            .setContentText(req!!.stateText)
+            .setContentIntent(pendingIntent)
+            .setSmallIcon(req!!.notificationIcon)
+            .build()
         startForeground(startId, notification)
     }
 
@@ -116,8 +114,10 @@ class SoraScreencastService : Service() {
     private fun createNotificationChannel(): String {
         val notificationChannelId = "jp.shiguredo.sora.sample"
         val notificationChannelName = "Sora SDK Sample"
-        val channel = NotificationChannel(notificationChannelId,
-                notificationChannelName, NotificationManager.IMPORTANCE_NONE)
+        val channel = NotificationChannel(
+            notificationChannelId,
+            notificationChannelName, NotificationManager.IMPORTANCE_NONE
+        )
         val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         service.createNotificationChannel(channel)
         return notificationChannelId
@@ -179,7 +179,7 @@ class SoraScreencastService : Service() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         when (newConfig.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> changeCaptureFormat()
-            Configuration.ORIENTATION_PORTRAIT  -> changeCaptureFormat()
+            Configuration.ORIENTATION_PORTRAIT -> changeCaptureFormat()
             else -> { /* do nothing */ }
         }
     }
@@ -188,9 +188,9 @@ class SoraScreencastService : Service() {
         capturer?.let {
             val size = SoraScreenUtil.size(this)
             it.changeCaptureFormat(
-                    Math.round(size.x * req!!.videoScale),
-                    Math.round(size.y * req!!.videoScale),
-                    req!!.videoFPS
+                Math.round(size.x * req!!.videoScale),
+                Math.round(size.y * req!!.videoScale),
+                req!!.videoFPS
             )
         }
     }
@@ -202,9 +202,9 @@ class SoraScreencastService : Service() {
                 SoraLogger.d(TAG, "startCapture")
                 val size = SoraScreenUtil.size(this)
                 it.startCapture(
-                        Math.round(size.x * req!!.videoScale),
-                        Math.round(size.y * req!!.videoScale),
-                        req!!.videoFPS
+                    Math.round(size.x * req!!.videoScale),
+                    Math.round(size.y * req!!.videoScale),
+                    req!!.videoFPS
                 )
             }
         }
@@ -225,12 +225,12 @@ class SoraScreencastService : Service() {
     }
 
     private val mediaProjectionCallback: MediaProjection.Callback =
-            object : MediaProjection.Callback() {
-                override fun onStop() {
-                    SoraLogger.w(TAG, "projection onStop")
-                    closeChannel()
-                }
+        object : MediaProjection.Callback() {
+            override fun onStop() {
+                SoraLogger.w(TAG, "projection onStop")
+                closeChannel()
             }
+        }
 
     private fun openChannel() {
 
@@ -254,24 +254,24 @@ class SoraScreencastService : Service() {
 
             audioOption = SoraAudioOption().apply {
                 useHardwareAcousticEchoCanceler = true
-                useHardwareNoiseSuppressor      = true
+                useHardwareNoiseSuppressor = true
 
                 audioProcessingEchoCancellation = true
-                audioProcessingAutoGainControl  = true
-                audioProcessingHighpassFilter   = true
+                audioProcessingAutoGainControl = true
+                audioProcessingHighpassFilter = true
                 audioProcessingNoiseSuppression = true
             }
         }
 
-        val signalingEndpointCandidates = req!!.signalingEndpoint!!.split(",").map{ it.trim() }
+        val signalingEndpointCandidates = req!!.signalingEndpoint!!.split(",").map { it.trim() }
         val signalingMetadata = Gson().fromJson(req!!.signalingMetadata!!, Map::class.java)
         mediaChannel = SoraMediaChannel(
-                context           = this,
-                signalingEndpointCandidates = signalingEndpointCandidates,
-                channelId         = req!!.channelId,
-                signalingMetadata = signalingMetadata,
-                mediaOption       = mediaOption,
-                listener          = channelListener
+            context = this,
+            signalingEndpointCandidates = signalingEndpointCandidates,
+            channelId = req!!.channelId,
+            signalingMetadata = signalingMetadata,
+            mediaOption = mediaOption,
+            listener = channelListener
         )
         mediaChannel!!.connect()
     }
@@ -292,4 +292,3 @@ class SoraScreencastService : Service() {
         }
     }
 }
-

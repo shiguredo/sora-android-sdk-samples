@@ -1,20 +1,19 @@
 package jp.shiguredo.sora.sample.ui
 
-import androidx.recyclerview.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import jp.shiguredo.sora.sample.R
-import android.view.LayoutInflater
 
-
-data class Feature (
-        val title:       String,
-        val description: String
-) {}
+data class Feature(
+    val title: String,
+    val description: String
+)
 
 class FeatureListAdapter(
-        private val features: List<Feature>
+    private val features: List<Feature>
 ) : RecyclerView.Adapter<FeatureListAdapter.ViewHolder>() {
 
     interface OnItemClickListener {
@@ -44,9 +43,9 @@ class FeatureListAdapter(
         }
     }
 
-    class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-        private val title:       TextView = view.findViewById(R.id.featureTitle) as TextView
+        private val title: TextView = view.findViewById(R.id.featureTitle) as TextView
         private val description: TextView = view.findViewById(R.id.featureDescription) as TextView
 
         fun bind(feature: Feature) {
@@ -54,5 +53,4 @@ class FeatureListAdapter(
             description.text = feature.description
         }
     }
-
 }

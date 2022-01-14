@@ -2,9 +2,9 @@ package jp.shiguredo.sora.sample.ui
 
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.R
 import kotlinx.android.synthetic.main.activity_effected_video_chat_setup.*
@@ -16,8 +16,10 @@ class EffectedVideoChatSetupActivity : AppCompatActivity() {
         val TAG = EffectedVideoChatSetupActivity::class.simpleName
     }
 
-    private val videoEffectOptions = listOf("グレースケール", "ピクセル化", "ポスタライズ", "トゥーン調",
-            "ハーフトーン", "色調補正", "エンボス", "セピア調", "なし")
+    private val videoEffectOptions = listOf(
+        "グレースケール", "ピクセル化", "ポスタライズ", "トゥーン調",
+        "ハーフトーン", "色調補正", "エンボス", "セピア調", "なし"
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -28,7 +30,6 @@ class EffectedVideoChatSetupActivity : AppCompatActivity() {
 
         videoEffectSelection.name.text = "映像エフェクト"
         videoEffectSelection.spinner.setItems(videoEffectOptions)
-
     }
 
     private fun startVideoChat() {
@@ -52,12 +53,12 @@ class EffectedVideoChatSetupActivity : AppCompatActivity() {
     }
 
     private fun showInputError() {
-        Snackbar.make(rootLayout,
-                "チャネル名を適切に入力してください",
-                Snackbar.LENGTH_LONG)
-                .setAction("OK") { }
-                .show()
+        Snackbar.make(
+            rootLayout,
+            "チャネル名を適切に入力してください",
+            Snackbar.LENGTH_LONG
+        )
+            .setAction("OK") { }
+            .show()
     }
-
 }
-

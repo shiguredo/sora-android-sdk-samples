@@ -10,7 +10,7 @@ class SoraScreenUtil {
 
         fun size(context: Context): Point {
             val windowManager =
-                    context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+                context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
             val size = Point()
             windowManager.defaultDisplay.getSize(size)
             return size
@@ -21,9 +21,8 @@ class SoraScreenUtil {
             if (resId > 0) {
                 return context.resources.getDimensionPixelSize(resId)
             } else {
-               return 0
+                return 0
             }
         }
     }
 }
-

@@ -11,10 +11,10 @@ interface CameraVideoCapturerFactory {
 }
 
 class DefaultCameraVideoCapturerFactory(
-        private val context: Context,
-        private val fixedResolution: Boolean = false,
-        private val frontFacingFirst: Boolean = true
-): CameraVideoCapturerFactory {
+    private val context: Context,
+    private val fixedResolution: Boolean = false,
+    private val frontFacingFirst: Boolean = true
+) : CameraVideoCapturerFactory {
 
     override fun createCapturer(): CameraVideoCapturer? {
         return CameraCapturerFactory.create(context, fixedResolution, frontFacingFirst)
@@ -22,11 +22,10 @@ class DefaultCameraVideoCapturerFactory(
 }
 
 class EffectCameraVideoCapturerFactory(
-        private val effector: RTCVideoEffector
-): CameraVideoCapturerFactory {
+    private val effector: RTCVideoEffector
+) : CameraVideoCapturerFactory {
 
     override fun createCapturer(): CameraVideoCapturer? {
         return EffectCameraCapturerFactory.create(effector)
     }
-
 }

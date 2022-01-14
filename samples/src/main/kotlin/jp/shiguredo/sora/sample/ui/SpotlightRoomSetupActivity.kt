@@ -2,9 +2,9 @@ package jp.shiguredo.sora.sample.ui
 
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.R
 import kotlinx.android.synthetic.main.activity_spotlight_room_setup.*
@@ -19,15 +19,19 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     private val spotlightNumberOptions = listOf("未指定", "1", "2", "3", "4", "5", "6", "7", "8")
     private val videoCodecOptions = listOf("VP8", "H264")
     private val audioCodecOptions = listOf("OPUS")
-    private val audioBitRateOptions = listOf("未指定", "8", "16", "24", "32",
-            "64", "96", "128", "256")
+    private val audioBitRateOptions = listOf(
+        "未指定", "8", "16", "24", "32",
+        "64", "96", "128", "256"
+    )
     private val videoEnabledOptions = listOf("有効", "無効")
     private val audioEnabledOptions = listOf("有効", "無効")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
     private val spotlightFocusRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
     private val spotlightUnfocusRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
-    private val videoBitRateOptions = listOf("500", "200", "700", "1200", "2500", "4000", "5000",
-            "10000", "15000", "20000", "30000")
+    private val videoBitRateOptions = listOf(
+        "500", "200", "700", "1200", "2500", "4000", "5000",
+        "10000", "15000", "20000", "30000"
+    )
     private val videoSizeOptions = listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
@@ -119,10 +123,12 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     }
 
     private fun showInputError() {
-        Snackbar.make(rootLayout,
-                "チャネル名を適切に入力してください",
-                Snackbar.LENGTH_LONG)
-                .setAction("OK") { }
-                .show()
+        Snackbar.make(
+            rootLayout,
+            "チャネル名を適切に入力してください",
+            Snackbar.LENGTH_LONG
+        )
+            .setAction("OK") { }
+            .show()
     }
 }
