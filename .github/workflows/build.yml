@@ -27,3 +27,5 @@ jobs:
         run: cp gradle.properties.example gradle.properties
       - name: Build with Gradle
         run: ./gradlew build
+     - name: Lint Check
+       run: ./gradlew ktlintCheck

@@ -3,6 +3,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'org.jlleitschuh.gradle.ktlint'
 
 android {
     compileSdkVersion 30
@@ -56,6 +57,16 @@ configurations {
     // assembleRelease などで次のエラーが発生するワークアラウンド
     // "Multiple dex files define Lorg/intellij/lang/annotations/Identifier"
     compile.exclude group: 'org.jetbrains', module: 'annotations'
+}
+
+ktlint {
+    version = "0.43.2"
+    android = false
+    outputToConsole = true
+    reporters {
+        reporter "checkstyle"
+    }
+    ignoreFailures = false
 }
 
 dependencies {
