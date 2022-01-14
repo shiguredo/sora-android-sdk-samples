@@ -13,9 +13,11 @@ import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.gson.*
+import com.google.gson.Gson
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.facade.SoraVideoChannel
@@ -27,9 +29,13 @@ import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
-import kotlinx.android.synthetic.main.activity_simulcast.*
+import kotlinx.android.synthetic.main.activity_simulcast.channelNameText
+import kotlinx.android.synthetic.main.activity_simulcast.closeButton
+import kotlinx.android.synthetic.main.activity_simulcast.localRendererContainer
+import kotlinx.android.synthetic.main.activity_simulcast.rendererContainer
+import kotlinx.android.synthetic.main.activity_simulcast.switchCameraButton
+import kotlinx.android.synthetic.main.activity_simulcast.toggleMuteButton
 import org.webrtc.SurfaceViewRenderer
-import java.util.*
 
 class SimulcastActivity : AppCompatActivity() {
 
