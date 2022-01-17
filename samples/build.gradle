@@ -104,6 +104,7 @@ configurations.all {
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    finalizedBy("ktlintFormat")
     kotlinOptions {
         jvmTarget = "1.8"
     }
