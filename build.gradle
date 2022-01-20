@@ -1,7 +1,7 @@
 apply plugin: "com.github.ben-manes.versions"
 
 buildscript {
-    ext.kotlin_version = '1.4.31'
+    ext.kotlin_version = '1.6.10'
     ext.sora_android_sdk_version = '2022.1.0'
 
     repositories {
@@ -10,11 +10,11 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath 'com.android.tools.build:gradle:7.0.4'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_version}"
 
-        classpath "com.github.ben-manes:gradle-versions-plugin:0.38.0"
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.41.0"
         classpath "org.jlleitschuh.gradle:ktlint-gradle:10.2.1"
     }
 
