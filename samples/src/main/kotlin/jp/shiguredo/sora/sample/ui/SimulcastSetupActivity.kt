@@ -2,9 +2,9 @@ package jp.shiguredo.sora.sample.ui
 
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.R
 import kotlinx.android.synthetic.main.activity_simulcast_setup.*
@@ -20,19 +20,22 @@ class SimulcastSetupActivity : AppCompatActivity() {
     private val videoEnabledOptions = listOf("有効", "無効")
     private val audioCodecOptions = listOf("OPUS")
     private val audioEnabledOptions = listOf("有効", "無効")
-    private val audioBitRateOptions = listOf("未指定", "8", "16", "24", "32",
-            "64", "96", "128", "256")
+    private val audioBitRateOptions = listOf(
+        "未指定", "8", "16", "24", "32",
+        "64", "96", "128", "256"
+    )
     private val audioStereoOptions = listOf("モノラル", "ステレオ")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
     private val multistreamOptions = listOf("有効", "無効")
     private val videoBitRateOptions = listOf("200", "500", "700", "1200", "2500", "4000", "5000", "10000", "15000", "20000", "30000")
 
     private val videoSizeOptions = listOf(
-            // Portrait
-            "VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD",
-            "Res1920x3840", "UHD2160x3840", "UHD2160x4096",
-            // Landscape
-            "Res3840x1920", "UHD3840x2160")
+        // Portrait
+        "VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD",
+        "Res1920x3840", "UHD2160x3840", "UHD2160x4096",
+        // Landscape
+        "Res3840x1920", "UHD3840x2160"
+    )
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("可変", "固定")
     private val simulcastRidOptions = listOf("未指定", "r0", "r1", "r2")
@@ -131,11 +134,12 @@ class SimulcastSetupActivity : AppCompatActivity() {
     }
 
     private fun showInputError() {
-        Snackbar.make(rootLayout,
-                "チャネル名 を適切に入力してください",
-                Snackbar.LENGTH_LONG)
-                .setAction("OK") { }
-                .show()
+        Snackbar.make(
+            rootLayout,
+            "チャネル名 を適切に入力してください",
+            Snackbar.LENGTH_LONG
+        )
+            .setAction("OK") { }
+            .show()
     }
-
 }

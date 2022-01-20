@@ -22,8 +22,8 @@ class ScreencastSetupActivity : AppCompatActivity() {
         val TAG = ScreencastSetupActivity::class.simpleName
     }
 
-    private val videoCodecOptions  = listOf("VP9", "VP8", "H264")
-    private val audioCodecOptions  = listOf("OPUS")
+    private val videoCodecOptions = listOf("VP9", "VP8", "H264")
+    private val audioCodecOptions = listOf("OPUS")
     private val multistreamOptions = listOf("有効", "無効")
 
     private var screencastStarter: SoraScreencastServiceStarter? = null
@@ -54,35 +54,39 @@ class ScreencastSetupActivity : AppCompatActivity() {
         screencastStarter?.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun startScreencast(channelId:   String,
-                                videoCodec:  String,
-                                audioCodec:  String,
-                                multistream: Boolean) {
+    private fun startScreencast(
+        channelId: String,
+        videoCodec: String,
+        audioCodec: String,
+        multistream: Boolean
+    ) {
         if (SoraScreencastService.isRunning()) {
-            Snackbar.make(rootLayout,
-                    "既に起動中です",
-                    Snackbar.LENGTH_LONG)
-                    .setAction("OK") { }
-                    .show()
+            Snackbar.make(
+                rootLayout,
+                "既に起動中です",
+                Snackbar.LENGTH_LONG
+            )
+                .setAction("OK") { }
+                .show()
             return
         }
 
         screencastStarter = SoraScreencastServiceStarter(
-                activity          = this,
-                signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
-                signalingMetadata = BuildConfig.SIGNALING_METADATA,
-                channelId         = channelId,
-                videoCodec        = videoCodec,
-                audioCodec        = audioCodec,
-                videoScale        = 0.5f,
-                videoFPS          = 30,
-                multistream       = multistream,
-                stateTitle        = "Sora Screencast",
-                stateText         = "live on ${channelId}",
-                stateIcon         = R.drawable.icon,
-                notificationIcon  = R.drawable.icon,
-                boundActivityName = MainActivity::class.java.canonicalName!!,
-                serviceClass      = SoraScreencastService::class
+            activity = this,
+            signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
+            signalingMetadata = BuildConfig.SIGNALING_METADATA,
+            channelId = channelId,
+            videoCodec = videoCodec,
+            audioCodec = audioCodec,
+            videoScale = 0.5f,
+            videoFPS = 30,
+            multistream = multistream,
+            stateTitle = "Sora Screencast",
+            stateText = "live on $channelId",
+            stateIcon = R.drawable.icon,
+            notificationIcon = R.drawable.icon,
+            boundActivityName = MainActivity::class.java.canonicalName!!,
+            serviceClass = SoraScreencastService::class
         )
         screencastStarter?.start()
         showNavigationMessage()
@@ -90,10 +94,10 @@ class ScreencastSetupActivity : AppCompatActivity() {
 
     private fun showNavigationMessage() {
         AlertDialog.Builder(this)
-                .setPositiveButton("OK") { _, _ ->  goToHome() }
-                .setCancelable(false)
-                .setMessage("スクリーンキャストを終了するときは上のナビゲーションバーから終了ボタンを押してください。")
-                .show()
+            .setPositiveButton("OK") { _, _ -> goToHome() }
+            .setCancelable(false)
+            .setMessage("スクリーンキャストを終了するときは上のナビゲーションバーから終了ボタンを押してください。")
+            .show()
     }
 
     private fun goToHome() {

@@ -9,9 +9,9 @@ import org.webrtc.VideoTrack
 
 // TODO support NUMBER_OF_RENDERERS limitation
 class SoraRemoteRendererSlot(
-        val context:    Context,
-        val eglContext: EglBase.Context,
-        var listener:   Listener?
+    val context: Context,
+    val eglContext: EglBase.Context,
+    var listener: Listener?
 ) {
     companion object {
         private val TAG = SoraRemoteRendererSlot::class.simpleName
@@ -23,14 +23,14 @@ class SoraRemoteRendererSlot(
     }
 
     val workingRenderers = HashMap<String, SurfaceViewRenderer>()
-    val workingTracks    = HashMap<String, VideoTrack>()
+    val workingTracks = HashMap<String, VideoTrack>()
 
     fun onAddRemoteStream(ms: MediaStream) {
         SoraLogger.d(TAG, "onAddRemoteStream:${ms.id}")
 
         if (ms.videoTracks.size != 1) {
             SoraLogger.w(TAG, "unsupported video track size")
-            return;
+            return
         }
         val renderer = createSurfaceViewRenderer()
         listener?.onAddRenderer(renderer)
@@ -78,4 +78,3 @@ class SoraRemoteRendererSlot(
         listener = null
     }
 }
-

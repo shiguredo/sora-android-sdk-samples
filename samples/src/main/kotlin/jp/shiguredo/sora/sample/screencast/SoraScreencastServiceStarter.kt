@@ -12,43 +12,45 @@ import kotlin.reflect.KClass
 
 @TargetApi(21)
 class SoraScreencastServiceStarter(
-        private val activity:          Activity,
-        private val signalingEndpoint: String,
-        private val channelId:         String,
-        private val stateTitle:        String,
-        private val stateText:         String,
-        private val stateIcon:         Int,
-        private val notificationIcon:  Int,
-        private val signalingMetadata: String   = "",
-        private val videoScale:        Float    = 0.5f,
-        private val videoFPS:          Int      = 30,
-        private val videoCodec:        String   = "VP9",
-        private val audioCodec:        String   = "OPUS",
-        private val multistream:       Boolean  = false,
-        private val boundActivityName: String = activity.javaClass.canonicalName!!,
-        private val serviceClass:      KClass<SoraScreencastService>
+    private val activity: Activity,
+    private val signalingEndpoint: String,
+    private val channelId: String,
+    private val stateTitle: String,
+    private val stateText: String,
+    private val stateIcon: Int,
+    private val notificationIcon: Int,
+    private val signalingMetadata: String = "",
+    private val videoScale: Float = 0.5f,
+    private val videoFPS: Int = 30,
+    private val videoCodec: String = "VP9",
+    private val audioCodec: String = "OPUS",
+    private val multistream: Boolean = false,
+    private val boundActivityName: String = activity.javaClass.canonicalName!!,
+    private val serviceClass: KClass<SoraScreencastService>
 ) {
     companion object {
         const val REQ_CODE_SCREEN_CAPTURE = 4901
-        const val REQ_CODE_OVERLAY        = 4902
+        const val REQ_CODE_OVERLAY = 4902
     }
 
-    private var resultCode: Int?    = null
+    private var resultCode: Int? = null
     private var resultData: Intent? = null
 
     fun onActivityResult(reqCode: Int, resultCode: Int, data: Intent?): Boolean {
         return when (reqCode) {
             REQ_CODE_SCREEN_CAPTURE -> handleScreenCaptureResult(resultCode, data)
-            REQ_CODE_OVERLAY        -> startScreenCaptureService()
-            else                    -> false
+            REQ_CODE_OVERLAY -> startScreenCaptureService()
+            else -> false
         }
     }
 
     fun start() {
         val manager: MediaProjectionManager = activity.application.getSystemService(
-                Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+            Context.MEDIA_PROJECTION_SERVICE
+        ) as MediaProjectionManager
         activity.startActivityForResult(
-                manager.createScreenCaptureIntent(), REQ_CODE_SCREEN_CAPTURE)
+            manager.createScreenCaptureIntent(), REQ_CODE_SCREEN_CAPTURE
+        )
     }
 
     private fun handleScreenCaptureResult(resultCode: Int, data: Intent?): Boolean {
@@ -82,24 +84,23 @@ class SoraScreencastServiceStarter(
     private fun startScreenCaptureService(): Boolean {
         val intent = Intent(activity, serviceClass.java)
         val request = ScreencastRequest(
-                data              = resultData!!,
-                signalingEndpoint = signalingEndpoint,
-                channelId         = channelId,
-                signalingMetadata = signalingMetadata,
-                audioCodec        = audioCodec,
-                videoCodec        = videoCodec,
-                videoFPS          = videoFPS,
-                videoScale        = videoScale,
-                stateTitle        = stateTitle,
-                stateText         = stateText,
-                stateIcon         = stateIcon,
-                notificationIcon  = notificationIcon,
-                boundActivityName = boundActivityName,
-                multistream       = multistream
+            data = resultData!!,
+            signalingEndpoint = signalingEndpoint,
+            channelId = channelId,
+            signalingMetadata = signalingMetadata,
+            audioCodec = audioCodec,
+            videoCodec = videoCodec,
+            videoFPS = videoFPS,
+            videoScale = videoScale,
+            stateTitle = stateTitle,
+            stateText = stateText,
+            stateIcon = stateIcon,
+            notificationIcon = notificationIcon,
+            boundActivityName = boundActivityName,
+            multistream = multistream
         )
         intent.putExtra("SCREENCAST_REQUEST", request)
         activity.startService(intent)
         return true
     }
-
 }
