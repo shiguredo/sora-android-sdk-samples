@@ -6,9 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.materialspinner.MaterialSpinner
-import jp.shiguredo.sora.sample.R
-import kotlinx.android.synthetic.main.activity_spotlight_room_setup.*
-import kotlinx.android.synthetic.main.signaling_selection.view.*
+import jp.shiguredo.sora.sample.databinding.ActivitySpotlightRoomSetupBinding
 
 class SpotlightRoomSetupActivity : AppCompatActivity() {
 
@@ -37,65 +35,67 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
     private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
 
+    private lateinit var binding: ActivitySpotlightRoomSetupBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
+        binding = ActivitySpotlightRoomSetupBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        setContentView(R.layout.activity_spotlight_room_setup)
+        binding.start.setOnClickListener { startSpotlightChat() }
 
-        start.setOnClickListener { startSpotlightChat() }
-
-        spotlightNumberSelection.name.text = "スポットライト数"
-        spotlightNumberSelection.spinner.setItems(spotlightNumberOptions)
-        roleSelection.name.text = "ロール"
-        roleSelection.spinner.setItems(roleOptions)
-        spotlightFocusRidSelection.name.text = "フォーカス時の rid"
-        spotlightFocusRidSelection.spinner.setItems(spotlightFocusRidOptions)
-        spotlightUnfocusRidSelection.name.text = "非フォーカス時の rid"
-        spotlightUnfocusRidSelection.spinner.setItems(spotlightUnfocusRidOptions)
-        videoCodecSelection.name.text = "映像コーデック"
-        videoCodecSelection.spinner.setItems(videoCodecOptions)
-        videoEnabledSelection.name.text = "映像の有無"
-        videoEnabledSelection.spinner.setItems(videoEnabledOptions)
-        audioCodecSelection.name.text = "音声コーデック"
-        audioCodecSelection.spinner.setItems(audioCodecOptions)
-        audioEnabledSelection.name.text = "音声の有無"
-        audioEnabledSelection.spinner.setItems(audioEnabledOptions)
-        audioBitRateSelection.name.text = "音声ビットレート"
-        audioBitRateSelection.spinner.setItems(audioBitRateOptions)
-        videoBitRateSelection.name.text = "映像ビットレート"
-        videoBitRateSelection.spinner.setItems(videoBitRateOptions)
-        videoSizeSelection.name.text = "映像サイズ"
-        videoSizeSelection.spinner.setItems(videoSizeOptions)
-        fpsSelection.name.text = "フレームレート"
-        fpsSelection.spinner.setItems(fpsOptions)
-        dataChannelSignalingSelection.name.text = "データチャネル"
-        dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
-        ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
-        ignoreDisconnectWebSocketSelection.spinner.setItems(ignoreDisconnectWebSocketOptions)
+        binding.spotlightNumberSelection.name.text = "スポットライト数"
+        binding.spotlightNumberSelection.spinner.setItems(spotlightNumberOptions)
+        binding.roleSelection.name.text = "ロール"
+        binding.roleSelection.spinner.setItems(roleOptions)
+        binding.spotlightFocusRidSelection.name.text = "フォーカス時の rid"
+        binding.spotlightFocusRidSelection.spinner.setItems(spotlightFocusRidOptions)
+        binding.spotlightUnfocusRidSelection.name.text = "非フォーカス時の rid"
+        binding.spotlightUnfocusRidSelection.spinner.setItems(spotlightUnfocusRidOptions)
+        binding.videoCodecSelection.name.text = "映像コーデック"
+        binding.videoCodecSelection.spinner.setItems(videoCodecOptions)
+        binding.videoEnabledSelection.name.text = "映像の有無"
+        binding.videoEnabledSelection.spinner.setItems(videoEnabledOptions)
+        binding.audioCodecSelection.name.text = "音声コーデック"
+        binding.audioCodecSelection.spinner.setItems(audioCodecOptions)
+        binding.audioEnabledSelection.name.text = "音声の有無"
+        binding.audioEnabledSelection.spinner.setItems(audioEnabledOptions)
+        binding.audioBitRateSelection.name.text = "音声ビットレート"
+        binding.audioBitRateSelection.spinner.setItems(audioBitRateOptions)
+        binding.videoBitRateSelection.name.text = "映像ビットレート"
+        binding.videoBitRateSelection.spinner.setItems(videoBitRateOptions)
+        binding.videoSizeSelection.name.text = "映像サイズ"
+        binding.videoSizeSelection.spinner.setItems(videoSizeOptions)
+        binding.fpsSelection.name.text = "フレームレート"
+        binding.fpsSelection.spinner.setItems(fpsOptions)
+        binding.dataChannelSignalingSelection.name.text = "データチャネル"
+        binding.dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
+        binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
+        binding.ignoreDisconnectWebSocketSelection.spinner.setItems(ignoreDisconnectWebSocketOptions)
     }
 
     private fun startSpotlightChat() {
-        val channelName = channelNameInput!!.text.toString()
+        val channelName = binding.channelNameInput!!.text.toString()
         if (channelName.isEmpty()) {
             showInputError()
             return
         }
 
-        val spotlightNumber = selectedItem(spotlightNumberSelection.spinner)
-        val role = selectedItem(roleSelection.spinner)
-        var spotlightFocusRid = selectedItem(spotlightFocusRidSelection.spinner)
-        var spotlightUnfocusRid = selectedItem(spotlightUnfocusRidSelection.spinner)
-        val videoCodec = selectedItem(videoCodecSelection.spinner)
-        val audioCodec = selectedItem(audioCodecSelection.spinner)
-        val audioBitRate = selectedItem(audioBitRateSelection.spinner)
-        val audioEnabled = selectedItem(audioEnabledSelection.spinner)
-        val videoEnabled = selectedItem(videoEnabledSelection.spinner)
-        val videoBitRate = selectedItem(videoBitRateSelection.spinner)
-        val videoSize = selectedItem(videoSizeSelection.spinner)
-        val fps = selectedItem(fpsSelection.spinner)
-        val dataChannelSignaling = selectedItem(dataChannelSignalingSelection.spinner)
-        val ignoreDisconnectWebSocket = selectedItem(ignoreDisconnectWebSocketSelection.spinner)
+        val spotlightNumber = selectedItem(binding.spotlightNumberSelection.spinner)
+        val role = selectedItem(binding.roleSelection.spinner)
+        var spotlightFocusRid = selectedItem(binding.spotlightFocusRidSelection.spinner)
+        var spotlightUnfocusRid = selectedItem(binding.spotlightUnfocusRidSelection.spinner)
+        val videoCodec = selectedItem(binding.videoCodecSelection.spinner)
+        val audioCodec = selectedItem(binding.audioCodecSelection.spinner)
+        val audioBitRate = selectedItem(binding.audioBitRateSelection.spinner)
+        val audioEnabled = selectedItem(binding.audioEnabledSelection.spinner)
+        val videoEnabled = selectedItem(binding.videoEnabledSelection.spinner)
+        val videoBitRate = selectedItem(binding.videoBitRateSelection.spinner)
+        val videoSize = selectedItem(binding.videoSizeSelection.spinner)
+        val fps = selectedItem(binding.fpsSelection.spinner)
+        val dataChannelSignaling = selectedItem(binding.dataChannelSignalingSelection.spinner)
+        val ignoreDisconnectWebSocket = selectedItem(binding.ignoreDisconnectWebSocketSelection.spinner)
 
         val intent = Intent(this, SimulcastActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
@@ -124,7 +124,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
 
     private fun showInputError() {
         Snackbar.make(
-            rootLayout,
+            binding.rootLayout,
             "チャネル名を適切に入力してください",
             Snackbar.LENGTH_LONG
         )

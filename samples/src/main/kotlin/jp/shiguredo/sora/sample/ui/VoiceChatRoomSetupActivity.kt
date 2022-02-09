@@ -6,9 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.materialspinner.MaterialSpinner
-import jp.shiguredo.sora.sample.R
-import kotlinx.android.synthetic.main.activity_voice_chat_room_setup.*
-import kotlinx.android.synthetic.main.signaling_selection.view.*
+import jp.shiguredo.sora.sample.databinding.ActivityVoiceChatRoomSetupBinding
 
 class VoiceChatRoomSetupActivity : AppCompatActivity() {
 
@@ -27,39 +25,41 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
     private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
 
+    private lateinit var binding: ActivityVoiceChatRoomSetupBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
+        binding = ActivityVoiceChatRoomSetupBinding.inflate(layoutInflater)
 
-        setContentView(R.layout.activity_voice_chat_room_setup)
-        start.setOnClickListener { startVoiceChat() }
-        audioCodecSelection.name.text = "音声コーデック"
-        audioCodecSelection.spinner.setItems(audioCodecOptions)
-        audioBitRateSelection.name.text = "音声ビットレート"
-        audioBitRateSelection.spinner.setItems(audioBitRateOptions)
-        roleSelection.name.text = "ロール"
-        roleSelection.spinner.setItems(roleOptions)
-        multistreamSelection.name.text = "マルチストリーム"
-        multistreamSelection.spinner.setItems(multistreamOptions)
-        dataChannelSignalingSelection.name.text = "データチャネル"
-        dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
-        ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
-        ignoreDisconnectWebSocketSelection.spinner.setItems(ignoreDisconnectWebSocketOptions)
+        setContentView(binding.root)
+        binding.start.setOnClickListener { startVoiceChat() }
+        binding.audioCodecSelection.name.text = "音声コーデック"
+        binding.audioCodecSelection.spinner.setItems(audioCodecOptions)
+        binding.audioBitRateSelection.name.text = "音声ビットレート"
+        binding.audioBitRateSelection.spinner.setItems(audioBitRateOptions)
+        binding.roleSelection.name.text = "ロール"
+        binding.roleSelection.spinner.setItems(roleOptions)
+        binding.multistreamSelection.name.text = "マルチストリーム"
+        binding.multistreamSelection.spinner.setItems(multistreamOptions)
+        binding.dataChannelSignalingSelection.name.text = "データチャネル"
+        binding.dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
+        binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
+        binding.ignoreDisconnectWebSocketSelection.spinner.setItems(ignoreDisconnectWebSocketOptions)
     }
 
     private fun startVoiceChat() {
-        val channelName = channelNameInput.text.toString()
+        val channelName = binding.channelNameInput.text.toString()
         if (channelName.isEmpty()) {
             showInputError()
             return
         }
 
-        val role = selectedItem(roleSelection.spinner)
-        val multistream = selectedItem(multistreamSelection.spinner)
-        val audioCodec = selectedItem(audioCodecSelection.spinner)
-        val audioBitRate = selectedItem(audioBitRateSelection.spinner)
-        val dataChannelSignaling = selectedItem(dataChannelSignalingSelection.spinner)
-        val ignoreDisconnectWebSocket = selectedItem(ignoreDisconnectWebSocketSelection.spinner)
+        val role = selectedItem(binding.roleSelection.spinner)
+        val multistream = selectedItem(binding.multistreamSelection.spinner)
+        val audioCodec = selectedItem(binding.audioCodecSelection.spinner)
+        val audioBitRate = selectedItem(binding.audioBitRateSelection.spinner)
+        val dataChannelSignaling = selectedItem(binding.dataChannelSignalingSelection.spinner)
+        val ignoreDisconnectWebSocket = selectedItem(binding.ignoreDisconnectWebSocketSelection.spinner)
 
         val intent = Intent(this, VoiceChatRoomActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
@@ -79,7 +79,7 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
 
     private fun showInputError() {
         Snackbar.make(
-            rootLayout,
+            binding.rootLayout,
             "チャネル名を適切に入力してください",
             Snackbar.LENGTH_LONG
         )

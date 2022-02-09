@@ -10,10 +10,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
+import jp.shiguredo.sora.sample.databinding.ActivityScreencastSetupBinding
 import jp.shiguredo.sora.sample.screencast.SoraScreencastService
 import jp.shiguredo.sora.sample.screencast.SoraScreencastServiceStarter
-import kotlinx.android.synthetic.main.activity_screencast_setup.*
-import kotlinx.android.synthetic.main.signaling_selection.view.*
 
 @TargetApi(21)
 class ScreencastSetupActivity : AppCompatActivity() {
@@ -28,23 +27,26 @@ class ScreencastSetupActivity : AppCompatActivity() {
 
     private var screencastStarter: SoraScreencastServiceStarter? = null
 
+    private lateinit var binding: ActivityScreencastSetupBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_screencast_setup)
+        binding = ActivityScreencastSetupBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        videoCodecSelection.name.text = "映像コーデック"
-        videoCodecSelection.spinner.setItems(videoCodecOptions)
-        audioCodecSelection.name.text = "音声コーデック"
-        audioCodecSelection.spinner.setItems(audioCodecOptions)
-        multistreamSelection.name.text = "マルチストリーム"
-        multistreamSelection.spinner.setItems(multistreamOptions)
+        binding.videoCodecSelection.name.text = "映像コーデック"
+        binding.videoCodecSelection.spinner.setItems(videoCodecOptions)
+        binding.audioCodecSelection.name.text = "音声コーデック"
+        binding.audioCodecSelection.spinner.setItems(audioCodecOptions)
+        binding.multistreamSelection.name.text = "マルチストリーム"
+        binding.multistreamSelection.spinner.setItems(multistreamOptions)
 
-        start.setOnClickListener {
-            val channelName = channelNameInput.text.toString()
-            val videoCodec = selectedItem(videoCodecSelection.spinner)
-            val audioCodec = selectedItem(audioCodecSelection.spinner)
-            var multistream = selectedItem(multistreamSelection.spinner)
+        binding.start.setOnClickListener {
+            val channelName = binding.channelNameInput.text.toString()
+            val videoCodec = selectedItem(binding.videoCodecSelection.spinner)
+            val audioCodec = selectedItem(binding.audioCodecSelection.spinner)
+            var multistream = selectedItem(binding.multistreamSelection.spinner)
             startScreencast(channelName, videoCodec, audioCodec, multistream == "有効")
         }
     }
@@ -62,7 +64,7 @@ class ScreencastSetupActivity : AppCompatActivity() {
     ) {
         if (SoraScreencastService.isRunning()) {
             Snackbar.make(
-                rootLayout,
+                binding.rootLayout,
                 "既に起動中です",
                 Snackbar.LENGTH_LONG
             )

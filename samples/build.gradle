@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'org.jlleitschuh.gradle.ktlint'
 
@@ -19,6 +18,10 @@ android {
         buildConfigField("String", "SIGNALING_METADATA", "\"${signaling_metadata}\"")
 
         manifestPlaceholders = [usesCleartextTraffic: usesCleartextTraffic];
+    }
+
+    viewBinding {
+        enabled = true
     }
 
     compileOptions {

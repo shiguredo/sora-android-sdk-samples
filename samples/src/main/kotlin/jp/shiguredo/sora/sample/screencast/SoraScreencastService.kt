@@ -25,7 +25,6 @@ import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
-import kotlinx.android.synthetic.main.screencast_service.view.*
 import org.webrtc.AudioTrack
 import org.webrtc.EglBase
 import org.webrtc.MediaStream
