@@ -30,6 +30,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="${usesCleartextTraffic}">
+        <activity
+            android:name=".ui.MessagingActivity"
+            android:exported="false" />
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,28 +42,28 @@
         </activity>
         <activity
             android:name=".ui.VoiceChatRoomSetupActivity"
-            android:label="ボイスチャット"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:label="ボイスチャット" />
         <activity
             android:name=".ui.VideoChatRoomSetupActivity"
-            android:label="ビデオチャット"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:label="ビデオチャット" />
         <activity
             android:name=".ui.SpotlightRoomSetupActivity"
-            android:label="スポットライト"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:label="スポットライト" />
         <activity
             android:name=".ui.ScreencastSetupActivity"
-            android:label="スクリーンキャスト"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:label="スクリーンキャスト" />
         <activity
             android:name=".ui.EffectedVideoChatSetupActivity"
-            android:label="ビデオエフェクト"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:label="ビデオエフェクト" />
         <activity
             android:name=".ui.SimulcastSetupActivity"
-            android:label="サイマルキャスト"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:label="サイマルキャスト" />
         <!--
             以下は実際にWebRTCを利用して動画/音声の通話を行うActivity
             セッション中にActivityが破壊されないように次のどちらかの設定を行う
@@ -83,21 +86,23 @@
         </activity>
         <activity
             android:name=".ui.VoiceChatRoomActivity"
-            android:label="ボイスチャット"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:label="ボイスチャット" />
+
         <service
             android:name=".screencast.SoraScreencastService"
-            android:foregroundServiceType="mediaProjection"
             android:configChanges="orientation|screenSize"
-            android:enabled="true" />
+            android:enabled="true"
+            android:foregroundServiceType="mediaProjection" />
+
         <activity
             android:name=".ui.EffectedVideoChatActivity"
-            android:label="エフェクト付きビデオチャット"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:label="エフェクト付きビデオチャット" />
         <activity
             android:name=".ui.SimulcastActivity"
-            android:label="Simulcast"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:label="Simulcast" />
     </application>
 
 </manifest>

@@ -61,6 +61,10 @@ class MainActivity : AppCompatActivity() {
                 Feature(
                     title = "ビデオエフェクト",
                     description = "エフェクト付きのビデオチャットのデモです"
+                ),
+                Feature(
+                    title = "メッセージング",
+                    description = "メッセージングのデモです"
                 )
             )
         )
@@ -91,6 +95,7 @@ class MainActivity : AppCompatActivity() {
             3 -> goToSpotlightWithPermissionCheck()
             4 -> goToScreencastActivityWithPermissionCheck()
             5 -> goToEffectedVideoRoomDemoWithPermissionCheck()
+            6 -> goToMessaging()
             else -> {
                 Log.w(TAG, "must not come here")
             }
@@ -131,6 +136,11 @@ class MainActivity : AppCompatActivity() {
     @NeedsPermission(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
     fun goToSimulcast() {
         val intent = Intent(this, SimulcastSetupActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun goToMessaging() {
+        val intent = Intent(this, MessagingActivity::class.java)
         startActivity(intent)
     }
 
