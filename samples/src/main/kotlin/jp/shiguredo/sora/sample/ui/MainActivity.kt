@@ -140,7 +140,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun goToMessaging() {
-        val intent = Intent(this, MessagingActivity::class.java)
+        val intent = Intent(this, MessagingSetupActivity::class.java)
         startActivity(intent)
     }
 
