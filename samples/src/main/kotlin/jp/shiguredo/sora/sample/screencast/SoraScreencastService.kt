@@ -13,11 +13,11 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.view.LayoutInflater
-import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.google.gson.Gson
 import jp.shiguredo.sora.sample.R
+import jp.shiguredo.sora.sample.databinding.ScreencastServiceBinding
 import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
@@ -47,8 +47,8 @@ class SoraScreencastService : Service() {
     private var capturer: VideoCapturer? = null
     private var req: ScreencastRequest? = null
     private var egl: EglBase? = null
-    private var layout: View? = null
     private var uiContainer: ScreencastUIContainer? = null
+    private var binding: ScreencastServiceBinding? = null
 
     private var capturing = false
 
@@ -129,21 +129,21 @@ class SoraScreencastService : Service() {
 
     private fun setupUI() {
         val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        layout = inflater.inflate(R.layout.screencast_service, null)
-        layout!!.setPadding(0, SoraScreenUtil.statusBarHeight(this), 0, 0)
-        val navigationBar = layout!!.navigationBar
-        navigationBar.launchActivityView.setImageResource(req!!.notificationIcon)
-        navigationBar.togglePositionButton.setImageResource(R.drawable.ic_unfold_more_white_48dp)
-        navigationBar.stateText.text = "${req!!.stateTitle}\n${req!!.stateText}"
-        navigationBar.toggleMutedButton.setImageResource(R.drawable.ic_mic_white_48dp)
-        navigationBar.closeChannelButton.setImageResource(R.drawable.ic_close_white_48dp)
 
-        navigationBar.togglePositionButton.setOnClickListener { toggleNavigationBarPosition() }
-        navigationBar.launchActivityView.setOnClickListener { launchActivity() }
-        navigationBar.toggleMutedButton.setOnClickListener { toggleMuted() }
-        navigationBar.closeChannelButton.setOnClickListener { closeChannel() }
+        binding = ScreencastServiceBinding.inflate(inflater)
+        binding!!.root.setPadding(0, SoraScreenUtil.statusBarHeight(this), 0, 0)
+        binding!!.launchActivityView.setImageResource(req!!.notificationIcon)
+        binding!!.togglePositionButton.setImageResource(R.drawable.ic_unfold_more_white_48dp)
+        binding!!.stateText.text = "${req!!.stateTitle}\n${req!!.stateText}"
+        binding!!.toggleMutedButton.setImageResource(R.drawable.ic_mic_white_48dp)
+        binding!!.closeChannelButton.setImageResource(R.drawable.ic_close_white_48dp)
 
-        uiContainer = ScreencastUIContainer(this, layout!!)
+        binding!!.togglePositionButton.setOnClickListener { toggleNavigationBarPosition() }
+        binding!!.launchActivityView.setOnClickListener { launchActivity() }
+        binding!!.toggleMutedButton.setOnClickListener { toggleMuted() }
+        binding!!.closeChannelButton.setOnClickListener { closeChannel() }
+
+        uiContainer = ScreencastUIContainer(this, binding!!.root)
     }
 
     private fun launchActivity() {
@@ -171,13 +171,12 @@ class SoraScreencastService : Service() {
     private fun toggleMuted() {
         muted = !muted
         localAudioTrack?.setEnabled(!muted)
-        val navigationBar = layout!!.navigationBar
         val resourceId = if (muted) {
             R.drawable.ic_mic_white_48dp
         } else {
             R.drawable.ic_mic_off_black_48dp
         }
-        navigationBar.toggleMutedButton.setImageResource(resourceId)
+        binding?.toggleMutedButton?.setImageResource(resourceId)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
