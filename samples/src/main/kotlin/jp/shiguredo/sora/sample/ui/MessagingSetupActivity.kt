@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -147,7 +148,7 @@ class TriangleShape(private val size: Int, private val reversed: Boolean = true)
             0f
         }
 
-        val trianglePath = Path().apply {
+        val path = Path().apply {
             moveTo(x = x, y = size.height - this@TriangleShape.size)
             lineTo(x = x, y = size.height)
             lineTo(
@@ -159,7 +160,7 @@ class TriangleShape(private val size: Int, private val reversed: Boolean = true)
                 y = size.height
             )
         }
-        return Outline.Generic(path = trianglePath)
+        return Outline.Generic(path = path)
     }
 }
 
@@ -182,76 +183,76 @@ fun MessagingComposable() {
 }
 
 @Composable
+fun BalloonTailComposable(color: Color, reversed: Boolean) {
+    Column(
+        modifier = Modifier
+            .background(
+                color = color,
+                shape = TriangleShape(20, reversed = reversed)
+            )
+            .width(16.dp)
+            .fillMaxHeight()
+    ) {}
+}
+
+@Composable
+fun MessageComposable(label: String, message: String, self: Boolean = true) {
+    val backgroundColor = if (self) {
+        Color.Green
+    } else {
+        Color.LightGray
+    }
+
+    Row(
+        Modifier
+            .height(IntrinsicSize.Max)
+            .fillMaxWidth(),
+        horizontalArrangement = if (self) { Arrangement.End } else { Arrangement.Start }
+    ) {
+        if (!self) {
+            BalloonTailComposable(color = backgroundColor, reversed = !self)
+        }
+        Column(
+            modifier = Modifier
+                .background(
+                    color = backgroundColor,
+                    shape = if (self) {
+                        RoundedCornerShape(4.dp, 4.dp, 0.dp, 4.dp)
+                    } else {
+                        RoundedCornerShape(4.dp, 4.dp, 4.dp, 0.dp)
+                    }
+                )
+                .padding(8.dp)
+        ) {
+            Text(
+                "$label: $message",
+                Modifier.widthIn(0.dp, 300.dp) // TODO: View のサイズを取得して調整する
+            )
+        }
+        if (self) {
+            BalloonTailComposable(color = backgroundColor, reversed = !self)
+        }
+    }
+}
+
+data class Message(val label: String, val message: String, val self: Boolean)
+
+@Composable
 fun TimelineComposable() {
+    val messages = listOf(
+        Message("#spam", "ham", true),
+        Message("#spam", "祇園精舎の鐘の声、諸行無常の響きあり。沙羅双樹の花の色、盛者必衰の理をあらはす。奢れる人も久からず、ただ春の夜の夢のごとし。猛き者も遂にはほろびぬ、偏ひとへに風の前の塵におなじ。", true),
+        Message("#spam", "egg", false),
+        Message("#spam", "祇園精舎の鐘の声、諸行無常の響きあり。沙羅双樹の花の色、盛者必衰の理をあらはす。奢れる人も久からず、ただ春の夜の夢のごとし。猛き者も遂にはほろびぬ、偏ひとへに風の前の塵におなじ。", false),
+    )
+
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.padding(8.dp)
     ) {
-        item {
-            Row(Modifier.height(IntrinsicSize.Max).fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                Column(
-                    modifier = Modifier.background(
-                        color = Color.Green,
-                        shape = RoundedCornerShape(4.dp, 4.dp, 0.dp, 4.dp)
-                    ).padding(8.dp)
-                ) {
-                    Text("#spam: ham")
-                }
-                Column(
-                    modifier = Modifier.background(
-                        color = Color.Green,
-                        shape = TriangleShape(20)
-                    )
-                        .width(16.dp)
-                        .fillMaxHeight()
-                ) {}
-            }
-        }
 
-        item {
-            Row(Modifier.height(IntrinsicSize.Max).fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                Column(
-                    modifier = Modifier.background(
-                        color = Color.Green,
-                        shape = RoundedCornerShape(4.dp, 4.dp, 0.dp, 4.dp)
-                    ).padding(8.dp)
-                ) {
-                    Text(
-                        "#spam: 祇園精舎の鐘の声、諸行無常の響きあり。沙羅双樹の花の色、盛者必衰の理をあらはす。奢れる人も久からず、ただ春の夜の夢のごとし。猛き者も遂にはほろびぬ、偏ひとへに風の前の塵におなじ。",
-                        Modifier.widthIn(0.dp, 300.dp) // TODO: 最大サイズは view のサイズを取得して調整する
-                    )
-                }
-                Column(
-                    modifier = Modifier.background(
-                        color = Color.Green,
-                        shape = TriangleShape(20)
-                    )
-                        .width(16.dp)
-                        .fillMaxHeight()
-                ) {}
-            }
-        }
-
-        item {
-            Row(Modifier.height(IntrinsicSize.Max).fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-                Column(
-                    modifier = Modifier.background(
-                        color = Color.Gray,
-                        shape = TriangleShape(20, true)
-                    )
-                        .width(16.dp)
-                        .fillMaxHeight()
-                ) {}
-
-                Column(
-                    modifier = Modifier.background(
-                        color = Color.Gray,
-                        shape = RoundedCornerShape(4.dp, 4.dp, 4.dp, 0.dp)
-                    ).padding(8.dp)
-                ) {
-                    Text("#spam: egg")
-                }
-            }
+        items(messages) { message ->
+            MessageComposable(message.label, message.message, message.self)
         }
     }
 }
@@ -280,15 +281,10 @@ fun MessageInput() {
             modifier = Modifier
                 .fillMaxWidth(0.3f)
                 .clickable { expanded.value = true },
-                /* NOTE: 効かない
-                .onFocusChanged {
-                    expanded.value = it.hasFocus
-                },
-                 */
             label = { Text("ラベル") },
             trailingIcon = {
                 Icon(
-                    icon, "contentDescription",
+                    icon, "拡大",
                     Modifier.clickable { expanded.value = !expanded.value }
                 )
             },
@@ -327,7 +323,7 @@ fun MessageInput() {
         ) {
             Icon(
                 Icons.Filled.Send,
-                contentDescription = "Send"
+                contentDescription = "送信"
             )
         }
     }
@@ -339,10 +335,14 @@ class MessagingSetupActivity : AppCompatActivity() {
         title = "メッセージング"
 
         val channel = super.getBaseContext().getString(R.string.channelId)
+        val connected = false
 
         setContent {
-            // MessagingSetupComposable(channel)
-            MessagingComposable()
+            if (connected) {
+                MessagingComposable()
+            } else {
+                MessagingSetupComposable(channel)
+            }
         }
     }
 }
