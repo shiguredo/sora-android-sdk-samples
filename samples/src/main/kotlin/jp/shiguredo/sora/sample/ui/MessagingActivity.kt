@@ -49,12 +49,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
+import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
+import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
+import jp.shiguredo.sora.sdk.util.SoraLogger
+import java.nio.ByteBuffer
 
 val connectButtonColor = android.graphics.Color.parseColor("#F06292")
 
@@ -80,6 +88,8 @@ fun MessagingSetupComposable(defaultChannel: String) {
 """.trim()
         )
     }
+
+    val c = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -110,7 +120,42 @@ fun MessagingSetupComposable(defaultChannel: String) {
                 textStyle = TextStyle(fontSize = 20.sp)
             )
             Button(
-                onClick = {},
+                onClick = {
+                    // Sora に接続する
+                    val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map { it.trim() }
+                    val signalingMetadata = Gson().fromJson(BuildConfig.SIGNALING_METADATA, Map::class.java)
+
+                    val channelListener = object : SoraMediaChannel.Listener {
+                        override fun onConnect(mediaChannel: SoraMediaChannel) {
+                            super.onConnect(mediaChannel)
+                            SoraLogger.d(MessagingActivity.TAG, "connected")
+                        }
+
+                        override fun onDataChannelMessage(label: String, data: ByteBuffer) {
+                            SoraLogger.d(MessagingActivity.TAG, "received")
+                        }
+                    }
+
+                    val mediaOption = SoraMediaOption()
+                    mediaOption.enableMultistream()
+                    mediaOption.enableVideoDownstream(null)
+
+
+                    val t = object : TypeToken<Collection<Map<String, Any>>>() {}.type
+                    var connectDataChannels = Gson().fromJson<List<Map<String, Any>>>(dataChannels.value, t)
+
+                    MessagingActivity.mediaChannel = SoraMediaChannel(
+                        context = c,
+                        signalingEndpointCandidates = signalingEndpointCandidates,
+                        channelId = channel.value,
+                        signalingMetadata = signalingMetadata,
+                        mediaOption = mediaOption,
+                        listener = channelListener,
+                        dataChannelSignaling = true,
+                        dataChannels = connectDataChannels
+                    )
+                    MessagingActivity.mediaChannel!!.connect()
+                },
                 modifier = Modifier
                     .fillMaxWidth(0.95f)
                     .height(40.dp),
@@ -329,12 +374,28 @@ fun MessageInput() {
     }
 }
 
+/*
+class MessagingChannel {
+    private var mediaChannel: SoraMediaChannel? = null
+
+    fun connect() {
+
+    }
+}
+ */
+
 class MessagingActivity : AppCompatActivity() {
+    companion object {
+        var mediaChannel: SoraMediaChannel? = null
+        val TAG = MessagingActivity::class.simpleName
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         title = "メッセージング"
 
-        val channel = super.getBaseContext().getString(R.string.channelId)
+        val context = super.getBaseContext()
+        val channel = context.getString(R.string.channelId)
         val connected = false
 
         setContent {
