@@ -329,7 +329,7 @@ fun MessageInput() {
     }
 }
 
-class MessagingSetupActivity : AppCompatActivity() {
+class MessagingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         title = "メッセージング"

@@ -31,7 +31,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="${usesCleartextTraffic}">
         <activity
-            android:name=".ui.MessagingSetupActivity"
+            android:name=".ui.MessagingActivity"
             android:exported="false" />
         <activity android:name=".ui.MainActivity">
             <intent-filter>
