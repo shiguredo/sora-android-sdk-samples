@@ -5,11 +5,11 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,6 +18,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -40,9 +43,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jp.shiguredo.sora.sample.R
@@ -126,6 +134,35 @@ fun MessagingSetupComposable(defaultChannel: String) {
     }
 }
 
+class TriangleShape(private val size: Int, private val reversed: Boolean = true) : Shape {
+
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density
+    ): Outline {
+        val x = if (reversed) {
+            size.width
+        } else {
+            0f
+        }
+
+        val trianglePath = Path().apply {
+            moveTo(x = x, y = size.height - this@TriangleShape.size)
+            lineTo(x = x, y = size.height)
+            lineTo(
+                x = if (reversed) {
+                    x - this@TriangleShape.size
+                } else {
+                    x + this@TriangleShape.size
+                },
+                y = size.height
+            )
+        }
+        return Outline.Generic(path = trianglePath)
+    }
+}
+
 @Composable
 fun MessagingComposable() {
     Column(
@@ -135,11 +172,87 @@ fun MessagingComposable() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
+        TimelineComposable()
         Divider(
             color = Color.Gray,
             thickness = 1.dp,
         )
         MessageInput()
+    }
+}
+
+@Composable
+fun TimelineComposable() {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(8.dp)
+    ) {
+        item {
+            Row(Modifier.height(IntrinsicSize.Max).fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Column(
+                    modifier = Modifier.background(
+                        color = Color.Green,
+                        shape = RoundedCornerShape(4.dp, 4.dp, 0.dp, 4.dp)
+                    ).padding(8.dp)
+                ) {
+                    Text("#spam: ham")
+                }
+                Column(
+                    modifier = Modifier.background(
+                        color = Color.Green,
+                        shape = TriangleShape(20)
+                    )
+                        .width(16.dp)
+                        .fillMaxHeight()
+                ) {}
+            }
+        }
+
+        item {
+            Row(Modifier.height(IntrinsicSize.Max).fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Column(
+                    modifier = Modifier.background(
+                        color = Color.Green,
+                        shape = RoundedCornerShape(4.dp, 4.dp, 0.dp, 4.dp)
+                    ).padding(8.dp)
+                ) {
+                    Text(
+                        "#spam: 祇園精舎の鐘の声、諸行無常の響きあり。沙羅双樹の花の色、盛者必衰の理をあらはす。奢れる人も久からず、ただ春の夜の夢のごとし。猛き者も遂にはほろびぬ、偏ひとへに風の前の塵におなじ。",
+                        Modifier.widthIn(0.dp, 300.dp) // TODO: 最大サイズは view のサイズを取得して調整する
+                    )
+                }
+                Column(
+                    modifier = Modifier.background(
+                        color = Color.Green,
+                        shape = TriangleShape(20)
+                    )
+                        .width(16.dp)
+                        .fillMaxHeight()
+                ) {}
+            }
+        }
+
+        item {
+            Row(Modifier.height(IntrinsicSize.Max).fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+                Column(
+                    modifier = Modifier.background(
+                        color = Color.Gray,
+                        shape = TriangleShape(20, true)
+                    )
+                        .width(16.dp)
+                        .fillMaxHeight()
+                ) {}
+
+                Column(
+                    modifier = Modifier.background(
+                        color = Color.Gray,
+                        shape = RoundedCornerShape(4.dp, 4.dp, 4.dp, 0.dp)
+                    ).padding(8.dp)
+                ) {
+                    Text("#spam: egg")
+                }
+            }
+        }
     }
 }
 
@@ -157,7 +270,7 @@ fun MessageInput() {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         modifier = Modifier
-            .fillMaxHeight(0.1f)
+            .fillMaxHeight(0.16f)
             .padding(2.dp)
     ) {
         // TODO: フォーカスが当たった際に幅を広げたい
