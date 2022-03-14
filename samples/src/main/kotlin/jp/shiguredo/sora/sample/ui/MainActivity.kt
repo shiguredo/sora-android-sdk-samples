@@ -10,8 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import jp.shiguredo.sora.sample.R
+import jp.shiguredo.sora.sample.databinding.ActivityMainBinding
 import jp.shiguredo.sora.sdk.util.SoraLogger
-import kotlinx.android.synthetic.main.activity_main.*
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.OnPermissionDenied
 import permissions.dispatcher.OnShowRationale
@@ -25,13 +25,16 @@ class MainActivity : AppCompatActivity() {
         val TAG = MainActivity::class.simpleName
     }
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         SoraLogger.enabled = true
         SoraLogger.libjingle_enabled = true
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val adapter = FeatureListAdapter(
             arrayListOf(
@@ -70,9 +73,9 @@ class MainActivity : AppCompatActivity() {
         })
 
         val llm = LinearLayoutManager(this)
-        featureList.setHasFixedSize(true)
-        featureList.layoutManager = llm
-        featureList.adapter = adapter
+        binding.featureList.setHasFixedSize(true)
+        binding.featureList.layoutManager = llm
+        binding.featureList.adapter = adapter
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -150,7 +153,7 @@ class MainActivity : AppCompatActivity() {
     fun onCameraAndAudioDenied() {
         Log.d(TAG, "onCameraAndAudioDenied")
         Snackbar.make(
-            rootLayout,
+            binding.rootLayout,
             "ビデオチャットを利用するには、カメラとマイクの使用を許可してください",
             Snackbar.LENGTH_LONG
         )
@@ -161,7 +164,7 @@ class MainActivity : AppCompatActivity() {
     @OnPermissionDenied(Manifest.permission.RECORD_AUDIO)
     fun onAudioDenied() {
         Snackbar.make(
-            rootLayout,
+            binding.rootLayout,
             "ボイスチャットを利用するには、マイクの使用を許可してください",
             Snackbar.LENGTH_LONG
         )

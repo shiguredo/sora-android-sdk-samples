@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
+import jp.shiguredo.sora.sample.databinding.ActivityVideoChatRoomBinding
 import jp.shiguredo.sora.sample.facade.SoraVideoChannel
 import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sample.ui.util.RendererLayoutCalculator
@@ -29,7 +30,6 @@ import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
-import kotlinx.android.synthetic.main.activity_video_chat_room.*
 import org.webrtc.SurfaceViewRenderer
 import java.util.UUID
 
@@ -361,48 +361,50 @@ class VideoChatRoomActivityUI(
 ) {
 
     private val renderersLayoutCalculator: RendererLayoutCalculator
+    private var binding: ActivityVideoChatRoomBinding
 
     init {
-        activity.setContentView(R.layout.activity_video_chat_room)
-        activity.channelNameText.text = channelName
+        binding = ActivityVideoChatRoomBinding.inflate(activity.layoutInflater)
+        activity.setContentView(binding.root)
+        binding.channelNameText.text = channelName
         this.renderersLayoutCalculator = RendererLayoutCalculator(
             width = SoraScreenUtil.size(activity).x - dp2px(20 * 2),
             height = SoraScreenUtil.size(activity).y - dp2px(20 * 2 + 100)
         )
-        activity.toggleMuteButton.setOnClickListener { activity.toggleMuted() }
-        activity.switchCameraButton.setOnClickListener { activity.switchCamera() }
-        activity.closeButton.setOnClickListener { activity.close() }
+        binding.toggleMuteButton.setOnClickListener { activity.toggleMuted() }
+        binding.switchCameraButton.setOnClickListener { activity.switchCamera() }
+        binding.closeButton.setOnClickListener { activity.close() }
     }
 
     internal fun changeState(colorCode: String) {
-        activity.channelNameText.setBackgroundColor(Color.parseColor(colorCode))
+        binding.channelNameText.setBackgroundColor(Color.parseColor(colorCode))
     }
 
     internal fun addLocalRenderer(renderer: SurfaceViewRenderer) {
         renderer.layoutParams =
             FrameLayout.LayoutParams(dp2px(100), dp2px(100))
-        activity.localRendererContainer.addView(renderer)
+        binding.localRendererContainer.addView(renderer)
     }
 
     internal fun addRenderer(renderer: SurfaceViewRenderer) {
         renderer.layoutParams = rendererLayoutParams()
-        activity.rendererContainer.addView(renderer)
+        binding.rendererContainer.addView(renderer)
         renderersLayoutCalculator.add(renderer)
     }
 
     internal fun removeRenderer(renderer: SurfaceViewRenderer) {
-        activity.rendererContainer.removeView(renderer)
+        binding.rendererContainer.removeView(renderer)
         renderersLayoutCalculator.remove(renderer)
     }
 
     internal fun showUnmuteButton() {
-        activity.toggleMuteButton.setImageDrawable(
+        binding.toggleMuteButton.setImageDrawable(
             resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
         )
     }
 
     internal fun showMuteButton() {
-        activity.toggleMuteButton.setImageDrawable(
+        binding.toggleMuteButton.setImageDrawable(
             resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
         )
     }

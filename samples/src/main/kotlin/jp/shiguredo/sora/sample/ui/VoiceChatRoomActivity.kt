@@ -15,12 +15,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
+import jp.shiguredo.sora.sample.databinding.ActivityVoiceChatRoomBinding
 import jp.shiguredo.sora.sample.facade.SoraAudioChannel
 import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
-import kotlinx.android.synthetic.main.activity_voice_chat_room.*
 
 class VoiceChatRoomActivity : AppCompatActivity() {
 
@@ -39,12 +39,14 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
     private var oldAudioMode: Int = AudioManager.MODE_INVALID
 
+    private lateinit var binding: ActivityVoiceChatRoomBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
         setupWindow()
-
-        setContentView(R.layout.activity_voice_chat_room)
+        binding = ActivityVoiceChatRoomBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         channelName = intent.getStringExtra("CHANNEL_NAME") ?: getString(R.string.channelId)
 
@@ -81,8 +83,8 @@ class VoiceChatRoomActivity : AppCompatActivity() {
             else -> null
         }
 
-        channelNameText.text = channelName
-        closeButton.setOnClickListener { close() }
+        binding.channelNameText.text = channelName
+        binding.closeButton.setOnClickListener { close() }
 
         connectChannel()
     }
@@ -178,7 +180,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     }
 
     internal fun changeStateText(msg: String) {
-        stateText.text = msg
+        binding.stateText.text = msg
     }
 
     private fun disposeChannel() {
