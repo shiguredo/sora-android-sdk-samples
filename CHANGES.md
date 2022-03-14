@@ -9,6 +9,12 @@
 - FIX
     - バグ修正
 
+## develop
+
+- [UPDATE] Kotlin synthetics の廃止に伴い View binding に移行する
+  - @miosakuma
+  - @enm10k
+
 ## sora-andoroid-sdk-2022.1.0
 
 - [UPDATE] システム条件を更新する
