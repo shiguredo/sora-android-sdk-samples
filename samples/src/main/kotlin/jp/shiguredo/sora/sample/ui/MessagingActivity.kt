@@ -227,7 +227,7 @@ fun SetupComposable(
                 onValueChange = {
                     dataChannels.value = it
                 },
-                label = { Text("データチャンネル", color = Color.Gray) },
+                label = { Text("データチャネル", color = Color.Gray) },
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Black,
                     unfocusedIndicatorColor = Color.Black
