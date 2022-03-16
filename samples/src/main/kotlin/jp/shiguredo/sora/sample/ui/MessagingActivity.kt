@@ -23,7 +23,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -46,6 +48,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,6 +73,7 @@ import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
 import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
 import jp.shiguredo.sora.sdk.util.ByteBufferBackedInputStream
 import jp.shiguredo.sora.sdk.util.SoraLogger
+import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
 
 val COLOR_PRIMARY_BUTTON = android.graphics.Color.parseColor("#F06292")
@@ -89,13 +93,19 @@ const val DEFAULT_DATA_CHANNELS = """
 """
 
 @Composable
-fun SetupComposable(defaultChannel: String, setConnected: (Boolean) -> Unit, labels: SnapshotStateList<String>, messages: SnapshotStateList<Message>) {
+fun SetupComposable(
+    defaultChannel: String,
+    setConnected: (Boolean) -> Unit,
+    labels: SnapshotStateList<String>,
+    messages: SnapshotStateList<Message>,
+    listState: LazyListState
+) {
     var channel = remember { mutableStateOf(defaultChannel) }
     var (isLoading, setIsLoading) = remember { mutableStateOf(false) }
-
     var dataChannels = remember {
         mutableStateOf(DEFAULT_DATA_CHANNELS.trim())
     }
+    val coroutineScope = rememberCoroutineScope()
 
     val c = LocalContext.current
 
@@ -145,6 +155,9 @@ fun SetupComposable(defaultChannel: String, setConnected: (Boolean) -> Unit, lab
                             // TODO: バイナリのメッセージに対応する
                             val message = ByteBufferBackedInputStream(data).reader().readText()
                             messages.add(Message(label, message, false))
+                            coroutineScope.launch {
+                                listState.scrollToItem(messages.size)
+                            }
                         }
                     }
 
@@ -277,8 +290,12 @@ fun MessageComposable(label: String, message: String, self: Boolean = true) {
 }
 
 @Composable
-fun TimelineComposable(setConnected: (Boolean) -> Unit, labels: SnapshotStateList<String>, messages: SnapshotStateList<Message>) {
-
+fun TimelineComposable(
+    setConnected: (Boolean) -> Unit,
+    labels: SnapshotStateList<String>,
+    messages: SnapshotStateList<Message>,
+    listState: LazyListState
+) {
     BackHandler {
         // 設定画面に戻る
         labels.clear()
@@ -299,6 +316,7 @@ fun TimelineComposable(setConnected: (Boolean) -> Unit, labels: SnapshotStateLis
             verticalArrangement = Arrangement.Bottom,
         ) {
             LazyColumn(
+                state = listState,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.padding(8.dp)
             ) {
@@ -312,18 +330,22 @@ fun TimelineComposable(setConnected: (Boolean) -> Unit, labels: SnapshotStateLis
             color = Color.Gray,
             thickness = 1.dp,
         )
-        MessageInput(labels, messages)
+        MessageInput(labels, messages, listState)
     }
 }
 
 @Composable
-fun MessageInput(labels: SnapshotStateList<String>, messages: SnapshotStateList<Message>) {
+fun MessageInput(
+    labels: SnapshotStateList<String>,
+    messages: SnapshotStateList<Message>,
+    listState: LazyListState
+) {
     val (message, setMessage) = remember { mutableStateOf("") }
     val (expanded, setExpanded) = remember { mutableStateOf(false) }
-
     val (selectedLabel, setSelectedLabel) = remember {
         mutableStateOf(if (labels.isNotEmpty()) { labels.first() } else { "" })
     }
+    val coroutineScope = rememberCoroutineScope()
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -378,6 +400,10 @@ fun MessageInput(labels: SnapshotStateList<String>, messages: SnapshotStateList<
                 messages.add(Message(selectedLabel, message, true))
                 if (labels.isNotEmpty()) {
                     setSelectedLabel(labels.first())
+                }
+
+                coroutineScope.launch {
+                    listState.scrollToItem(messages.size)
                 }
             },
             modifier = Modifier.size(50.dp),
@@ -440,13 +466,16 @@ private fun TopComposable() {
     val channelId = LocalContext.current.getString(R.string.channelId)
     val (connected, setConnected) = remember { mutableStateOf(false) }
 
+    // メッセージ追加時に、リストをスクロールするために使用
+    val listState = rememberLazyListState()
+
     var labels = remember { mutableStateListOf<String>() }
     var messages = remember { mutableStateListOf<Message>() }
 
     if (connected) {
-        TimelineComposable(setConnected, labels, messages)
+        TimelineComposable(setConnected, labels, messages, listState)
     } else {
-        SetupComposable(channelId, setConnected, labels, messages)
+        SetupComposable(channelId, setConnected, labels, messages, listState)
     }
 }
 
