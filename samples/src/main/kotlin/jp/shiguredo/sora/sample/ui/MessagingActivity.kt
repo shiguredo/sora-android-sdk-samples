@@ -282,6 +282,7 @@ fun TimelineComposable(setConnected: (Boolean) -> Unit, labels: SnapshotStateLis
     BackHandler {
         // 設定画面に戻る
         labels.clear()
+        messages.clear()
         setConnected(false)
         MessagingActivity.channel.disconnect()
     }
@@ -291,15 +292,20 @@ fun TimelineComposable(setConnected: (Boolean) -> Unit, labels: SnapshotStateLis
             .fillMaxSize()
             .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom
+        verticalArrangement = Arrangement.Top
     ) {
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(8.dp)
+        Column(
+            modifier = Modifier.fillMaxHeight(0.9f),
+            verticalArrangement = Arrangement.Bottom,
         ) {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(8.dp)
+            ) {
 
-            items(messages) { message ->
-                MessageComposable(message.label, message.message, message.self)
+                items(messages) { message ->
+                    MessageComposable(message.label, message.message, message.self)
+                }
             }
         }
         Divider(
@@ -323,7 +329,7 @@ fun MessageInput(labels: SnapshotStateList<String>, messages: SnapshotStateList<
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         modifier = Modifier
-            .fillMaxHeight(0.2f)
+            .fillMaxHeight()
             .padding(2.dp)
     ) {
         // TODO: フォーカスが当たった際に幅を広げる?
@@ -370,7 +376,6 @@ fun MessageInput(labels: SnapshotStateList<String>, messages: SnapshotStateList<
             onClick = {
                 MessagingActivity.channel.sendMessage(selectedLabel, message)
                 messages.add(Message(selectedLabel, message, true))
-                setMessage("")
                 if (labels.isNotEmpty()) {
                     setSelectedLabel(labels.first())
                 }
