@@ -72,6 +72,7 @@ import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
 import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
+import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.ByteBufferBackedInputStream
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.coroutines.launch
@@ -144,10 +145,16 @@ fun SetupComposable(
             Button(
                 onClick = {
                     val channelListener = object : SoraMediaChannel.Listener {
-                        override fun onConnect(mediaChannel: SoraMediaChannel) {
-                            super.onConnect(mediaChannel)
 
-                            SoraLogger.d(MessagingActivity.TAG, "connected")
+                        override fun onClose(mediaChannel: SoraMediaChannel) {
+                            super.onClose(mediaChannel)
+                            setConnected(false)
+                        }
+
+                        override fun onDataChannel() {
+                            super.onDataChannel()
+
+                            // DataChannel の接続を持って接続したとみなす
                             setConnected(true)
                         }
 
@@ -176,7 +183,7 @@ fun SetupComposable(
                                         message = byteArray.toString()
                                     }
                                 } catch (e: Exception) {
-                                    SoraLogger.d(MessagingActivity.TAG, e.stackTraceToString())
+                                    SoraLogger.d(SoraMessagingChannel.TAG, e.stackTraceToString())
                                 }
                             }
                             messages.add(Message(label, message ?: "", false))
@@ -184,6 +191,18 @@ fun SetupComposable(
                                 // TODO: 効いてない気がする
                                 listState.scrollToItem(newIndex)
                             }
+                        }
+
+                        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason) {
+                            super.onError(mediaChannel, reason)
+                            SoraLogger.e(SoraMessagingChannel.TAG, "SoraErrorReason: reason=${reason.name}")
+                            setConnected(false)
+                        }
+
+                        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {
+                            super.onError(mediaChannel, reason, message)
+                            SoraLogger.e(SoraMessagingChannel.TAG, "SoraErrorReason: reason=${reason.name}, message=$message")
+                            setConnected(false)
                         }
                     }
 
@@ -457,9 +476,9 @@ fun MessageInput(
 
 class SoraMessagingChannel {
     private var mediaChannel: SoraMediaChannel? = null
-    private val TAG = MessagingActivity::class.simpleName
 
     companion object {
+        val TAG = MessagingActivity::class.simpleName
         private val utf8Decoder = StandardCharsets.UTF_8
             .newDecoder()
             .onMalformedInput(CodingErrorAction.REPORT)
