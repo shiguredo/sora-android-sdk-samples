@@ -74,7 +74,10 @@ import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
 import jp.shiguredo.sora.sdk.util.ByteBufferBackedInputStream
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import java.nio.ByteBuffer
+import java.nio.charset.CodingErrorAction
+import java.nio.charset.StandardCharsets
 
 val COLOR_PRIMARY_BUTTON = android.graphics.Color.parseColor("#F06292")
 val COLOR_SETUP_BACKGROUND = android.graphics.Color.parseColor("#2288dd")
@@ -100,9 +103,9 @@ fun SetupComposable(
     messages: SnapshotStateList<Message>,
     listState: LazyListState
 ) {
-    var channel = remember { mutableStateOf(defaultChannel) }
-    var (isLoading, setIsLoading) = remember { mutableStateOf(false) }
-    var dataChannels = remember {
+    val channel = remember { mutableStateOf(defaultChannel) }
+    val (isLoading, setIsLoading) = remember { mutableStateOf(false) }
+    val dataChannels = remember {
         mutableStateOf(DEFAULT_DATA_CHANNELS.trim())
     }
     val coroutineScope = rememberCoroutineScope()
@@ -152,11 +155,33 @@ fun SetupComposable(
                                 return
                             }
 
-                            // TODO: バイナリのメッセージに対応する
-                            val message = ByteBufferBackedInputStream(data).reader().readText()
-                            messages.add(Message(label, message, false))
+                            val newIndex = messages.size + 1
+                            var message: String? = SoraMessagingChannel.dataToString(data.duplicate())
+
+                            if (message == null) {
+                                try {
+                                    /*
+                                    NOTE: data.array() で ByteArray を作成しようとすると UnsupportedOperationException が発生するので注意
+
+                                    参考: https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/ByteBuffer.html#array()
+                                    > Throws:
+                                    > ...
+                                    > UnsupportedOperationException - If this buffer is not backed by an accessible array
+                                     */
+                                    ByteBufferBackedInputStream(data).use {
+
+                                        val byteArray = ByteArray(it.available())
+                                        it.read(byteArray)
+                                        message = byteArray.toString()
+                                    }
+                                } catch (e: Exception) {
+                                    SoraLogger.d(MessagingActivity.TAG, e.stackTraceToString())
+                                }
+                            }
+                            messages.add(Message(label, message ?: "", false))
                             coroutineScope.launch {
-                                listState.scrollToItem(messages.size)
+                                // TODO: 効いてない気がする
+                                listState.scrollToItem(newIndex)
                             }
                         }
                     }
@@ -165,7 +190,7 @@ fun SetupComposable(
                     val connectDataChannels = Gson().fromJson<List<Map<String, Any>>>(dataChannels.value, t)
 
                     labels.addAll(connectDataChannels.map { it["label"] as String })
-                    MessagingActivity.channel!!.connect(c, channel.value, connectDataChannels, channelListener)
+                    MessagingActivity.channel.connect(c, channel.value, connectDataChannels, channelListener)
                     setIsLoading(true)
                 },
                 modifier = Modifier
@@ -396,14 +421,23 @@ fun MessageInput(
 
         OutlinedButton(
             onClick = {
+                val newIndex = messages.size + 1
+
                 MessagingActivity.channel.sendMessage(selectedLabel, message)
                 messages.add(Message(selectedLabel, message, true))
+
+                // NOTE: ランダムなバイト列を作成してメッセージとして送信する例
+                // val bytes = ByteArray(20)
+                // Random.nextBytes(bytes)
+                // MessagingActivity.channel.sendMessage(selectedLabel, ByteBuffer.wrap(bytes))
+                // messages.add(Message(selectedLabel, bytes.toString(), true))
+
                 if (labels.isNotEmpty()) {
                     setSelectedLabel(labels.first())
                 }
 
                 coroutineScope.launch {
-                    listState.scrollToItem(messages.size)
+                    listState.scrollToItem(newIndex)
                 }
             },
             modifier = Modifier.size(50.dp),
@@ -423,6 +457,24 @@ fun MessageInput(
 class SoraMessagingChannel {
     private var mediaChannel: SoraMediaChannel? = null
     private val TAG = MessagingActivity::class.simpleName
+
+    companion object {
+        private val utf8Decoder = StandardCharsets.UTF_8
+            .newDecoder()
+            .onMalformedInput(CodingErrorAction.REPORT)
+            .onUnmappableCharacter(CodingErrorAction.REPORT)
+
+        fun dataToString(data: ByteBuffer): String? {
+            val s: String?
+            try {
+                val buffer = utf8Decoder.decode(data)
+                s = buffer.toString()
+            } catch (e: CharacterCodingException) {
+                return null
+            }
+            return s
+        }
+    }
 
     fun connect(context: Context, channelId: String, dataChannels: List<Map<String, Any>>, listener: SoraMediaChannel.Listener) {
 
@@ -454,6 +506,13 @@ class SoraMessagingChannel {
         mediaChannel?.sendDataChannelMessage(label, message)
     }
 
+    fun sendMessage(label: String, message: ByteBuffer) {
+        if (mediaChannel == null) {
+            SoraLogger.e(TAG, "mediaChannel is not available")
+        }
+        mediaChannel?.sendDataChannelMessage(label, message)
+    }
+
     fun disconnect() {
         mediaChannel?.disconnect()
     }
@@ -462,15 +521,15 @@ class SoraMessagingChannel {
 data class Message(val label: String, val message: String, val self: Boolean)
 
 @Composable
-private fun TopComposable() {
+fun TopComposable() {
     val channelId = LocalContext.current.getString(R.string.channelId)
     val (connected, setConnected) = remember { mutableStateOf(false) }
 
     // メッセージ追加時に、リストをスクロールするために使用
     val listState = rememberLazyListState()
 
-    var labels = remember { mutableStateListOf<String>() }
-    var messages = remember { mutableStateListOf<Message>() }
+    val labels = remember { mutableStateListOf<String>() }
+    val messages = remember { mutableStateListOf<Message>() }
 
     if (connected) {
         TimelineComposable(setConnected, labels, messages, listState)
