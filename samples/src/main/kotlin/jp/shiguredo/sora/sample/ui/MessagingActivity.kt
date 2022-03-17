@@ -2,6 +2,7 @@ package jp.shiguredo.sora.sample.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Base64
 import android.view.WindowManager
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -177,10 +178,8 @@ fun SetupComposable(
                                     > UnsupportedOperationException - If this buffer is not backed by an accessible array
                                      */
                                     ByteBufferBackedInputStream(data).use {
-
-                                        val byteArray = ByteArray(it.available())
-                                        it.read(byteArray)
-                                        message = byteArray.toString()
+                                        val bytes = it.readBytes()
+                                        message = Base64.encodeToString(bytes, Base64.DEFAULT)
                                     }
                                 } catch (e: Exception) {
                                     SoraLogger.d(SoraMessagingChannel.TAG, e.stackTraceToString())
@@ -450,7 +449,7 @@ fun MessageInput(
                 // val bytes = ByteArray(20)
                 // Random.nextBytes(bytes)
                 // MessagingActivity.channel.sendMessage(selectedLabel, ByteBuffer.wrap(bytes))
-                // messages.add(Message(selectedLabel, bytes.toString(), true))
+                // messages.add(Message(selectedLabel, Base64.encodeToString(bytes, Base64.DEFAULT), true))
 
                 if (labels.isNotEmpty()) {
                     setSelectedLabel(labels.first())
