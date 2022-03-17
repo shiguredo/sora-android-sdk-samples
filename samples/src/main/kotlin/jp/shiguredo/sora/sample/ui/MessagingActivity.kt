@@ -151,11 +151,14 @@ fun SetupComposable(
                             setConnected(false)
                         }
 
-                        override fun onDataChannel() {
-                            super.onDataChannel()
-
+                        override fun onDataChannel(dataChannels: List<Map<String, Any>>?) {
+                            super.onDataChannel(dataChannels)
                             // DataChannel の接続を持って接続したとみなす
                             setConnected(true)
+                            SoraLogger.d(SoraMessagingChannel.TAG, "data_channels=$dataChannels")
+                            dataChannels?.map { it["label"] as String }?.let {
+                                labels.addAll(it)
+                            }
                         }
 
                         override fun onDataChannelMessage(label: String, data: ByteBuffer) {
@@ -201,7 +204,6 @@ fun SetupComposable(
                     val t = object : TypeToken<Collection<Map<String, Any>>>() {}.type
                     val connectDataChannels = Gson().fromJson<List<Map<String, Any>>>(dataChannels.value, t)
 
-                    labels.addAll(connectDataChannels.map { it["label"] as String })
                     MessagingActivity.channel.connect(c, channel.value, connectDataChannels, channelListener)
                     setIsLoading(true)
                 },
