@@ -149,6 +149,7 @@ fun SetupComposable(
                         override fun onClose(mediaChannel: SoraMediaChannel) {
                             super.onClose(mediaChannel)
                             setConnected(false)
+                            setIsLoading(false)
                         }
 
                         override fun onDataChannel(dataChannels: List<Map<String, Any>>?) {
@@ -192,12 +193,14 @@ fun SetupComposable(
                             super.onError(mediaChannel, reason)
                             SoraLogger.e(SoraMessagingChannel.TAG, "SoraErrorReason: reason=${reason.name}")
                             setConnected(false)
+                            setIsLoading(false)
                         }
 
                         override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {
                             super.onError(mediaChannel, reason, message)
                             SoraLogger.e(SoraMessagingChannel.TAG, "SoraErrorReason: reason=${reason.name}, message=$message")
                             setConnected(false)
+                            setIsLoading(false)
                         }
                     }
 
