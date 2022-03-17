@@ -2,7 +2,6 @@ package jp.shiguredo.sora.sample.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Base64
 import android.view.WindowManager
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -74,13 +73,13 @@ import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
 import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
-import jp.shiguredo.sora.sdk.util.ByteBufferBackedInputStream
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.nio.ByteBuffer
 import java.nio.charset.CodingErrorAction
 import java.nio.charset.StandardCharsets
+import java.util.Base64
 
 val COLOR_PRIMARY_BUTTON = android.graphics.Color.parseColor("#F06292")
 val COLOR_SETUP_BACKGROUND = android.graphics.Color.parseColor("#2288dd")
@@ -177,10 +176,8 @@ fun SetupComposable(
                                     > ...
                                     > UnsupportedOperationException - If this buffer is not backed by an accessible array
                                      */
-                                    ByteBufferBackedInputStream(data).use {
-                                        val bytes = it.readBytes()
-                                        message = Base64.encodeToString(bytes, Base64.DEFAULT)
-                                    }
+                                    val buffer = Base64.getEncoder().encode(data)
+                                    message = SoraMessagingChannel.dataToString(buffer)
                                 } catch (e: Exception) {
                                     SoraLogger.d(SoraMessagingChannel.TAG, e.stackTraceToString())
                                 }

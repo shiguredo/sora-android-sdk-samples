@@ -8,7 +8,7 @@ android {
     defaultConfig {
         applicationId "jp.shiguredo.sora.sample"
         targetSdkVersion 30
-        minSdkVersion 21
+        minSdkVersion 26
         versionCode 1
         versionName "1.0"
 
