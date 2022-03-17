@@ -503,6 +503,7 @@ class SoraMessagingChannel {
 
         val mediaOption = SoraMediaOption()
         mediaOption.enableMultistream()
+        // Sora 側で data_channel_messaging_only = true の場合、 enableVideoDownstream は不要
         mediaOption.enableVideoDownstream(null)
 
         mediaChannel = SoraMediaChannel(
