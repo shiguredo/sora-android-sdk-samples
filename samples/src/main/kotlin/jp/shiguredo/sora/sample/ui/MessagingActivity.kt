@@ -480,6 +480,7 @@ class SoraMessagingChannel {
             .onMalformedInput(CodingErrorAction.REPORT)
             .onUnmappableCharacter(CodingErrorAction.REPORT)
 
+        @Synchronized
         fun dataToString(data: ByteBuffer): String? {
             val s: String?
             try {
