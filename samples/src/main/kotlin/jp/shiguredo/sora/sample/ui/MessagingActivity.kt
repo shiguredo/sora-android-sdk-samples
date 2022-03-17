@@ -159,10 +159,6 @@ fun SetupComposable(
                         }
 
                         override fun onDataChannelMessage(label: String, data: ByteBuffer) {
-                            if (!label.startsWith("#")) {
-                                return
-                            }
-
                             val newIndex = messages.size + 1
                             var message: String? = SoraMessagingChannel.dataToString(data.duplicate())
 
