@@ -156,8 +156,8 @@ fun SetupComposable(
                             setIsLoading(false)
                         }
 
-                        override fun onDataChannel(dataChannels: List<Map<String, Any>>?) {
-                            super.onDataChannel(dataChannels)
+                        override fun onDataChannel(mediaChannel: SoraMediaChannel, dataChannels: List<Map<String, Any>>?) {
+                            super.onDataChannel(mediaChannel, dataChannels)
                             // DataChannel の接続を持って接続したとみなす
                             setConnected(true)
                             SoraLogger.d(SoraMessagingChannel.TAG, "data_channels=$dataChannels")
@@ -166,7 +166,7 @@ fun SetupComposable(
                             }
                         }
 
-                        override fun onDataChannelMessage(label: String, data: ByteBuffer) {
+                        override fun onDataChannelMessage(mediaChannel: SoraMediaChannel, label: String, data: ByteBuffer) {
                             val newIndex = messages.size + 1
                             var message: String? = SoraMessagingChannel.dataToString(data.duplicate())
 
