@@ -69,6 +69,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import jp.shiguredo.sora.sample.BuildConfig
@@ -176,14 +177,6 @@ fun SetupComposable(
 
                             if (message == null) {
                                 try {
-                                    /*
-                                    NOTE: data.array() で ByteArray を作成しようとすると UnsupportedOperationException が発生するので注意
-
-                                    参考: https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/ByteBuffer.html#array()
-                                    > Throws:
-                                    > ...
-                                    > UnsupportedOperationException - If this buffer is not backed by an accessible array
-                                     */
                                     val buffer = Base64.getEncoder().encode(data)
                                     message = SoraMessagingChannel.dataToString(buffer)
                                 } catch (e: Exception) {
@@ -493,6 +486,7 @@ fun MessageInput(
                 // val bytes = ByteArray(20)
                 // Random.nextBytes(bytes)
                 // val error = MessagingActivity.channel.sendMessage(selectedLabel, ByteBuffer.wrap(bytes)
+                SoraLogger.d(MessagingActivity.TAG, "sendMessage: error=$error")
 
                 if (error == SoraMessagingError.OK) {
                     messages.add(Message(selectedLabel, message, true))
