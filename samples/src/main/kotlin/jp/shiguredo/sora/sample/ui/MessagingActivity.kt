@@ -189,7 +189,7 @@ fun SetupComposable(
 
                                     val handler = Handler(Looper.getMainLooper())
                                     handler.post {
-                                        run() {
+                                        run {
                                             Toast.makeText(c, e.toString(), Toast.LENGTH_LONG).show()
                                         }
                                     }
@@ -209,7 +209,7 @@ fun SetupComposable(
 
                             val handler = Handler(Looper.getMainLooper())
                             handler.post {
-                                run() {
+                                run {
                                     Toast.makeText(c, reason.toString(), Toast.LENGTH_LONG).show()
                                 }
                             }
@@ -223,7 +223,7 @@ fun SetupComposable(
 
                             val handler = Handler(Looper.getMainLooper())
                             handler.post {
-                                run() {
+                                run {
                                     Toast.makeText(c, "$reason: $message", Toast.LENGTH_LONG).show()
                                 }
                             }
@@ -240,7 +240,7 @@ fun SetupComposable(
                         var ordered: Boolean? = null
 
                         fun getMap(): Map<String, Any> {
-                            var map = mutableMapOf<String, Any>()
+                            val map = mutableMapOf<String, Any>()
                             val fields = this.javaClass.declaredFields
                             for (field in fields) {
                                 val k = field.name
@@ -471,7 +471,7 @@ fun MessageInput(
             expanded = expanded,
             onDismissRequest = { setExpanded(false) }
         ) {
-            labels.forEachIndexed { index, label ->
+            labels.forEach { label ->
                 DropdownMenuItem(
                     onClick = {
                         setSelectedLabel(label)
@@ -519,7 +519,7 @@ fun MessageInput(
                 } else {
                     val handler = Handler(Looper.getMainLooper())
                     handler.post {
-                        run() {
+                        run {
                             Toast.makeText(c, error.toString(), Toast.LENGTH_LONG).show()
                         }
                     }
