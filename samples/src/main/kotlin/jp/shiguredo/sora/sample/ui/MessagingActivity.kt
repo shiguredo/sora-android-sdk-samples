@@ -2,7 +2,10 @@ package jp.shiguredo.sora.sample.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -73,6 +76,7 @@ import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
 import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
+import jp.shiguredo.sora.sdk.error.SoraMessagingError
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -198,6 +202,13 @@ fun SetupComposable(
                             SoraLogger.e(SoraMessagingChannel.TAG, "SoraErrorReason: reason=${reason.name}")
                             setConnected(false)
                             setIsLoading(false)
+
+                            val handler = Handler(Looper.getMainLooper())
+                            handler.post {
+                                run() {
+                                    Toast.makeText(c, reason.toString(), Toast.LENGTH_LONG).show()
+                                }
+                            }
                         }
 
                         override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {
@@ -205,6 +216,13 @@ fun SetupComposable(
                             SoraLogger.e(SoraMessagingChannel.TAG, "SoraErrorReason: reason=${reason.name}, message=$message")
                             setConnected(false)
                             setIsLoading(false)
+
+                            val handler = Handler(Looper.getMainLooper())
+                            handler.post {
+                                run() {
+                                    Toast.makeText(c, "$reason: $message", Toast.LENGTH_LONG).show()
+                                }
+                            }
                         }
                     }
 
@@ -417,6 +435,7 @@ fun MessageInput(
         mutableStateOf(if (labels.isNotEmpty()) { labels.first() } else { "" })
     }
     val coroutineScope = rememberCoroutineScope()
+    val c = LocalContext.current
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -469,14 +488,25 @@ fun MessageInput(
             onClick = {
                 val newIndex = messages.size + 1
 
-                MessagingActivity.channel.sendMessage(selectedLabel, message)
-                messages.add(Message(selectedLabel, message, true))
-
-                // NOTE: ランダムなバイト列を作成してメッセージとして送信する例
+                val error = MessagingActivity.channel.sendMessage(selectedLabel, message)
+                // NOTE: メッセージを送信する代わりに、ランダムなバイト列を送信する例
                 // val bytes = ByteArray(20)
                 // Random.nextBytes(bytes)
-                // MessagingActivity.channel.sendMessage(selectedLabel, ByteBuffer.wrap(bytes))
-                // messages.add(Message(selectedLabel, Base64.encodeToString(bytes, Base64.DEFAULT), true))
+                // val error = MessagingActivity.channel.sendMessage(selectedLabel, ByteBuffer.wrap(bytes)
+
+                if (error == SoraMessagingError.OK) {
+                    messages.add(Message(selectedLabel, message, true))
+                    // NOTE: バイト列を文字列に変換して送信済みメッセージに追加する例
+                    // messages.add(Message(selectedLabel, Base64.encodeToString(bytes, Base64.DEFAULT), true))
+                } else {
+                    val msg = error?.toString() ?: "SoraMediaChannel is unavailable"
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.post {
+                        run() {
+                            Toast.makeText(c, error.toString(), Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
 
                 if (labels.isNotEmpty()) {
                     setSelectedLabel(labels.first())
@@ -547,18 +577,12 @@ class SoraMessagingChannel {
         mediaChannel!!.connect()
     }
 
-    fun sendMessage(label: String, message: String) {
-        if (mediaChannel == null) {
-            SoraLogger.e(TAG, "mediaChannel is not available")
-        }
-        mediaChannel?.sendDataChannelMessage(label, message)
+    fun sendMessage(label: String, message: String): SoraMessagingError? {
+        return mediaChannel?.sendDataChannelMessage(label, message)
     }
 
-    fun sendMessage(label: String, message: ByteBuffer) {
-        if (mediaChannel == null) {
-            SoraLogger.e(TAG, "mediaChannel is not available")
-        }
-        mediaChannel?.sendDataChannelMessage(label, message)
+    fun sendMessage(label: String, message: ByteBuffer): SoraMessagingError? {
+        return mediaChannel?.sendDataChannelMessage(label, message)
     }
 
     fun disconnect() {
