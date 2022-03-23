@@ -83,7 +83,10 @@ import java.lang.Exception
 import java.nio.ByteBuffer
 import java.nio.charset.CodingErrorAction
 import java.nio.charset.StandardCharsets
-import java.util.Base64
+import kotlin.random.Random
+
+// ランダムなバイト列を送信するフラグ (テスト用)
+const val SEND_RANDOM_BINARY = true
 
 val COLOR_PRIMARY_BUTTON = android.graphics.Color.parseColor("#F06292")
 val COLOR_SETUP_BACKGROUND = android.graphics.Color.parseColor("#2288dd")
@@ -176,8 +179,11 @@ fun SetupComposable(
 
                             if (message == null) {
                                 try {
-                                    val buffer = Base64.getEncoder().encode(data)
-                                    message = SoraMessagingChannel.dataToString(buffer)
+                                    val sb = StringBuffer()
+                                    do {
+                                        sb.append(data.get().toUByte().toString()).append(",")
+                                    } while (data.hasRemaining())
+                                    message = sb.toString()
                                 } catch (e: Exception) {
                                     SoraLogger.d(SoraMessagingChannel.TAG, e.stackTraceToString())
                                 }
@@ -480,18 +486,23 @@ fun MessageInput(
             onClick = {
                 val newIndex = messages.size + 1
 
-                val error = MessagingActivity.channel.sendMessage(selectedLabel, message)
-                // NOTE: メッセージを送信する代わりに、ランダムなバイト列を送信する例
-                // val bytes = ByteArray(20)
-                // Random.nextBytes(bytes)
-                // val error = MessagingActivity.channel.sendMessage(selectedLabel, ByteBuffer.wrap(bytes)
-
-                if (error == SoraMessagingError.OK) {
+                val error: SoraMessagingError?
+                if (!SEND_RANDOM_BINARY) {
+                    error = MessagingActivity.channel.sendMessage(selectedLabel, message)
                     messages.add(Message(selectedLabel, message, true))
-                    // NOTE: バイト列を文字列に変換して送信済みメッセージに追加する例
-                    // messages.add(Message(selectedLabel, Base64.encodeToString(bytes, Base64.DEFAULT), true))
                 } else {
-                    val msg = error?.toString() ?: "SoraMediaChannel is unavailable"
+                    val bytes = ByteArray(20)
+                    Random.nextBytes(bytes)
+
+                    error = MessagingActivity.channel.sendMessage(selectedLabel, ByteBuffer.wrap(bytes))
+                    val sb = StringBuffer()
+                    for (b in bytes) {
+                        sb.append((b.toUByte()).toString()).append(",")
+                    }
+                    messages.add(Message(selectedLabel, sb.toString(), true))
+                }
+
+                if (error != null) {
                     val handler = Handler(Looper.getMainLooper())
                     handler.post {
                         run() {
