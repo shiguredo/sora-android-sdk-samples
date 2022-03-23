@@ -87,12 +87,16 @@ const val DEFAULT_DATA_CHANNELS = """
 [
     {
         "label": "#spam",
-        "direction": "sendrecv"
+        "direction": "sendrecv",
+        "max_packet_life_time": 600
     },
     {
         "label": "#egg",
         "direction": "sendrecv",
-        "compress": true
+        "compress": true,
+        "max_retransmits": 3,
+        "ordered": true,
+        "protocol": "abc"
     }
 ]
 """
@@ -204,9 +208,34 @@ fun SetupComposable(
                         }
                     }
 
-                    val t = object : TypeToken<Collection<Map<String, Any>>>() {}.type
-                    val connectDataChannels = Gson().fromJson<List<Map<String, Any>>>(dataChannels.value, t)
+                    class DataChannel {
+                        lateinit var label: String
+                        lateinit var direction: String
+                        var compress: Boolean? = null
+                        var max_packet_life_time: Int? = null
+                        var max_retransmits: Int? = null
+                        var protocol: String? = null
+                        var ordered: Boolean? = null
 
+                        fun getMap(): Map<String, Any> {
+                            var map = mutableMapOf<String, Any>()
+                            val fields = this.javaClass.declaredFields
+                            for (field in fields) {
+                                val k = field.name
+                                val v = field.get(this)
+                                if (v != null) {
+                                    map[k] = v
+                                }
+                            }
+
+                            return map
+                        }
+                    }
+                    val t = object : TypeToken<Collection<DataChannel>>() {}.type
+                    val data = Gson().fromJson<List<DataChannel>>(dataChannels.value, t)
+                    val connectDataChannels = data.map { it.getMap() }
+
+                    SoraLogger.d(MessagingActivity.TAG, "data_channels=$connectDataChannels")
                     MessagingActivity.channel.connect(c, channel.value, connectDataChannels, channelListener)
                     setIsLoading(true)
                 },
