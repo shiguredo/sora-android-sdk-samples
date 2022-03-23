@@ -485,7 +485,6 @@ fun MessageInput(
                 // val bytes = ByteArray(20)
                 // Random.nextBytes(bytes)
                 // val error = MessagingActivity.channel.sendMessage(selectedLabel, ByteBuffer.wrap(bytes)
-                SoraLogger.d(MessagingActivity.TAG, "sendMessage: error=$error")
 
                 if (error == SoraMessagingError.OK) {
                     messages.add(Message(selectedLabel, message, true))
@@ -571,11 +570,15 @@ class SoraMessagingChannel {
     }
 
     fun sendMessage(label: String, message: String): SoraMessagingError? {
-        return mediaChannel?.sendDataChannelMessage(label, message)
+        val error = mediaChannel?.sendDataChannelMessage(label, message)
+        SoraLogger.d(TAG, "sendMessage: error=$error")
+        return error
     }
 
     fun sendMessage(label: String, message: ByteBuffer): SoraMessagingError? {
-        return mediaChannel?.sendDataChannelMessage(label, message)
+        val error = mediaChannel?.sendDataChannelMessage(label, message)
+        SoraLogger.d(TAG, "sendMessage: error=$error")
+        return error
     }
 
     fun disconnect() {
