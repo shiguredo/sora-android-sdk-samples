@@ -81,8 +81,6 @@ import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.nio.ByteBuffer
-import java.nio.charset.CodingErrorAction
-import java.nio.charset.StandardCharsets
 import kotlin.random.Random
 
 // ランダムなバイト列を送信するフラグ (テスト用)
@@ -175,10 +173,18 @@ fun SetupComposable(
 
                         override fun onDataChannelMessage(mediaChannel: SoraMediaChannel, label: String, data: ByteBuffer) {
                             val newIndex = messages.size + 1
-                            var message: String? = SoraMessagingChannel.dataToString(data.duplicate())
 
+                            // 受信した data を UTF-8 の文字列に変換する
+                            var message: String? = MessagingActivity.channel.dataToString(data)
                             if (message == null) {
+                                // バイナリ形式のメッセージを受信した場合など、 UTF-8 への変換が失敗する場合、 totoUByte を利用して文字列に変換する
+                                //
+                                // ランダムなバイト列を受信する場合、受信した data が偶然 UTF-8 な文字列になる可能性もあるが、
+                                // ここでは考慮しない
+                                // 実際のアプリケーションでは、ラベル毎に受信するメッセージの種類 (文字列 or バイナリ) を選択することが想定されるため、
+                                // このようなフォールバックを実装する必要はないと思われる
                                 try {
+                                    data.rewind()
                                     val sb = StringBuffer()
                                     do {
                                         sb.append(data.get().toUByte().toString()).append(",")
@@ -188,6 +194,7 @@ fun SetupComposable(
                                     SoraLogger.d(SoraMessagingChannel.TAG, e.stackTraceToString())
                                 }
                             }
+
                             messages.add(Message(label, message ?: "", false))
                             coroutineScope.launch {
                                 // TODO: 効いてない気がする
@@ -427,7 +434,7 @@ fun MessageInput(
     messages: SnapshotStateList<Message>,
     listState: LazyListState
 ) {
-    val (message, setMessage) = remember { mutableStateOf("") }
+    val (textMessage, setTextMessage) = remember { mutableStateOf("") }
     val (expanded, setExpanded) = remember { mutableStateOf(false) }
     val (selectedLabel, setSelectedLabel) = remember {
         mutableStateOf(if (labels.isNotEmpty()) { labels.first() } else { "" })
@@ -476,8 +483,8 @@ fun MessageInput(
         }
 
         OutlinedTextField(
-            value = message,
-            onValueChange = { setMessage(it) },
+            value = textMessage,
+            onValueChange = { setTextMessage(it) },
             label = { Text("メッセージ") },
             modifier = Modifier.fillMaxWidth(0.7f),
         )
@@ -486,23 +493,31 @@ fun MessageInput(
             onClick = {
                 val newIndex = messages.size + 1
 
-                val error: SoraMessagingError?
-                if (!SEND_RANDOM_BINARY) {
-                    error = MessagingActivity.channel.sendMessage(selectedLabel, message)
-                    messages.add(Message(selectedLabel, message, true))
-                } else {
-                    val bytes = ByteArray(20)
-                    Random.nextBytes(bytes)
+                var message = textMessage
+                var error: SoraMessagingError? = null
+                try {
 
-                    error = MessagingActivity.channel.sendMessage(selectedLabel, ByteBuffer.wrap(bytes))
-                    val sb = StringBuffer()
-                    for (b in bytes) {
-                        sb.append((b.toUByte()).toString()).append(",")
+                    if (!SEND_RANDOM_BINARY) {
+                        error = MessagingActivity.channel.sendMessage(selectedLabel, message)
+                    } else {
+                        val bytes = ByteArray(20)
+                        Random.nextBytes(bytes)
+
+                        error = MessagingActivity.channel.sendMessage(selectedLabel, ByteBuffer.wrap(bytes))
+
+                        val sb = StringBuffer()
+                        for (b in bytes) {
+                            sb.append((b.toUByte()).toString()).append(",")
+                        }
+                        message = sb.toString()
                     }
-                    messages.add(Message(selectedLabel, sb.toString(), true))
+                } catch (e: Exception) {
+                    SoraLogger.e(MessagingActivity.TAG, "failed to send message", e)
                 }
 
-                if (error != null) {
+                if (error == SoraMessagingError.OK) {
+                    messages.add(Message(selectedLabel, message, true))
+                } else {
                     val handler = Handler(Looper.getMainLooper())
                     handler.post {
                         run() {
@@ -538,22 +553,6 @@ class SoraMessagingChannel {
 
     companion object {
         val TAG = MessagingActivity::class.simpleName
-        private val utf8Decoder = StandardCharsets.UTF_8
-            .newDecoder()
-            .onMalformedInput(CodingErrorAction.REPORT)
-            .onUnmappableCharacter(CodingErrorAction.REPORT)
-
-        @Synchronized
-        fun dataToString(data: ByteBuffer): String? {
-            val s: String?
-            try {
-                val buffer = utf8Decoder.decode(data)
-                s = buffer.toString()
-            } catch (e: CharacterCodingException) {
-                return null
-            }
-            return s
-        }
     }
 
     fun connect(context: Context, channelId: String, dataChannels: List<Map<String, Any>>, listener: SoraMediaChannel.Listener) {
@@ -580,20 +579,28 @@ class SoraMessagingChannel {
         mediaChannel!!.connect()
     }
 
-    fun sendMessage(label: String, message: String): SoraMessagingError? {
-        val error = mediaChannel?.sendDataChannelMessage(label, message)
+    fun sendMessage(label: String, message: String): SoraMessagingError {
+        val error = mediaChannel!!.sendDataChannelMessage(label, message)
         SoraLogger.d(TAG, "sendMessage: error=$error")
         return error
     }
 
-    fun sendMessage(label: String, message: ByteBuffer): SoraMessagingError? {
-        val error = mediaChannel?.sendDataChannelMessage(label, message)
+    fun sendMessage(label: String, message: ByteBuffer): SoraMessagingError {
+        val error = mediaChannel!!.sendDataChannelMessage(label, message)
         SoraLogger.d(TAG, "sendMessage: error=$error")
         return error
     }
 
     fun disconnect() {
         mediaChannel?.disconnect()
+    }
+
+    fun dataToString(data: ByteBuffer): String? {
+        return try {
+            mediaChannel!!.dataToString(data)
+        } catch (e: CharacterCodingException) {
+            null
+        }
     }
 }
 
