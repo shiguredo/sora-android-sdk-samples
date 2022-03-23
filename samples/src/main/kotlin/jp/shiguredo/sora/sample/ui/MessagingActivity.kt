@@ -49,10 +49,10 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -78,7 +78,6 @@ import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.error.SoraMessagingError
 import jp.shiguredo.sora.sdk.util.SoraLogger
-import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.nio.ByteBuffer
 import kotlin.random.Random
@@ -111,16 +110,13 @@ fun SetupComposable(
     defaultChannel: String,
     setConnected: (Boolean) -> Unit,
     labels: SnapshotStateList<String>,
-    messages: SnapshotStateList<Message>,
-    listState: LazyListState
+    messages: SnapshotStateList<Message>
 ) {
     val channel = remember { mutableStateOf(defaultChannel) }
     val (isLoading, setIsLoading) = remember { mutableStateOf(false) }
     val textDataChannels = remember {
         mutableStateOf(DEFAULT_DATA_CHANNELS.trim())
     }
-    val coroutineScope = rememberCoroutineScope()
-
     val c = LocalContext.current
 
     Box(
@@ -200,15 +196,8 @@ fun SetupComposable(
                                 }
                             }
 
-                            val newIndex = messages.size + 1
-
                             message?.let {
                                 messages.add(Message(label, it, false))
-
-                                coroutineScope.launch {
-                                    // TODO: 効いてない気がする
-                                    listState.scrollToItem(newIndex)
-                                }
                             }
                         }
 
@@ -424,7 +413,6 @@ fun TimelineComposable(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.padding(8.dp)
             ) {
-
                 items(messages) { message ->
                     MessageComposable(message.label, message.message, message.self)
                 }
@@ -434,22 +422,25 @@ fun TimelineComposable(
             color = Color.Gray,
             thickness = 1.dp,
         )
-        MessageInput(labels, messages, listState)
+        MessageInput(labels, messages)
+    }
+
+    // 新しく追加されたメッセージが表示されるように自動でスクロールする
+    LaunchedEffect(messages.size) {
+        listState.scrollToItem(messages.size)
     }
 }
 
 @Composable
 fun MessageInput(
     labels: SnapshotStateList<String>,
-    messages: SnapshotStateList<Message>,
-    listState: LazyListState
+    messages: SnapshotStateList<Message>
 ) {
     val (textMessage, setTextMessage) = remember { mutableStateOf("") }
     val (expanded, setExpanded) = remember { mutableStateOf(false) }
     val (selectedLabel, setSelectedLabel) = remember {
         mutableStateOf(if (labels.isNotEmpty()) { labels.first() } else { "" })
     }
-    val coroutineScope = rememberCoroutineScope()
     val c = LocalContext.current
 
     Row(
@@ -523,7 +514,6 @@ fun MessageInput(
                     SoraLogger.e(MessagingActivity.TAG, "failed to send message", e)
                 }
 
-                val newIndex = messages.size + 1
                 if (error == SoraMessagingError.OK) {
                     messages.add(Message(selectedLabel, message, true))
                 } else {
@@ -537,10 +527,6 @@ fun MessageInput(
 
                 if (labels.isNotEmpty()) {
                     setSelectedLabel(labels.first())
-                }
-
-                coroutineScope.launch {
-                    listState.scrollToItem(newIndex)
                 }
             },
             modifier = Modifier.size(50.dp),
@@ -629,7 +615,7 @@ fun TopComposable() {
     if (connected) {
         TimelineComposable(setConnected, labels, messages, listState)
     } else {
-        SetupComposable(channelId, setConnected, labels, messages, listState)
+        SetupComposable(channelId, setConnected, labels, messages)
     }
 }
 
