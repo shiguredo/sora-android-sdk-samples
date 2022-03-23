@@ -172,8 +172,6 @@ fun SetupComposable(
                         }
 
                         override fun onDataChannelMessage(mediaChannel: SoraMediaChannel, label: String, data: ByteBuffer) {
-                            val newIndex = messages.size + 1
-
                             // 受信した data を UTF-8 の文字列に変換する
                             var message: String? = MessagingActivity.channel.dataToString(data)
                             if (message == null) {
@@ -192,13 +190,25 @@ fun SetupComposable(
                                     message = sb.toString()
                                 } catch (e: Exception) {
                                     SoraLogger.d(SoraMessagingChannel.TAG, e.stackTraceToString())
+
+                                    val handler = Handler(Looper.getMainLooper())
+                                    handler.post {
+                                        run() {
+                                            Toast.makeText(c, e.toString(), Toast.LENGTH_LONG).show()
+                                        }
+                                    }
                                 }
                             }
 
-                            messages.add(Message(label, message ?: "", false))
-                            coroutineScope.launch {
-                                // TODO: 効いてない気がする
-                                listState.scrollToItem(newIndex)
+                            val newIndex = messages.size + 1
+
+                            message?.let {
+                                messages.add(Message(label, it, false))
+
+                                coroutineScope.launch {
+                                    // TODO: 効いてない気がする
+                                    listState.scrollToItem(newIndex)
+                                }
                             }
                         }
 
@@ -491,8 +501,6 @@ fun MessageInput(
 
         OutlinedButton(
             onClick = {
-                val newIndex = messages.size + 1
-
                 var message = textMessage
                 var error: SoraMessagingError? = null
                 try {
@@ -515,6 +523,7 @@ fun MessageInput(
                     SoraLogger.e(MessagingActivity.TAG, "failed to send message", e)
                 }
 
+                val newIndex = messages.size + 1
                 if (error == SoraMessagingError.OK) {
                     messages.add(Message(selectedLabel, message, true))
                 } else {
