@@ -69,7 +69,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import jp.shiguredo.sora.sample.BuildConfig
@@ -116,7 +115,7 @@ fun SetupComposable(
 ) {
     val channel = remember { mutableStateOf(defaultChannel) }
     val (isLoading, setIsLoading) = remember { mutableStateOf(false) }
-    val dataChannels = remember {
+    val textDataChannels = remember {
         mutableStateOf(DEFAULT_DATA_CHANNELS.trim())
     }
     val coroutineScope = rememberCoroutineScope()
@@ -163,7 +162,7 @@ fun SetupComposable(
 
                         override fun onDataChannel(mediaChannel: SoraMediaChannel, dataChannels: List<Map<String, Any>>?) {
                             super.onDataChannel(mediaChannel, dataChannels)
-                            // DataChannel の接続を持って接続したとみなす
+                            // DataChannel の接続をもって接続したとみなす
                             setConnected(true)
                             SoraLogger.d(SoraMessagingChannel.TAG, "data_channels=$dataChannels")
                             dataChannels?.map { it["label"] as String }?.let {
@@ -243,7 +242,7 @@ fun SetupComposable(
                         }
                     }
                     val t = object : TypeToken<Collection<DataChannel>>() {}.type
-                    val data = Gson().fromJson<List<DataChannel>>(dataChannels.value, t)
+                    val data = Gson().fromJson<List<DataChannel>>(textDataChannels.value, t)
                     val connectDataChannels = data.map { it.getMap() }
 
                     SoraLogger.d(MessagingActivity.TAG, "data_channels=$connectDataChannels")
@@ -260,9 +259,9 @@ fun SetupComposable(
             }
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = dataChannels.value,
+                value = textDataChannels.value,
                 onValueChange = {
-                    dataChannels.value = it
+                    textDataChannels.value = it
                 },
                 label = { Text("データチャネル", color = Color.Gray) },
                 colors = TextFieldDefaults.textFieldColors(
