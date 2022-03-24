@@ -318,7 +318,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
             audioCodec = audioCodec,
             audioBitRate = audioBitRate,
             audioStereo = audioStereo,
-            role = role,
+            roleType = role,
             multistream = multistream,
             cameraFacing = cameraFacing,
             clientId = clientId,

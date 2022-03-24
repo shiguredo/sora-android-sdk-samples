@@ -21,7 +21,7 @@ class SoraAudioChannel(
     private val dataChannelSignaling: Boolean? = null,
     private val ignoreDisconnectWebSocket: Boolean? = null,
     private val signalingMetadata: Any? = "",
-    private var role: SoraRoleType,
+    private var roleType: SoraRoleType,
     private var multistream: Boolean = true,
     private var audioCodec: SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
     private val audioBitRate: Int? = null,
@@ -79,11 +79,11 @@ class SoraAudioChannel(
 
         val mediaOption = SoraMediaOption().apply {
 
-            if (role.hasUpstream()) {
+            if (roleType.hasUpstream()) {
                 enableAudioUpstream()
             }
 
-            if (role.hasDownstream()) {
+            if (roleType.hasDownstream()) {
                 enableAudioDownstream()
             }
 

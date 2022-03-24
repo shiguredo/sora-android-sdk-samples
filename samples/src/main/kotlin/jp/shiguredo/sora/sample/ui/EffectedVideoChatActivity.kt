@@ -212,7 +212,7 @@ class EffectedVideoChatActivity : AppCompatActivity() {
             videoWidth = 480,
             videoHeight = 960,
             videoFPS = 30,
-            role = role,
+            roleType = role,
             capturerFactory = EffectCameraVideoCapturerFactory(effector!!),
             listener = channelListener
         )

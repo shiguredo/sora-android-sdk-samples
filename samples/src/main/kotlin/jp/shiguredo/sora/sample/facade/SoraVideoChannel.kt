@@ -42,7 +42,7 @@ class SoraVideoChannel(
     private val spotlightNumber: Int? = null,
     private val spotlightFocusRid: SoraVideoOption.SpotlightRid? = null,
     private val spotlightUnfocusRid: SoraVideoOption.SpotlightRid? = null,
-    private var role: SoraRoleType = SoraRoleType.SENDRECV,
+    private var roleType: SoraRoleType = SoraRoleType.SENDRECV,
     private var multistream: Boolean = true,
     private var videoEnabled: Boolean = true,
     private val videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x,
@@ -229,7 +229,7 @@ class SoraVideoChannel(
 
         val mediaOption = SoraMediaOption().apply {
 
-            if (role.hasUpstream()) {
+            if (roleType.hasUpstream()) {
                 if (audioEnabled) {
                     enableAudioUpstream()
                 }
@@ -239,11 +239,11 @@ class SoraVideoChannel(
                 }
             }
 
-            if (role.hasDownstream()) {
+            if (roleType.hasDownstream()) {
                 if (audioEnabled) {
                     enableAudioDownstream()
                 }
-                if (videoEnabled || role == SoraRoleType.SENDRECV) {
+                if (videoEnabled || roleType == SoraRoleType.SENDRECV) {
                     enableVideoDownstream(egl!!.eglBaseContext)
                 }
             }

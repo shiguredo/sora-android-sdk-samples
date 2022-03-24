@@ -329,7 +329,7 @@ class SimulcastActivity : AppCompatActivity() {
             audioCodec = audioCodec,
             audioBitRate = audioBitRate,
             audioStereo = audioStereo,
-            role = role,
+            roleType = role,
             multistream = multistream,
             listener = channelListener,
             needLocalRenderer = true

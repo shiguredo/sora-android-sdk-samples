@@ -172,7 +172,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
             signalingMetadata = signalingMetadata,
             audioCodec = audioCodec,
             audioBitRate = audioBitRate,
-            role = role,
+            roleType = role,
             multistream = multistream,
             listener = channelListener
         )
