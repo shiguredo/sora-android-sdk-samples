@@ -55,6 +55,10 @@ class MainActivity : AppCompatActivity() {
                     description = "スポットライトのデモです。スポットライト数を固定したチャットが可能です。"
                 ),
                 Feature(
+                    title = "メッセージング",
+                    description = "メッセージングのデモです"
+                ),
+                Feature(
                     title = "スクリーンキャスト",
                     description = "スクリーンキャストのデモです。"
                 ),
@@ -62,10 +66,6 @@ class MainActivity : AppCompatActivity() {
                     title = "ビデオエフェクト",
                     description = "エフェクト付きのビデオチャットのデモです"
                 ),
-                Feature(
-                    title = "メッセージング",
-                    description = "メッセージングのデモです"
-                )
             )
         )
 
@@ -93,9 +93,9 @@ class MainActivity : AppCompatActivity() {
             1 -> goToVoiceRoomDemoWithPermissionCheck()
             2 -> goToSimulcastWithPermissionCheck()
             3 -> goToSpotlightWithPermissionCheck()
-            4 -> goToScreencastActivityWithPermissionCheck()
-            5 -> goToEffectedVideoRoomDemoWithPermissionCheck()
-            6 -> goToMessaging()
+            4 -> goToMessaging()
+            5 -> goToScreencastActivityWithPermissionCheck()
+            6 -> goToEffectedVideoRoomDemoWithPermissionCheck()
             else -> {
                 Log.w(TAG, "must not come here")
             }
