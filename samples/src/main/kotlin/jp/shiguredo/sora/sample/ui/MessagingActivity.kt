@@ -108,12 +108,13 @@ const val DEFAULT_DATA_CHANNELS = """
 
 @Composable
 fun SetupComposable(
+    channel: SoraMessagingChannel,
     defaultChannel: String,
     setConnected: (Boolean) -> Unit,
     labels: SnapshotStateList<String>,
     messages: SnapshotStateList<Message>
 ) {
-    val channel = remember { mutableStateOf(defaultChannel) }
+    val textChannel = remember { mutableStateOf(defaultChannel) }
     val (isLoading, setIsLoading) = remember { mutableStateOf(false) }
     val textDataChannels = remember {
         mutableStateOf(DEFAULT_DATA_CHANNELS.trim())
@@ -136,9 +137,9 @@ fun SetupComposable(
         ) {
             TextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = channel.value,
+                value = textChannel.value,
                 onValueChange = {
-                    channel.value = it
+                    textChannel.value = it
                 },
                 label = { Text("チャネル名", color = Color.Gray) },
                 colors = TextFieldDefaults.textFieldColors(
@@ -170,7 +171,7 @@ fun SetupComposable(
 
                         override fun onDataChannelMessage(mediaChannel: SoraMediaChannel, label: String, data: ByteBuffer) {
                             // 受信した data を UTF-8 の文字列に変換する
-                            var message: String? = MessagingActivity.channel.dataToString(data)
+                            var message: String? = channel.dataToString(data)
                             if (message == null) {
                                 // バイナリ形式のメッセージを受信した場合など、 UTF-8 への変換が失敗する場合、
                                 // toUByte を利用して data を文字列に変換する
@@ -249,7 +250,7 @@ fun SetupComposable(
                     val connectDataChannels = data.map { it.getMap() }
 
                     SoraLogger.d(MessagingActivity.TAG, "data_channels=$connectDataChannels")
-                    MessagingActivity.channel.connect(c, channel.value, connectDataChannels, channelListener)
+                    channel.connect(c, textChannel.value, connectDataChannels, channelListener)
                     setIsLoading(true)
                 },
                 modifier = Modifier
@@ -375,6 +376,7 @@ fun MessageComposable(label: String, message: String, self: Boolean = true) {
 
 @Composable
 fun TimelineComposable(
+    channel: SoraMessagingChannel,
     setConnected: (Boolean) -> Unit,
     labels: SnapshotStateList<String>,
     messages: SnapshotStateList<Message>,
@@ -385,7 +387,7 @@ fun TimelineComposable(
         labels.clear()
         messages.clear()
         setConnected(false)
-        MessagingActivity.channel.disconnect()
+        channel.disconnect()
     }
 
     Column(
@@ -413,7 +415,7 @@ fun TimelineComposable(
             color = Color.Gray,
             thickness = 1.dp,
         )
-        MessageInput(labels, messages)
+        MessageInput(channel, labels, messages)
     }
 
     // 新しく追加されたメッセージが表示されるように自動でスクロールする
@@ -424,6 +426,7 @@ fun TimelineComposable(
 
 @Composable
 fun MessageInput(
+    channel: SoraMessagingChannel,
     labels: SnapshotStateList<String>,
     messages: SnapshotStateList<Message>
 ) {
@@ -488,12 +491,12 @@ fun MessageInput(
                 try {
 
                     if (!SEND_RANDOM_BINARY) {
-                        error = MessagingActivity.channel.sendMessage(selectedLabel, message)
+                        error = channel.sendMessage(selectedLabel, message)
                     } else {
                         val bytes = ByteArray(20)
                         Random.nextBytes(bytes)
 
-                        error = MessagingActivity.channel.sendMessage(selectedLabel, ByteBuffer.wrap(bytes))
+                        error = channel.sendMessage(selectedLabel, ByteBuffer.wrap(bytes))
 
                         val sb = StringBuffer()
                         for (b in bytes) {
@@ -594,8 +597,8 @@ class SoraMessagingChannel {
 data class Message(val label: String, val message: String, val self: Boolean)
 
 @Composable
-fun TopComposable() {
-    val channelId = LocalContext.current.getString(R.string.channelId)
+fun TopComposable(channel: SoraMessagingChannel) {
+    val defaultChannelId = LocalContext.current.getString(R.string.channelId)
     val (connected, setConnected) = remember { mutableStateOf(false) }
 
     // メッセージ追加時に、リストをスクロールするために使用
@@ -605,17 +608,18 @@ fun TopComposable() {
     val messages = remember { mutableStateListOf<Message>() }
 
     if (connected) {
-        TimelineComposable(setConnected, labels, messages, listState)
+        TimelineComposable(channel, setConnected, labels, messages, listState)
     } else {
-        SetupComposable(channelId, setConnected, labels, messages)
+        SetupComposable(channel, defaultChannelId, setConnected, labels, messages)
     }
 }
 
 class MessagingActivity : AppCompatActivity() {
     companion object {
-        var channel = SoraMessagingChannel()
         val TAG = MessagingActivity::class.simpleName
     }
+
+    var channel = SoraMessagingChannel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -624,7 +628,7 @@ class MessagingActivity : AppCompatActivity() {
         title = "メッセージング"
 
         setContent {
-            TopComposable()
+            TopComposable(channel)
         }
     }
 }
