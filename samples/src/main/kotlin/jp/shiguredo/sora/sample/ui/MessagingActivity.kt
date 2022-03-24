@@ -84,7 +84,7 @@ import java.nio.ByteBuffer
 import kotlin.random.Random
 
 // ランダムなバイト列を送信する (テスト用)
-const val SEND_RANDOM_BINARY = false
+const val SEND_RANDOM_BINARY = true
 
 val COLOR_PRIMARY_BUTTON = android.graphics.Color.parseColor("#F06292")
 val COLOR_SETUP_BACKGROUND = android.graphics.Color.parseColor("#2288dd")
@@ -179,7 +179,7 @@ fun SetupComposable(
                             var message: String? = channel.dataToString(data)
                             if (message == null) {
                                 // バイナリ形式のメッセージを受信した場合など、 UTF-8 への変換が失敗する場合、
-                                // toUByte を利用して data を文字列に変換する
+                                // 10進数の数値のリストに data を変換する
                                 //
                                 // ランダムなバイト列を受信する場合、受信した data が偶然 UTF-8 な文字列になる可能性もあるが、
                                 // ここでは考慮しない
@@ -188,7 +188,10 @@ fun SetupComposable(
                                 data.rewind()
                                 val bytes = ByteArray(data.remaining())
                                 data.get(bytes)
-                                message = bytes.toUByteArray().contentToString()
+
+                                // UByte は experimental なので一旦使用を控える
+                                // message = bytes.toUByteArray().contentToString()
+                                message = bytes.map { it.toInt() and 0xff }.toTypedArray().contentToString()
                             }
 
                             message.let {
@@ -500,7 +503,10 @@ fun MessageInput(
                         Random.nextBytes(bytes)
 
                         error = channel.sendMessage(selectedLabel, ByteBuffer.wrap(bytes))
-                        message = bytes.toUByteArray().contentToString()
+
+                        // UByte は experimental なので一旦使用を控える
+                        // message = bytes.toUByteArray().contentToString()
+                        message = bytes.map { it.toInt() and 0xff }.toTypedArray().contentToString()
                     }
                 } catch (e: Exception) {
                     SoraLogger.e(MessagingActivity.TAG, "failed to send message", e)
