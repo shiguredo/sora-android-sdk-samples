@@ -181,11 +181,9 @@ fun SetupComposable(
                                 // 実際のアプリケーションでは、ラベル毎に受信するメッセージの種類 (文字列 or バイナリ) を選択することが想定されるため、
                                 // このようなフォールバックを実装する必要はないと思われる
                                 data.rewind()
-                                val sb = StringBuffer()
-                                do {
-                                    sb.append(data.get().toUByte().toString()).append(",")
-                                } while (data.hasRemaining())
-                                message = sb.toString()
+                                val bytes = ByteArray(data.remaining())
+                                data.get(bytes)
+                                message = bytes.toUByteArray().contentToString()
                             }
 
                             message?.let {
@@ -497,12 +495,7 @@ fun MessageInput(
                         Random.nextBytes(bytes)
 
                         error = channel.sendMessage(selectedLabel, ByteBuffer.wrap(bytes))
-
-                        val sb = StringBuffer()
-                        for (b in bytes) {
-                            sb.append((b.toUByte()).toString()).append(",")
-                        }
-                        message = sb.toString()
+                        message = bytes.toUByteArray().contentToString()
                     }
                 } catch (e: Exception) {
                     SoraLogger.e(MessagingActivity.TAG, "failed to send message", e)
