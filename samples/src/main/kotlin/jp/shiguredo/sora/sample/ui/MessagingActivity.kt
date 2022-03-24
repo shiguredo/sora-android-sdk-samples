@@ -507,15 +507,15 @@ fun MessageInput(
                         // UByte は experimental なので一旦使用を控える
                         // message = bytes.toUByteArray().contentToString()
                         message = bytes.map { it.toInt() and 0xff }.toTypedArray().contentToString()
+                    }
 
-                        if (error == SoraMessagingError.OK) {
-                            messages.add(Message(selectedLabel, message, MessageType.SENT))
-                        } else {
-                            val handler = Handler(Looper.getMainLooper())
-                            handler.post {
-                                run {
-                                    Toast.makeText(c, error.toString(), Toast.LENGTH_LONG).show()
-                                }
+                    if (error == SoraMessagingError.OK) {
+                        messages.add(Message(selectedLabel, message, MessageType.SENT))
+                    } else {
+                        val handler = Handler(Looper.getMainLooper())
+                        handler.post {
+                            run {
+                                Toast.makeText(c, error.toString(), Toast.LENGTH_LONG).show()
                             }
                         }
                     }
