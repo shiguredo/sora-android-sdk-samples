@@ -130,7 +130,7 @@ fun SetupComposable(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(COLOR_SETUP_BACKGROUND)) // TODO: 要グラデーション?
+            .background(Color(COLOR_SETUP_BACKGROUND))
             .padding(16.dp)
     ) {
         Column(
@@ -452,7 +452,6 @@ fun MessageInput(
             .fillMaxHeight()
             .padding(2.dp)
     ) {
-        // TODO: フォーカスが当たった際に幅を広げる?
         OutlinedTextField(
             value = selectedLabel,
             onValueChange = { setSelectedLabel(it) },
