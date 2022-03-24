@@ -106,6 +106,11 @@ const val DEFAULT_DATA_CHANNELS = """
 ]
 """
 
+enum class MessageType {
+    SENT,
+    RECEIVED,
+}
+
 @Composable
 fun SetupComposable(
     channel: SoraMessagingChannel,
@@ -187,7 +192,7 @@ fun SetupComposable(
                             }
 
                             message?.let {
-                                messages.add(Message(label, it, false))
+                                messages.add(Message(label, it, MessageType.RECEIVED))
                             }
                         }
 
@@ -290,27 +295,27 @@ fun SetupComposable(
     }
 }
 
-class TriangleShape(private val size: Int, private val reversed: Boolean = true) : Shape {
+class BalloonTailTriangleShape(private val size: Int, private val type: MessageType) : Shape {
 
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
         density: Density
     ): Outline {
-        val x = if (reversed) {
+        val x = if (type == MessageType.RECEIVED) {
             size.width
         } else {
             0f
         }
 
         val path = Path().apply {
-            moveTo(x = x, y = size.height - this@TriangleShape.size)
+            moveTo(x = x, y = size.height - this@BalloonTailTriangleShape.size)
             lineTo(x = x, y = size.height)
             lineTo(
-                x = if (reversed) {
-                    x - this@TriangleShape.size
+                x = if (type == MessageType.RECEIVED) {
+                    x - this@BalloonTailTriangleShape.size
                 } else {
-                    x + this@TriangleShape.size
+                    x + this@BalloonTailTriangleShape.size
                 },
                 y = size.height
             )
@@ -320,12 +325,12 @@ class TriangleShape(private val size: Int, private val reversed: Boolean = true)
 }
 
 @Composable
-fun BalloonTailComposable(color: Color, reversed: Boolean) {
+fun BalloonTailComposable(color: Color, type: MessageType) {
     Column(
         modifier = Modifier
             .background(
                 color = color,
-                shape = TriangleShape(20, reversed = reversed)
+                shape = BalloonTailTriangleShape(20, type)
             )
             .width(16.dp)
             .fillMaxHeight()
@@ -333,8 +338,8 @@ fun BalloonTailComposable(color: Color, reversed: Boolean) {
 }
 
 @Composable
-fun MessageComposable(label: String, message: String, self: Boolean = true) {
-    val backgroundColor = if (self) {
+fun MessageComposable(label: String, message: String, type: MessageType = MessageType.SENT) {
+    val backgroundColor = if (type == MessageType.SENT) {
         Color.Green
     } else {
         Color.LightGray
@@ -344,16 +349,16 @@ fun MessageComposable(label: String, message: String, self: Boolean = true) {
         Modifier
             .height(IntrinsicSize.Max)
             .fillMaxWidth(),
-        horizontalArrangement = if (self) { Arrangement.End } else { Arrangement.Start }
+        horizontalArrangement = if (type == MessageType.SENT) { Arrangement.End } else { Arrangement.Start }
     ) {
-        if (!self) {
-            BalloonTailComposable(color = backgroundColor, reversed = !self)
+        if (type == MessageType.RECEIVED) {
+            BalloonTailComposable(color = backgroundColor, type = MessageType.RECEIVED)
         }
         Column(
             modifier = Modifier
                 .background(
                     color = backgroundColor,
-                    shape = if (self) {
+                    shape = if (type == MessageType.SENT) {
                         RoundedCornerShape(4.dp, 4.dp, 0.dp, 4.dp)
                     } else {
                         RoundedCornerShape(4.dp, 4.dp, 4.dp, 0.dp)
@@ -366,8 +371,8 @@ fun MessageComposable(label: String, message: String, self: Boolean = true) {
                 Modifier.widthIn(0.dp, 300.dp) // TODO: View のサイズを取得して調整する
             )
         }
-        if (self) {
-            BalloonTailComposable(color = backgroundColor, reversed = !self)
+        if (type == MessageType.SENT) {
+            BalloonTailComposable(color = backgroundColor, type = MessageType.SENT)
         }
     }
 }
@@ -405,7 +410,7 @@ fun TimelineComposable(
                 modifier = Modifier.padding(8.dp)
             ) {
                 items(messages) { message ->
-                    MessageComposable(message.label, message.message, message.self)
+                    MessageComposable(message.label, message.message, message.type)
                 }
             }
         }
@@ -502,7 +507,7 @@ fun MessageInput(
                 }
 
                 if (error == SoraMessagingError.OK) {
-                    messages.add(Message(selectedLabel, message, true))
+                    messages.add(Message(selectedLabel, message, MessageType.SENT))
                 } else {
                     val handler = Handler(Looper.getMainLooper())
                     handler.post {
@@ -587,7 +592,7 @@ class SoraMessagingChannel {
     }
 }
 
-data class Message(val label: String, val message: String, val self: Boolean)
+data class Message(val label: String, val message: String, val type: MessageType)
 
 @Composable
 fun TopComposable(channel: SoraMessagingChannel) {
