@@ -74,6 +74,7 @@ import com.google.gson.reflect.TypeToken
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
+import jp.shiguredo.sora.sdk.channel.option.SoraChannelRole
 import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.error.SoraMessagingError
@@ -82,8 +83,8 @@ import java.lang.Exception
 import java.nio.ByteBuffer
 import kotlin.random.Random
 
-// ランダムなバイト列を送信するフラグ (テスト用)
-const val SEND_RANDOM_BINARY = true
+// ランダムなバイト列を送信する (テスト用)
+const val SEND_RANDOM_BINARY = false
 
 val COLOR_PRIMARY_BUTTON = android.graphics.Color.parseColor("#F06292")
 val COLOR_SETUP_BACKGROUND = android.graphics.Color.parseColor("#2288dd")
@@ -171,29 +172,19 @@ fun SetupComposable(
                             // 受信した data を UTF-8 の文字列に変換する
                             var message: String? = MessagingActivity.channel.dataToString(data)
                             if (message == null) {
-                                // バイナリ形式のメッセージを受信した場合など、 UTF-8 への変換が失敗する場合、 totoUByte を利用して文字列に変換する
+                                // バイナリ形式のメッセージを受信した場合など、 UTF-8 への変換が失敗する場合、
+                                // toUByte を利用して data を文字列に変換する
                                 //
                                 // ランダムなバイト列を受信する場合、受信した data が偶然 UTF-8 な文字列になる可能性もあるが、
                                 // ここでは考慮しない
                                 // 実際のアプリケーションでは、ラベル毎に受信するメッセージの種類 (文字列 or バイナリ) を選択することが想定されるため、
                                 // このようなフォールバックを実装する必要はないと思われる
-                                try {
-                                    data.rewind()
-                                    val sb = StringBuffer()
-                                    do {
-                                        sb.append(data.get().toUByte().toString()).append(",")
-                                    } while (data.hasRemaining())
-                                    message = sb.toString()
-                                } catch (e: Exception) {
-                                    SoraLogger.d(SoraMessagingChannel.TAG, e.stackTraceToString())
-
-                                    val handler = Handler(Looper.getMainLooper())
-                                    handler.post {
-                                        run {
-                                            Toast.makeText(c, e.toString(), Toast.LENGTH_LONG).show()
-                                        }
-                                    }
-                                }
+                                data.rewind()
+                                val sb = StringBuffer()
+                                do {
+                                    sb.append(data.get().toUByte().toString()).append(",")
+                                } while (data.hasRemaining())
+                                message = sb.toString()
                             }
 
                             message?.let {
@@ -557,6 +548,7 @@ class SoraMessagingChannel {
         val signalingMetadata = Gson().fromJson(BuildConfig.SIGNALING_METADATA, Map::class.java)
 
         val mediaOption = SoraMediaOption()
+        mediaOption.role = SoraChannelRole.SENDRECV
         mediaOption.enableMultistream()
         // Sora 側で data_channel_messaging_only = true の場合、 enableVideoDownstream は不要
         mediaOption.enableVideoDownstream(null)
@@ -569,7 +561,7 @@ class SoraMessagingChannel {
             mediaOption = mediaOption,
             listener = listener,
             dataChannelSignaling = true,
-            dataChannels = dataChannels
+            dataChannels = dataChannels,
         )
         mediaChannel!!.connect()
     }
