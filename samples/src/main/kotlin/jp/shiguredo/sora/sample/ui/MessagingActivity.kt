@@ -191,7 +191,7 @@ fun SetupComposable(
                                 message = bytes.toUByteArray().contentToString()
                             }
 
-                            message?.let {
+                            message.let {
                                 messages.add(Message(label, it, MessageType.RECEIVED))
                             }
                         }
