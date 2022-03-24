@@ -61,6 +61,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Density
@@ -84,7 +85,7 @@ import java.nio.ByteBuffer
 import kotlin.random.Random
 
 // ランダムなバイト列を送信する (テスト用)
-const val SEND_RANDOM_BINARY = true
+const val SEND_RANDOM_BINARY = false
 
 val COLOR_PRIMARY_BUTTON = android.graphics.Color.parseColor("#F06292")
 val COLOR_SETUP_BACKGROUND = android.graphics.Color.parseColor("#2288dd")
@@ -348,6 +349,7 @@ fun MessageComposable(label: String, message: String, type: MessageType = Messag
         Color.LightGray
     }
 
+    val screenWidth = LocalConfiguration.current.screenWidthDp
     Row(
         Modifier
             .height(IntrinsicSize.Max)
@@ -371,7 +373,7 @@ fun MessageComposable(label: String, message: String, type: MessageType = Messag
         ) {
             Text(
                 "$label: $message",
-                Modifier.widthIn(0.dp, 300.dp) // TODO: View のサイズを取得して調整する
+                Modifier.widthIn(0.dp, (screenWidth * 0.7).dp)
             )
         }
         if (type == MessageType.SENT) {
