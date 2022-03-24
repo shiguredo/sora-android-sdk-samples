@@ -492,33 +492,37 @@ fun MessageInput(
 
         OutlinedButton(
             onClick = {
-                var message = textMessage
-                var error: SoraMessagingError? = null
                 try {
-
+                    var message = textMessage
+                    var error: SoraMessagingError? = null
                     if (!SEND_RANDOM_BINARY) {
                         error = channel.sendMessage(selectedLabel, message)
                     } else {
                         val bytes = ByteArray(20)
                         Random.nextBytes(bytes)
-
                         error = channel.sendMessage(selectedLabel, ByteBuffer.wrap(bytes))
 
                         // UByte は experimental なので一旦使用を控える
                         // message = bytes.toUByteArray().contentToString()
                         message = bytes.map { it.toInt() and 0xff }.toTypedArray().contentToString()
+
+                        if (error == SoraMessagingError.OK) {
+                            messages.add(Message(selectedLabel, message, MessageType.SENT))
+                        } else {
+                            val handler = Handler(Looper.getMainLooper())
+                            handler.post {
+                                run {
+                                    Toast.makeText(c, error.toString(), Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        }
                     }
                 } catch (e: Exception) {
                     SoraLogger.e(MessagingActivity.TAG, "failed to send message", e)
-                }
-
-                if (error == SoraMessagingError.OK) {
-                    messages.add(Message(selectedLabel, message, MessageType.SENT))
-                } else {
                     val handler = Handler(Looper.getMainLooper())
                     handler.post {
                         run {
-                            Toast.makeText(c, error.toString(), Toast.LENGTH_LONG).show()
+                            Toast.makeText(c, e.toString(), Toast.LENGTH_LONG).show()
                         }
                     }
                 }
