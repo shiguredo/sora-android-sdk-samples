@@ -229,6 +229,13 @@ fun SetupComposable(
                         }
                     }
 
+                    /**
+                     * サンプル・アプリで、文字列の data_channels を List<Map<String, Any>> に変換して利用する仕様にしたところ、
+                     * Gson の仕様に基づいて、 max_retransmits など Int 型の値が Float に変換された
+                     * この問題を防ぐために、サンプル・アプリでは DataChannel クラスを独自に定義している
+                     *
+                     * 上記のような文字列からの変換処理を行わない限り、 DataChannel クラスを独自に定義する必要はない
+                     */
                     class DataChannel {
                         lateinit var label: String
                         lateinit var direction: String
