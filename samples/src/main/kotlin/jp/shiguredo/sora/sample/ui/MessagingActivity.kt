@@ -550,7 +550,7 @@ class SoraMessagingChannel {
     private var mediaChannel: SoraMediaChannel? = null
 
     companion object {
-        val TAG = MessagingActivity::class.simpleName
+        val TAG = SoraMessagingChannel::class.simpleName
     }
 
     fun connect(context: Context, channelId: String, dataChannels: List<Map<String, Any>>, listener: SoraMediaChannel.Listener) {
