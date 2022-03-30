@@ -55,13 +55,17 @@ class MainActivity : AppCompatActivity() {
                     description = "スポットライトのデモです。スポットライト数を固定したチャットが可能です。"
                 ),
                 Feature(
+                    title = "メッセージング",
+                    description = "メッセージングのデモです"
+                ),
+                Feature(
                     title = "スクリーンキャスト",
                     description = "スクリーンキャストのデモです。"
                 ),
                 Feature(
                     title = "ビデオエフェクト",
                     description = "エフェクト付きのビデオチャットのデモです"
-                )
+                ),
             )
         )
 
@@ -89,8 +93,9 @@ class MainActivity : AppCompatActivity() {
             1 -> goToVoiceRoomDemoWithPermissionCheck()
             2 -> goToSimulcastWithPermissionCheck()
             3 -> goToSpotlightWithPermissionCheck()
-            4 -> goToScreencastActivityWithPermissionCheck()
-            5 -> goToEffectedVideoRoomDemoWithPermissionCheck()
+            4 -> goToMessaging()
+            5 -> goToScreencastActivityWithPermissionCheck()
+            6 -> goToEffectedVideoRoomDemoWithPermissionCheck()
             else -> {
                 Log.w(TAG, "must not come here")
             }
@@ -131,6 +136,11 @@ class MainActivity : AppCompatActivity() {
     @NeedsPermission(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
     fun goToSimulcast() {
         val intent = Intent(this, SimulcastSetupActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun goToMessaging() {
+        val intent = Intent(this, MessagingActivity::class.java)
         startActivity(intent)
     }
 
