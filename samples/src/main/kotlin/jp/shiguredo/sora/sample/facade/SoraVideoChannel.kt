@@ -16,6 +16,7 @@ import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
 import jp.shiguredo.sora.sdk.channel.option.SoraSpotlightOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.channel.signaling.message.NotificationMessage
+import jp.shiguredo.sora.sdk.channel.signaling.message.OfferMessage
 import jp.shiguredo.sora.sdk.channel.signaling.message.PushMessage
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
@@ -169,6 +170,10 @@ class SoraVideoChannel(
             handler.post {
                 listener?.onAttendeesCountUpdated(this@SoraVideoChannel, attendees)
             }
+        }
+
+        override fun onOfferMessage(mediaChannel: SoraMediaChannel, offer: OfferMessage) {
+            SoraLogger.d(TAG, "[video_channel] @onOfferMessage $offer")
         }
 
         override fun onNotificationMessage(mediaChannel: SoraMediaChannel, notification: NotificationMessage) {
