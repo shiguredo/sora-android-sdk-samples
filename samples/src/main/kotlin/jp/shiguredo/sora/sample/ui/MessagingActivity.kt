@@ -163,7 +163,7 @@ fun SetupComposable(
                             super.onConnect(mediaChannel)
                             SoraLogger.d(
                                 SoraMessagingChannel.TAG,
-                                "onConnect: contactSignalingEndpoint=${mediaChannel.contactSignalingEndpoint}," +
+                                "onConnect: contactSignalingEndpoint=${mediaChannel.contactSignalingEndpoint}, " +
                                     "connectedSignalingEndpoint=${mediaChannel.connectedSignalingEndpoint}"
                             )
                         }
