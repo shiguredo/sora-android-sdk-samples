@@ -159,23 +159,34 @@ fun SetupComposable(
                 onClick = {
                     val channelListener = object : SoraMediaChannel.Listener {
 
+                        override fun onConnect(mediaChannel: SoraMediaChannel) {
+                            super.onConnect(mediaChannel)
+                            SoraLogger.d(
+                                SoraMessagingChannel.TAG,
+                                "onConnect: contactSignalingEndpoint=${mediaChannel.contactSignalingEndpoint}, " +
+                                    "connectedSignalingEndpoint=${mediaChannel.connectedSignalingEndpoint}"
+                            )
+                        }
+
                         override fun onClose(mediaChannel: SoraMediaChannel) {
                             super.onClose(mediaChannel)
+                            SoraLogger.d(SoraMessagingChannel.TAG, "onClose")
                             setConnected(false)
                             setIsLoading(false)
                         }
 
                         override fun onDataChannel(mediaChannel: SoraMediaChannel, dataChannels: List<Map<String, Any>>?) {
                             super.onDataChannel(mediaChannel, dataChannels)
+                            SoraLogger.d(SoraMessagingChannel.TAG, "onDataChannel: data_channels=$dataChannels")
                             // DataChannel の接続をもって接続したとみなす
                             setConnected(true)
-                            SoraLogger.d(SoraMessagingChannel.TAG, "data_channels=$dataChannels")
                             dataChannels?.map { it["label"] as String }?.let {
                                 labels.addAll(it)
                             }
                         }
 
                         override fun onDataChannelMessage(mediaChannel: SoraMediaChannel, label: String, data: ByteBuffer) {
+                            SoraLogger.d(SoraMessagingChannel.TAG, "onDataChannelMessage: label=$label received_data_in_bytes=${data.remaining()}")
                             // 受信した data を UTF-8 の文字列に変換する
                             var message: String? = channel.dataToString(data)
                             if (message == null) {
@@ -202,7 +213,7 @@ fun SetupComposable(
 
                         override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason) {
                             super.onError(mediaChannel, reason)
-                            SoraLogger.e(SoraMessagingChannel.TAG, "SoraErrorReason: reason=${reason.name}")
+                            SoraLogger.e(SoraMessagingChannel.TAG, "onError: reason=${reason.name}")
                             setConnected(false)
                             setIsLoading(false)
 
@@ -216,7 +227,7 @@ fun SetupComposable(
 
                         override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {
                             super.onError(mediaChannel, reason, message)
-                            SoraLogger.e(SoraMessagingChannel.TAG, "SoraErrorReason: reason=${reason.name}, message=$message")
+                            SoraLogger.e(SoraMessagingChannel.TAG, "onError: reason=${reason.name}, message=$message")
                             setConnected(false)
                             setIsLoading(false)
 

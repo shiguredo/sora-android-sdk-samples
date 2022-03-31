@@ -87,7 +87,7 @@ class SoraVideoChannel(
     private val channelListener = object : SoraMediaChannel.Listener {
 
         override fun onConnect(mediaChannel: SoraMediaChannel) {
-            SoraLogger.d(TAG, "[video_channel] @onConnect connectedSignalingEndpoint:${mediaChannel.connectedSignalingEndpoint}")
+            SoraLogger.d(TAG, "[video_channel] @onConnect contactSignalingEndpoint:${mediaChannel.contactSignalingEndpoint} connectedSignalingEndpoint:${mediaChannel.connectedSignalingEndpoint}")
             handler.post {
                 listener?.onConnect(this@SoraVideoChannel)
             }

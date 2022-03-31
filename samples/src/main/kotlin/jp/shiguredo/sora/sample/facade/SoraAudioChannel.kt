@@ -42,7 +42,7 @@ class SoraAudioChannel(
     private val channelListener = object : SoraMediaChannel.Listener {
 
         override fun onConnect(mediaChannel: SoraMediaChannel) {
-            SoraLogger.d(TAG, "[audio_channel] @onConnect connectedSignalingEndpoint:${mediaChannel.connectedSignalingEndpoint}")
+            SoraLogger.d(TAG, "[audio_channel] @onConnect contactSignalingEndpoint:${mediaChannel.contactSignalingEndpoint} connectedSignalingEndpoint:${mediaChannel.connectedSignalingEndpoint}")
             handler.post { listener?.onConnect(this@SoraAudioChannel) }
         }
 
