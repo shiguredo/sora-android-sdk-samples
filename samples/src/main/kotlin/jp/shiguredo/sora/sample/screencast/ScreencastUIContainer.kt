@@ -10,14 +10,14 @@ import android.view.WindowManager
 
 @TargetApi(21)
 class ScreencastUIContainer(
-        val context: Context,
-        val view:    View,
-            width:   Int  = WindowManager.LayoutParams.MATCH_PARENT,
-            height:  Int  = WindowManager.LayoutParams.WRAP_CONTENT
+    val context: Context,
+    val view: View,
+    width: Int = WindowManager.LayoutParams.MATCH_PARENT,
+    height: Int = WindowManager.LayoutParams.WRAP_CONTENT
 ) {
     private var isOnTop = true
     private var windowManager: WindowManager? =
-            context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
     init {
         val params = createLayoutParams(width, height)
@@ -27,23 +27,24 @@ class ScreencastUIContainer(
 
     private fun createLayoutParams(width: Int, height: Int): WindowManager.LayoutParams {
         val windowType =
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
-                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-                } else {
-                    @Suppress("DEPRECATION")
-                    WindowManager.LayoutParams.TYPE_PHONE;
-                }
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            } else {
+                @Suppress("DEPRECATION")
+                WindowManager.LayoutParams.TYPE_PHONE
+            }
 
-        return WindowManager.LayoutParams(width, height, windowType,
-                createWindowFrags(), PixelFormat.TRANSLUCENT
+        return WindowManager.LayoutParams(
+            width, height, windowType,
+            createWindowFrags(), PixelFormat.TRANSLUCENT
         )
     }
 
     private fun createWindowFrags(): Int {
-        return  WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
-                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+        return WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
+            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
+            WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
     }
 
     fun togglePosition() {
@@ -63,6 +64,4 @@ class ScreencastUIContainer(
         }
         windowManager = null
     }
-
 }
-

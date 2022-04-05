@@ -11,22 +11,21 @@ import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import org.webrtc.AudioTrack
 import org.webrtc.MediaStream
-import org.webrtc.VideoSource
 
 class SoraAudioChannel(
-        private val context:                        Context,
-        private val handler:                        Handler,
-        private val signalingEndpoint:              String? = null,
-        private val signalingEndpointCandidates:    List<String> = emptyList(),
-        private val channelId:                      String,
-        private val dataChannelSignaling:           Boolean? = null,
-        private val ignoreDisconnectWebSocket:      Boolean? = null,
-        private val signalingMetadata:              Any? = "",
-        private var role:                           SoraRoleType,
-        private var multistream:                    Boolean = true,
-        private var audioCodec:                     SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
-        private val audioBitRate:                   Int? = null,
-        private var listener:                       Listener?
+    private val context: Context,
+    private val handler: Handler,
+    private val signalingEndpoint: String? = null,
+    private val signalingEndpointCandidates: List<String> = emptyList(),
+    private val channelId: String,
+    private val dataChannelSignaling: Boolean? = null,
+    private val ignoreDisconnectWebSocket: Boolean? = null,
+    private val signalingMetadata: Any? = "",
+    private var roleType: SoraRoleType,
+    private var multistream: Boolean = true,
+    private var audioCodec: SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
+    private val audioBitRate: Int? = null,
+    private var listener: Listener?
 ) {
 
     companion object {
@@ -43,7 +42,7 @@ class SoraAudioChannel(
     private val channelListener = object : SoraMediaChannel.Listener {
 
         override fun onConnect(mediaChannel: SoraMediaChannel) {
-            SoraLogger.d(TAG, "[audio_channel] @onConnect connectedSignalingEndpoint:${mediaChannel.connectedSignalingEndpoint}")
+            SoraLogger.d(TAG, "[audio_channel] @onConnect contactSignalingEndpoint:${mediaChannel.contactSignalingEndpoint} connectedSignalingEndpoint:${mediaChannel.connectedSignalingEndpoint}")
             handler.post { listener?.onConnect(this@SoraAudioChannel) }
         }
 
@@ -69,11 +68,10 @@ class SoraAudioChannel(
             SoraLogger.d(TAG, "[audio_channel] @onAttendeesCountUpdated")
             handler.post { listener?.onAttendeesCountUpdated(this@SoraAudioChannel, attendees) }
         }
-
     }
 
-    private var mediaChannel:    SoraMediaChannel? = null
-    private var localAudioTrack: AudioTrack?  = null
+    private var mediaChannel: SoraMediaChannel? = null
+    private var localAudioTrack: AudioTrack? = null
 
     private var closed = false
 
@@ -81,11 +79,11 @@ class SoraAudioChannel(
 
         val mediaOption = SoraMediaOption().apply {
 
-            if (role.hasUpstream()) {
+            if (roleType.hasUpstream()) {
                 enableAudioUpstream()
             }
 
-            if (role.hasDownstream()) {
+            if (roleType.hasDownstream()) {
                 enableAudioDownstream()
             }
 
@@ -98,15 +96,15 @@ class SoraAudioChannel(
         }
 
         mediaChannel = SoraMediaChannel(
-                context                     = context,
-                signalingEndpoint           = signalingEndpoint,
-                signalingEndpointCandidates = signalingEndpointCandidates,
-                channelId                   = channelId,
-                dataChannelSignaling        = dataChannelSignaling,
-                ignoreDisconnectWebSocket   = ignoreDisconnectWebSocket,
-                signalingMetadata           = signalingMetadata,
-                mediaOption                 = mediaOption,
-                listener                    = channelListener
+            context = context,
+            signalingEndpoint = signalingEndpoint,
+            signalingEndpointCandidates = signalingEndpointCandidates,
+            channelId = channelId,
+            dataChannelSignaling = dataChannelSignaling,
+            ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
+            signalingMetadata = signalingMetadata,
+            mediaOption = mediaOption,
+            listener = channelListener
         )
 
         mediaChannel!!.connect()
@@ -129,4 +127,3 @@ class SoraAudioChannel(
         listener = null
     }
 }
-

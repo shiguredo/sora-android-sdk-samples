@@ -9,6 +9,20 @@
 - FIX
     - バグ修正
 
+## develop
+
+## sora-andoroid-sdk-2022.2.0
+
+- [UPDATE] システム条件を更新する
+  - Android 8.0 以降
+  - Android Studio 2022.1.1 以降
+  - Sora Android SDK 2022.2.0 以降
+  - @miosakuma
+- [UPDATE] Kotlin synthetics の廃止に伴い View binding に移行する
+  - @miosakuma @enm10k
+- [CHANGE] minSdkVersion を 26 に上げる
+  - @enm10k
+
 ## sora-andoroid-sdk-2022.1.0
 
 - [UPDATE] システム条件を更新する

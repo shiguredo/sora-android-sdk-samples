@@ -1,26 +1,26 @@
 package jp.shiguredo.sora.sample.ui
 
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
+import jp.shiguredo.sora.sample.databinding.ActivityVoiceChatRoomBinding
 import jp.shiguredo.sora.sample.facade.SoraAudioChannel
 import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
-import kotlinx.android.synthetic.main.activity_voice_chat_room.*
-import com.google.gson.*
-
 
 class VoiceChatRoomActivity : AppCompatActivity() {
 
@@ -30,21 +30,23 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
     private var channelName: String = ""
 
-    private var audioCodec:  SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
+    private var audioCodec: SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
     private var audioBitRate: Int? = null
-    private var role   = SoraRoleType.SENDRECV
+    private var role = SoraRoleType.SENDRECV
     private var multistream: Boolean = true
     private var dataChannelSignaling: Boolean? = null
     private var ignoreDisconnectWebSocket: Boolean? = null
 
     private var oldAudioMode: Int = AudioManager.MODE_INVALID
 
+    private lateinit var binding: ActivityVoiceChatRoomBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
         setupWindow()
-
-        setContentView(R.layout.activity_voice_chat_room)
+        binding = ActivityVoiceChatRoomBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         channelName = intent.getStringExtra("CHANNEL_NAME") ?: getString(R.string.channelId)
 
@@ -59,47 +61,49 @@ class VoiceChatRoomActivity : AppCompatActivity() {
             "SENDRECV" -> SoraRoleType.SENDRECV
             "SENDONLY" -> SoraRoleType.SENDONLY
             "RECVONLY" -> SoraRoleType.RECVONLY
-            else       -> SoraRoleType.SENDRECV
+            else -> SoraRoleType.SENDRECV
         }
 
         multistream = when (intent.getStringExtra("MULTISTREAM")) {
             "有効" -> true
-            else   -> false
+            else -> false
         }
 
         dataChannelSignaling = when (intent.getStringExtra("DATA_CHANNEL_SIGNALING")) {
-            "無効"   -> false
-            "有効"   -> true
+            "無効" -> false
+            "有効" -> true
             "未指定" -> null
-            else     -> null
+            else -> null
         }
 
         ignoreDisconnectWebSocket = when (intent.getStringExtra("IGNORE_DISCONNECT_WEBSOCKET")) {
-            "無効"   -> false
-            "有効"   -> true
+            "無効" -> false
+            "有効" -> true
             "未指定" -> null
-            else     -> null
+            else -> null
         }
 
-        channelNameText.text = channelName
-        closeButton.setOnClickListener { close() }
+        binding.channelNameText.text = channelName
+        binding.closeButton.setOnClickListener { close() }
 
         connectChannel()
     }
 
     private fun setupWindow() {
         supportActionBar?.hide()
-        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
-            or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        window.addFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+                or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+        )
         setWindowVisibility()
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private fun setWindowVisibility() {
         window.decorView.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                        View.SYSTEM_UI_FLAG_FULLSCREEN or
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+            View.SYSTEM_UI_FLAG_FULLSCREEN or
+            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
     }
 
     override fun onResume() {
@@ -107,18 +111,20 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         this.volumeControlStream = AudioManager.STREAM_VOICE_CALL
 
         val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
-                as AudioManager
+            as AudioManager
         oldAudioMode = audioManager.mode
-        Log.d(TAG, "AudioManager mode change: ${oldAudioMode} => MODE_IN_COMMUNICATION(3)")
+        Log.d(TAG, "AudioManager mode change: $oldAudioMode => MODE_IN_COMMUNICATION(3)")
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
     }
 
+    // AudioManager.MODE_INVALID が使われているため lint でエラーが出るので一時的に抑制しておく
+    @SuppressLint("WrongConstant")
     override fun onPause() {
         Log.d(TAG, "onPause")
         super.onPause()
         val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
-                as AudioManager
-        Log.d(TAG, "AudioManager mode change: MODE_IN_COMMUNICATION(3) => ${oldAudioMode}")
+            as AudioManager
+        Log.d(TAG, "AudioManager mode change: MODE_IN_COMMUNICATION(3) => $oldAudioMode")
         audioManager.mode = oldAudioMode
         close()
     }
@@ -150,32 +156,31 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         override fun onAttendeesCountUpdated(channel: SoraAudioChannel, attendees: ChannelAttendeesCount) {
             Log.d(TAG, "onAttendeesCountUpdated")
         }
-
     }
 
     private fun connectChannel() {
         Log.d(TAG, "connectChannel")
-        val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map{ it.trim() }
+        val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map { it.trim() }
         val signalingMetadata = Gson().fromJson(BuildConfig.SIGNALING_METADATA, Map::class.java)
         channel = SoraAudioChannel(
-                context                     = this,
-                handler                     = Handler(),
-                signalingEndpointCandidates = signalingEndpointCandidates,
-                channelId                   = channelName,
-                dataChannelSignaling        = dataChannelSignaling,
-                ignoreDisconnectWebSocket   = ignoreDisconnectWebSocket,
-                signalingMetadata           = signalingMetadata,
-                audioCodec                  = audioCodec,
-                audioBitRate                = audioBitRate,
-                role                        = role,
-                multistream                 = multistream,
-                listener                    = channelListener
+            context = this,
+            handler = Handler(),
+            signalingEndpointCandidates = signalingEndpointCandidates,
+            channelId = channelName,
+            dataChannelSignaling = dataChannelSignaling,
+            ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
+            signalingMetadata = signalingMetadata,
+            audioCodec = audioCodec,
+            audioBitRate = audioBitRate,
+            roleType = role,
+            multistream = multistream,
+            listener = channelListener
         )
         channel!!.connect()
     }
 
     internal fun changeStateText(msg: String) {
-        stateText.text = msg
+        binding.stateText.text = msg
     }
 
     private fun disposeChannel() {

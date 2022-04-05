@@ -2,56 +2,67 @@ package jp.shiguredo.sora.sample.facade
 
 import android.content.Context
 import android.media.MediaRecorder
+import android.os.Handler
 import jp.shiguredo.sora.sample.camera.CameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.camera.DefaultCameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.option.SoraRoleType
+import jp.shiguredo.sora.sample.stats.VideoUpstreamLatencyStatsCollector
 import jp.shiguredo.sora.sample.ui.util.SoraRemoteRendererSlot
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
+import jp.shiguredo.sora.sdk.channel.option.PeerConnectionOption
+import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
+import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
+import jp.shiguredo.sora.sdk.channel.option.SoraSpotlightOption
+import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.channel.signaling.message.NotificationMessage
+import jp.shiguredo.sora.sdk.channel.signaling.message.OfferMessage
 import jp.shiguredo.sora.sdk.channel.signaling.message.PushMessage
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
-import org.webrtc.*
-import android.os.Handler
-import jp.shiguredo.sora.sample.stats.VideoUpstreamLatencyStatsCollector
-import jp.shiguredo.sora.sdk.channel.option.*
+import org.webrtc.AudioTrack
+import org.webrtc.CameraVideoCapturer
+import org.webrtc.EglBase
+import org.webrtc.MediaStream
+import org.webrtc.RTCStatsReport
+import org.webrtc.RtpParameters
+import org.webrtc.SurfaceViewRenderer
 
 class SoraVideoChannel(
-        private val context:                        Context,
-        private val handler:                        Handler,
-        private val signalingEndpoint:              String? = null,
-        private val signalingEndpointCandidates:    List<String> = emptyList(),
-        private val channelId:                      String,
-        private val dataChannelSignaling:           Boolean? = null,
-        private val ignoreDisconnectWebSocket:      Boolean? = null,
-        private val signalingMetadata:              Any? = "",
-        private val signalingNotifyMetatada:        Any? = null,
-        private val clientId:                       String? = null,
-        private val spotlight:                      Boolean = false,
-        private val spotlightNumber:                Int? = null,
-        private val spotlightFocusRid:              SoraVideoOption.SpotlightRid? = null,
-        private val spotlightUnfocusRid:            SoraVideoOption.SpotlightRid? = null,
-        private var role:                           SoraRoleType = SoraRoleType.SENDRECV,
-        private var multistream:                    Boolean = true,
-        private var videoEnabled:                   Boolean = true,
-        private val videoWidth:                     Int = SoraVideoOption.FrameSize.Portrait.VGA.x,
-        private val videoHeight:                    Int = SoraVideoOption.FrameSize.Portrait.VGA.y,
-        private val simulcast:                      Boolean = false,
-        private val simulcastRid:                   SoraVideoOption.SimulcastRid? = null,
-        private val videoFPS:                       Int =  30,
-        private val fixedResolution:                Boolean = false,
-        private val cameraFacing:                   Boolean = true,
-        private val videoCodec:                     SoraVideoOption.Codec = SoraVideoOption.Codec.VP9,
-        private val audioCodec:                     SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
-        private val videoBitRate:                   Int? = null,
-        private val audioBitRate:                   Int? = null,
-        private val audioStereo:                    Boolean = false,
-        private val needLocalRenderer:              Boolean = true,
-        private val audioEnabled:                   Boolean = true,
-        private val capturerFactory:                CameraVideoCapturerFactory =
-                DefaultCameraVideoCapturerFactory(context, fixedResolution, cameraFacing),
-        private var listener:                       Listener?
+    private val context: Context,
+    private val handler: Handler,
+    private val signalingEndpoint: String? = null,
+    private val signalingEndpointCandidates: List<String> = emptyList(),
+    private val channelId: String,
+    private val dataChannelSignaling: Boolean? = null,
+    private val ignoreDisconnectWebSocket: Boolean? = null,
+    private val signalingMetadata: Any? = "",
+    private val signalingNotifyMetatada: Any? = null,
+    private val clientId: String? = null,
+    private val spotlight: Boolean = false,
+    private val spotlightNumber: Int? = null,
+    private val spotlightFocusRid: SoraVideoOption.SpotlightRid? = null,
+    private val spotlightUnfocusRid: SoraVideoOption.SpotlightRid? = null,
+    private var roleType: SoraRoleType = SoraRoleType.SENDRECV,
+    private var multistream: Boolean = true,
+    private var videoEnabled: Boolean = true,
+    private val videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x,
+    private val videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y,
+    private val simulcast: Boolean = false,
+    private val simulcastRid: SoraVideoOption.SimulcastRid? = null,
+    private val videoFPS: Int = 30,
+    private val fixedResolution: Boolean = false,
+    private val cameraFacing: Boolean = true,
+    private val videoCodec: SoraVideoOption.Codec = SoraVideoOption.Codec.VP9,
+    private val audioCodec: SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
+    private val videoBitRate: Int? = null,
+    private val audioBitRate: Int? = null,
+    private val audioStereo: Boolean = false,
+    private val needLocalRenderer: Boolean = true,
+    private val audioEnabled: Boolean = true,
+    private val capturerFactory: CameraVideoCapturerFactory =
+        DefaultCameraVideoCapturerFactory(context, fixedResolution, cameraFacing),
+    private var listener: Listener?
 ) {
 
     companion object {
@@ -76,7 +87,7 @@ class SoraVideoChannel(
     private val channelListener = object : SoraMediaChannel.Listener {
 
         override fun onConnect(mediaChannel: SoraMediaChannel) {
-            SoraLogger.d(TAG, "[video_channel] @onConnect connectedSignalingEndpoint:${mediaChannel.connectedSignalingEndpoint}")
+            SoraLogger.d(TAG, "[video_channel] @onConnect contactSignalingEndpoint:${mediaChannel.contactSignalingEndpoint} connectedSignalingEndpoint:${mediaChannel.connectedSignalingEndpoint}")
             handler.post {
                 listener?.onConnect(this@SoraVideoChannel)
             }
@@ -116,7 +127,7 @@ class SoraVideoChannel(
         }
 
         override fun onSenderEncodings(mediaChannel: SoraMediaChannel, encodings: List<RtpParameters.Encoding>) {
-            SoraLogger.d(TAG, "[video_channel] @onSenderEncodings: encodings=${encodings}")
+            SoraLogger.d(TAG, "[video_channel] @onSenderEncodings: encodings=$encodings")
         }
 
         override fun onAddRemoteStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
@@ -127,7 +138,7 @@ class SoraVideoChannel(
         }
 
         override fun onRemoveRemoteStream(mediaChannel: SoraMediaChannel, label: String) {
-            SoraLogger.d(TAG, "[video_channel] @onRemoveRemoteStream:${label}")
+            SoraLogger.d(TAG, "[video_channel] @onRemoveRemoteStream:$label")
             handler.post {
                 remoteRenderersSlot?.onRemoveRemoteStream(label)
             }
@@ -152,7 +163,6 @@ class SoraVideoChannel(
             handler.post {
                 startCapturer()
             }
-
         }
 
         override fun onAttendeesCountUpdated(mediaChannel: SoraMediaChannel, attendees: ChannelAttendeesCount) {
@@ -162,12 +172,16 @@ class SoraVideoChannel(
             }
         }
 
+        override fun onOfferMessage(mediaChannel: SoraMediaChannel, offer: OfferMessage) {
+            SoraLogger.d(TAG, "[video_channel] @onOfferMessage $offer")
+        }
+
         override fun onNotificationMessage(mediaChannel: SoraMediaChannel, notification: NotificationMessage) {
-            SoraLogger.d(TAG, "[video_channel] @onNotificationmessage ${notification.eventType} ${notification}")
+            SoraLogger.d(TAG, "[video_channel] @onNotificationmessage ${notification.eventType} $notification")
         }
 
         override fun onPushMessage(mediaChannel: SoraMediaChannel, push: PushMessage) {
-            SoraLogger.d(TAG, "[video_channel] @onPushMessage ${push}")
+            SoraLogger.d(TAG, "[video_channel] @onPushMessage $push")
         }
 
         override fun onPeerConnectionStatsReady(mediaChannel: SoraMediaChannel, statsReport: RTCStatsReport) {
@@ -178,18 +192,18 @@ class SoraVideoChannel(
         }
     }
 
-    var mediaChannel:  SoraMediaChannel? = null
+    var mediaChannel: SoraMediaChannel? = null
     private var capturer: CameraVideoCapturer? = null
 
     private var capturing = false
 
-    private var closed    = false
+    private var closed = false
 
     private var remoteRenderersSlot: SoraRemoteRendererSlot? = null
-    private var localRenderer:       SurfaceViewRenderer? = null
-    private var localAudioTrack:     AudioTrack? = null
+    private var localRenderer: SurfaceViewRenderer? = null
+    private var localAudioTrack: AudioTrack? = null
 
-    private val rendererSlotListener =  object : SoraRemoteRendererSlot.Listener {
+    private val rendererSlotListener = object : SoraRemoteRendererSlot.Listener {
 
         override fun onAddRenderer(renderer: SurfaceViewRenderer) {
             handler.post {
@@ -213,14 +227,14 @@ class SoraVideoChannel(
     fun connect() {
 
         remoteRenderersSlot = SoraRemoteRendererSlot(
-                context    = context,
-                eglContext = egl!!.eglBaseContext,
-                listener   = rendererSlotListener
+            context = context,
+            eglContext = egl!!.eglBaseContext,
+            listener = rendererSlotListener
         )
 
         val mediaOption = SoraMediaOption().apply {
 
-            if (role.hasUpstream()) {
+            if (roleType.hasUpstream()) {
                 if (audioEnabled) {
                     enableAudioUpstream()
                 }
@@ -230,11 +244,11 @@ class SoraVideoChannel(
                 }
             }
 
-            if (role.hasDownstream()) {
+            if (roleType.hasDownstream()) {
                 if (audioEnabled) {
                     enableAudioDownstream()
                 }
-                if (videoEnabled || role == SoraRoleType.SENDRECV) {
+                if (videoEnabled || roleType == SoraRoleType.SENDRECV) {
                     enableVideoDownstream(egl!!.eglBaseContext)
                 }
             }
@@ -243,7 +257,7 @@ class SoraVideoChannel(
                 enableMultistream()
             }
 
-            if(this@SoraVideoChannel.simulcast) {
+            if (this@SoraVideoChannel.simulcast) {
                 enableSimulcast(simulcastRid)
             }
 
@@ -255,20 +269,20 @@ class SoraVideoChannel(
                 enableSpotlight(option)
             }
 
-            videoCodec   = this@SoraVideoChannel.videoCodec
+            videoCodec = this@SoraVideoChannel.videoCodec
             videoBitrate = this@SoraVideoChannel.videoBitRate
 
-            audioCodec   = this@SoraVideoChannel.audioCodec
+            audioCodec = this@SoraVideoChannel.audioCodec
             audioBitrate = this@SoraVideoChannel.audioBitRate
 
             audioOption = SoraAudioOption().apply {
                 // 全部デフォルト値なので、実際には指定する必要はない
                 useHardwareAcousticEchoCanceler = true
-                useHardwareNoiseSuppressor      = true
+                useHardwareNoiseSuppressor = true
 
                 audioProcessingEchoCancellation = true
-                audioProcessingAutoGainControl  = true
-                audioProcessingHighpassFilter   = true
+                audioProcessingAutoGainControl = true
+                audioProcessingHighpassFilter = true
                 audioProcessingNoiseSuppression = true
 
                 // 配信にステレオを使う場合の設定。
@@ -276,7 +290,7 @@ class SoraVideoChannel(
                 // 変更したほうが良い。
                 if (audioStereo) {
                     // libwebrtc の AGC が有効のときはステレオで出ないため無効化する
-                    audioProcessingAutoGainControl  = false
+                    audioProcessingAutoGainControl = false
 
                     // MediaRecorder.AudioSource.MIC の場合、両側のマイクの真ん中あたりで
                     // 不連続に音量が下がるように聞こえる (Pixel 3 XL -> Sora で録音)。
@@ -293,18 +307,18 @@ class SoraVideoChannel(
         }
 
         mediaChannel = SoraMediaChannel(
-                context                     = context,
-                signalingEndpoint           = signalingEndpoint,
-                signalingEndpointCandidates = signalingEndpointCandidates,
-                channelId                   = channelId,
-                dataChannelSignaling        = dataChannelSignaling,
-                ignoreDisconnectWebSocket   = ignoreDisconnectWebSocket,
-                signalingMetadata           = signalingMetadata,
-                signalingNotifyMetadata     = signalingNotifyMetatada,
-                mediaOption                 = mediaOption,
-                listener                    = channelListener,
-                clientId                    = clientId,
-                peerConnectionOption        = peerConnectionOption
+            context = context,
+            signalingEndpoint = signalingEndpoint,
+            signalingEndpointCandidates = signalingEndpointCandidates,
+            channelId = channelId,
+            dataChannelSignaling = dataChannelSignaling,
+            ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
+            signalingMetadata = signalingMetadata,
+            signalingNotifyMetadata = signalingNotifyMetatada,
+            mediaOption = mediaOption,
+            listener = channelListener,
+            clientId = clientId,
+            peerConnectionOption = peerConnectionOption
         )
         mediaChannel!!.connect()
     }
@@ -335,7 +349,7 @@ class SoraVideoChannel(
         }
 
         override fun onCameraSwitchError(msg: String?) {
-            SoraLogger.w(TAG, "failed to switch camera ${msg}")
+            SoraLogger.w(TAG, "failed to switch camera $msg")
         }
     }
 
@@ -375,7 +389,6 @@ class SoraVideoChannel(
                 remoteRenderersSlot?.dispose()
                 remoteRenderersSlot = null
             }
-
         }
     }
 
@@ -386,4 +399,3 @@ class SoraVideoChannel(
         listener = null
     }
 }
-

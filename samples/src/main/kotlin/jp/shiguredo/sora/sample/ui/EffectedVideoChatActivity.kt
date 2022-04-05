@@ -12,13 +12,23 @@ import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.gson.*
-import jp.co.cyberagent.android.gpuimage.filter.*
+import com.google.gson.Gson
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageEmbossFilter
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageFilter
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageHalftoneFilter
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageHueFilter
+import jp.co.cyberagent.android.gpuimage.filter.GPUImagePixelationFilter
+import jp.co.cyberagent.android.gpuimage.filter.GPUImagePosterizeFilter
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageSepiaToneFilter
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageToonFilter
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.camera.EffectCameraVideoCapturerFactory
+import jp.shiguredo.sora.sample.databinding.ActivityVideoChatRoomBinding
 import jp.shiguredo.sora.sample.facade.SoraVideoChannel
 import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sample.ui.util.RendererLayoutCalculator
@@ -28,7 +38,6 @@ import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.webrtc.video.effector.RTCVideoEffector
 import jp.shiguredo.webrtc.video.effector.VideoEffectorContext
 import jp.shiguredo.webrtc.video.effector.filter.GPUImageFilterWrapper
-import kotlinx.android.synthetic.main.activity_video_chat_room.*
 import org.webrtc.SurfaceViewRenderer
 
 class EffectedVideoChatActivity : AppCompatActivity() {
@@ -52,19 +61,21 @@ class EffectedVideoChatActivity : AppCompatActivity() {
         effector = RTCVideoEffector().apply {
 
             when (intent.getStringExtra("EFFECT")) {
-                "グレースケール"  -> {
+                "グレースケール" -> {
                     addMediaEffectFilter(EffectFactory.EFFECT_GRAYSCALE)
                 }
                 "ピクセル化" -> {
-                    addGPUImageFilter(GPUImagePixelationFilter(),
-                            object : GPUImageFilterWrapper.Listener {
-                                override fun onInit(filter: GPUImageFilter) {
-                                    (filter as GPUImagePixelationFilter).setPixel(30.0f)
-                                }
-                                override fun onUpdate(filter: GPUImageFilter, vctx: VideoEffectorContext) {
-                                    // do nothing
-                                }
-                            })
+                    addGPUImageFilter(
+                        GPUImagePixelationFilter(),
+                        object : GPUImageFilterWrapper.Listener {
+                            override fun onInit(filter: GPUImageFilter) {
+                                (filter as GPUImagePixelationFilter).setPixel(30.0f)
+                            }
+                            override fun onUpdate(filter: GPUImageFilter, vctx: VideoEffectorContext) {
+                                // do nothing
+                            }
+                        }
+                    )
                 }
                 "ポスタライズ" -> {
                     addGPUImageFilter(GPUImagePosterizeFilter(5))
@@ -94,13 +105,13 @@ class EffectedVideoChatActivity : AppCompatActivity() {
 
         channelName = intent.getStringExtra("CHANNEL_NAME") ?: getString(R.string.channelId)
         ui = EffectedVideoChatActivityUI(
-                activity        = this,
-                channelName     = channelName,
-                resources       = resources,
-                videoViewWidth  = 100,
-                videoViewHeight = 100,
-                videoViewMargin = 10,
-                density         = this.resources.displayMetrics.density
+            activity = this,
+            channelName = channelName,
+            resources = resources,
+            videoViewWidth = 100,
+            videoViewHeight = 100,
+            videoViewMargin = 10,
+            density = this.resources.displayMetrics.density
         )
 
         connectChannel()
@@ -109,17 +120,19 @@ class EffectedVideoChatActivity : AppCompatActivity() {
     private fun setupWindow() {
         supportActionBar?.hide()
 
-        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
-                or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        window.addFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+                or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+        )
         setWindowVisibility()
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private fun setWindowVisibility() {
         window.decorView.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                        View.SYSTEM_UI_FLAG_FULLSCREEN or
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+            View.SYSTEM_UI_FLAG_FULLSCREEN or
+            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
     }
 
     override fun onResume() {
@@ -127,9 +140,9 @@ class EffectedVideoChatActivity : AppCompatActivity() {
         this.volumeControlStream = AudioManager.STREAM_VOICE_CALL
 
         val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
-                as AudioManager
+            as AudioManager
         oldAudioMode = audioManager.mode
-        Log.d(TAG, "AudioManager mode change: ${oldAudioMode} => MODE_IN_COMMUNICATION(3)")
+        Log.d(TAG, "AudioManager mode change: $oldAudioMode => MODE_IN_COMMUNICATION(3)")
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
     }
 
@@ -137,8 +150,8 @@ class EffectedVideoChatActivity : AppCompatActivity() {
         Log.d(TAG, "onPause")
         super.onPause()
         val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
-                as AudioManager
-        Log.d(TAG, "AudioManager mode change: MODE_IN_COMMUNICATION(3) => ${oldAudioMode}")
+            as AudioManager
+        Log.d(TAG, "AudioManager mode change: MODE_IN_COMMUNICATION(3) => $oldAudioMode")
         audioManager.mode = oldAudioMode
         close()
     }
@@ -186,23 +199,22 @@ class EffectedVideoChatActivity : AppCompatActivity() {
         }
     }
 
-
     private fun connectChannel() {
         Log.d(TAG, "connectChannel")
-        val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map{ it.trim() }
+        val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map { it.trim() }
         val signalingMetadata = Gson().fromJson(BuildConfig.SIGNALING_METADATA, Map::class.java)
         channel = SoraVideoChannel(
-                context                     = this,
-                handler                     = Handler(),
-                signalingEndpointCandidates = signalingEndpointCandidates,
-                channelId                   = channelName,
-                signalingMetadata           = signalingMetadata,
-                videoWidth                  = 480,
-                videoHeight                 = 960,
-                videoFPS                    = 30,
-                role                        = role,
-                capturerFactory             = EffectCameraVideoCapturerFactory(effector!!),
-                listener                    = channelListener
+            context = this,
+            handler = Handler(),
+            signalingEndpointCandidates = signalingEndpointCandidates,
+            channelId = channelName,
+            signalingMetadata = signalingMetadata,
+            videoWidth = 480,
+            videoHeight = 960,
+            videoFPS = 30,
+            roleType = role,
+            capturerFactory = EffectCameraVideoCapturerFactory(effector!!),
+            listener = channelListener
         )
         channel!!.connect()
     }
@@ -227,71 +239,73 @@ class EffectedVideoChatActivity : AppCompatActivity() {
         muted = !muted
         channel?.mute(muted)
     }
-
 }
 
 class EffectedVideoChatActivityUI(
-        val activity:        EffectedVideoChatActivity,
-        val channelName:     String?,
-        val resources:       Resources,
-        val videoViewWidth:  Int,
-        val videoViewHeight: Int,
-        val videoViewMargin: Int,
-        val density:         Float
+    val activity: EffectedVideoChatActivity,
+    val channelName: String?,
+    val resources: Resources,
+    val videoViewWidth: Int,
+    val videoViewHeight: Int,
+    val videoViewMargin: Int,
+    val density: Float
 ) {
 
     private val renderersLayoutCalculator: RendererLayoutCalculator
+    private var binding: ActivityVideoChatRoomBinding
 
     init {
-        activity.setContentView(R.layout.activity_video_chat_room)
-        activity.channelNameText.text = channelName
+        binding = ActivityVideoChatRoomBinding.inflate(activity.layoutInflater)
+        activity.setContentView(binding.root)
+        binding.channelNameText.text = channelName
         this.renderersLayoutCalculator = RendererLayoutCalculator(
-                width = SoraScreenUtil.size(activity).x - dp2px(20 * 2),
-                height = SoraScreenUtil.size(activity).y - dp2px(20 * 2 + 100)
+            width = SoraScreenUtil.size(activity).x - dp2px(20 * 2),
+            height = SoraScreenUtil.size(activity).y - dp2px(20 * 2 + 100)
         )
-        activity.toggleMuteButton.setOnClickListener { activity.toggleMuted() }
-        activity.switchCameraButton.setOnClickListener { activity.switchCamera() }
-        activity.closeButton.setOnClickListener { activity.close() }
+        binding.toggleMuteButton.setOnClickListener { activity.toggleMuted() }
+        binding.switchCameraButton.setOnClickListener { activity.switchCamera() }
+        binding.closeButton.setOnClickListener { activity.close() }
     }
 
     internal fun changeState(colorCode: String) {
-        activity.channelNameText.setBackgroundColor(Color.parseColor(colorCode))
+        binding.channelNameText.setBackgroundColor(Color.parseColor(colorCode))
     }
 
     internal fun addLocalRenderer(renderer: SurfaceViewRenderer) {
         renderer.layoutParams = FrameLayout.LayoutParams(dp2px(100), dp2px(100))
-        activity.localRendererContainer.addView(renderer)
+        binding.localRendererContainer.addView(renderer)
     }
 
     internal fun addRenderer(renderer: SurfaceViewRenderer) {
         renderer.layoutParams = rendererLayoutParams()
-        activity.rendererContainer.addView(renderer)
+        binding.rendererContainer.addView(renderer)
         renderersLayoutCalculator.add(renderer)
     }
 
     internal fun removeRenderer(renderer: SurfaceViewRenderer) {
-        activity.rendererContainer.removeView(renderer)
+        binding.rendererContainer.removeView(renderer)
         renderersLayoutCalculator.remove(renderer)
     }
 
     internal fun showUnmuteButton() {
-        activity.toggleMuteButton.setImageDrawable(
-                resources.getDrawable(R.drawable.ic_mic_white_48dp, null))
+        binding.toggleMuteButton.setImageDrawable(
+            resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
+        )
     }
 
     internal fun showMuteButton() {
-        activity.toggleMuteButton.setImageDrawable(
-                resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null))
+        binding.toggleMuteButton.setImageDrawable(
+            resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
+        )
     }
 
     private fun dp2px(d: Int): Int = (density * d).toInt()
 
     private fun rendererLayoutParams(): RelativeLayout.LayoutParams {
         val params =
-                RelativeLayout.LayoutParams(dp2px(videoViewWidth), dp2px(videoViewHeight))
+            RelativeLayout.LayoutParams(dp2px(videoViewWidth), dp2px(videoViewHeight))
         val margin = dp2px(videoViewMargin)
         params.setMargins(margin, margin, margin, margin)
         return params
     }
 }
-

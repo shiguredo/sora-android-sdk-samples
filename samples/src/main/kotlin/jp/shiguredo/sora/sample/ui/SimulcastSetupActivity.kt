@@ -2,13 +2,11 @@ package jp.shiguredo.sora.sample.ui
 
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.materialspinner.MaterialSpinner
-import jp.shiguredo.sora.sample.R
-import kotlinx.android.synthetic.main.activity_simulcast_setup.*
-import kotlinx.android.synthetic.main.signaling_selection.view.*
+import jp.shiguredo.sora.sample.databinding.ActivitySimulcastSetupBinding
 
 class SimulcastSetupActivity : AppCompatActivity() {
 
@@ -20,89 +18,95 @@ class SimulcastSetupActivity : AppCompatActivity() {
     private val videoEnabledOptions = listOf("有効", "無効")
     private val audioCodecOptions = listOf("OPUS")
     private val audioEnabledOptions = listOf("有効", "無効")
-    private val audioBitRateOptions = listOf("未指定", "8", "16", "24", "32",
-            "64", "96", "128", "256")
+    private val audioBitRateOptions = listOf(
+        "未指定", "8", "16", "24", "32",
+        "64", "96", "128", "256"
+    )
     private val audioStereoOptions = listOf("モノラル", "ステレオ")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
     private val multistreamOptions = listOf("有効", "無効")
     private val videoBitRateOptions = listOf("200", "500", "700", "1200", "2500", "4000", "5000", "10000", "15000", "20000", "30000")
 
     private val videoSizeOptions = listOf(
-            // Portrait
-            "VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD",
-            "Res1920x3840", "UHD2160x3840", "UHD2160x4096",
-            // Landscape
-            "Res3840x1920", "UHD3840x2160")
+        // Portrait
+        "VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD",
+        "Res1920x3840", "UHD2160x3840", "UHD2160x4096",
+        // Landscape
+        "Res3840x1920", "UHD3840x2160"
+    )
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("可変", "固定")
     private val simulcastRidOptions = listOf("未指定", "r0", "r1", "r2")
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
     private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
 
+    private lateinit var binding: ActivitySimulcastSetupBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_simulcast_setup)
+        binding = ActivitySimulcastSetupBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        start.setOnClickListener { startVideoChat() }
+        binding.start.setOnClickListener { startVideoChat() }
 
-        videoEnabledSelection.name.text = "映像の有無"
-        videoEnabledSelection.spinner.setItems(videoEnabledOptions)
-        videoCodecSelection.name.text = "映像コーデック"
-        videoCodecSelection.spinner.setItems(videoCodecOptions)
-        audioEnabledSelection.name.text = "音声の有無"
-        audioEnabledSelection.spinner.setItems(audioEnabledOptions)
-        audioCodecSelection.name.text = "音声コーデック"
-        audioCodecSelection.spinner.setItems(audioCodecOptions)
-        audioBitRateSelection.name.text = "音声ビットレート"
-        audioBitRateSelection.spinner.setItems(audioBitRateOptions)
-        audioStereoSelection.name.text = "ステレオ音声"
-        audioStereoSelection.spinner.setItems(audioStereoOptions)
-        roleSelection.name.text = "ロール"
-        roleSelection.spinner.setItems(roleOptions)
-        multistreamSelection.name.text = "マルチストリーム"
-        multistreamSelection.spinner.setItems(multistreamOptions)
-        videoBitRateSelection.name.text = "映像ビットレート"
-        videoBitRateSelection.spinner.setItems(videoBitRateOptions)
-        videoSizeSelection.name.text = "映像サイズ"
-        videoSizeSelection.spinner.setItems(videoSizeOptions)
-        fpsSelection.name.text = "フレームレート"
-        fpsSelection.spinner.setItems(fpsOptions)
-        resolutionChangeSelection.name.text = "解像度の変更"
-        resolutionChangeSelection.spinner.setItems(resolutionChangeOptions)
-        simulcastRidSelection.name.text = "受信する rid"
-        simulcastRidSelection.spinner.setItems(simulcastRidOptions)
-        dataChannelSignalingSelection.name.text = "データチャネル"
-        dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
-        ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
-        ignoreDisconnectWebSocketSelection.spinner.setItems(ignoreDisconnectWebSocketOptions)
+        binding.videoEnabledSelection.name.text = "映像の有無"
+        binding.videoEnabledSelection.spinner.setItems(videoEnabledOptions)
+        binding.videoCodecSelection.name.text = "映像コーデック"
+        binding.videoCodecSelection.spinner.setItems(videoCodecOptions)
+        binding.audioEnabledSelection.name.text = "音声の有無"
+        binding.audioEnabledSelection.spinner.setItems(audioEnabledOptions)
+        binding.audioCodecSelection.name.text = "音声コーデック"
+        binding.audioCodecSelection.spinner.setItems(audioCodecOptions)
+        binding.audioBitRateSelection.name.text = "音声ビットレート"
+        binding.audioBitRateSelection.spinner.setItems(audioBitRateOptions)
+        binding.audioStereoSelection.name.text = "ステレオ音声"
+        binding.audioStereoSelection.spinner.setItems(audioStereoOptions)
+        binding.roleSelection.name.text = "ロール"
+        binding.roleSelection.spinner.setItems(roleOptions)
+        binding.multistreamSelection.name.text = "マルチストリーム"
+        binding.multistreamSelection.spinner.setItems(multistreamOptions)
+        binding.videoBitRateSelection.name.text = "映像ビットレート"
+        binding.videoBitRateSelection.spinner.setItems(videoBitRateOptions)
+        binding.videoSizeSelection.name.text = "映像サイズ"
+        binding.videoSizeSelection.spinner.setItems(videoSizeOptions)
+        binding.fpsSelection.name.text = "フレームレート"
+        binding.fpsSelection.spinner.setItems(fpsOptions)
+        binding.resolutionChangeSelection.name.text = "解像度の変更"
+        binding.resolutionChangeSelection.spinner.setItems(resolutionChangeOptions)
+        binding.simulcastRidSelection.name.text = "受信する rid"
+        binding.simulcastRidSelection.spinner.setItems(simulcastRidOptions)
+        binding.dataChannelSignalingSelection.name.text = "データチャネル"
+        binding.dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
+        binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
+        binding.ignoreDisconnectWebSocketSelection.spinner.setItems(ignoreDisconnectWebSocketOptions)
 
-        videoBitRateSelection.spinner.selectedIndex = 6
-        videoSizeSelection.spinner.selectedIndex = 6
+        binding.videoBitRateSelection.spinner.selectedIndex = 6
+        binding.videoSizeSelection.spinner.selectedIndex = 6
     }
 
     private fun startVideoChat() {
-        val channelName = channelNameInput.text.toString()
+        val channelName = binding.channelNameInput.text.toString()
         if (channelName.isEmpty()) {
             showInputError()
             return
         }
 
-        val role = selectedItem(roleSelection.spinner)
-        val multistream = selectedItem(multistreamSelection.spinner)
-        val videoCodec = selectedItem(videoCodecSelection.spinner)
-        val videoEnabled = selectedItem(videoEnabledSelection.spinner)
-        val audioCodec = selectedItem(audioCodecSelection.spinner)
-        val audioEnabled = selectedItem(audioEnabledSelection.spinner)
-        val audioBitRate = selectedItem(audioBitRateSelection.spinner)
-        val audioStereo = selectedItem(audioStereoSelection.spinner)
-        val videoBitRate = selectedItem(videoBitRateSelection.spinner)
-        val videoSize = selectedItem(videoSizeSelection.spinner)
-        val fps = selectedItem(fpsSelection.spinner)
-        val resolutionChange = selectedItem(resolutionChangeSelection.spinner)
-        val simulcastRid = selectedItem(simulcastRidSelection.spinner)
-        val dataChannelSignaling = selectedItem(dataChannelSignalingSelection.spinner)
-        val ignoreDisconnectWebSocket = selectedItem(ignoreDisconnectWebSocketSelection.spinner)
+        val role = selectedItem(binding.roleSelection.spinner)
+        val multistream = selectedItem(binding.multistreamSelection.spinner)
+        val videoCodec = selectedItem(binding.videoCodecSelection.spinner)
+        val videoEnabled = selectedItem(binding.videoEnabledSelection.spinner)
+        val audioCodec = selectedItem(binding.audioCodecSelection.spinner)
+        val audioEnabled = selectedItem(binding.audioEnabledSelection.spinner)
+        val audioBitRate = selectedItem(binding.audioBitRateSelection.spinner)
+        val audioStereo = selectedItem(binding.audioStereoSelection.spinner)
+        val videoBitRate = selectedItem(binding.videoBitRateSelection.spinner)
+        val videoSize = selectedItem(binding.videoSizeSelection.spinner)
+        val fps = selectedItem(binding.fpsSelection.spinner)
+        val resolutionChange = selectedItem(binding.resolutionChangeSelection.spinner)
+        val simulcastRid = selectedItem(binding.simulcastRidSelection.spinner)
+        val dataChannelSignaling = selectedItem(binding.dataChannelSignalingSelection.spinner)
+        val ignoreDisconnectWebSocket = selectedItem(binding.ignoreDisconnectWebSocketSelection.spinner)
 
         val intent = Intent(this, SimulcastActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
@@ -131,11 +135,12 @@ class SimulcastSetupActivity : AppCompatActivity() {
     }
 
     private fun showInputError() {
-        Snackbar.make(rootLayout,
-                "チャネル名 を適切に入力してください",
-                Snackbar.LENGTH_LONG)
-                .setAction("OK") { }
-                .show()
+        Snackbar.make(
+            binding.rootLayout,
+            "チャネル名 を適切に入力してください",
+            Snackbar.LENGTH_LONG
+        )
+            .setAction("OK") { }
+            .show()
     }
-
 }

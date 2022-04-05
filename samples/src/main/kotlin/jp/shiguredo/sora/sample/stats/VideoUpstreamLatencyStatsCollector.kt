@@ -4,7 +4,6 @@ import jp.shiguredo.sora.sdk.util.SoraLogger
 import org.webrtc.RTCStats
 import org.webrtc.RTCStatsReport
 
-
 class VideoUpstreamLatencyStatsCollector {
 
     companion object {
@@ -19,13 +18,17 @@ class VideoUpstreamLatencyStatsCollector {
         val outboundVideoStats = outboundRtpVideoStreamStats(statsReport)
         val prevOutboundVideoStats = outboundRtpVideoStreamStats(prevReport)
 
-        val encodeMSec = averageMSec("totalEncodeTime", "framesEncoded",
-                prevOutboundVideoStats, outboundVideoStats)
+        val encodeMSec = averageMSec(
+            "totalEncodeTime", "framesEncoded",
+            prevOutboundVideoStats, outboundVideoStats
+        )
         encodeMSec?.let {
             SoraLogger.d(TAG, "RTCOutboundRtpVideoStream [totalEncodeTime/framesEncoded_in_ms]: %.3f".format(encodeMSec))
         }
-        val sendDelayMSec = averageMSec("totalPacketSendDelay", "packetsSent",
-                prevOutboundVideoStats, outboundVideoStats)
+        val sendDelayMSec = averageMSec(
+            "totalPacketSendDelay", "packetsSent",
+            prevOutboundVideoStats, outboundVideoStats
+        )
         sendDelayMSec?.let {
             SoraLogger.d(TAG, "RTCOutboundRtpVideoStream [totalPacketSendDelay/packetsSent_in_ms]: %.3f".format(sendDelayMSec))
         }
