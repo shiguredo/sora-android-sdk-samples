@@ -56,6 +56,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var fixedResolution = false
     private var cameraFacing = true
     private var clientId: String? = null
+    private var bundleId: String? = null
     private var dataChannelSignaling: Boolean? = null
     private var ignoreDisconnectWebSocket: Boolean? = null
 
@@ -172,6 +173,14 @@ class VideoChatRoomActivity : AppCompatActivity() {
             "なし" -> null
             "端末情報" -> Build.MODEL
             "時雨堂" -> "🍖時雨堂🍗"
+            "ランダム" -> UUID.randomUUID().toString()
+            else -> null
+        }
+
+        bundleId = when (intent.getStringExtra("BUNDLE_ID")) {
+            "なし" -> null
+            "端末情報" -> Build.MODEL
+            "時雨堂" -> "☔時雨堂🌂"
             "ランダム" -> UUID.randomUUID().toString()
             else -> null
         }
@@ -322,6 +331,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
             multistream = multistream,
             cameraFacing = cameraFacing,
             clientId = clientId,
+            bundleId = bundleId,
             listener = channelListener,
             needLocalRenderer = true
         )

@@ -39,6 +39,7 @@ class SoraVideoChannel(
     private val signalingMetadata: Any? = "",
     private val signalingNotifyMetatada: Any? = null,
     private val clientId: String? = null,
+    private val bundleId: String? = null,
     private val spotlight: Boolean = false,
     private val spotlightNumber: Int? = null,
     private val spotlightFocusRid: SoraVideoOption.SpotlightRid? = null,
@@ -318,6 +319,7 @@ class SoraVideoChannel(
             mediaOption = mediaOption,
             listener = channelListener,
             clientId = clientId,
+            bundleId = bundleId,
             peerConnectionOption = peerConnectionOption
         )
         mediaChannel!!.connect()
