@@ -53,6 +53,7 @@ class SimulcastActivity : AppCompatActivity() {
     private var spotlightNumber: Int? = null
     private var spotlightFocusRid: SoraVideoOption.SpotlightRid? = null
     private var spotlightUnfocusRid: SoraVideoOption.SpotlightRid? = null
+    private var simulcastEnabled: Boolean = true
     private var fps: Int = 30
     private var fixedResolution = false
     private var simulcastRid: SoraVideoOption.SimulcastRid? = null
@@ -153,6 +154,14 @@ class SimulcastActivity : AppCompatActivity() {
             "r2" -> SoraVideoOption.SpotlightRid.R2
             else -> null
         }
+
+        simulcastEnabled = when (intent.getStringExtra("SIMULCAST_ENABLED")) {
+            "有効" -> true
+            "無効" -> false
+            else -> simulcastEnabled
+        }
+
+        SoraLogger.d("ENOMOTO", "simulcastEnabled: $simulcastEnabled")
 
         fixedResolution = when (intent.getStringExtra("RESOLUTION_CHANGE")) {
             "可変" -> false
@@ -319,7 +328,7 @@ class SimulcastActivity : AppCompatActivity() {
             videoEnabled = videoEnabled,
             videoWidth = videoWidth,
             videoHeight = videoHeight,
-            simulcast = true,
+            simulcast = simulcastEnabled,
             simulcastRid = simulcastRid,
             videoFPS = fps,
             fixedResolution = fixedResolution,

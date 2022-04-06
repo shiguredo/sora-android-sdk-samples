@@ -15,7 +15,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     }
 
     private val spotlightNumberOptions = listOf("未指定", "1", "2", "3", "4", "5", "6", "7", "8")
-    private val videoCodecOptions = listOf("VP8", "H264")
+    private val videoCodecOptions = listOf("VP8", "VP9", "H264")
     private val audioCodecOptions = listOf("OPUS")
     private val audioBitRateOptions = listOf(
         "未指定", "8", "16", "24", "32",
@@ -26,6 +26,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
     private val spotlightFocusRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
     private val spotlightUnfocusRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
+    private val simulcastEnabledOptions = listOf("有効", "無効")
     private val videoBitRateOptions = listOf(
         "500", "200", "700", "1200", "2500", "4000", "5000",
         "10000", "15000", "20000", "30000"
@@ -53,6 +54,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         binding.spotlightFocusRidSelection.spinner.setItems(spotlightFocusRidOptions)
         binding.spotlightUnfocusRidSelection.name.text = "非フォーカス時の rid"
         binding.spotlightUnfocusRidSelection.spinner.setItems(spotlightUnfocusRidOptions)
+        binding.simulcastEnabledSelection.name.text = "サイマルキャスト"
+        binding.simulcastEnabledSelection.spinner.setItems(simulcastEnabledOptions)
         binding.videoCodecSelection.name.text = "映像コーデック"
         binding.videoCodecSelection.spinner.setItems(videoCodecOptions)
         binding.videoEnabledSelection.name.text = "映像の有無"
@@ -86,6 +89,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         val role = selectedItem(binding.roleSelection.spinner)
         var spotlightFocusRid = selectedItem(binding.spotlightFocusRidSelection.spinner)
         var spotlightUnfocusRid = selectedItem(binding.spotlightUnfocusRidSelection.spinner)
+        val simulcastEnabled = selectedItem(binding.simulcastEnabledSelection.spinner)
         val videoCodec = selectedItem(binding.videoCodecSelection.spinner)
         val audioCodec = selectedItem(binding.audioCodecSelection.spinner)
         val audioBitRate = selectedItem(binding.audioBitRateSelection.spinner)
@@ -103,6 +107,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("SPOTLIGHT_NUMBER", spotlightNumber)
         intent.putExtra("SPOTLIGHT_FOCUS_RID", spotlightFocusRid)
         intent.putExtra("SPOTLIGHT_UNFOCUS_RID", spotlightUnfocusRid)
+        intent.putExtra("SIMULCAST_ENABLED", simulcastEnabled)
         intent.putExtra("ROLE", role)
         intent.putExtra("VIDEO_CODEC", videoCodec)
         intent.putExtra("AUDIO_CODEC", audioCodec)

@@ -267,7 +267,7 @@ class SoraVideoChannel(
                 option.spotlightNumber = spotlightNumber
                 option.spotlightFocusRid = spotlightFocusRid
                 option.spotlightUnfocusRid = spotlightUnfocusRid
-                enableSpotlight(option)
+                enableSpotlight(option, this@SoraVideoChannel.simulcast)
             }
 
             videoCodec = this@SoraVideoChannel.videoCodec
