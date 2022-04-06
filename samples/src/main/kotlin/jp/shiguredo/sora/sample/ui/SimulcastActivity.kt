@@ -31,6 +31,7 @@ import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import org.webrtc.SurfaceViewRenderer
+import java.util.UUID
 
 class SimulcastActivity : AppCompatActivity() {
 
@@ -57,6 +58,8 @@ class SimulcastActivity : AppCompatActivity() {
     private var fps: Int = 30
     private var fixedResolution = false
     private var simulcastRid: SoraVideoOption.SimulcastRid? = null
+    private var clientId: String? = null
+    private var bundleId: String? = null
     private var dataChannelSignaling: Boolean? = null
     private var ignoreDisconnectWebSocket: Boolean? = null
 
@@ -199,6 +202,22 @@ class SimulcastActivity : AppCompatActivity() {
             else -> null
         }
 
+        clientId = when (intent.getStringExtra("CLIENT_ID")) {
+            "なし" -> null
+            "端末情報" -> Build.MODEL
+            "時雨堂" -> "🍖時雨堂🍗"
+            "ランダム" -> UUID.randomUUID().toString()
+            else -> null
+        }
+
+        bundleId = when (intent.getStringExtra("BUNDLE_ID")) {
+            "なし" -> null
+            "端末情報" -> Build.MODEL
+            "時雨堂" -> "☔時雨堂🌂"
+            "ランダム" -> UUID.randomUUID().toString()
+            else -> null
+        }
+
         dataChannelSignaling = when (intent.getStringExtra("DATA_CHANNEL_SIGNALING")) {
             "無効" -> false
             "有効" -> true
@@ -318,6 +337,8 @@ class SimulcastActivity : AppCompatActivity() {
             handler = Handler(),
             signalingEndpointCandidates = signalingEndpointCandidates,
             channelId = channelName,
+            clientId = clientId,
+            bundleId = bundleId,
             dataChannelSignaling = dataChannelSignaling,
             ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
             signalingMetadata = signalingMetadata,
