@@ -161,7 +161,7 @@ class SimulcastActivity : AppCompatActivity() {
         simulcastEnabled = when (intent.getStringExtra("SIMULCAST_ENABLED")) {
             "有効" -> true
             "無効" -> false
-            else -> simulcastEnabled
+            else -> true
         }
 
         fixedResolution = when (intent.getStringExtra("RESOLUTION_CHANGE")) {
