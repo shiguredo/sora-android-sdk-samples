@@ -164,8 +164,6 @@ class SimulcastActivity : AppCompatActivity() {
             else -> simulcastEnabled
         }
 
-        SoraLogger.d("ENOMOTO", "simulcastEnabled: $simulcastEnabled")
-
         fixedResolution = when (intent.getStringExtra("RESOLUTION_CHANGE")) {
             "可変" -> false
             "固定" -> true
