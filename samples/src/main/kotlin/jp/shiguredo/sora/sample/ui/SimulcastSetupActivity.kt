@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.databinding.ActivitySimulcastSetupBinding
+import jp.shiguredo.sora.sample.option.SoraFrameSize
 
 class SimulcastSetupActivity : AppCompatActivity() {
 
@@ -27,13 +28,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
     private val multistreamOptions = listOf("有効", "無効")
     private val videoBitRateOptions = listOf("200", "500", "700", "1200", "2500", "4000", "5000", "10000", "15000", "20000", "30000")
 
-    private val videoSizeOptions = listOf(
-        // Portrait
-        "VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD",
-        "Res1920x3840", "UHD2160x3840", "UHD2160x4096",
-        // Landscape
-        "Res3840x1920", "UHD3840x2160"
-    )
+    private val videoSizeOptions = SoraFrameSize.landscape.keys.toList()
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("可変", "固定")
     private val simulcastRidOptions = listOf("未指定", "r0", "r1", "r2")
@@ -82,7 +77,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
         binding.ignoreDisconnectWebSocketSelection.spinner.setItems(ignoreDisconnectWebSocketOptions)
 
         binding.videoBitRateSelection.spinner.selectedIndex = 6
-        binding.videoSizeSelection.spinner.selectedIndex = 6
+        binding.videoSizeSelection.spinner.selectedIndex = 5
     }
 
     private fun startVideoChat() {
