@@ -32,10 +32,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         "500", "200", "700", "1200", "2500", "4000", "5000",
         "10000", "15000", "20000", "30000"
     )
-    private val videoSizeOptions = SoraFrameSize.landscape.filter {
-        // FHD より大きいものを取り除く
-        it.value.y <= SoraVideoOption.FrameSize.Landscape.FHD.y
-    }.keys.toList()
+    private val videoSizeOptions = SoraFrameSize.landscape.keys.toList()
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
     private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
