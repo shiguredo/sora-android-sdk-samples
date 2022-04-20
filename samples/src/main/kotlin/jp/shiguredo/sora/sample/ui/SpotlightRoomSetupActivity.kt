@@ -8,7 +8,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.databinding.ActivitySpotlightRoomSetupBinding
 import jp.shiguredo.sora.sample.option.SoraFrameSize
-import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 
 class SpotlightRoomSetupActivity : AppCompatActivity() {
 
