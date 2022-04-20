@@ -4,6 +4,13 @@ import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 
 class SoraFrameSize {
     companion object {
+        // NOTE:
+        /**
+         * NOTE: Kotlin の Map は順序保証あり
+         *
+         * > Entries of the map are iterated in the order they were specified.
+         * https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/map-of.html
+         */
         val landscape = mapOf(
             "QCIF: 176x144" to SoraVideoOption.FrameSize.Landscape.QCIF,
             "HQVGA: 240x160" to SoraVideoOption.FrameSize.Landscape.HQVGA,
