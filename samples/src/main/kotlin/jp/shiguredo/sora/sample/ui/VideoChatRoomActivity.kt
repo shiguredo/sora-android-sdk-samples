@@ -22,6 +22,7 @@ import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.databinding.ActivityVideoChatRoomBinding
 import jp.shiguredo.sora.sample.facade.SoraVideoChannel
+import jp.shiguredo.sora.sample.option.SoraFrameSize
 import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sample.ui.util.RendererLayoutCalculator
 import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
@@ -102,26 +103,12 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
         fps = (intent.getStringExtra("FPS") ?: "30").toInt()
 
-        var videoSize = when (intent.getStringExtra("VIDEO_SIZE")) {
-            // Portrait
-            "VGA" -> SoraVideoOption.FrameSize.Portrait.VGA
-            "QQVGA" -> SoraVideoOption.FrameSize.Portrait.QQVGA
-            "QCIF" -> SoraVideoOption.FrameSize.Portrait.QCIF
-            "HQVGA" -> SoraVideoOption.FrameSize.Portrait.HQVGA
-            "QVGA" -> SoraVideoOption.FrameSize.Portrait.QVGA
-            "HD" -> SoraVideoOption.FrameSize.Portrait.HD
-            "FHD" -> SoraVideoOption.FrameSize.Portrait.FHD
-            "Res1920x3840" -> SoraVideoOption.FrameSize.Portrait.Res1920x3840
-            "UHD2160x3840" -> SoraVideoOption.FrameSize.Portrait.UHD2160x3840
-            "UHD2160x4096" -> SoraVideoOption.FrameSize.Portrait.UHD2160x4096
-            // Landscape
-            "Res3840x1920" -> SoraVideoOption.FrameSize.Landscape.Res3840x1920
-            "UHD3840x2160" -> SoraVideoOption.FrameSize.Landscape.UHD3840x2160
-            // Default
-            else -> SoraVideoOption.FrameSize.Portrait.VGA
+        intent.getStringExtra("VIDEO_SIZE")?.let { key ->
+            SoraFrameSize.all[key]?.let { p ->
+                videoWidth = p.x
+                videoHeight = p.y
+            }
         }
-        videoWidth = videoSize.x
-        videoHeight = videoSize.y
 
         multistream = when (intent.getStringExtra("MULTISTREAM")) {
             "有効" -> true

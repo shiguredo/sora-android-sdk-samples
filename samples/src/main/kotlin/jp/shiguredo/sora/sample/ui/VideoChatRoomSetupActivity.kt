@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.databinding.ActivityVideoChatRoomSetupBinding
+import jp.shiguredo.sora.sample.option.SoraFrameSize
 
 class VideoChatRoomSetupActivity : AppCompatActivity() {
 
@@ -29,13 +30,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         "未指定", "100", "300", "500", "800", "1000", "1500",
         "2000", "2500", "3000", "5000", "10000", "15000", "20000", "30000"
     )
-    private val videoSizeOptions = listOf(
-        // Portrait
-        "VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD",
-        "Res1920x3840", "UHD2160x3840", "UHD2160x4096",
-        // Landscape
-        "Res3840x1920", "UHD3840x2160"
-    )
+    private val videoSizeOptions = SoraFrameSize.all.keys.toList()
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("可変", "固定")
     private val cameraFacingOptions = listOf("前面", "背面")
@@ -74,6 +69,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         binding.videoBitRateSelection.spinner.setItems(videoBitRateOptions)
         binding.videoSizeSelection.name.text = "映像サイズ"
         binding.videoSizeSelection.spinner.setItems(videoSizeOptions)
+        binding.videoSizeSelection.spinner.selectedIndex = 3
         binding.fpsSelection.name.text = "フレームレート"
         binding.fpsSelection.spinner.setItems(fpsOptions)
         binding.resolutionChangeSelection.name.text = "解像度の変更"

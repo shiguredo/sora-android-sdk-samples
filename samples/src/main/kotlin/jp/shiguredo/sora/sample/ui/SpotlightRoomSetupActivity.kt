@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.databinding.ActivitySpotlightRoomSetupBinding
+import jp.shiguredo.sora.sample.option.SoraFrameSize
 
 class SpotlightRoomSetupActivity : AppCompatActivity() {
 
@@ -30,7 +31,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         "500", "200", "700", "1200", "2500", "4000", "5000",
         "10000", "15000", "20000", "30000"
     )
-    private val videoSizeOptions = listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
+    private val videoSizeOptions = SoraFrameSize.landscape.keys.toList()
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
     private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
@@ -67,6 +68,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         binding.videoBitRateSelection.spinner.setItems(videoBitRateOptions)
         binding.videoSizeSelection.name.text = "映像サイズ"
         binding.videoSizeSelection.spinner.setItems(videoSizeOptions)
+        binding.videoSizeSelection.spinner.selectedIndex = 3
         binding.fpsSelection.name.text = "フレームレート"
         binding.fpsSelection.spinner.setItems(fpsOptions)
         binding.dataChannelSignalingSelection.name.text = "データチャネル"
