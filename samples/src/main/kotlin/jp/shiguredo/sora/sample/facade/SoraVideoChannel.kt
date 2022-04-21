@@ -2,6 +2,7 @@ package jp.shiguredo.sora.sample.facade
 
 import android.content.Context
 import android.media.MediaRecorder
+import android.os.Environment
 import android.os.Handler
 import jp.shiguredo.sora.sample.camera.CameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.camera.DefaultCameraVideoCapturerFactory
@@ -23,10 +24,12 @@ import jp.shiguredo.sora.sdk.util.SoraLogger
 import org.webrtc.AudioTrack
 import org.webrtc.CameraVideoCapturer
 import org.webrtc.EglBase
+import org.webrtc.FileVideoCapturer
 import org.webrtc.MediaStream
 import org.webrtc.RTCStatsReport
 import org.webrtc.RtpParameters
 import org.webrtc.SurfaceViewRenderer
+import org.webrtc.VideoCapturer
 
 class SoraVideoChannel(
     private val context: Context,
@@ -193,7 +196,7 @@ class SoraVideoChannel(
     }
 
     var mediaChannel: SoraMediaChannel? = null
-    private var capturer: CameraVideoCapturer? = null
+    private var capturer: VideoCapturer? = null
 
     private var capturing = false
 
@@ -239,7 +242,9 @@ class SoraVideoChannel(
                     enableAudioUpstream()
                 }
                 if (videoEnabled) {
-                    capturer = capturerFactory.createCapturer()
+                    val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/output.y4m"
+                    SoraLogger.i(TAG, "path=$path")
+                    capturer = FileVideoCapturer(path)
                     enableVideoUpstream(capturer!!, egl!!.eglBaseContext)
                 }
             }
@@ -360,9 +365,11 @@ class SoraVideoChannel(
     }
 
     fun switchCamera() {
+        /*
         capturer?.let {
             it.switchCamera(cameraSwitchHandler)
         }
+         */
     }
 
     fun mute(mute: Boolean) {

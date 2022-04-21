@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    @NeedsPermission(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
+    @NeedsPermission(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.MANAGE_EXTERNAL_STORAGE])
     fun goToVideoRoomDemo() {
         val intent = Intent(this, VideoChatRoomSetupActivity::class.java)
         startActivity(intent)
