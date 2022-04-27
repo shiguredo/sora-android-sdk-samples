@@ -55,6 +55,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var spotlightNumber: Int? = null
     private var fps: Int = 30
     private var fixedResolution = false
+    private var resolutionAdjustment = true
     private var cameraFacing = true
     private var clientId: String? = null
     private var dataChannelSignaling: Boolean? = null
@@ -131,6 +132,12 @@ class VideoChatRoomActivity : AppCompatActivity() {
             "可変" -> false
             "固定" -> true
             else -> false
+        }
+
+        resolutionAdjustment = when (intent.getStringExtra("RESOLUTION_ADJUSTMENT")) {
+            "有効" -> true
+            "無効" -> false
+            else -> true
         }
 
         videoBitRate = when (val stringValue = intent.getStringExtra("VIDEO_BIT_RATE")) {
@@ -299,6 +306,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
             videoHeight = videoHeight,
             videoFPS = fps,
             fixedResolution = fixedResolution,
+            resolutionAdjustment = resolutionAdjustment,
             videoCodec = videoCodec,
             videoBitRate = videoBitRate,
             audioEnabled = audioEnabled,

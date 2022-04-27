@@ -52,6 +52,7 @@ class SoraVideoChannel(
     private val simulcastRid: SoraVideoOption.SimulcastRid? = null,
     private val videoFPS: Int = 30,
     private val fixedResolution: Boolean = false,
+    private val resolutionAdjustment: Boolean = true,
     private val cameraFacing: Boolean = true,
     private val videoCodec: SoraVideoOption.Codec = SoraVideoOption.Codec.VP9,
     private val audioCodec: SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
@@ -233,6 +234,7 @@ class SoraVideoChannel(
         )
 
         val mediaOption = SoraMediaOption().apply {
+            enableHardwareVideoEncoderResolutionAdjustment = resolutionAdjustment
 
             if (roleType.hasUpstream()) {
                 if (audioEnabled) {
