@@ -11,6 +11,7 @@ class SoraFrameSize {
          * https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/map-of.html
          */
         val landscape = mapOf(
+            "QQVGA: 160x120" to SoraVideoOption.FrameSize.Landscape.QQVGA,
             "QCIF: 176x144" to SoraVideoOption.FrameSize.Landscape.QCIF,
             "HQVGA: 240x160" to SoraVideoOption.FrameSize.Landscape.HQVGA,
             "QVGA: 320x240" to SoraVideoOption.FrameSize.Landscape.QVGA,
@@ -22,6 +23,7 @@ class SoraFrameSize {
             "4096x2160" to SoraVideoOption.FrameSize.Landscape.UHD4096x2160,
         )
         val portrait = mapOf(
+            "QQVGA: 120x160" to SoraVideoOption.FrameSize.Portrait.QQVGA,
             "QCIF: 144x176" to SoraVideoOption.FrameSize.Portrait.QCIF,
             "HQVGA: 160x240" to SoraVideoOption.FrameSize.Portrait.HQVGA,
             "QVGA: 240x320" to SoraVideoOption.FrameSize.Portrait.QVGA,

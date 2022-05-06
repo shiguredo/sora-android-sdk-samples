@@ -28,7 +28,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
     private val multistreamOptions = listOf("有効", "無効")
     private val videoBitRateOptions = listOf("200", "500", "700", "1200", "2500", "4000", "5000", "10000", "15000", "20000", "30000")
 
-    private val videoSizeOptions = SoraFrameSize.landscape.keys.toList()
+    private val videoSizeOptions = SoraFrameSize.all.keys.toList()
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("可変", "固定")
     private val resolutionAdjustmentOptions = listOf("未指定", "16", "8", "4", "2", "無効")
