@@ -18,9 +18,9 @@ class SoraFrameSize {
             "VGA: 640x480" to SoraVideoOption.FrameSize.Landscape.VGA,
             "HD: 1280x720" to SoraVideoOption.FrameSize.Landscape.HD,
             "FHD: 1920x1080" to SoraVideoOption.FrameSize.Landscape.FHD,
-            "3840x1920" to SoraVideoOption.FrameSize.Landscape.Res3840x1920,
+            "Res: 3840x1920" to SoraVideoOption.FrameSize.Landscape.Res3840x1920,
             "UHD: 3840x2160" to SoraVideoOption.FrameSize.Landscape.UHD3840x2160,
-            "4096x2160" to SoraVideoOption.FrameSize.Landscape.UHD4096x2160,
+            "UHD: 4096x2160" to SoraVideoOption.FrameSize.Landscape.UHD4096x2160,
         )
         val portrait = mapOf(
             "QQVGA: 120x160" to SoraVideoOption.FrameSize.Portrait.QQVGA,
@@ -30,9 +30,9 @@ class SoraFrameSize {
             "VGA: 480x640" to SoraVideoOption.FrameSize.Portrait.VGA,
             "HD: 720x1280" to SoraVideoOption.FrameSize.Portrait.HD,
             "FHD: 1080x1920" to SoraVideoOption.FrameSize.Portrait.FHD,
-            "3840x1920" to SoraVideoOption.FrameSize.Portrait.Res1920x3840,
-            "UHD: 3840x2160" to SoraVideoOption.FrameSize.Portrait.UHD2160x3840,
-            "4096x2160" to SoraVideoOption.FrameSize.Portrait.UHD2160x4096,
+            "Res: 1920x3840" to SoraVideoOption.FrameSize.Portrait.Res1920x3840,
+            "UHD: 2160x3840" to SoraVideoOption.FrameSize.Portrait.UHD2160x3840,
+            "UHD: 2160x4096" to SoraVideoOption.FrameSize.Portrait.UHD2160x4096,
         )
 
         val all = landscape + portrait
