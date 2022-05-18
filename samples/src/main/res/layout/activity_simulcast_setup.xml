@@ -68,6 +68,9 @@
                     android:id="@+id/resolutionChangeSelection"/>
                 <include
                     layout="@layout/signaling_selection"
+                    android:id="@+id/resolutionAdjustmentSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
                     android:id="@+id/audioCodecSelection"/>
                 <include
                     layout="@layout/signaling_selection"

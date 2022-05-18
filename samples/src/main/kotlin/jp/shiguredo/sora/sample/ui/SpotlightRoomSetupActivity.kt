@@ -32,6 +32,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         "10000", "15000", "20000", "30000"
     )
     private val videoSizeOptions = SoraFrameSize.landscape.keys.toList()
+    private val resolutionAdjustmentOptions = listOf("有効", "無効")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
     private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
@@ -68,6 +69,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         binding.videoBitRateSelection.spinner.setItems(videoBitRateOptions)
         binding.videoSizeSelection.name.text = "映像サイズ"
         binding.videoSizeSelection.spinner.setItems(videoSizeOptions)
+        binding.resolutionAdjustmentSelection.name.text = "解像度の調整"
+        binding.resolutionAdjustmentSelection.spinner.setItems(resolutionAdjustmentOptions)
         binding.videoSizeSelection.spinner.selectedIndex = 3
         binding.fpsSelection.name.text = "フレームレート"
         binding.fpsSelection.spinner.setItems(fpsOptions)
@@ -95,6 +98,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         val videoEnabled = selectedItem(binding.videoEnabledSelection.spinner)
         val videoBitRate = selectedItem(binding.videoBitRateSelection.spinner)
         val videoSize = selectedItem(binding.videoSizeSelection.spinner)
+        val resolutionAdjusment = selectedItem(binding.resolutionAdjustmentSelection.spinner)
         val fps = selectedItem(binding.fpsSelection.spinner)
         val dataChannelSignaling = selectedItem(binding.dataChannelSignalingSelection.spinner)
         val ignoreDisconnectWebSocket = selectedItem(binding.ignoreDisconnectWebSocketSelection.spinner)
@@ -113,6 +117,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("VIDEO_ENABLED", videoEnabled)
         intent.putExtra("VIDEO_BIT_RATE", videoBitRate)
         intent.putExtra("VIDEO_SIZE", videoSize)
+        intent.putExtra("RESOLUTION_ADJUSTMENT", resolutionAdjusment)
         intent.putExtra("FPS", fps)
         intent.putExtra("DATA_CHANNEL_SIGNALING", dataChannelSignaling)
         intent.putExtra("IGNORE_DISCONNECT_WEBSOCKET", ignoreDisconnectWebSocket)

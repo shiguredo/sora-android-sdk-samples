@@ -33,6 +33,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     private val videoSizeOptions = SoraFrameSize.all.keys.toList()
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("可変", "固定")
+    private val resolutionAdjustmentOptions = listOf("有効", "無効")
     private val cameraFacingOptions = listOf("前面", "背面")
     private val clientIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
@@ -74,6 +75,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         binding.fpsSelection.spinner.setItems(fpsOptions)
         binding.resolutionChangeSelection.name.text = "解像度の変更"
         binding.resolutionChangeSelection.spinner.setItems(resolutionChangeOptions)
+        binding.resolutionAdjustmentSelection.name.text = "解像度の調整"
+        binding.resolutionAdjustmentSelection.spinner.setItems(resolutionAdjustmentOptions)
         binding.cameraFacingSelection.name.text = "カメラ"
         binding.cameraFacingSelection.spinner.setItems(cameraFacingOptions)
         binding.clientIdSelection.name.text = "クライアント ID"
@@ -103,6 +106,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val videoSize = selectedItem(binding.videoSizeSelection.spinner)
         val fps = selectedItem(binding.fpsSelection.spinner)
         val resolutionChange = selectedItem(binding.resolutionChangeSelection.spinner)
+        val resolutionAdjustment = selectedItem(binding.resolutionAdjustmentSelection.spinner)
         val cameraFacing = selectedItem(binding.cameraFacingSelection.spinner)
         val clientId = selectedItem(binding.clientIdSelection.spinner)
         val dataChannelSignaling = selectedItem(binding.dataChannelSignalingSelection.spinner)
@@ -122,6 +126,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("VIDEO_SIZE", videoSize)
         intent.putExtra("FPS", fps)
         intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
+        intent.putExtra("RESOLUTION_ADJUSTMENT", resolutionAdjustment)
         intent.putExtra("CAMERA_FACING", cameraFacing)
         intent.putExtra("CLIENT_ID", clientId)
         intent.putExtra("DATA_CHANNEL_SIGNALING", dataChannelSignaling)

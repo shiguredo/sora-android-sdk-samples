@@ -11,6 +11,9 @@
 
 ## develop
 
+- [UPDATE] 解像度の調整を ON/OFF する UI を追加する
+  - @enm10k
+
 ## sora-andoroid-sdk-2022.2.0
 
 - [UPDATE] システム条件を更新する
