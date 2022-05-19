@@ -32,7 +32,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         "10000", "15000", "20000", "30000"
     )
     private val videoSizeOptions = SoraFrameSize.landscape.keys.toList()
-    private val resolutionAdjustmentOptions = listOf("16", "8", "4", "2", "無効")
+    private val resolutionAdjustmentOptions = listOf("未指定", "16", "8", "4", "2", "無効")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
     private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
