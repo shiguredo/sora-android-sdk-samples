@@ -234,7 +234,7 @@ class SoraVideoChannel(
         )
 
         val mediaOption = SoraMediaOption().apply {
-            hardwareVideoEncoderPixelResolutionAdjustment = resolutionAdjustment
+            hardwareVideoEncoderResolutionAdjustment = resolutionAdjustment
 
             if (roleType.hasUpstream()) {
                 if (audioEnabled) {
