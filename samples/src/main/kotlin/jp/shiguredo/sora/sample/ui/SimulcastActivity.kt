@@ -56,7 +56,7 @@ class SimulcastActivity : AppCompatActivity() {
     private var spotlightUnfocusRid: SoraVideoOption.SpotlightRid? = null
     private var fps: Int = 30
     private var fixedResolution = false
-    private var resolutionAdjustment = true
+    private var resolutionAdjustment = SoraVideoOption.ResolutionAdjustment.NONE
     private var simulcastRid: SoraVideoOption.SimulcastRid? = null
     private var dataChannelSignaling: Boolean? = null
     private var ignoreDisconnectWebSocket: Boolean? = null
@@ -149,9 +149,11 @@ class SimulcastActivity : AppCompatActivity() {
         }
 
         resolutionAdjustment = when (intent.getStringExtra("RESOLUTION_ADJUSTMENT")) {
-            "有効" -> true
-            "無効" -> false
-            else -> true
+            "16" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_16
+            "8" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_8
+            "4" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_4
+            "2" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_2
+            else -> SoraVideoOption.ResolutionAdjustment.NONE
         }
 
         videoBitRate = when (val stringValue = intent.getStringExtra("VIDEO_BIT_RATE")) {
