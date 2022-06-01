@@ -55,7 +55,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var spotlightNumber: Int? = null
     private var fps: Int = 30
     private var fixedResolution = false
-    private var resolutionAdjustment = true
+    private var resolutionAdjustment: SoraVideoOption.ResolutionAdjustment? = null
     private var cameraFacing = true
     private var clientId: String? = null
     private var dataChannelSignaling: Boolean? = null
@@ -135,9 +135,12 @@ class VideoChatRoomActivity : AppCompatActivity() {
         }
 
         resolutionAdjustment = when (intent.getStringExtra("RESOLUTION_ADJUSTMENT")) {
-            "有効" -> true
-            "無効" -> false
-            else -> true
+            "16" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_16
+            "8" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_8
+            "4" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_4
+            "2" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_2
+            "無効" -> SoraVideoOption.ResolutionAdjustment.NONE
+            else -> null
         }
 
         videoBitRate = when (val stringValue = intent.getStringExtra("VIDEO_BIT_RATE")) {
