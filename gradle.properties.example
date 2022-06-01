@@ -29,3 +29,10 @@ channel_id         = sora
 # e.g.) signaling_metadata = {\\"spam\\":\\"egg\\"}
 # This setting is required. If you do not want to use it, set it to blank.
 signaling_metadata =
+
+# Proxy
+proxy_agent =
+proxy_hostname =
+proxy_port =
+proxy_username =
+proxy_password =
