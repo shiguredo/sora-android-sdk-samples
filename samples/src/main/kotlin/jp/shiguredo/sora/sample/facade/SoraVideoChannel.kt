@@ -312,7 +312,11 @@ class SoraVideoChannel(
             if (BuildConfig.PROXY_HOSTNAME.isNotBlank()) {
                 this.proxy.type = ProxyType.HTTPS
                 this.proxy.hostname = BuildConfig.PROXY_HOSTNAME
-                this.proxy.agent = BuildConfig.PROXY_AGENT
+
+                // エージェントは指定されている場合のみデフォルト値を上書きする
+                if (BuildConfig.PROXY_AGENT.isNotBlank()) {
+                    this.proxy.agent = BuildConfig.PROXY_AGENT
+                }
 
                 try {
                     this.proxy.port = BuildConfig.PROXY_PORT.toInt()
