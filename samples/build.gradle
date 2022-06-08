@@ -17,7 +17,7 @@ android {
         resValue("string", "channelId", "\"${channel_id}\"")
         buildConfigField("String", "SIGNALING_METADATA", "\"${signaling_metadata}\"")
 
-        // プロキシーの設定
+        // プロキシの設定
         buildConfigField("String", "PROXY_AGENT", "\"${proxy_agent}\"")
         buildConfigField("String", "PROXY_HOSTNAME", "\"${proxy_hostname}\"")
         buildConfigField("String", "PROXY_PORT", "\"${proxy_port}\"")

@@ -308,7 +308,7 @@ class SoraVideoChannel(
                 this.hardwareVideoEncoderResolutionAdjustment = resolutionAdjustment
             }
 
-            // プロキシー
+            // プロキシ
             if (BuildConfig.PROXY_HOSTNAME.isNotBlank()) {
                 this.proxy.type = ProxyType.HTTPS
                 this.proxy.hostname = BuildConfig.PROXY_HOSTNAME
