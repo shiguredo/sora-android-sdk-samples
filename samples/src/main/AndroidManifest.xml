@@ -33,7 +33,8 @@
         <activity
             android:name=".ui.MessagingActivity"
             android:exported="false" />
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.MainActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,27 +44,34 @@
         <activity
             android:name=".ui.VoiceChatRoomSetupActivity"
             android:configChanges="orientation|screenSize"
-            android:label="ボイスチャット" />
+            android:label="ボイスチャット"
+            android:exported="true" />
         <activity
             android:name=".ui.VideoChatRoomSetupActivity"
             android:configChanges="orientation|screenSize"
-            android:label="ビデオチャット" />
-        <activity
+            android:label="ビデオチャット"
+            android:exported="true" />
+
+    <activity
             android:name=".ui.SpotlightRoomSetupActivity"
             android:configChanges="orientation|screenSize"
-            android:label="スポットライト" />
+            android:label="スポットライト"
+            android:exported="true" />
         <activity
             android:name=".ui.ScreencastSetupActivity"
             android:configChanges="orientation|screenSize"
-            android:label="スクリーンキャスト" />
-        <activity
+            android:label="スクリーンキャスト"
+            android:exported="true" />
+    <activity
             android:name=".ui.EffectedVideoChatSetupActivity"
             android:configChanges="orientation|screenSize"
-            android:label="ビデオエフェクト" />
-        <activity
+            android:label="ビデオエフェクト"
+            android:exported="true" />
+    <activity
             android:name=".ui.SimulcastSetupActivity"
             android:configChanges="orientation|screenSize"
-            android:label="サイマルキャスト" />
+            android:label="サイマルキャスト"
+            android:exported="true" />
         <!--
             以下は実際にWebRTCを利用して動画/音声の通話を行うActivity
             セッション中にActivityが破壊されないように次のどちらかの設定を行う
@@ -75,7 +83,8 @@
         <activity
             android:name=".ui.VideoChatRoomActivity"
             android:configChanges="orientation|screenSize"
-            android:label="ビデオチャット">
+            android:label="ビデオチャット"
+            android:exported="true" >
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -87,9 +96,10 @@
         <activity
             android:name=".ui.VoiceChatRoomActivity"
             android:configChanges="orientation|screenSize"
-            android:label="ボイスチャット" />
+            android:label="ボイスチャット"
+            android:exported="true" />
 
-        <service
+    <service
             android:name=".screencast.SoraScreencastService"
             android:configChanges="orientation|screenSize"
             android:enabled="true"
@@ -98,11 +108,13 @@
         <activity
             android:name=".ui.EffectedVideoChatActivity"
             android:configChanges="orientation|screenSize"
-            android:label="エフェクト付きビデオチャット" />
+            android:label="エフェクト付きビデオチャット"
+            android:exported="true" />
         <activity
             android:name=".ui.SimulcastActivity"
             android:configChanges="orientation|screenSize"
-            android:label="Simulcast" />
+            android:label="Simulcast"
+            android:exported="true" />
     </application>
 
 </manifest>
