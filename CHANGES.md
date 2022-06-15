@@ -18,7 +18,8 @@
 - [UPDATE] Gradle のバージョンを 7.4.2 に上げる
 - [UPDATE] Gktlint のバージョンを 0.45.2 に上げる
 - [UPDATE] 依存ライブラリを更新する
-  - com.github.ben-manes:gradle-versions-plugin:0.42.0"
+  - com.android.tools.build:gradle を 7.2.1 に上げる
+  - org.jlleitschuh.gradle:ktlint-gradle を 10.3.0 に上げる
   - com.google.code.gson:gson を 2.9.0 に上げる  
   - androidx.appcompat:appcompat を 1.4.2 に上げる
   - com.google.android.material:material を 1.6.1 に上げる
@@ -30,9 +31,8 @@
   - androidx.compose.material:material-icons-extended を 1.1.1 に上げる
   - androidx.activity:activity-compose を 1.4.0 に上げる
   - com.github.permissions-dispatcher:permissionsdispatcher を 4.9.2　に上げる
-  - com.android.tools.build:gradle を 7.2.1 に上げる
+  - com.github.permissions-dispatcher:permissionsdispatcher-processor を 4.9.2　に上げる
   - com.github.ben-manes:gradle-versions-plugin を 0.42.0 に上げる
-  - org.jlleitschuh.gradle:ktlint-gradle を 10.3.0 に上げる
 
 
 ## sora-andoroid-sdk-2022.2.0
