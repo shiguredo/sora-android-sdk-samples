@@ -11,7 +11,9 @@
 
 ## develop
 
-- [UPDATE] 解像度の調整を ON/OFF する UI を追加する
+- [ADD] 解像度の調整を ON/OFF する UI を追加する
+  - @enm10k
+- [ADD] プロキシを gradle.properties ファイルから設定できるようにする
   - @enm10k
 - [UPDATE] compileSdkVersion を 31 に上げる
   - AndroidManifest.xml の Activity に `android:exported="true"` を明示的に記載する
@@ -33,7 +35,6 @@
   - com.github.permissions-dispatcher:permissionsdispatcher を 4.9.2　に上げる
   - com.github.permissions-dispatcher:permissionsdispatcher-processor を 4.9.2　に上げる
   - com.github.ben-manes:gradle-versions-plugin を 0.42.0 に上げる
-
 
 ## sora-andoroid-sdk-2022.2.0
 
