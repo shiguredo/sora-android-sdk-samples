@@ -84,6 +84,15 @@
                     android:id="@+id/spotlightUnfocusRidSelection"/>
                 <include
                     layout="@layout/signaling_selection"
+                    android:id="@+id/simulcastEnabledSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/clientIdSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/bundleIdSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
                     android:id="@+id/dataChannelSignalingSelection"/>
                 <include
                     layout="@layout/signaling_selection"

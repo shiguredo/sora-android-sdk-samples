@@ -36,6 +36,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     private val resolutionAdjustmentOptions = listOf("未指定", "16", "8", "4", "2", "無効")
     private val cameraFacingOptions = listOf("前面", "背面")
     private val clientIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
+    private val bundleIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
     private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
 
@@ -81,6 +82,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         binding.cameraFacingSelection.spinner.setItems(cameraFacingOptions)
         binding.clientIdSelection.name.text = "クライアント ID"
         binding.clientIdSelection.spinner.setItems(clientIdOptions)
+        binding.bundleIdSelection.name.text = "バンドル ID"
+        binding.bundleIdSelection.spinner.setItems(bundleIdOptions)
         binding.dataChannelSignalingSelection.name.text = "データチャネル"
         binding.dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
         binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
@@ -109,6 +112,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val resolutionAdjustment = selectedItem(binding.resolutionAdjustmentSelection.spinner)
         val cameraFacing = selectedItem(binding.cameraFacingSelection.spinner)
         val clientId = selectedItem(binding.clientIdSelection.spinner)
+        val bundleId = selectedItem(binding.bundleIdSelection.spinner)
         val dataChannelSignaling = selectedItem(binding.dataChannelSignalingSelection.spinner)
         val ignoreDisconnectWebSocket = selectedItem(binding.ignoreDisconnectWebSocketSelection.spinner)
 
@@ -129,6 +133,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("RESOLUTION_ADJUSTMENT", resolutionAdjustment)
         intent.putExtra("CAMERA_FACING", cameraFacing)
         intent.putExtra("CLIENT_ID", clientId)
+        intent.putExtra("BUNDLE_ID", bundleId)
         intent.putExtra("DATA_CHANNEL_SIGNALING", dataChannelSignaling)
         intent.putExtra("IGNORE_DISCONNECT_WEBSOCKET", ignoreDisconnectWebSocket)
 

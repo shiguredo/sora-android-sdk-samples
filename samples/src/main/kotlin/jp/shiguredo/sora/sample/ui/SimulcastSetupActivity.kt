@@ -33,6 +33,8 @@ class SimulcastSetupActivity : AppCompatActivity() {
     private val resolutionChangeOptions = listOf("可変", "固定")
     private val resolutionAdjustmentOptions = listOf("未指定", "16", "8", "4", "2", "無効")
     private val simulcastRidOptions = listOf("未指定", "r0", "r1", "r2")
+    private val clientIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
+    private val bundleIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
     private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
 
@@ -74,6 +76,10 @@ class SimulcastSetupActivity : AppCompatActivity() {
         binding.resolutionAdjustmentSelection.spinner.setItems(resolutionAdjustmentOptions)
         binding.simulcastRidSelection.name.text = "受信する rid"
         binding.simulcastRidSelection.spinner.setItems(simulcastRidOptions)
+        binding.clientIdSelection.name.text = "クライアント ID"
+        binding.clientIdSelection.spinner.setItems(clientIdOptions)
+        binding.bundleIdSelection.name.text = "バンドル ID"
+        binding.bundleIdSelection.spinner.setItems(bundleIdOptions)
         binding.dataChannelSignalingSelection.name.text = "データチャネル"
         binding.dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
         binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
@@ -104,6 +110,8 @@ class SimulcastSetupActivity : AppCompatActivity() {
         val resolutionChange = selectedItem(binding.resolutionChangeSelection.spinner)
         val resolutionAdjustment = selectedItem(binding.resolutionAdjustmentSelection.spinner)
         val simulcastRid = selectedItem(binding.simulcastRidSelection.spinner)
+        val clientId = selectedItem(binding.clientIdSelection.spinner)
+        val bundleId = selectedItem(binding.bundleIdSelection.spinner)
         val dataChannelSignaling = selectedItem(binding.dataChannelSignalingSelection.spinner)
         val ignoreDisconnectWebSocket = selectedItem(binding.ignoreDisconnectWebSocketSelection.spinner)
 
@@ -124,6 +132,8 @@ class SimulcastSetupActivity : AppCompatActivity() {
         intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
         intent.putExtra("RESOLUTION_ADJUSTMENT", resolutionAdjustment)
         intent.putExtra("SIMULCAST_RID", simulcastRid)
+        intent.putExtra("CLIENT_ID", clientId)
+        intent.putExtra("BUNDLE_ID", bundleId)
         intent.putExtra("DATA_CHANNEL_SIGNALING", dataChannelSignaling)
         intent.putExtra("IGNORE_DISCONNECT_WEBSOCKET", ignoreDisconnectWebSocket)
 

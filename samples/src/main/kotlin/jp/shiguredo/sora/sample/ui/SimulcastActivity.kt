@@ -32,6 +32,7 @@ import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import org.webrtc.SurfaceViewRenderer
+import java.util.UUID
 
 class SimulcastActivity : AppCompatActivity() {
 
@@ -54,10 +55,13 @@ class SimulcastActivity : AppCompatActivity() {
     private var spotlightNumber: Int? = null
     private var spotlightFocusRid: SoraVideoOption.SpotlightRid? = null
     private var spotlightUnfocusRid: SoraVideoOption.SpotlightRid? = null
+    private var simulcastEnabled: Boolean = true
     private var fps: Int = 30
     private var fixedResolution = false
     private var resolutionAdjustment: SoraVideoOption.ResolutionAdjustment? = null
     private var simulcastRid: SoraVideoOption.SimulcastRid? = null
+    private var clientId: String? = null
+    private var bundleId: String? = null
     private var dataChannelSignaling: Boolean? = null
     private var ignoreDisconnectWebSocket: Boolean? = null
 
@@ -142,6 +146,12 @@ class SimulcastActivity : AppCompatActivity() {
             else -> null
         }
 
+        simulcastEnabled = when (intent.getStringExtra("SIMULCAST_ENABLED")) {
+            "有効" -> true
+            "無効" -> false
+            else -> true
+        }
+
         fixedResolution = when (intent.getStringExtra("RESOLUTION_CHANGE")) {
             "可変" -> false
             "固定" -> true
@@ -184,6 +194,22 @@ class SimulcastActivity : AppCompatActivity() {
             "r0" -> SoraVideoOption.SimulcastRid.R0
             "r1" -> SoraVideoOption.SimulcastRid.R1
             "r2" -> SoraVideoOption.SimulcastRid.R2
+            else -> null
+        }
+
+        clientId = when (intent.getStringExtra("CLIENT_ID")) {
+            "なし" -> null
+            "端末情報" -> Build.MODEL
+            "時雨堂" -> "🍖時雨堂🍗"
+            "ランダム" -> UUID.randomUUID().toString()
+            else -> null
+        }
+
+        bundleId = when (intent.getStringExtra("BUNDLE_ID")) {
+            "なし" -> null
+            "端末情報" -> Build.MODEL
+            "時雨堂" -> "☔時雨堂🌂"
+            "ランダム" -> UUID.randomUUID().toString()
             else -> null
         }
 
@@ -306,6 +332,8 @@ class SimulcastActivity : AppCompatActivity() {
             handler = Handler(),
             signalingEndpointCandidates = signalingEndpointCandidates,
             channelId = channelName,
+            clientId = clientId,
+            bundleId = bundleId,
             dataChannelSignaling = dataChannelSignaling,
             ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
             signalingMetadata = signalingMetadata,
@@ -316,7 +344,7 @@ class SimulcastActivity : AppCompatActivity() {
             videoEnabled = videoEnabled,
             videoWidth = videoWidth,
             videoHeight = videoHeight,
-            simulcast = true,
+            simulcast = simulcastEnabled,
             simulcastRid = simulcastRid,
             videoFPS = fps,
             fixedResolution = fixedResolution,
