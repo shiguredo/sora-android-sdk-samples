@@ -35,6 +35,7 @@
   - com.github.permissions-dispatcher:permissionsdispatcher を 4.9.2　に上げる
   - com.github.permissions-dispatcher:permissionsdispatcher-processor を 4.9.2　に上げる
   - com.github.ben-manes:gradle-versions-plugin を 0.42.0 に上げる
+- [FIX] メッセージングアプリが H.264 で接続中の別クライアントがいるときに接続エラーになる問題を修正する
 
 ## sora-andoroid-sdk-2022.2.0
 

@@ -80,6 +80,7 @@ import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.error.SoraMessagingError
 import jp.shiguredo.sora.sdk.util.SoraLogger
+import org.webrtc.EglBase
 import java.lang.Exception
 import java.nio.ByteBuffer
 import kotlin.random.Random
@@ -578,10 +579,11 @@ class SoraMessagingChannel {
         val signalingMetadata = Gson().fromJson(BuildConfig.SIGNALING_METADATA, Map::class.java)
 
         val mediaOption = SoraMediaOption()
-        mediaOption.role = SoraChannelRole.SENDRECV
+        val egl: EglBase? = EglBase.create()
+        mediaOption.role = SoraChannelRole.RECVONLY
         mediaOption.enableMultistream()
         // Sora 側で data_channel_messaging_only = true の場合、 enableVideoDownstream は不要
-        mediaOption.enableVideoDownstream(null)
+        mediaOption.enableVideoDownstream(egl!!.eglBaseContext)
 
         mediaChannel = SoraMediaChannel(
             context = context,
