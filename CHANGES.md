@@ -11,6 +11,44 @@
 
 ## develop
 
+## sora-andoroid-sdk-2022.3.0
+
+- [ADD] 解像度の調整を ON/OFF する UI を追加する
+  - @enm10k
+- [ADD] プロキシを gradle.properties ファイルから設定できるようにする
+  - @enm10k
+- [UPDATE] システム条件を更新する
+  - Android Studio 2021.2.1 以降
+  - WebRTC SFU Sora 2022.1 以降
+  - Sora Android SDK 2022.3.0 以降
+  - @miosakuma
+- [UPDATE] compileSdkVersion を 31 に上げる
+  - AndroidManifest.xml の Activity に `android:exported="true"` を明示的に記載する
+  - @miosakuma
+- [UPDATE] Gradle のバージョンを 7.4.2 に上げる
+  - @miosakuma
+- [UPDATE] Gktlint のバージョンを 0.45.2 に上げる
+  - @miosakuma
+- [UPDATE] 依存ライブラリを更新する
+  - com.android.tools.build:gradle を 7.2.1 に上げる
+  - org.jlleitschuh.gradle:ktlint-gradle を 10.3.0 に上げる
+  - com.google.code.gson:gson を 2.9.0 に上げる  
+  - androidx.appcompat:appcompat を 1.4.2 に上げる
+  - com.google.android.material:material を 1.6.1 に上げる
+  - androidx.constraintlayout:constraintlayout を 2.1.4 に上げる
+  - androidx.navigation:navigation-fragment-ktx を 2.4.2 に上げる
+  - androidx.navigation:navigation-ui-ktx を 2.4.2 に上げる
+  - androidx.compose.ui:ui:1.1.1 に上げる
+  - androidx.compose.material:material を 1.1.1 に上げる
+  - androidx.compose.material:material-icons-extended を 1.1.1 に上げる
+  - androidx.activity:activity-compose を 1.4.0 に上げる
+  - com.github.permissions-dispatcher:permissionsdispatcher を 4.9.2　に上げる
+  - com.github.permissions-dispatcher:permissionsdispatcher-processor を 4.9.2　に上げる
+  - com.github.ben-manes:gradle-versions-plugin を 0.42.0 に上げる
+  - @miosakuma
+- [FIX] メッセージングアプリが H.264 で接続中の別クライアントがいるときに接続エラーになる問題を修正する
+  - @miosakuma
+
 ## sora-andoroid-sdk-2022.2.0
 
 - [UPDATE] システム条件を更新する

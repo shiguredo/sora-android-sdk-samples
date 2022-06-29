@@ -3,6 +3,7 @@ package jp.shiguredo.sora.sample.facade
 import android.content.Context
 import android.media.MediaRecorder
 import android.os.Handler
+import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.camera.CameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.camera.DefaultCameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.option.SoraRoleType
@@ -24,9 +25,11 @@ import org.webrtc.AudioTrack
 import org.webrtc.CameraVideoCapturer
 import org.webrtc.EglBase
 import org.webrtc.MediaStream
+import org.webrtc.ProxyType
 import org.webrtc.RTCStatsReport
 import org.webrtc.RtpParameters
 import org.webrtc.SurfaceViewRenderer
+import java.lang.Exception
 
 class SoraVideoChannel(
     private val context: Context,
@@ -39,6 +42,7 @@ class SoraVideoChannel(
     private val signalingMetadata: Any? = "",
     private val signalingNotifyMetatada: Any? = null,
     private val clientId: String? = null,
+    private val bundleId: String? = null,
     private val spotlight: Boolean = false,
     private val spotlightNumber: Int? = null,
     private val spotlightFocusRid: SoraVideoOption.SpotlightRid? = null,
@@ -52,6 +56,7 @@ class SoraVideoChannel(
     private val simulcastRid: SoraVideoOption.SimulcastRid? = null,
     private val videoFPS: Int = 30,
     private val fixedResolution: Boolean = false,
+    private val resolutionAdjustment: SoraVideoOption.ResolutionAdjustment? = null,
     private val cameraFacing: Boolean = true,
     private val videoCodec: SoraVideoOption.Codec = SoraVideoOption.Codec.VP9,
     private val audioCodec: SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
@@ -233,7 +238,6 @@ class SoraVideoChannel(
         )
 
         val mediaOption = SoraMediaOption().apply {
-
             if (roleType.hasUpstream()) {
                 if (audioEnabled) {
                     enableAudioUpstream()
@@ -266,7 +270,7 @@ class SoraVideoChannel(
                 option.spotlightNumber = spotlightNumber
                 option.spotlightFocusRid = spotlightFocusRid
                 option.spotlightUnfocusRid = spotlightUnfocusRid
-                enableSpotlight(option)
+                enableSpotlight(option, this@SoraVideoChannel.simulcast)
             }
 
             videoCodec = this@SoraVideoChannel.videoCodec
@@ -300,6 +304,32 @@ class SoraVideoChannel(
                     useStereoInput = true
                 }
             }
+
+            if (resolutionAdjustment != null) {
+                this.hardwareVideoEncoderResolutionAdjustment = resolutionAdjustment
+            }
+
+            // プロキシ
+            if (BuildConfig.PROXY_HOSTNAME.isNotBlank()) {
+                this.proxy.type = ProxyType.HTTPS
+                this.proxy.hostname = BuildConfig.PROXY_HOSTNAME
+
+                // エージェントは指定されている場合のみデフォルト値を上書きする
+                if (BuildConfig.PROXY_AGENT.isNotBlank()) {
+                    this.proxy.agent = BuildConfig.PROXY_AGENT
+                }
+
+                try {
+                    this.proxy.port = BuildConfig.PROXY_PORT.toInt()
+                } catch (e: Exception) {
+                    SoraLogger.e(TAG, "failed to set SoraMediaOption.proxy.port", e)
+                }
+
+                if (BuildConfig.PROXY_USERNAME.isNotBlank()) {
+                    this.proxy.username = BuildConfig.PROXY_USERNAME
+                    this.proxy.password = BuildConfig.PROXY_PASSWORD
+                }
+            }
         }
 
         val peerConnectionOption = PeerConnectionOption().apply {
@@ -318,6 +348,7 @@ class SoraVideoChannel(
             mediaOption = mediaOption,
             listener = channelListener,
             clientId = clientId,
+            bundleId = bundleId,
             peerConnectionOption = peerConnectionOption
         )
         mediaChannel!!.connect()

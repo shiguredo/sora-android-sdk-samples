@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.databinding.ActivitySpotlightRoomSetupBinding
+import jp.shiguredo.sora.sample.option.SoraFrameSize
 
 class SpotlightRoomSetupActivity : AppCompatActivity() {
 
@@ -15,7 +16,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     }
 
     private val spotlightNumberOptions = listOf("未指定", "1", "2", "3", "4", "5", "6", "7", "8")
-    private val videoCodecOptions = listOf("VP8", "H264")
+    private val videoCodecOptions = listOf("VP8", "VP9", "H264")
     private val audioCodecOptions = listOf("OPUS")
     private val audioBitRateOptions = listOf(
         "未指定", "8", "16", "24", "32",
@@ -26,12 +27,16 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
     private val spotlightFocusRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
     private val spotlightUnfocusRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
+    private val simulcastEnabledOptions = listOf("有効", "無効")
     private val videoBitRateOptions = listOf(
         "500", "200", "700", "1200", "2500", "4000", "5000",
         "10000", "15000", "20000", "30000"
     )
-    private val videoSizeOptions = listOf("VGA", "QQVGA", "QCIF", "HQVGA", "QVGA", "HD", "FHD")
+    private val videoSizeOptions = SoraFrameSize.landscape.keys.toList()
+    private val resolutionAdjustmentOptions = listOf("未指定", "16", "8", "4", "2", "無効")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
+    private val clientIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
+    private val bundleIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
     private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
 
@@ -53,6 +58,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         binding.spotlightFocusRidSelection.spinner.setItems(spotlightFocusRidOptions)
         binding.spotlightUnfocusRidSelection.name.text = "非フォーカス時の rid"
         binding.spotlightUnfocusRidSelection.spinner.setItems(spotlightUnfocusRidOptions)
+        binding.simulcastEnabledSelection.name.text = "サイマルキャスト"
+        binding.simulcastEnabledSelection.spinner.setItems(simulcastEnabledOptions)
         binding.videoCodecSelection.name.text = "映像コーデック"
         binding.videoCodecSelection.spinner.setItems(videoCodecOptions)
         binding.videoEnabledSelection.name.text = "映像の有無"
@@ -67,8 +74,15 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         binding.videoBitRateSelection.spinner.setItems(videoBitRateOptions)
         binding.videoSizeSelection.name.text = "映像サイズ"
         binding.videoSizeSelection.spinner.setItems(videoSizeOptions)
+        binding.resolutionAdjustmentSelection.name.text = "解像度の調整"
+        binding.resolutionAdjustmentSelection.spinner.setItems(resolutionAdjustmentOptions)
+        binding.videoSizeSelection.spinner.selectedIndex = 3
         binding.fpsSelection.name.text = "フレームレート"
         binding.fpsSelection.spinner.setItems(fpsOptions)
+        binding.clientIdSelection.name.text = "クライアント ID"
+        binding.clientIdSelection.spinner.setItems(clientIdOptions)
+        binding.bundleIdSelection.name.text = "バンドル ID"
+        binding.bundleIdSelection.spinner.setItems(bundleIdOptions)
         binding.dataChannelSignalingSelection.name.text = "データチャネル"
         binding.dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
         binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
@@ -86,6 +100,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         val role = selectedItem(binding.roleSelection.spinner)
         var spotlightFocusRid = selectedItem(binding.spotlightFocusRidSelection.spinner)
         var spotlightUnfocusRid = selectedItem(binding.spotlightUnfocusRidSelection.spinner)
+        val simulcastEnabled = selectedItem(binding.simulcastEnabledSelection.spinner)
         val videoCodec = selectedItem(binding.videoCodecSelection.spinner)
         val audioCodec = selectedItem(binding.audioCodecSelection.spinner)
         val audioBitRate = selectedItem(binding.audioBitRateSelection.spinner)
@@ -93,7 +108,10 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         val videoEnabled = selectedItem(binding.videoEnabledSelection.spinner)
         val videoBitRate = selectedItem(binding.videoBitRateSelection.spinner)
         val videoSize = selectedItem(binding.videoSizeSelection.spinner)
+        val resolutionAdjusment = selectedItem(binding.resolutionAdjustmentSelection.spinner)
         val fps = selectedItem(binding.fpsSelection.spinner)
+        val clientId = selectedItem(binding.clientIdSelection.spinner)
+        val bundleId = selectedItem(binding.bundleIdSelection.spinner)
         val dataChannelSignaling = selectedItem(binding.dataChannelSignalingSelection.spinner)
         val ignoreDisconnectWebSocket = selectedItem(binding.ignoreDisconnectWebSocketSelection.spinner)
 
@@ -103,6 +121,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("SPOTLIGHT_NUMBER", spotlightNumber)
         intent.putExtra("SPOTLIGHT_FOCUS_RID", spotlightFocusRid)
         intent.putExtra("SPOTLIGHT_UNFOCUS_RID", spotlightUnfocusRid)
+        intent.putExtra("SIMULCAST_ENABLED", simulcastEnabled)
         intent.putExtra("ROLE", role)
         intent.putExtra("VIDEO_CODEC", videoCodec)
         intent.putExtra("AUDIO_CODEC", audioCodec)
@@ -111,7 +130,10 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("VIDEO_ENABLED", videoEnabled)
         intent.putExtra("VIDEO_BIT_RATE", videoBitRate)
         intent.putExtra("VIDEO_SIZE", videoSize)
+        intent.putExtra("RESOLUTION_ADJUSTMENT", resolutionAdjusment)
         intent.putExtra("FPS", fps)
+        intent.putExtra("CLIENT_ID", clientId)
+        intent.putExtra("BUNDLE_ID", bundleId)
         intent.putExtra("DATA_CHANNEL_SIGNALING", dataChannelSignaling)
         intent.putExtra("IGNORE_DISCONNECT_WEBSOCKET", ignoreDisconnectWebSocket)
 
