@@ -19,7 +19,7 @@
   - @enm10k
 - [UPDATE] システム条件を更新する
   - Android Studio 2021.2.1 以降
-  - WebRTC SFU Sora 2022.1 以降
+  - WebRTC SFU Sora 2022.1.0 以降
   - Sora Android SDK 2022.3.0 以降
   - @miosakuma
 - [UPDATE] compileSdkVersion を 31 に上げる
