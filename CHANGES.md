@@ -22,15 +22,13 @@
 - [UPDATE] 依存ライブラリーのバージョンを上げる
   - com.google.code.gson:gson を 2.9.1 に上げる
   - androidx.appcompat:appcompat を 1.5.0 に上げる
-  - com.google.android.material:material を 1.6.1 に上げる
   - androidx.navigation:navigation-fragment-ktx を 2.5.1 に上げる
   - androidx.navigation:navigation-ui-ktx を 2.5.1 に上げる
   - androidx.compose.ui:ui:1.2.1 に上げる
   - androidx.compose.material:material を 1.2.1 に上げる
   - androidx.compose.material:material-icons-extended を 1.2.1 に上げる
-  - androidx.activity:activity-compose を 1.5.0 に上げる
+  - androidx.activity:activity-compose を 1.5.1 に上げる
   - com.android.tools.build:gradle を 7.2.2 に上げる
-  - com.pinterest:ktlint を 0.45.2 に上げる
   - @miosakuma
 
 ## sora-andoroid-sdk-2022.3.0
