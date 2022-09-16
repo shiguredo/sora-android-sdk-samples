@@ -30,6 +30,10 @@
     - androidx.activity:activity-compose を 1.5.1 に上げる
     - com.android.tools.build:gradle を 7.2.2 に上げる
     - @miosakuma
+- [UPDATE] スポットライト設定画面の初期値を変更する
+    - 映像サイズ VGA を FHD に変更
+    - 映像ビットレート 500 を 5000 に変更
+    - @miosakuma
 
 ## sora-andoroid-sdk-2022.3.0
 
