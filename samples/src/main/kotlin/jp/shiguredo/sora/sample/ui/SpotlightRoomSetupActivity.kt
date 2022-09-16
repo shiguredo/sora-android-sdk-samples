@@ -87,6 +87,9 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         binding.dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
         binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
         binding.ignoreDisconnectWebSocketSelection.spinner.setItems(ignoreDisconnectWebSocketOptions)
+
+        binding.videoBitRateSelection.spinner.selectedIndex = 6
+        binding.videoSizeSelection.spinner.selectedIndex = 5
     }
 
     private fun startSpotlightChat() {
