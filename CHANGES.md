@@ -11,6 +11,8 @@
 
 ## develop
 
+## sora-andoroid-sdk-2022.4.0
+
 - [UPDATE] `compileSdkVersion` を 32 に上げる
     - @miosakuma
 - [UPDATE] `targetSdkVersion` を 32 に上げる
