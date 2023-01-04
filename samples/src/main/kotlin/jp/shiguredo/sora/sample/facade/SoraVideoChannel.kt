@@ -65,6 +65,7 @@ class SoraVideoChannel(
     private val audioStereo: Boolean = false,
     private val needLocalRenderer: Boolean = true,
     private val audioEnabled: Boolean = true,
+    private val audioStreamingLanguageCode: String? = null,
     private val capturerFactory: CameraVideoCapturerFactory =
         DefaultCameraVideoCapturerFactory(context, fixedResolution, cameraFacing),
     private var listener: Listener?
@@ -349,6 +350,7 @@ class SoraVideoChannel(
             listener = channelListener,
             clientId = clientId,
             bundleId = bundleId,
+            audioStreamingLanguageCode = audioStreamingLanguageCode,
             peerConnectionOption = peerConnectionOption
         )
         mediaChannel!!.connect()

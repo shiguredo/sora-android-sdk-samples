@@ -39,6 +39,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     private val bundleIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
     private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
+    private val audioStreamingLanguageCodeOptions = listOf("未指定", "ja-JP", "en-US")
 
     private lateinit var binding: ActivityVideoChatRoomSetupBinding
 
@@ -88,6 +89,8 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         binding.dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
         binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
         binding.ignoreDisconnectWebSocketSelection.spinner.setItems(ignoreDisconnectWebSocketOptions)
+        binding.audioStreamingLanguageCodeSelection.name.text = "文字変換言語コード"
+        binding.audioStreamingLanguageCodeSelection.spinner.setItems(audioStreamingLanguageCodeOptions)
     }
 
     private fun startVideoChat() {
@@ -115,6 +118,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val bundleId = selectedItem(binding.bundleIdSelection.spinner)
         val dataChannelSignaling = selectedItem(binding.dataChannelSignalingSelection.spinner)
         val ignoreDisconnectWebSocket = selectedItem(binding.ignoreDisconnectWebSocketSelection.spinner)
+        val audioStreamingLanguageCode = selectedItem(binding.audioStreamingLanguageCodeSelection.spinner)
 
         val intent = Intent(this, VideoChatRoomActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
@@ -136,6 +140,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("BUNDLE_ID", bundleId)
         intent.putExtra("DATA_CHANNEL_SIGNALING", dataChannelSignaling)
         intent.putExtra("IGNORE_DISCONNECT_WEBSOCKET", ignoreDisconnectWebSocket)
+        intent.putExtra("AUDIO_STREAMING_LANGUAGE_CODE", audioStreamingLanguageCode)
 
         startActivity(intent)
     }

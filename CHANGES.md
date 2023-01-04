@@ -11,6 +11,9 @@
 
 ## develop
 
+- [ADD] ビデオチャットサンプルに音声ストリーミング機能の言語コードを追加する
+    - @miosakuma
+
 ## sora-andoroid-sdk-2022.4.0
 
 - [UPDATE] `compileSdkVersion` を 32 に上げる
