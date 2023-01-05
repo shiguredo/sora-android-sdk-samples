@@ -331,6 +331,7 @@ class SoraVideoChannel(
                     this.proxy.password = BuildConfig.PROXY_PASSWORD
                 }
             }
+            audioStreamingLanguageCode = this@SoraVideoChannel.audioStreamingLanguageCode
         }
 
         val peerConnectionOption = PeerConnectionOption().apply {
@@ -350,7 +351,6 @@ class SoraVideoChannel(
             listener = channelListener,
             clientId = clientId,
             bundleId = bundleId,
-            audioStreamingLanguageCode = audioStreamingLanguageCode,
             peerConnectionOption = peerConnectionOption
         )
         mediaChannel!!.connect()
