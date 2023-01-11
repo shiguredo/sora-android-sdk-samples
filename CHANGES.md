@@ -11,6 +11,10 @@
 
 ## develop
 
+- [UPDATE] システム条件を更新する
+    - Android Studio 2021.3.1 以降
+    - WebRTC SFU Sora 2022.2.2 以降
+    - @miosakuma
 - [ADD] ビデオチャットサンプルに音声ストリーミング機能の言語コードを追加する
     - @miosakuma
 
