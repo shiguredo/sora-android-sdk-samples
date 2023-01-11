@@ -61,6 +61,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var bundleId: String? = null
     private var dataChannelSignaling: Boolean? = null
     private var ignoreDisconnectWebSocket: Boolean? = null
+    private var audioStreamingLanguageCode: String? = null
 
     private var oldAudioMode: Int = AudioManager.MODE_NORMAL
 
@@ -192,6 +193,13 @@ class VideoChatRoomActivity : AppCompatActivity() {
         ignoreDisconnectWebSocket = when (intent.getStringExtra("IGNORE_DISCONNECT_WEBSOCKET")) {
             "無効" -> false
             "有効" -> true
+            "未指定" -> null
+            else -> null
+        }
+
+        audioStreamingLanguageCode = when (intent.getStringExtra("AUDIO_STREAMING_LANGUAGE_CODE")) {
+            "ja-JP" -> "ja-JP"
+            "en-US" -> "en-US"
             "未指定" -> null
             else -> null
         }
@@ -330,6 +338,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
             cameraFacing = cameraFacing,
             clientId = clientId,
             bundleId = bundleId,
+            audioStreamingLanguageCode = audioStreamingLanguageCode,
             listener = channelListener,
             needLocalRenderer = true
         )
