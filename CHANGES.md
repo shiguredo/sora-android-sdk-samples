@@ -15,6 +15,8 @@
     - Android Studio 2022.1.1 以降
     - WebRTC SFU Sora 2022.2.0 以降
     - @miosakuma
+- [ADD] 映像コーデックに AV1 を追加する
+    - @miosakuma
 - [ADD] ビデオチャットサンプルに音声ストリーミング機能の言語コードを追加する
     - @miosakuma
 
@@ -38,8 +40,6 @@
     - androidx.compose.material:material-icons-extended を 1.2.1 に上げる
     - androidx.activity:activity-compose を 1.5.1 に上げる
     - com.android.tools.build:gradle を 7.2.2 に上げる
-    - @miosakuma
-- [UPDATE] ビデオチャットとスクリーンキャストの映像コーデックに AV1 を追加する
     - @miosakuma
 
 ## sora-andoroid-sdk-2022.3.0
