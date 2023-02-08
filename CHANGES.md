@@ -15,6 +15,8 @@
     - Android Studio 2022.1.1 以降
     - WebRTC SFU Sora 2022.2.0 以降
     - @miosakuma
+- [ADD] 映像コーデックに AV1 を追加する
+    - @miosakuma
 - [ADD] ビデオチャットサンプルに音声ストリーミング機能の言語コードを追加する
     - @miosakuma
 

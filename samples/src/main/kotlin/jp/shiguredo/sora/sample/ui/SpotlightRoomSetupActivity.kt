@@ -16,7 +16,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     }
 
     private val spotlightNumberOptions = listOf("未指定", "1", "2", "3", "4", "5", "6", "7", "8")
-    private val videoCodecOptions = listOf("VP8", "VP9", "H264")
+    private val videoCodecOptions = listOf("VP8", "VP9", "H264", "AV1")
     private val audioCodecOptions = listOf("OPUS")
     private val audioBitRateOptions = listOf(
         "未指定", "8", "16", "24", "32",
