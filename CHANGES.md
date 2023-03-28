@@ -15,6 +15,31 @@
     - Android Studio 2022.1.1 以降
     - WebRTC SFU Sora 2022.2.0 以降
     - @miosakuma
+- [UPDATE] `compileSdkVersion` を 33 に上げる
+    - @miosakuma
+- [UPDATE] `targetSdkVersion` を 33 に上げる
+    - @miosakuma
+- [UPDATE] Kotlin のバージョンを 1.8.10 に上げる
+    - @miosakuma
+- [UPDATE] Compose Compiler のバージョンを 1.4.3 に上げる
+    - @miosakuma
+- [UPDATE] Gradle を 7.6.1 に上げる
+    - @miosakuma
+- [UPDATE] 依存ライブラリーのバージョンを上げる
+    - com.android.tools.build:gradle を 7.4.2 に上げる
+    - com.github.ben-manes:gradle-versions-plugin を 0.46.0 に上げる
+    - org.jlleitschuh.gradle:ktlint-gradle を 11.3.1 に上げる
+    - com.google.code.gson:gson を 2.10.1 に上げる
+    - androidx.appcompat:appcompat を 1.6.1 に上げる
+    - androidx.recyclerview:recyclerview: を 1.3.0 に上げる
+    - com.google.android.material:material: を 1.8.0 に上げる
+    - androidx.navigation:navigation-fragment-ktx を 2.5.3 に上げる
+    - androidx.navigation:navigation-ui-ktx を 2.5.3 に上げる
+    - androidx.compose.ui:ui:1.4.0 に上げる
+    - androidx.compose.material:material を 1.4.0 に上げる
+    - androidx.compose.material:material-icons-extended を 1.4.0 に上げる
+    - androidx.activity:activity-compose を 1.7.0 に上げる
+
 - [ADD] 映像コーデックに AV1 を追加する
     - @miosakuma
 - [ADD] ビデオチャットサンプルに音声ストリーミング機能の言語コードを追加する

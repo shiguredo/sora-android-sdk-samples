@@ -104,7 +104,7 @@ class SoraScreencastService : Service() {
             }
 
         val activityIntent = createBoundActivityIntent()
-        val pendingIntent = PendingIntent.getActivity(this, 0, activityIntent, 0)
+        val pendingIntent = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_MUTABLE)
         val notification = NotificationCompat.Builder(this, notificationChannelId)
             .setContentTitle(req!!.stateTitle)
             .setContentText(req!!.stateText)
