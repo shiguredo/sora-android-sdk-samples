@@ -24,6 +24,7 @@
 - [UPDATE] Compose Compiler のバージョンを 1.4.3 に上げる
     - @miosakuma
 - [UPDATE] 依存ライブラリーのバージョンを上げる
+    - com.android.tools.build:gradle を 7.4.2 に上げる
     - com.github.ben-manes:gradle-versions-plugin を 0.46.0 に上げる
     - org.jlleitschuh.gradle:ktlint-gradle を 11.3.1 に上げる
     - com.google.code.gson:gson を 2.10.1 に上げる
