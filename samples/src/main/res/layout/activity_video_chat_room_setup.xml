@@ -97,6 +97,9 @@
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/ignoreDisconnectWebSocketSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/audioStreamingLanguageCodeSelection"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 

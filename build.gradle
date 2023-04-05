@@ -1,8 +1,8 @@
 apply plugin: "com.github.ben-manes.versions"
 
 buildscript {
-    ext.kotlin_version = '1.7.10'
-    ext.sora_android_sdk_version = '2022.4.0'
+    ext.kotlin_version = '1.8.10'
+    ext.sora_android_sdk_version = '2023.1.0'
 
     repositories {
         google()
@@ -10,12 +10,12 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.2'
+        classpath 'com.android.tools.build:gradle:7.4.2'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_version}"
 
-        classpath "com.github.ben-manes:gradle-versions-plugin:0.42.0"
-        classpath "org.jlleitschuh.gradle:ktlint-gradle:10.3.0"
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.46.0"
+        classpath "org.jlleitschuh.gradle:ktlint-gradle:11.3.1"
     }
 
     // デバッグ用: true に設定すると wss ではなく ws で接続できる
