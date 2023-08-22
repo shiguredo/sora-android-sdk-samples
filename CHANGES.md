@@ -11,6 +11,9 @@
 
 ## develop
 
+- [ADD] ビデオチャットにサンプルに映像コーデックのプロファイルを追加する
+    - @miosakuma
+
 ## sora-andoroid-sdk-2023.1.0
 
 - [UPDATE] システム条件を更新する

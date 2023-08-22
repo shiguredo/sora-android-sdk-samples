@@ -52,6 +52,9 @@ class SoraVideoChannel(
     private var videoEnabled: Boolean = true,
     private val videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x,
     private val videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y,
+    private val videoVp9Params: Any? = null,
+    private val videoAv1Params: Any? = null,
+    private val videoH264Params: Any? = null,
     private val simulcast: Boolean = false,
     private val simulcastRid: SoraVideoOption.SimulcastRid? = null,
     private val videoFPS: Int = 30,
@@ -276,6 +279,9 @@ class SoraVideoChannel(
 
             videoCodec = this@SoraVideoChannel.videoCodec
             videoBitrate = this@SoraVideoChannel.videoBitRate
+            videoVp9Params = this@SoraVideoChannel.videoVp9Params
+            videoAv1Params = this@SoraVideoChannel.videoAv1Params
+            videoH264Params = this@SoraVideoChannel.videoH264Params
 
             audioCodec = this@SoraVideoChannel.audioCodec
             audioBitrate = this@SoraVideoChannel.audioBitRate
