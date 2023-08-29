@@ -11,6 +11,18 @@
 
 ## develop
 
+## sora-andoroid-sdk-2023.2.0
+
+- [UPDATE] システム条件を更新する
+    - Android Studio 2022.2.1 以降
+    - WebRTC SFU Sora 2023.1.0 以降
+    - Sora Android SDK 2023.2.0 以降
+    - @miosakuma
+- [ADD] ビデオチャットにサンプルに映像コーデックのプロファイルを追加する
+    - @miosakuma
+- [ADD] サイマルキャストサンプルの映像コーデックに VP9 と AV1 を追加する
+    - @szktty
+
 ## sora-andoroid-sdk-2023.1.0
 
 - [UPDATE] システム条件を更新する

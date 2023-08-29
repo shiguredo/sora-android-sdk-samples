@@ -66,6 +66,15 @@
                     android:id="@+id/videoSizeSelection"/>
                 <include
                     layout="@layout/signaling_selection"
+                    android:id="@+id/vp9ProfileIdSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/av1ProfileSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/h264ProfileLevelIdSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
                     android:id="@+id/resolutionChangeSelection"/>
                 <include
                     layout="@layout/signaling_selection"

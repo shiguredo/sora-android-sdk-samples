@@ -31,6 +31,9 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         "2000", "2500", "3000", "5000", "10000", "15000", "20000", "30000"
     )
     private val videoSizeOptions = SoraFrameSize.all.keys.toList()
+    private val vp9ProfileIdOptions = listOf("未指定", "0", "1", "2", "3")
+    private val av1ProfileOptions = listOf("未指定", "0", "1", "2")
+    private val h264ProfileLevelIdOptions = listOf("未指定", "42e01f", "42e020", "42e034")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("可変", "固定")
     private val resolutionAdjustmentOptions = listOf("未指定", "16", "8", "4", "2", "無効")
@@ -73,6 +76,12 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         binding.videoSizeSelection.name.text = "映像サイズ"
         binding.videoSizeSelection.spinner.setItems(videoSizeOptions)
         binding.videoSizeSelection.spinner.selectedIndex = 3
+        binding.vp9ProfileIdSelection.name.text = "VP9 プロファイル"
+        binding.vp9ProfileIdSelection.spinner.setItems(vp9ProfileIdOptions)
+        binding.av1ProfileSelection.name.text = "AV1 プロファイル"
+        binding.av1ProfileSelection.spinner.setItems(av1ProfileOptions)
+        binding.h264ProfileLevelIdSelection.name.text = "H264 プロファイル"
+        binding.h264ProfileLevelIdSelection.spinner.setItems(h264ProfileLevelIdOptions)
         binding.fpsSelection.name.text = "フレームレート"
         binding.fpsSelection.spinner.setItems(fpsOptions)
         binding.resolutionChangeSelection.name.text = "解像度の変更"
@@ -110,6 +119,9 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val audioStereo = selectedItem(binding.audioStereoSelection.spinner)
         val videoBitRate = selectedItem(binding.videoBitRateSelection.spinner)
         val videoSize = selectedItem(binding.videoSizeSelection.spinner)
+        val vp9ProfileId = selectedItem(binding.vp9ProfileIdSelection.spinner)
+        val av1Profile = selectedItem(binding.av1ProfileSelection.spinner)
+        val h264ProfileLevelId = selectedItem(binding.h264ProfileLevelIdSelection.spinner)
         val fps = selectedItem(binding.fpsSelection.spinner)
         val resolutionChange = selectedItem(binding.resolutionChangeSelection.spinner)
         val resolutionAdjustment = selectedItem(binding.resolutionAdjustmentSelection.spinner)
@@ -132,6 +144,9 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("AUDIO_STEREO", audioStereo)
         intent.putExtra("VIDEO_BIT_RATE", videoBitRate)
         intent.putExtra("VIDEO_SIZE", videoSize)
+        intent.putExtra("VP9_PROFILE_ID", vp9ProfileId)
+        intent.putExtra("AV1_PROFILE", av1Profile)
+        intent.putExtra("H264_PROFILE_LEVEL_ID", h264ProfileLevelId)
         intent.putExtra("FPS", fps)
         intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
         intent.putExtra("RESOLUTION_ADJUSTMENT", resolutionAdjustment)

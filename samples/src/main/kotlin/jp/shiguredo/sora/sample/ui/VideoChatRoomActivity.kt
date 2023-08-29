@@ -50,6 +50,9 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var videoBitRate: Int? = null
     private var videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x
     private var videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y
+    private var videoVp9Params: Any? = null
+    private var videoAv1Params: Any? = null
+    private var videoH264Params: Any? = null
     private var multistream = true
     private var spotlight = false
     private var spotlightNumber: Int? = null
@@ -136,6 +139,26 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else -> false
         }
 
+        videoVp9Params = when (val stringValue = intent.getStringExtra("VP9_PROFILE_ID")) {
+            "未指定" -> null
+            else -> object {
+                var profile_id: Int? = stringValue?.toIntOrNull()
+            }
+        }
+
+        videoAv1Params = when (val stringValue = intent.getStringExtra("AV1_PROFILE")) {
+            "未指定" -> null
+            else -> object {
+                var profile: Int? = stringValue?.toIntOrNull()
+            }
+        }
+
+        videoH264Params = when (val stringValue = intent.getStringExtra("H264_PROFILE_LEVEL_ID")) {
+            "未指定" -> null
+            else -> object {
+                var profile_level_id: String? = stringValue
+            }
+        }
         resolutionAdjustment = when (intent.getStringExtra("RESOLUTION_ADJUSTMENT")) {
             "16" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_16
             "8" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_8
@@ -325,6 +348,9 @@ class VideoChatRoomActivity : AppCompatActivity() {
             videoWidth = videoWidth,
             videoHeight = videoHeight,
             videoFPS = fps,
+            videoVp9Params = videoVp9Params,
+            videoAv1Params = videoAv1Params,
+            videoH264Params = videoH264Params,
             fixedResolution = fixedResolution,
             resolutionAdjustment = resolutionAdjustment,
             videoCodec = videoCodec,
