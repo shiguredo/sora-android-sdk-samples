@@ -11,6 +11,12 @@
 
 ## develop
 
+## feature/h265
+
+- [UPDATE] ビデオチャットとサイマルキャストのサンプルを H.265 に対応する
+    - @enm10k
+- [UPDATE] 解像度に qHD (960x540, 540x960) を追加する
+    - @enm10k
 - [FIX] マルチウィンドウモード時に画面を回転すると Activity が再作成されるのを防ぐ設定を入れる
     - @miosakuma
 
