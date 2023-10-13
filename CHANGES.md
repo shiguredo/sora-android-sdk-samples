@@ -11,6 +11,13 @@
 
 ## develop
 
+## feature/h265
+
+- [UPDATE] ビデオチャットとサイマルキャストのサンプルを H.265 に対応する
+    - @enm10k
+- [UPDATE] 解像度に qHD (960x540, 540x960) を追加する
+    - @enm10k
+
 ## sora-andoroid-sdk-2023.2.0
 
 - [UPDATE] システム条件を更新する
