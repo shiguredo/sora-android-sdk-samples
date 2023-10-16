@@ -30,9 +30,9 @@ class SoraFrameSize {
             "qHD: 540x960" to SoraVideoOption.FrameSize.Portrait.qHD,
             "HD: 720x1280" to SoraVideoOption.FrameSize.Portrait.HD,
             "FHD: 1080x1920" to SoraVideoOption.FrameSize.Portrait.FHD,
-            "3840x1920" to SoraVideoOption.FrameSize.Portrait.Res1920x3840,
-            "UHD: 3840x2160" to SoraVideoOption.FrameSize.Portrait.UHD2160x3840,
-            "4096x2160" to SoraVideoOption.FrameSize.Portrait.UHD2160x4096,
+            "1920x3840" to SoraVideoOption.FrameSize.Portrait.Res1920x3840,
+            "UHD: 2160x3840" to SoraVideoOption.FrameSize.Portrait.UHD2160x3840,
+            "2160x4096" to SoraVideoOption.FrameSize.Portrait.UHD2160x4096,
         )
 
         val all = landscape + portrait
