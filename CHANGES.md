@@ -17,6 +17,8 @@
     - @enm10k
 - [UPDATE] 解像度に qHD (960x540, 540x960) を追加する
     - @enm10k
+- [FIX] SoraFrameSize.portrait のキーで幅と高さが逆になっているものがあったので修正
+    - @enm10k
 
 ## sora-andoroid-sdk-2023.2.0
 
