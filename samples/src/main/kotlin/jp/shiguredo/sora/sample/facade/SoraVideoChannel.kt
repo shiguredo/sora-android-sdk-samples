@@ -7,6 +7,7 @@ import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.camera.CameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.camera.DefaultCameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.option.SoraRoleType
+import jp.shiguredo.sora.sample.stats.OutboundRtpVideoStatsLogger
 import jp.shiguredo.sora.sample.stats.VideoUpstreamLatencyStatsCollector
 import jp.shiguredo.sora.sample.ui.util.SoraRemoteRendererSlot
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
@@ -197,6 +198,8 @@ class SoraVideoChannel(
             // statsReport.statsMap.entries.forEach {
             //     SoraLogger.d(TAG, "${it.key}=${it.value}")
             // }
+
+            OutboundRtpVideoStatsLogger.log(statsReport)
             statsCollector.newStatsReport(statsReport)
         }
     }
@@ -359,6 +362,7 @@ class SoraVideoChannel(
             bundleId = bundleId,
             peerConnectionOption = peerConnectionOption
         )
+
         mediaChannel!!.connect()
     }
 
