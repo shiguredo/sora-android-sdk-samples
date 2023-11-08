@@ -11,6 +11,9 @@
 
 ## develop
 
+- [FIX] マルチウィンドウモード時に画面を回転すると Activity が再作成されるのを防ぐ設定を入れる
+    - @miosakuma
+
 ## sora-andoroid-sdk-2023.2.0
 
 - [UPDATE] システム条件を更新する
