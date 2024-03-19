@@ -11,6 +11,26 @@
 
 ## develop
 
+## sora-andoroid-sdk-2024.1.1
+
+- [UPDATE] システム条件を更新する
+    - Android Studio 2023.2.1 以降
+    - WebRTC SFU Sora 2023.2.0 以降
+    - Sora Android SDK 2024.1.1 以降
+    - @miosakuma
+- [UPDATE] ビデオチャット、サイマルキャスト、スポットライトのサンプルを H.265 に対応する
+    - @enm10k
+- [UPDATE] 解像度に qHD (960x540, 540x960) を追加する
+    - @enm10k
+- [FIX] SoraFrameSize.portrait のキーで幅と高さが逆になっているものがあったので修正
+    - @enm10k
+- [FIX] マルチウィンドウモード時に画面を回転すると Activity が再作成されるのを防ぐ設定を入れる
+    - @miosakuma
+
+## sora-andoroid-sdk-2024.1.0
+
+Sora Android SDK 2024.1.0 のリリースミスによりスキップしました。
+
 ## sora-andoroid-sdk-2023.2.0
 
 - [UPDATE] システム条件を更新する

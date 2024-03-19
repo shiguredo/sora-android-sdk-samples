@@ -43,33 +43,33 @@
         </activity>
         <activity
             android:name=".ui.VoiceChatRoomSetupActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:label="ボイスチャット"
             android:exported="true" />
         <activity
             android:name=".ui.VideoChatRoomSetupActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:label="ビデオチャット"
             android:exported="true" />
 
     <activity
             android:name=".ui.SpotlightRoomSetupActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:label="スポットライト"
             android:exported="true" />
         <activity
             android:name=".ui.ScreencastSetupActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:label="スクリーンキャスト"
             android:exported="true" />
     <activity
             android:name=".ui.EffectedVideoChatSetupActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:label="ビデオエフェクト"
             android:exported="true" />
     <activity
             android:name=".ui.SimulcastSetupActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:label="サイマルキャスト"
             android:exported="true" />
         <!--
@@ -77,12 +77,12 @@
             セッション中にActivityが破壊されないように次のどちらかの設定を行う
 
             1) android:screenOrientationを指定して向きを固定する
-            2) android:configChanges="orientation|screenSize"を指定しつつ
+            2) android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"を指定しつつ
                ActivityのonConfigurationChangedメソッドでレイアウトを調整
         -->
         <activity
             android:name=".ui.VideoChatRoomActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:label="ビデオチャット"
             android:exported="true" >
 
@@ -95,24 +95,24 @@
         </activity>
         <activity
             android:name=".ui.VoiceChatRoomActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:label="ボイスチャット"
             android:exported="true" />
 
     <service
             android:name=".screencast.SoraScreencastService"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:enabled="true"
             android:foregroundServiceType="mediaProjection" />
 
         <activity
             android:name=".ui.EffectedVideoChatActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:label="エフェクト付きビデオチャット"
             android:exported="true" />
         <activity
             android:name=".ui.SimulcastActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:label="Simulcast"
             android:exported="true" />
     </application>
