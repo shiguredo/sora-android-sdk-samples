@@ -11,6 +11,9 @@
 
 ## develop
 
+- [FIX] Github Actions でのビルドを Java 17 にする
+    - @miosakuma
+
 ## sora-andoroid-sdk-2024.1.1
 
 - [UPDATE] システム条件を更新する
