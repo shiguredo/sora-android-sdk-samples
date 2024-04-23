@@ -1,31 +1,41 @@
 # 変更履歴
 
 - UPDATE
-    - 下位互換がある変更
+  - 下位互換がある変更
 - ADD
-    - 下位互換がある追加
+  - 下位互換がある追加
 - CHANGE
-    - 下位互換のない変更
+  - 下位互換のない変更
 - FIX
-    - バグ修正
+  - バグ修正
 
 ## develop
+
+## sora-andoroid-sdk-2024.2.0
+
+- [UPDATE] システム条件を更新する
+  - Sora Android SDK 2024.2.0 以降
+  - @miosakuma
+- [UPDATE] Github Actions の actions/setup-java@v4 にあげる
+  - @miosakuma
+- [FIX] Github Actions でのビルドを Java 17 にする
+  - @miosakuma
 
 ## sora-andoroid-sdk-2024.1.1
 
 - [UPDATE] システム条件を更新する
-    - Android Studio 2023.2.1 以降
-    - WebRTC SFU Sora 2023.2.0 以降
-    - Sora Android SDK 2024.1.1 以降
-    - @miosakuma
+  - Android Studio 2023.2.1 以降
+  - WebRTC SFU Sora 2023.2.0 以降
+  - Sora Android SDK 2024.1.1 以降
+  - @miosakuma
 - [UPDATE] ビデオチャット、サイマルキャスト、スポットライトのサンプルを H.265 に対応する
-    - @enm10k
+  - @enm10k
 - [UPDATE] 解像度に qHD (960x540, 540x960) を追加する
-    - @enm10k
+  - @enm10k
 - [FIX] SoraFrameSize.portrait のキーで幅と高さが逆になっているものがあったので修正
-    - @enm10k
+  - @enm10k
 - [FIX] マルチウィンドウモード時に画面を回転すると Activity が再作成されるのを防ぐ設定を入れる
-    - @miosakuma
+  - @miosakuma
 
 ## sora-andoroid-sdk-2024.1.0
 
@@ -34,177 +44,178 @@ Sora Android SDK 2024.1.0 のリリースミスによりスキップしました
 ## sora-andoroid-sdk-2023.2.0
 
 - [UPDATE] システム条件を更新する
-    - Android Studio 2022.2.1 以降
-    - WebRTC SFU Sora 2023.1.0 以降
-    - Sora Android SDK 2023.2.0 以降
-    - @miosakuma
+  - Android Studio 2022.2.1 以降
+  - WebRTC SFU Sora 2023.1.0 以降
+  - Sora Android SDK 2023.2.0 以降
+  - @miosakuma
 - [ADD] ビデオチャットにサンプルに映像コーデックのプロファイルを追加する
-    - @miosakuma
+  - @miosakuma
 - [ADD] サイマルキャストサンプルの映像コーデックに VP9 と AV1 を追加する
-    - @szktty
+  - @szktty
 
 ## sora-andoroid-sdk-2023.1.0
 
 - [UPDATE] システム条件を更新する
-    - Android Studio 2022.1.1 以降
-    - WebRTC SFU Sora 2022.2.0 以降
-    - Sora Android SDK 2023.1.0 以降
-    - @miosakuma
+  - Android Studio 2022.1.1 以降
+  - WebRTC SFU Sora 2022.2.0 以降
+  - Sora Android SDK 2023.1.0 以降
+  - @miosakuma
 - [UPDATE] `compileSdkVersion` を 33 に上げる
-    - @miosakuma
+  - @miosakuma
 - [UPDATE] `targetSdkVersion` を 33 に上げる
-    - @miosakuma
+  - @miosakuma
 - [UPDATE] Kotlin のバージョンを 1.8.10 に上げる
-    - @miosakuma
+  - @miosakuma
 - [UPDATE] Compose Compiler のバージョンを 1.4.3 に上げる
-    - @miosakuma
+  - @miosakuma
 - [UPDATE] Gradle を 7.6.1 に上げる
-    - @miosakuma
+  - @miosakuma
 - [UPDATE] 依存ライブラリーのバージョンを上げる
-    - com.android.tools.build:gradle を 7.4.2 に上げる
-    - com.github.ben-manes:gradle-versions-plugin を 0.46.0 に上げる
-    - org.jlleitschuh.gradle:ktlint-gradle を 11.3.1 に上げる
-    - com.google.code.gson:gson を 2.10.1 に上げる
-    - androidx.appcompat:appcompat を 1.6.1 に上げる
-    - androidx.recyclerview:recyclerview: を 1.3.0 に上げる
-    - com.google.android.material:material: を 1.8.0 に上げる
-    - androidx.navigation:navigation-fragment-ktx を 2.5.3 に上げる
-    - androidx.navigation:navigation-ui-ktx を 2.5.3 に上げる
-    - androidx.compose.ui:ui:1.4.0 に上げる
-    - androidx.compose.material:material を 1.4.0 に上げる
-    - androidx.compose.material:material-icons-extended を 1.4.0 に上げる
-    - androidx.activity:activity-compose を 1.7.0 に上げる
+
+  - com.android.tools.build:gradle を 7.4.2 に上げる
+  - com.github.ben-manes:gradle-versions-plugin を 0.46.0 に上げる
+  - org.jlleitschuh.gradle:ktlint-gradle を 11.3.1 に上げる
+  - com.google.code.gson:gson を 2.10.1 に上げる
+  - androidx.appcompat:appcompat を 1.6.1 に上げる
+  - androidx.recyclerview:recyclerview: を 1.3.0 に上げる
+  - com.google.android.material:material: を 1.8.0 に上げる
+  - androidx.navigation:navigation-fragment-ktx を 2.5.3 に上げる
+  - androidx.navigation:navigation-ui-ktx を 2.5.3 に上げる
+  - androidx.compose.ui:ui:1.4.0 に上げる
+  - androidx.compose.material:material を 1.4.0 に上げる
+  - androidx.compose.material:material-icons-extended を 1.4.0 に上げる
+  - androidx.activity:activity-compose を 1.7.0 に上げる
 
 - [ADD] 映像コーデックに AV1 を追加する
-    - @miosakuma
+  - @miosakuma
 - [ADD] ビデオチャットサンプルに音声ストリーミング機能の言語コードを追加する
-    - @miosakuma
+  - @miosakuma
 
 ## sora-andoroid-sdk-2022.4.0
 
 - [UPDATE] `compileSdkVersion` を 32 に上げる
-    - @miosakuma
+  - @miosakuma
 - [UPDATE] `targetSdkVersion` を 32 に上げる
-    - @miosakuma
+  - @miosakuma
 - [UPDATE] Kotlin のバージョンを 1.7.10 に上げる
-    - @miosakuma
+  - @miosakuma
 - [UPDATE] Gradle を 7.5.1 に上げる
-    - @miosakuma
+  - @miosakuma
 - [UPDATE] 依存ライブラリーのバージョンを上げる
-    - com.google.code.gson:gson を 2.9.1 に上げる
-    - androidx.appcompat:appcompat を 1.5.0 に上げる
-    - androidx.navigation:navigation-fragment-ktx を 2.5.1 に上げる
-    - androidx.navigation:navigation-ui-ktx を 2.5.1 に上げる
-    - androidx.compose.ui:ui:1.2.1 に上げる
-    - androidx.compose.material:material を 1.2.1 に上げる
-    - androidx.compose.material:material-icons-extended を 1.2.1 に上げる
-    - androidx.activity:activity-compose を 1.5.1 に上げる
-    - com.android.tools.build:gradle を 7.2.2 に上げる
-    - @miosakuma
+  - com.google.code.gson:gson を 2.9.1 に上げる
+  - androidx.appcompat:appcompat を 1.5.0 に上げる
+  - androidx.navigation:navigation-fragment-ktx を 2.5.1 に上げる
+  - androidx.navigation:navigation-ui-ktx を 2.5.1 に上げる
+  - androidx.compose.ui:ui:1.2.1 に上げる
+  - androidx.compose.material:material を 1.2.1 に上げる
+  - androidx.compose.material:material-icons-extended を 1.2.1 に上げる
+  - androidx.activity:activity-compose を 1.5.1 に上げる
+  - com.android.tools.build:gradle を 7.2.2 に上げる
+  - @miosakuma
 
 ## sora-andoroid-sdk-2022.3.0
 
 - [ADD] 解像度の調整を ON/OFF する UI を追加する
-    - @enm10k
+  - @enm10k
 - [ADD] プロキシを gradle.properties ファイルから設定できるようにする
-    - @enm10k
+  - @enm10k
 - [UPDATE] システム条件を更新する
-    - Android Studio 2021.2.1 以降
-    - WebRTC SFU Sora 2022.1.0 以降
-    - Sora Android SDK 2022.3.0 以降
-    - @miosakuma
+  - Android Studio 2021.2.1 以降
+  - WebRTC SFU Sora 2022.1.0 以降
+  - Sora Android SDK 2022.3.0 以降
+  - @miosakuma
 - [UPDATE] compileSdkVersion を 31 に上げる
-    - AndroidManifest.xml の Activity に `android:exported="true"` を明示的に記載する
-    - @miosakuma
+  - AndroidManifest.xml の Activity に `android:exported="true"` を明示的に記載する
+  - @miosakuma
 - [UPDATE] Gradle のバージョンを 7.4.2 に上げる
-    - @miosakuma
+  - @miosakuma
 - [UPDATE] Gktlint のバージョンを 0.45.2 に上げる
-    - @miosakuma
+  - @miosakuma
 - [UPDATE] 依存ライブラリを更新する
-    - com.android.tools.build:gradle を 7.2.1 に上げる
-    - org.jlleitschuh.gradle:ktlint-gradle を 10.3.0 に上げる
-    - com.google.code.gson:gson を 2.9.0 に上げる  
-    - androidx.appcompat:appcompat を 1.4.2 に上げる
-    - com.google.android.material:material を 1.6.1 に上げる
-    - androidx.constraintlayout:constraintlayout を 2.1.4 に上げる
-    - androidx.navigation:navigation-fragment-ktx を 2.4.2 に上げる
-    - androidx.navigation:navigation-ui-ktx を 2.4.2 に上げる
-    - androidx.compose.ui:ui:1.1.1 に上げる
-    - androidx.compose.material:material を 1.1.1 に上げる
-    - androidx.compose.material:material-icons-extended を 1.1.1 に上げる
-    - androidx.activity:activity-compose を 1.4.0 に上げる
-    - com.github.permissions-dispatcher:permissionsdispatcher を 4.9.2　に上げる
-    - com.github.permissions-dispatcher:permissionsdispatcher-processor を 4.9.2　に上げる
-    - com.github.ben-manes:gradle-versions-plugin を 0.42.0 に上げる
-    - @miosakuma
+  - com.android.tools.build:gradle を 7.2.1 に上げる
+  - org.jlleitschuh.gradle:ktlint-gradle を 10.3.0 に上げる
+  - com.google.code.gson:gson を 2.9.0 に上げる
+  - androidx.appcompat:appcompat を 1.4.2 に上げる
+  - com.google.android.material:material を 1.6.1 に上げる
+  - androidx.constraintlayout:constraintlayout を 2.1.4 に上げる
+  - androidx.navigation:navigation-fragment-ktx を 2.4.2 に上げる
+  - androidx.navigation:navigation-ui-ktx を 2.4.2 に上げる
+  - androidx.compose.ui:ui:1.1.1 に上げる
+  - androidx.compose.material:material を 1.1.1 に上げる
+  - androidx.compose.material:material-icons-extended を 1.1.1 に上げる
+  - androidx.activity:activity-compose を 1.4.0 に上げる
+  - com.github.permissions-dispatcher:permissionsdispatcher を 4.9.2 　に上げる
+  - com.github.permissions-dispatcher:permissionsdispatcher-processor を 4.9.2 　に上げる
+  - com.github.ben-manes:gradle-versions-plugin を 0.42.0 に上げる
+  - @miosakuma
 - [FIX] メッセージングアプリが H.264 で接続中の別クライアントがいるときに接続エラーになる問題を修正する
-    - @miosakuma
+  - @miosakuma
 
 ## sora-andoroid-sdk-2022.2.0
 
 - [UPDATE] システム条件を更新する
-    - Android 8.0 以降
-    - Android Studio 2022.1.1 以降
-    - Sora Android SDK 2022.2.0 以降
-    - @miosakuma
+  - Android 8.0 以降
+  - Android Studio 2022.1.1 以降
+  - Sora Android SDK 2022.2.0 以降
+  - @miosakuma
 - [UPDATE] Kotlin synthetics の廃止に伴い View binding に移行する
-    - @miosakuma @enm10k
+  - @miosakuma @enm10k
 - [CHANGE] minSdkVersion を 26 に上げる
-    - @enm10k
+  - @enm10k
 
 ## sora-andoroid-sdk-2022.1.0
 
 - [UPDATE] システム条件を更新する
-    - Android Studio 2020.3.1 以降
-    - Sora Android SDK 2022.1.0 以降
-    - @miosakuma
+  - Android Studio 2020.3.1 以降
+  - Sora Android SDK 2022.1.0 以降
+  - @miosakuma
 - [ADD] シグナリング接続時に送信するメタデータを外部ファイルから設定できるようにする
-    - @miosakuma
+  - @miosakuma
 - [CHANGE] スポットライトレガシーを削除する
-    - @enm10k
-- [CHANGE] シグナリングの URL指定を `signaling_endpoint` から `signalingEndpointCandidates` に変更する
-    - @miosakuma @enm10k
+  - @enm10k
+- [CHANGE] シグナリングの URL 指定を `signaling_endpoint` から `signalingEndpointCandidates` に変更する
+  - @miosakuma @enm10k
 - [FIX] sendrecv 接続時に映像の送信を無効に設定し、かつ相手が H.264 の映像を送信するとき接続が失敗する不具合を修正する
-    - @miosakuma
+  - @miosakuma
 
 ## sora-android-sdk-2021.3
 
 - [UPDATE] システム条件を更新する
-    - Sora Android SDK 2021.3 以降
-    - @miosakuma
+  - Sora Android SDK 2021.3 以降
+  - @miosakuma
 
 ## sora-android-sdk-2021.2
 
 - [UPDATE] システム条件を更新する
-    - Android Studio 4.2 以降
-    - WebRTC SFU Sora 2021.1 以降
-    - Sora Android SDK 2021.2 以降
-    - @miosakuma
+  - Android Studio 4.2 以降
+  - WebRTC SFU Sora 2021.1 以降
+  - Sora Android SDK 2021.2 以降
+  - @miosakuma
 - [UPDATE] sdk が channel_id を必須にした変更に追従する
-    - @shino
+  - @shino
 - [UPDATE] spotlight_number は未指定をデフォルトにする
-    - @shino
+  - @shino
 - [UPDATE] `com.android.tools.build:gradle` を 4.2.2 に上げる
-    - @enm10k
+  - @enm10k
 - [UPDATE] JCenter への参照を取り除く
-    - @enm10k
+  - @enm10k
 - [UPDATE] シグナリングエンドポイント URL の設定を `/build.gradle` から `/gradle.properties.example` に移動する
-    - @miosakuma
+  - @miosakuma
 - [ADD] サイマルキャストの接続時に simulcast_rid を指定できるようにする
-    - @enm10k
+  - @enm10k
 - [ADD] スポットライトの接続時に spotlight_focus_rid / spotlight_unfocus_rid を指定できるようにする
-    - @enm10k
+  - @enm10k
 - [CHANGE] サイマルキャスト画面から、受信する rid を指定するボタンを削除する
-    - @enm10k
+  - @enm10k
 - [FIX] 自身の映像プレビューが反転している問題を修正する
-    - @torikizi
+  - @torikizi
 - [FIX] gradle.properties で指定した usesCleartextTraffic が参照されずに、常に true になっていた問題を修正する
-    - @enm10k
+  - @enm10k
 
 ## sora-android-sdk-2021.1.1
 
 - [UPDATE] SDK のバージョンを 2021.1.1 に上げる
-    - @enm10k
+  - @enm10k
 
 ## 2021.1
 
@@ -215,20 +226,20 @@ Sora Android SDK 2024.1.0 のリリースミスによりスキップしました
 - Kotlin を 1.4.31 に更新する
 - Gradle を 6.8.3 に更新する
 - 依存ライブラリを更新する
-    - com.github.ben-manes:gradle-versions-plugin を 0.38.0 に更新する
-    - com.android.tools.build:gradle を 4.1.2 に更新する
-    - com.google.android.material:material を 1.3.0 に更新する
-    - androidx.navigation:navigation-fragment-ktx を 2.3.3 に更新する
-    - androidx.navigation:navigation-ui-ktx を 2.3.3 に更新する
-    - jp.co.cyberagent.android:gpuimage を 2.1.0 に更新する
+  - com.github.ben-manes:gradle-versions-plugin を 0.38.0 に更新する
+  - com.android.tools.build:gradle を 4.1.2 に更新する
+  - com.google.android.material:material を 1.3.0 に更新する
+  - androidx.navigation:navigation-fragment-ktx を 2.3.3 に更新する
+  - androidx.navigation:navigation-ui-ktx を 2.3.3 に更新する
+  - jp.co.cyberagent.android:gpuimage を 2.1.0 に更新する
 
 ### ADD
 
 - サイマルキャスト画面を新規に追加する
 - データチャネルシグナリングに対応する
-    - ビデオチャット、ボイスチャット、サイマルキャスト、スポットライトが対象
-    - data_channel_signlaing, ignore_disconnect_websocket パラメータ設定を追加する
-    - @shino
+  - ビデオチャット、ボイスチャット、サイマルキャスト、スポットライトが対象
+  - data_channel_signlaing, ignore_disconnect_websocket パラメータ設定を追加する
+  - @shino
 
 ### CHANGE
 
@@ -243,8 +254,8 @@ Sora Android SDK 2024.1.0 のリリースミスによりスキップしました
 - ボイスチャット画面でマルチストリームが無効にできない問題を修正する
 - 音声のみを受信するよう設定したにも関わらず、映像を受信してしまう問題を修正する
 - スクリーンキャスト画面がクラッシュしていた問題を修正する
-    - Android 10 からは、特定のサービスを定義する際に、マニフェストに foregroundServiceType を定義する必要がある
-    - 参考: <https://developer.android.com/about/versions/10/features?hl=ja#fg-service-types>
+  - Android 10 からは、特定のサービスを定義する際に、マニフェストに foregroundServiceType を定義する必要がある
+  - 参考: <https://developer.android.com/about/versions/10/features?hl=ja#fg-service-types>
 - ビデオチャット画面の起動時に縦固定となる問題を修正する
 - 各画面で端末回転に追随しない問題を修正する
 
@@ -263,10 +274,10 @@ Sora Android SDK 2024.1.0 のリリースミスによりスキップしました
 ### ADD
 
 - video chat room にステレオで配信するオプションを追加する
-    - Andoird 9 / Pixel3 XL からの配信で動作を確認している
-        - カメラを体の前に持った状態で、液晶を自分向き、ホームボタン側を自分から見て右にした状態
-        - 映像はリアカメラからの入力
-        - マイクは内蔵を利用し、上部が左、下部を右とすると映像の向きとステレオの左右が同期する
+  - Andoird 9 / Pixel3 XL からの配信で動作を確認している
+    - カメラを体の前に持った状態で、液晶を自分向き、ホームボタン側を自分から見て右にした状態
+    - 映像はリアカメラからの入力
+    - マイクは内蔵を利用し、上部が左、下部を右とすると映像の向きとステレオの左右が同期する
 
 ### CHANGE
 
@@ -295,7 +306,6 @@ Sora Android SDK 2024.1.0 のリリースミスによりスキップしました
   `MODE_IN_COMMUNICATION` を使うように変更する
 - spotlight の映像ビットレートを 1000 に変更する
 
-
 ## 1.8.1
 
 ### UPDATE
@@ -311,7 +321,7 @@ Sora Android SDK 2024.1.0 のリリースミスによりスキップしました
 - Video chat に client ID を指定する選択肢を追加する
 - Video chat に解像度固定の選択肢を追加する
 - Video chat のビットレートに 10Mbps, 15Mbps, 20Mbps, 30Mbps を追加する
-    - 15Mbps までが Sora のサポート範囲
+  - 15Mbps までが Sora のサポート範囲
 - Video chat に signalingNotifyMetadata を追加する
 
 ## 1.8.0
@@ -332,18 +342,17 @@ Sora Android SDK 2024.1.0 のリリースミスによりスキップしました
 ### CHANGE
 
 - SDP semantics の選択肢のデフォルト値を Unified Plan に変更する
-    - upstream のシグナリングで audio や video が false の場合でも、他の配信者の
+  - upstream のシグナリングで audio や video が false の場合でも、他の配信者の
     audio や video のトラックを受信する SDP が Sora から offer されるように変わる
-    - Plan B のときには audio false のときには audio track が SDP に含まれず、
-    video が false のときには video のトラックが含まれなかった
-        - Plan B の制限による挙動だった
+  - Plan B のときには audio false のときには audio track が SDP に含まれず、
+    video が false のときには video のトラックが含まれなかった - Plan B の制限による挙動だった
 
 ### ADD
 
 - Effected video chat にセピアトーン化のエフェクトを追加する
-    - Thanks to @daneko
+  - Thanks to @daneko
 - Effected video chat にデバッグ、比較用としてなにもしないエフェクトを追加する
-    - Thanks to @daneko
+  - Thanks to @daneko
 
 ### CHANGE
 
@@ -352,16 +361,16 @@ Sora Android SDK 2024.1.0 のリリースミスによりスキップしました
 ### FIX
 
 - Effected video chat で I420 から変換された RGB データがずれていた問題を修正する
-    - これに伴い、NV12/NV21 の経由を廃止し、I420 と RGBA の直接の相互変換する
-    - Thanks to @daneko
+  - これに伴い、NV12/NV21 の経由を廃止し、I420 と RGBA の直接の相互変換する
+  - Thanks to @daneko
 
 ## 1.7.1
 
 ### ADD
 
 - Video chat, Voice chat, Spotlight の各セットアップに sdpSemantics 選択肢を追加する
-    - ただし、Sora Android SDK の動作確認は Plan B のみで Unified Plan は試験的実装
-    - Voice chat は Unified Plan 選択時にエラーで接続できない
+  - ただし、Sora Android SDK の動作確認は Plan B のみで Unified Plan は試験的実装
+  - Voice chat は Unified Plan 選択時にエラーで接続できない
 
 ### UPDATE
 
@@ -387,16 +396,16 @@ Sora Android SDK 2024.1.0 のリリースミスによりスキップしました
 - SDK のバージョンを 1.6.0 に上げる
 - Android Studio 3.1.3 に対応する
 - PermissionsDispatcher を 3.2.0 に上げる
-    - lint バグフィックスにより不要な SuppressLint アノテーションを削除する
+  - lint バグフィックスにより不要な SuppressLint アノテーションを削除する
 - Kotlin を 1.2.51 に上げる
 - START ボタンをオプションリストの上に移動する
 - CircleCI キャッシュを利用しない
-    - ときどきビルドが失敗するが、キャッシュ利用しないと成功するため
-    - NDK セットアップに 37 sec, androidDependencies に 43 sec 程度
-    - ただしキャッシュがビルド失敗の根本原因かは不明
+  - ときどきビルドが失敗するが、キャッシュ利用しないと成功するため
+  - NDK セットアップに 37 sec, androidDependencies に 43 sec 程度
+  - ただしキャッシュがビルド失敗の根本原因かは不明
 - Anko を 0.10.5 に上げる
 - スクリーンキャスト画面を `TYPE_APPLICATION_OVERLAY` に変更する
-    - `TYPE_PHONE` が deprecated になったため
+  - `TYPE_PHONE` が deprecated になったため
 - Android 8 の Notification Channel に対応する
 - Video chat, Voice chat, Spotlight chat, effected video chat の音量を
   ボリュームキーから制御できるようにする
@@ -408,8 +417,8 @@ Sora Android SDK 2024.1.0 のリリースミスによりスキップしました
 ### ADD
 
 - スポットライト機能のデモを追加する
-    - 通信の方向は BIDIRECTIONAL(upstream) と MULTI_DOWN(downstream) を選択可能
-    - メディアは映像+音声か音声のみを選択可能
+  - 通信の方向は BIDIRECTIONAL(upstream) と MULTI_DOWN(downstream) を選択可能
+  - メディアは映像+音声か音声のみを選択可能
 
 ### CHANGE
 
@@ -430,7 +439,8 @@ Sora Android SDK 2024.1.0 のリリースミスによりスキップしました
 ### CHANGE
 
 - onByteBufferFrameCaptured が onFrameCaptured が置き換えられた変更に対応する
-    - cf. <https://webrtc-review.googlesource.com/c/src/+/43022>
+
+  - cf. <https://webrtc-review.googlesource.com/c/src/+/43022>
 
 - audio disabled のときは upstream/downstream ともに音声は無効にする
 - SoreRemoteRendererSlot の誤植を修正する
@@ -482,8 +492,8 @@ Sora Android SDK 2024.1.0 のリリースミスによりスキップしました
 
 - SDK のバージョンを 1.4.0 に上げる
 - Android Studio 3.0 に対応する
-    - gradle: 4.1
-    - android-maven-gradle-plugin: 2.0
+  - gradle: 4.1
+  - android-maven-gradle-plugin: 2.0
 - Kotlin 1.2.10 に上げる
 
 ## 1.3.1
@@ -493,7 +503,7 @@ Sora Android SDK 2024.1.0 のリリースミスによりスキップしました
 - SDK のバージョンを 1.3.1 に上げる
 - Kotlin を 1.1.51 に上げる
 - CircleCI でのビルドを設定する
-- コマンドラインビルドのエラー回避のため、 org.jetbrains:annotations をcompile 依存から除外する
+- コマンドラインビルドのエラー回避のため、 org.jetbrains:annotations を compile 依存から除外する
 
 ### CHANGE
 
