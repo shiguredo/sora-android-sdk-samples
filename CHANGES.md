@@ -11,6 +11,11 @@
 
 ## develop
 
+## sora-andoroid-sdk-2024.2.0
+
+- [UPDATE] システム条件を更新する
+  - Sora Android SDK 2024.2.0 以降
+  - @miosakuma
 - [UPDATE] Github Actions の actions/setup-java@v4 にあげる
   - @miosakuma
 - [FIX] Github Actions でのビルドを Java 17 にする
