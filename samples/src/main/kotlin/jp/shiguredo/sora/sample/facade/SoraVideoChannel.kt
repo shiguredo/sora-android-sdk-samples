@@ -56,6 +56,7 @@ class SoraVideoChannel(
     private val videoAv1Params: Any? = null,
     private val videoH264Params: Any? = null,
     private val simulcast: Boolean = false,
+    private val simulcastMulticodec: Boolean? = null,
     private val simulcastRid: SoraVideoOption.SimulcastRid? = null,
     private val videoFPS: Int = 30,
     private val fixedResolution: Boolean = false,
@@ -267,6 +268,10 @@ class SoraVideoChannel(
 
             if (this@SoraVideoChannel.simulcast) {
                 enableSimulcast(simulcastRid)
+            }
+
+            if (this@SoraVideoChannel.simulcastMulticodec == true) {
+                enableSimulcastMulticodec(simulcastRid)
             }
 
             if (this@SoraVideoChannel.spotlight) {

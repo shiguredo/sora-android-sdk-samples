@@ -20,8 +20,8 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/white"
                 android:layout_margin="10dp"
+                android:background="@android:color/white"
                 android:padding="10dp">
 
                 <EditText
@@ -29,73 +29,94 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/channelId"
+                    android:hint="チャネル名"
                     android:inputType="text"
-                    android:hint="チャネル名" />
+                    android:text="@string/channelId" />
 
                 <Button
                     android:id="@+id/start"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:background="#F06292"
                     android:layout_margin="10dp"
-                    android:text="接続する" />
+                    android:background="#F06292"
+                    android:text="接続する"
+                    android:textColor="@android:color/white" />
 
                 <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/roleSelection"/>
+                    android:id="@+id/roleSelection"
+                    layout="@layout/signaling_selection" />
+
                 <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/multistreamSelection"/>
+                    android:id="@+id/multistreamSelection"
+                    layout="@layout/signaling_selection" />
+
                 <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/videoCodecSelection"/>
+                    android:id="@+id/videoCodecSelection"
+                    layout="@layout/signaling_selection" />
+
                 <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/videoEnabledSelection"/>
+                    android:id="@+id/videoEnabledSelection"
+                    layout="@layout/signaling_selection" />
+
                 <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/audioEnabledSelection"/>
+                    android:id="@+id/audioEnabledSelection"
+                    layout="@layout/signaling_selection" />
+
                 <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/videoBitRateSelection"/>
+                    android:id="@+id/videoBitRateSelection"
+                    layout="@layout/signaling_selection" />
+
                 <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/videoSizeSelection"/>
+                    android:id="@+id/videoSizeSelection"
+                    layout="@layout/signaling_selection" />
+
                 <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/resolutionChangeSelection"/>
+                    android:id="@+id/resolutionChangeSelection"
+                    layout="@layout/signaling_selection" />
+
                 <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/resolutionAdjustmentSelection"/>
+                    android:id="@+id/resolutionAdjustmentSelection"
+                    layout="@layout/signaling_selection" />
+
                 <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/audioCodecSelection"/>
+                    android:id="@+id/audioCodecSelection"
+                    layout="@layout/signaling_selection" />
+
                 <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/fpsSelection"/>
+                    android:id="@+id/fpsSelection"
+                    layout="@layout/signaling_selection" />
+
                 <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/audioBitRateSelection"/>
+                    android:id="@+id/audioBitRateSelection"
+                    layout="@layout/signaling_selection" />
+
                 <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/audioStereoSelection"/>
+                    android:id="@+id/audioStereoSelection"
+                    layout="@layout/signaling_selection" />
+
                 <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/simulcastRidSelection"/>
+                    android:id="@+id/simulcastMulticodecSelection"
+                    layout="@layout/signaling_selection" />
+
                 <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/clientIdSelection"/>
+                    android:id="@+id/simulcastRidSelection"
+                    layout="@layout/signaling_selection" />
+
                 <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/bundleIdSelection"/>
+                    android:id="@+id/clientIdSelection"
+                    layout="@layout/signaling_selection" />
+
                 <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/dataChannelSignalingSelection"/>
+                    android:id="@+id/bundleIdSelection"
+                    layout="@layout/signaling_selection" />
+
                 <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/ignoreDisconnectWebSocketSelection"/>
+                    android:id="@+id/dataChannelSignalingSelection"
+                    layout="@layout/signaling_selection" />
+
+                <include
+                    android:id="@+id/ignoreDisconnectWebSocketSelection"
+                    layout="@layout/signaling_selection" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>

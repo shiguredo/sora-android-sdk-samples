@@ -56,6 +56,7 @@ class SimulcastActivity : AppCompatActivity() {
     private var spotlightFocusRid: SoraVideoOption.SpotlightRid? = null
     private var spotlightUnfocusRid: SoraVideoOption.SpotlightRid? = null
     private var simulcastEnabled: Boolean = true
+    private var simulcastMulticodecEnabled: Boolean = false
     private var fps: Int = 30
     private var fixedResolution = false
     private var resolutionAdjustment: SoraVideoOption.ResolutionAdjustment? = null
@@ -146,7 +147,7 @@ class SimulcastActivity : AppCompatActivity() {
             else -> null
         }
 
-        simulcastEnabled = when (intent.getStringExtra("SIMULCAST_ENABLED")) {
+        simulcastEnabled = when (intent.getStringExtra("SIMULCAST")) {
             "有効" -> true
             "無効" -> false
             else -> true
@@ -188,6 +189,12 @@ class SimulcastActivity : AppCompatActivity() {
             if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             }
+        }
+
+        simulcastMulticodecEnabled = when (intent.getStringExtra("SIMULCAST_MULTICODEC")) {
+            "有効" -> true
+            "無効" -> false
+            else -> false
         }
 
         simulcastRid = when (intent.getStringExtra("SIMULCAST_RID")) {
@@ -345,6 +352,7 @@ class SimulcastActivity : AppCompatActivity() {
             videoWidth = videoWidth,
             videoHeight = videoHeight,
             simulcast = simulcastEnabled,
+            simulcastMulticodec = simulcastMulticodecEnabled,
             simulcastRid = simulcastRid,
             videoFPS = fps,
             fixedResolution = fixedResolution,
