@@ -69,6 +69,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    namespace 'jp.shiguredo.sora.sample'
 }
 
 configurations {

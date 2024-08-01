@@ -42,6 +42,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    namespace 'jp.shiguredo.webrtc.video.effector'
 }
 
 ktlint {
@@ -62,7 +63,7 @@ dependencies {
     } else {
         // external dependency
         api("com.github.shiguredo:sora-android-sdk:${sora_android_sdk_version}") {
-            transitive = true
+            // transitive = true
         }
     }
 
