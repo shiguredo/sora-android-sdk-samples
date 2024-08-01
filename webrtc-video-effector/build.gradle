@@ -42,6 +42,8 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    // AGP 8.0 からモジュールレベルの build script 内に namespace が必要になった
+    // 参考: https://developer.android.com/build/releases/past-releases/agp-8-0-0-release-notes#namespace-dsl
     namespace 'jp.shiguredo.webrtc.video.effector'
 }
 
