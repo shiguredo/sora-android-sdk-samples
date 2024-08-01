@@ -19,6 +19,8 @@
       - Android マニフェストに定義されていた package を削除
       - ビルドファイルに namespace を追加
     - ビルドファイルの dependencies の transitive をコメントアウト
+  - AGP 8.5.0 対応で発生したビルドスクリプトのエラーを手動で修正した内容
+    - AGP 8.0 から buildConfig がデフォルト false になったため、true に設定する
   - @zztkm
 
 ## sora-andoroid-sdk-2024.2.0
