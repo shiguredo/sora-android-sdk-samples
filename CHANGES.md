@@ -34,6 +34,9 @@
   - androidx.compose.material:material-icons-extended を 1.6.8 に上げる
   - androidx.activity:activity-compose を 1.9.1 に上げる
   - @zztkm
+- [UPDATE] compileSdkVersion を 34 に上げる
+  - Android API レベル 34 以降でコンパイルする必要がある依存ライブラリがあるため
+  - @zztkm
 
 ## sora-andoroid-sdk-2024.2.0
 
