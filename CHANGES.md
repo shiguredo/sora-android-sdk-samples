@@ -22,6 +22,18 @@
   - AGP 8.5.0 対応で発生したビルドスクリプトのエラーを手動で修正した内容
     - AGP 8.0 から buildConfig がデフォルト false になったため、true に設定する
   - @zztkm
+- [UPDATE] 依存ライブラリーのバージョンを上げる
+  - com.google.code.gson:gson を 2.11.0 に上げる
+  - androidx.appcompat:appcompat を 1.7.0 に上げる
+  - androidx.recyclerview:recyclerview を 1.3.2 に上げる
+  - com.google.android.material:material を 1.12.0 に上げる
+  - androidx.navigation:navigation-fragment-ktx を 2.7.7 に上げる
+  - androidx.navigation:navigation-ui-ktx を 2.7.7 に上げる
+  - androidx.compose.ui:ui を 1.6.8 に上げる
+  - androidx.compose.material:material を 1.6.8 に上げる
+  - androidx.compose.material:material-icons-extended を 1.6.8 に上げる
+  - androidx.activity:activity-compose を 1.9.1 に上げる
+  - @zztkm
 
 ## sora-andoroid-sdk-2024.2.0
 
