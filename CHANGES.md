@@ -37,6 +37,9 @@
 - [UPDATE] compileSdkVersion を 34 に上げる
   - Android API レベル 34 以降でコンパイルする必要がある依存ライブラリがあるため
   - @zztkm
+- [UPDATE] Kotlin のバージョンを 1.9.25 に上げる
+  - 合わせて、kotlinCompilerExtensionVersion を 1.5.15 に上げる
+  - @miosakuma
 
 ## sora-andoroid-sdk-2024.2.0
 
