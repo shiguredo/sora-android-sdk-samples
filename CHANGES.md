@@ -39,7 +39,7 @@
   - @zztkm
 - [UPDATE] Kotlin のバージョンを 1.9.25 に上げる
   - 合わせて、kotlinCompilerExtensionVersion を 1.5.15 に上げる
-  - @miosakuma
+  - @zztkm
 
 ## sora-andoroid-sdk-2024.2.0
 
