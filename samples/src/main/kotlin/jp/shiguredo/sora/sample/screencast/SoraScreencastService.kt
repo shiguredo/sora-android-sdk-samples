@@ -204,6 +204,7 @@ class SoraScreencastService : Service() {
     private fun sendInvalidateBroadcast() {
         // MainActivity に画面更新を促す Intent を送る
         val intent = Intent("ACTION_INVALIDATE_VIEW")
+        intent.setPackage(applicationContext.packageName)
         sendBroadcast(intent)
     }
 
