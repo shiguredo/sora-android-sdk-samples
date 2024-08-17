@@ -58,11 +58,13 @@
         <!--
             ScreencastSetupActivity は Pixel で1つのアプリにこのサンプル自体を選んだ際に、
             配信が失敗してしまう対策として android:launchMode="singleInstance" としている
+            またサンプルアプリ自体が選択候補に出るように android:taskAffinity を設定している
         -->
         <activity
             android:name=".ui.ScreencastSetupActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:label="スクリーンキャスト"
+            android:taskAffinity=".secondary"
             android:launchMode="singleInstance"
             android:exported="true"  />
         <activity

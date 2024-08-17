@@ -101,6 +101,11 @@ class SoraScreencastServiceStarter(
         )
         intent.putExtra("SCREENCAST_REQUEST", request)
         activity.startService(intent)
+        /*
+         * startService を行った Activity は1つのアプリにもなれないので、
+         * アプリ切り替えにも現れないよう finishAndRemoveTask でタスクごと消す
+         */
+        activity.finishAndRemoveTask()
         return true
     }
 }

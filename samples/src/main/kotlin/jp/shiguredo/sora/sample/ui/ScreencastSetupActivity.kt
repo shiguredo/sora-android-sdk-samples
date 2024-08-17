@@ -50,21 +50,6 @@ class ScreencastSetupActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        /*
-         * 1つのアプリ にこのサンプル以外を選んだ場合にはこの Activity が再表示されてしまい、
-         * 他のアプリを選んだ場合と一貫性がないので、 SoraScreencastService が動作中の場合は
-         * MainActivity に戻す
-         */
-        if (SoraScreencastService.isRunning()) {
-            val intent = Intent(this, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(intent)
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         screencastStarter?.onActivityResult(requestCode, resultCode, data)
