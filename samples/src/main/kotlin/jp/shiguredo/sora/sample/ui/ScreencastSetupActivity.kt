@@ -4,7 +4,6 @@ import android.annotation.TargetApi
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.materialspinner.MaterialSpinner
@@ -51,6 +50,21 @@ class ScreencastSetupActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        /*
+         * 1つのアプリ にこのサンプル以外を選んだ場合にはこの Activity が再表示されてしまい、
+         * 他のアプリを選んだ場合と一貫性がないので、 SoraScreencastService が動作中の場合は
+         * MainActivity に戻す
+         */
+        if (SoraScreencastService.isRunning()) {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         screencastStarter?.onActivityResult(requestCode, resultCode, data)
@@ -91,22 +105,10 @@ class ScreencastSetupActivity : AppCompatActivity() {
             serviceClass = SoraScreencastService::class
         )
         screencastStarter?.start()
-        showNavigationMessage()
-    }
-
-    private fun showNavigationMessage() {
-        AlertDialog.Builder(this)
-            .setPositiveButton("OK") { _, _ -> goToHome() }
-            .setCancelable(false)
-            .setMessage("スクリーンキャストを終了するときは上のナビゲーションバーから終了ボタンを押してください。")
-            .show()
-    }
-
-    private fun goToHome() {
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.addCategory(Intent.CATEGORY_HOME)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(intent)
+        /*
+         * 1つのアプリ をスクリーンキャスト時にはここに下に何か書いても、
+         * すでに選ばれたアプリに遷移しているためユーザーの視界に入ることはない
+         */
     }
 
     private fun selectedItem(spinner: MaterialSpinner): String {
