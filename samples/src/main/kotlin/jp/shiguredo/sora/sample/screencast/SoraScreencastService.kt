@@ -217,7 +217,7 @@ class SoraScreencastService : Service() {
         capturer?.let {
             if (capturing) {
                 capturing = false
-                SoraLogger.d(TAG, "startCapture")
+                SoraLogger.d(TAG, "stopCapture")
                 it.stopCapture()
             }
         }
