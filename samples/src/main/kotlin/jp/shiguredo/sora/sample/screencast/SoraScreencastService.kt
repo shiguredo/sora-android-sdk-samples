@@ -12,6 +12,7 @@ import android.media.projection.MediaProjection
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.view.LayoutInflater
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -296,7 +297,7 @@ class SoraScreencastService : Service() {
     }
 
     private fun closeChannel() {
-        val handler = Handler()
+        val handler = Handler(Looper.getMainLooper())
         handler.post {
             SoraLogger.d(TAG, "closeChannel")
             mediaChannel?.disconnect()
