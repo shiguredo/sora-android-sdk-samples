@@ -11,6 +11,13 @@
 
 ## develop
 
+- [UPDATE] 1つのアプリをキャストした際の不自然な挙動を改善する
+  - `CalledFromWrongThreadException` が発生する問題を修正
+  - `Could not create virtual display: WebRTC_ScreenCapture` が発生する問題を修正
+  - キャストした画面の映像を飛ばすために、MainActivity に画面更新を促す Intent を送る処理を追加
+    - サンプルアプリは画面内に動きがなく、画面を動かすまで映像が飛ばない問題があったため
+  - Pixel シリーズで動作確認済
+  - @tnoho
 - [UPDATE] Android Gradle Plugin (AGP) を 8.5.0 にアップグレードする
   - Android Studion の AGP Upgrade Assistant を利用してアップグレードされた内容
     - `com.android.tools.build:gradle` を 8.5.0 に上げる
