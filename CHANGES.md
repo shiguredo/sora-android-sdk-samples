@@ -11,13 +11,6 @@
 
 ## develop
 
-- [UPDATE] 1つのアプリをキャストした際の不自然な挙動を改善する
-  - `CalledFromWrongThreadException` が発生する問題を修正
-  - `Could not create virtual display: WebRTC_ScreenCapture` が発生する問題を修正
-  - キャストした画面の映像を飛ばすために、MainActivity に画面更新を促す Intent を送る処理を追加
-    - サンプルアプリは画面内に動きがなく、画面を動かすまで映像が飛ばない問題があったため
-  - Pixel シリーズで動作確認済
-  - @tnoho
 - [UPDATE] Android Gradle Plugin (AGP) を 8.5.0 にアップグレードする
   - Android Studion の AGP Upgrade Assistant を利用してアップグレードされた内容
     - `com.android.tools.build:gradle` を 8.5.0 に上げる
@@ -47,6 +40,15 @@
 - [UPDATE] Kotlin のバージョンを 1.9.25 に上げる
   - 合わせて、kotlinCompilerExtensionVersion を 1.5.15 に上げる
   - @zztkm
+- [UPDATE] 1つのアプリをキャストした際の挙動を改善する
+  - キャストした画面の映像を飛ばすために、MainActivity に画面更新を促す Intent を送る処理を追加
+    - サンプルアプリは画面内に動きがなく、画面を動かすまで映像が飛ばない問題があったため
+  - 動作確認は Android 14 の Pixel シリーズでのみ行っており、他の端末での動作は未確認
+  - @tnoho
+- [FIX] `Handler (Looper looper)` に `getMainLooper()` で取得した、メインスレッドに関連付けられた Looper を利用するように修正する
+  - `Handler ()` は非推奨になっており、現在のスレッドに関連付けられた Looper を利用する事で以下の問題が発生していた
+  - スクリーンキャストが正常終了しなかった場合に、SoraScreencastService.closeChannel の処理が main スレッド以外で実行されて `CalledFromWrongThreadException` が発生していした問題を修正した
+  - SoraMediaChannel.Listener.onClose の呼び出しにより SoraScreencastService.closeChannel を実行するときに closeChannel 内の Handler() 呼び出しがブロッキングされ、アプリが停止してしまう問題を修正した
 
 ## sora-andoroid-sdk-2024.2.0
 
