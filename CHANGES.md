@@ -49,6 +49,7 @@
   - `Handler ()` は非推奨になっており、現在のスレッドに関連付けられた Looper を利用する事で以下の問題が発生していた
   - スクリーンキャストが正常終了しなかった場合に、SoraScreencastService.closeChannel の処理が main スレッド以外で実行されて `CalledFromWrongThreadException` が発生していした問題を修正した
   - SoraMediaChannel.Listener.onClose の呼び出しにより SoraScreencastService.closeChannel を実行するときに closeChannel 内の Handler() 呼び出しがブロッキングされ、アプリが停止してしまう問題を修正した
+  - @tnoho
 
 ## sora-andoroid-sdk-2024.2.0
 
