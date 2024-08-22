@@ -48,9 +48,12 @@
     - Activity のタスクを分けることに合わせて画面遷移の見直しを行った
   - 動作確認は Android 14 の Pixel 端末でのみ行っており、他の端末での動作は未確認
   - @tnoho
-- [FIX] `Handler ()` で現在のスレッドに関連付けられた Looper を利用するようになっていたことで発生していた以下の問題を `Handler (Looper looper)` に `getMainLooper()` で取得した、メインスレッドに関連付けられた Looper を利用するようにして修正する
-  - スクリーンキャストが正常終了しなかった場合に、`SoraScreencastService.closeChannel()` の処理が main スレッド以外で実行されて `CalledFromWrongThreadException` が発生していた問題
-  - `SoraMediaChannel.Listener.onClose()` の呼び出しにより `SoraScreencastService.closeChannel()` を実行するときに内部の `Handler()` 呼び出しがブロッキングされ、アプリが停止してしまう問題
+- [FIX] `Handler ()` で現在のスレッドに関連付けられた Looper を利用するようになっていたことで発生していた以下の問題を修正する
+  - 発生した問題
+    - スクリーンキャストが正常終了しなかった場合に、`SoraScreencastService.closeChannel()` の処理が main スレッド以外で実行されて `CalledFromWrongThreadException` が発生する
+    - `SoraMediaChannel.Listener.onClose()` の呼び出しにより `SoraScreencastService.closeChannel()` を実行するときに内部の `Handler()` 呼び出しがブロッキングされ、アプリが停止するケースがあった
+  - 修正内容
+   - `Handler (Looper looper)` に `getMainLooper()` で取得した、メインスレッドに関連付けられた Looper を利用するようにした
   - @tnoho
 
 ## sora-andoroid-sdk-2024.2.0
