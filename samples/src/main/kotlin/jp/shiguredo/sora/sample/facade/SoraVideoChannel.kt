@@ -408,6 +408,10 @@ class SoraVideoChannel(
         localAudioTrack?.setEnabled(!mute)
     }
 
+    fun setAudioVolume(msid: String, volume: Double) {
+        remoteRenderersSlot?.setVolume(msid, volume)
+    }
+
     fun disconnect() {
         stopCapturer()
         mediaChannel?.disconnect()
@@ -436,5 +440,13 @@ class SoraVideoChannel(
         egl?.release()
         egl = null
         listener = null
+    }
+
+    fun listMsids(): List<String> {
+        return remoteRenderersSlot?.listMsids() ?: emptyList()
+    }
+
+    fun getMsidByIndex(index: Int): String? {
+        return remoteRenderersSlot?.listMsids()?.get(index)
     }
 }

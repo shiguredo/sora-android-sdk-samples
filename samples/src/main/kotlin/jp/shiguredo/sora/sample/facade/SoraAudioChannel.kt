@@ -57,10 +57,23 @@ class SoraAudioChannel(
             disconnect()
         }
 
+        // ローカル (自分の) ストリームが追加されたときに呼ばれる
         override fun onAddLocalStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
-            SoraLogger.d(TAG, "[audio_channel] @onAddLocalStream")
+            SoraLogger.d(TAG, "[audio_channel] @onAddLocalStream: connectionId=${mediaChannel.connectionId}")
             if (ms.audioTracks.size > 0) {
                 localAudioTrack = ms.audioTracks[0]
+            }
+        }
+
+        // リモート (自分以外の) ストリームが追加されたときに呼ばれる
+        override fun onAddRemoteStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
+            // TODO: 相手が誰なのかを知る方法はあるか？
+            SoraLogger.d(TAG, "[audio_channel] @onAddRemoteStream")
+            if (ms.audioTracks.size > 0) {
+                remoteAudioTrack = ms.audioTracks[0]
+                // https://chromium.googlesource.com/external/webrtc/+/HEAD/sdk/android/api/org/webrtc/AudioTrack.java
+                // setVolume は 0 から 10 までの値を取る
+                remoteAudioTrack?.setVolume(0.0)
             }
         }
 
@@ -72,6 +85,7 @@ class SoraAudioChannel(
 
     private var mediaChannel: SoraMediaChannel? = null
     private var localAudioTrack: AudioTrack? = null
+    private var remoteAudioTrack: AudioTrack? = null
 
     private var closed = false
 
@@ -118,6 +132,7 @@ class SoraAudioChannel(
             handler.post {
                 listener?.onClose(this@SoraAudioChannel)
                 localAudioTrack = null
+                remoteAudioTrack = null
             }
         }
     }

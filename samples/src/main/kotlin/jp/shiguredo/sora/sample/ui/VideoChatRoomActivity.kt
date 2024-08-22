@@ -319,10 +319,12 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
         override fun onAddRemoteRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {
             ui?.addRenderer(renderer)
+            ui?.setMsids(channel.listMsids())
         }
 
         override fun onRemoveRemoteRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {
             ui?.removeRenderer(renderer)
+            ui?.setMsids(channel.listMsids())
         }
 
         override fun onAttendeesCountUpdated(channel: SoraVideoChannel, attendees: ChannelAttendeesCount) {
@@ -391,6 +393,25 @@ class VideoChatRoomActivity : AppCompatActivity() {
         muted = !muted
         channel?.mute(muted)
     }
+
+    internal fun toggleMutedTest() {
+        if (muted) {
+            ui?.showMuteButtonTest()
+            // 現在選択されている msid (connectionID を内部的には MediaStream id として扱っている) の音量を 3 にする
+            // 3 でも変化を感じられたので
+            ui?.getSelectedMsid()?.let {
+                channel?.setAudioVolume(it, 3.0)
+            }
+        } else {
+            ui?.showUnmuteButtonTest()
+            // 現在選択されている msid の音量を 0.0 にする
+            ui?.getSelectedMsid()?.let {
+                channel?.setAudioVolume(it, 0.5)
+            }
+        }
+        muted = !muted
+        channel?.mute(muted)
+    }
 }
 
 class VideoChatRoomActivityUI(
@@ -415,8 +436,11 @@ class VideoChatRoomActivityUI(
             height = SoraScreenUtil.size(activity).y - dp2px(20 * 2 + 100)
         )
         binding.toggleMuteButton.setOnClickListener { activity.toggleMuted() }
+        // (仮)setVolume で音量を切り替えるためのボタン
+        binding.toggleMuteButtonTest.setOnClickListener { activity.toggleMutedTest() }
         binding.switchCameraButton.setOnClickListener { activity.switchCamera() }
         binding.closeButton.setOnClickListener { activity.close() }
+        binding.msidSelection.name.text = "音量調整する connectionID"
     }
 
     internal fun changeState(colorCode: String) {
@@ -450,6 +474,30 @@ class VideoChatRoomActivityUI(
         binding.toggleMuteButton.setImageDrawable(
             resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
         )
+    }
+
+    internal fun showUnmuteButtonTest() {
+        binding.toggleMuteButtonTest.setImageDrawable(
+            resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
+        )
+    }
+
+    internal fun showMuteButtonTest() {
+        binding.toggleMuteButtonTest.setImageDrawable(
+            resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
+        )
+    }
+
+    /**
+     * 音量調整対象の connectionID 一覧を更新する
+     */
+    internal fun setMsids(msids: List<String>) {
+        SoraLogger.d("kensaku", "setMsids: $msids")
+        binding.msidSelection.spinner.setItems(msids)
+    }
+
+    internal fun getSelectedMsid(): String {
+        return binding.msidSelection.spinner.getItems<String>()[binding.msidSelection.spinner.selectedIndex]
     }
 
     private fun dp2px(d: Int): Int = (density * d).toInt()

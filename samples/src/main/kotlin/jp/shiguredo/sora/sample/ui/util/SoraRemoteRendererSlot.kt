@@ -2,6 +2,7 @@ package jp.shiguredo.sora.sample.ui.util
 
 import android.content.Context
 import jp.shiguredo.sora.sdk.util.SoraLogger
+import org.webrtc.AudioTrack
 import org.webrtc.EglBase
 import org.webrtc.MediaStream
 import org.webrtc.SurfaceViewRenderer
@@ -24,6 +25,8 @@ class SoraRemoteRendererSlot(
 
     val workingRenderers = HashMap<String, SurfaceViewRenderer>()
     val workingTracks = HashMap<String, VideoTrack>()
+    // ここに Volume 持たせるのはこの class の目的外だと思うので、仮置きとしておく
+    val workingVolumeTracks = HashMap<String, AudioTrack>()
 
     fun onAddRemoteStream(ms: MediaStream) {
         SoraLogger.d(TAG, "onAddRemoteStream:${ms.id}")
@@ -36,6 +39,10 @@ class SoraRemoteRendererSlot(
         listener?.onAddRenderer(renderer)
 
         val track = ms.videoTracks[0]
+        if (ms.audioTracks.size > 0) {
+            val audioTrack = ms.audioTracks[0]
+            workingVolumeTracks[ms.id] = audioTrack
+        }
         workingRenderers.put(ms.id, renderer)
         workingTracks.put(ms.id, track)
 
@@ -58,6 +65,7 @@ class SoraRemoteRendererSlot(
             }
             workingRenderers.remove(msid)
             workingTracks.remove(msid)
+            workingVolumeTracks.remove(msid)
         }
     }
 
@@ -65,6 +73,16 @@ class SoraRemoteRendererSlot(
         val renderer = SurfaceViewRenderer(context)
         renderer.init(eglContext, null)
         return renderer
+    }
+
+    fun setVolume(msid: String, volume: Double) {
+        if (workingVolumeTracks.containsKey(msid)) {
+            workingVolumeTracks[msid]?.setVolume(volume)
+        }
+    }
+
+    fun listMsids(): List<String> {
+        return workingVolumeTracks.keys.toList()
     }
 
     fun dispose() {
@@ -75,6 +93,7 @@ class SoraRemoteRendererSlot(
         }
         workingRenderers.clear()
         workingTracks.clear()
+        workingVolumeTracks.clear()
         listener = null
     }
 }
