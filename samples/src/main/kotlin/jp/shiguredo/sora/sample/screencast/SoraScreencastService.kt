@@ -12,6 +12,7 @@ import android.media.projection.MediaProjection
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.view.LayoutInflater
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -56,6 +57,9 @@ class SoraScreencastService : Service() {
 
         override fun onConnect(mediaChannel: SoraMediaChannel) {
             SoraLogger.d(TAG, "[screencast] @onConnected")
+            // MainActivity に画面更新を促す Intent を送る
+            // 取れるイベントの中では最も遅いが、このタイミングでも送信が開始されているとは限らない
+            sendInvalidateBroadcast()
         }
 
         override fun onClose(mediaChannel: SoraMediaChannel) {
@@ -198,12 +202,25 @@ class SoraScreencastService : Service() {
         }
     }
 
+    private fun sendInvalidateBroadcast() {
+        // MainActivity に画面更新を促す Intent を送る
+        val intent = Intent("ACTION_INVALIDATE_VIEW")
+        intent.setPackage(applicationContext.packageName)
+        sendBroadcast(intent)
+    }
+
     internal fun startCapturer() {
         capturer?.let {
             if (!capturing) {
                 capturing = true
                 SoraLogger.d(TAG, "startCapture")
                 val size = SoraScreenUtil.size(this)
+                /*
+                 * Pixel シリーズにおいてキャスト時に 1つのアプリ でこのサンプルを選び、
+                 * 下記の処理を呼び出した場合は失敗してしまう。
+                 * それに対する対策として ScreencastSetupActivity を
+                 * android:launchMode="singleInstance" にしている
+                 */
                 it.startCapture(
                     Math.round(size.x * req!!.videoScale),
                     Math.round(size.y * req!!.videoScale),
@@ -217,7 +234,7 @@ class SoraScreencastService : Service() {
         capturer?.let {
             if (capturing) {
                 capturing = false
-                SoraLogger.d(TAG, "startCapture")
+                SoraLogger.d(TAG, "stopCapture")
                 it.stopCapture()
             }
         }
@@ -280,7 +297,7 @@ class SoraScreencastService : Service() {
     }
 
     private fun closeChannel() {
-        val handler = Handler()
+        val handler = Handler(Looper.getMainLooper())
         handler.post {
             SoraLogger.d(TAG, "closeChannel")
             mediaChannel?.disconnect()

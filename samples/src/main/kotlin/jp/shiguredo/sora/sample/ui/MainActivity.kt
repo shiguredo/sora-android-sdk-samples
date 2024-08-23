@@ -1,16 +1,25 @@
 package jp.shiguredo.sora.sample.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.databinding.ActivityMainBinding
+import jp.shiguredo.sora.sample.screencast.SoraScreencastService
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.OnPermissionDenied
@@ -27,6 +36,21 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    // スクリーンキャストが開始された通知を受け取る BroadcastReceiver
+    // スクリーンキャストを 1つのアプリ で開始した場合はこのアプリだと画面内に動きがないので映像が飛ばない
+    // 強制的に映像を飛ばすため SoraScreencastService より開始したことを示す Intent を送って invalidate を実行する
+    private val invalidateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            // スクリーンキャストが実際に行われるまではタイムラグが発生しているので、
+            // あまりよくはないが 1000ms 後に invalidate を実行する
+            Handler(Looper.getMainLooper()).postDelayed({
+                // この関数で画面が再描画されスクリーンキャストに映る
+                window.decorView.rootView.invalidate()
+            }, 1000)
+        }
+    }
+
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onCreate(savedInstanceState: Bundle?) {
 
         SoraLogger.enabled = true
@@ -80,6 +104,22 @@ class MainActivity : AppCompatActivity() {
         binding.featureList.setHasFixedSize(true)
         binding.featureList.layoutManager = llm
         binding.featureList.adapter = adapter
+
+        // スクリーンキャストが開始された通知を受け取る BroadcastReceiver を登録
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(
+                invalidateReceiver, IntentFilter("ACTION_INVALIDATE_VIEW"),
+                RECEIVER_NOT_EXPORTED
+            )
+        } else {
+            registerReceiver(invalidateReceiver, IntentFilter("ACTION_INVALIDATE_VIEW"))
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // スクリーンキャストが開始された通知を受け取る BroadcastReceiver を解除
+        unregisterReceiver(invalidateReceiver)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -105,6 +145,16 @@ class MainActivity : AppCompatActivity() {
     @TargetApi(21)
     @NeedsPermission(Manifest.permission.RECORD_AUDIO)
     fun goToScreencastActivity() {
+        /*
+         * 1つのアプリ でこのサンプルを指定してスクリーンキャストを実行した場合、
+         * android:launchMode="singleInstance" で別タスクとした ScreencastSetupActivity は
+         * スクリーンキャストできないのでスクリーンキャスト実行中は遷移しないようにする
+         * 画面全体の場合や他のアプリを選択した場合は必要ないのに遷移しなくなるが許容する
+         */
+        if (SoraScreencastService.isRunning()) {
+            Toast.makeText(this, "スクリーンキャストは実行中です", Toast.LENGTH_SHORT).show()
+            return
+        }
         val intent = Intent(this, ScreencastSetupActivity::class.java)
         startActivity(intent)
     }

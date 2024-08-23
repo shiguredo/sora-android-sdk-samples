@@ -40,6 +40,21 @@
 - [UPDATE] Kotlin のバージョンを 1.9.25 に上げる
   - 合わせて、kotlinCompilerExtensionVersion を 1.5.15 に上げる
   - @zztkm
+- [UPDATE] スクリーンキャストサンプルで 1 つのアプリを選択して配信した際の挙動を改善する
+  - スクリーンキャストの映像を送信するために、MainActivity に画面更新を促す Intent を送る処理を追加
+    - スクリーンキャストサンプルは画面内に動きがなく、画面を動かすまで映像が送信されない問題があったため
+  - `Could not create virtual display` というエラーが出て 1 つのアプリでスクリーンキャストできない問題を修正
+    -  SoraScreencastService を起動する Activity タスクを分けることで回避できることがわかったため、`ScreencastSetupActivity` の launchMode を `singleInstance` に変更した
+    - Activity のタスクを分けることに合わせて画面遷移の見直しを行った
+  - 動作確認は Android 14 の Pixel 端末でのみ行っており、他の端末での動作は未確認
+  - @tnoho
+- [FIX] `Handler ()` で現在のスレッドに関連付けられた Looper を利用するようになっていたことで発生していた以下の問題を修正する
+  - 発生した問題
+    - スクリーンキャストが正常終了しなかった場合に、`SoraScreencastService.closeChannel()` の処理が main スレッド以外で実行されて `CalledFromWrongThreadException` が発生する
+    - `SoraMediaChannel.Listener.onClose()` の呼び出しにより `SoraScreencastService.closeChannel()` を実行するときに内部の `Handler()` 呼び出しがブロッキングされ、アプリが停止するケースがあった
+  - 修正内容
+   - `Handler (Looper looper)` に `getMainLooper()` で取得した、メインスレッドに関連付けられた Looper を利用するようにした
+  - @tnoho
 
 ## sora-andoroid-sdk-2024.2.0
 
