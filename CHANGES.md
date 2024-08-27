@@ -11,6 +11,10 @@
 
 ## develop
 
+- [UPDATE] システム条件を更新する
+  - Android Studio 2024.1.1 以降
+  - WebRTC SFU Sora 2024.1.0 以降
+  - @miosakuma
 - [UPDATE] Android Gradle Plugin (AGP) を 8.5.0 にアップグレードする
   - Android Studion の AGP Upgrade Assistant を利用してアップグレードされた内容
     - `com.android.tools.build:gradle` を 8.5.0 に上げる
