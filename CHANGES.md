@@ -11,6 +11,64 @@
 
 ## develop
 
+## sora-andoroid-sdk-2024.3.1
+
+**リリース日**: 2024-08-30
+
+- [UPDATE] システム条件を更新する
+  - Android Studio 2024.1.1 以降
+  - WebRTC SFU Sora 2024.1.0 以降
+  - Sora Android SDK 2024.3.1 以降
+  - @miosakuma
+- [UPDATE] Android Gradle Plugin (AGP) を 8.5.0 にアップグレードする
+  - Android Studion の AGP Upgrade Assistant を利用してアップグレードされた内容
+    - `com.android.tools.build:gradle` を 8.5.0 に上げる
+    - ビルドに利用される Gradle を 8.7 に上げる
+    - Android マニフェストからビルドファイルにパッケージを移動
+      - Android マニフェストに定義されていた package を削除
+      - ビルドファイルに namespace を追加
+    - ビルドファイルの dependencies の transitive をコメントアウト
+  - AGP 8.5.0 対応で発生したビルドスクリプトのエラーを手動で修正した内容
+    - AGP 8.0 から buildConfig がデフォルト false になったため、true に設定する
+  - @zztkm
+- [UPDATE] 依存ライブラリーのバージョンを上げる
+  - com.google.code.gson:gson を 2.11.0 に上げる
+  - androidx.appcompat:appcompat を 1.7.0 に上げる
+  - androidx.recyclerview:recyclerview を 1.3.2 に上げる
+  - com.google.android.material:material を 1.12.0 に上げる
+  - androidx.navigation:navigation-fragment-ktx を 2.7.7 に上げる
+  - androidx.navigation:navigation-ui-ktx を 2.7.7 に上げる
+  - androidx.compose.ui:ui を 1.6.8 に上げる
+  - androidx.compose.material:material を 1.6.8 に上げる
+  - androidx.compose.material:material-icons-extended を 1.6.8 に上げる
+  - androidx.activity:activity-compose を 1.9.1 に上げる
+  - @zztkm
+- [UPDATE] compileSdkVersion を 34 に上げる
+  - Android API レベル 34 以降でコンパイルする必要がある依存ライブラリがあるため
+  - @zztkm
+- [UPDATE] Kotlin のバージョンを 1.9.25 に上げる
+  - 合わせて、kotlinCompilerExtensionVersion を 1.5.15 に上げる
+  - @zztkm
+- [UPDATE] スクリーンキャストサンプルで 1 つのアプリを選択して配信した際の挙動を改善する
+  - スクリーンキャストの映像を送信するために、MainActivity に画面更新を促す Intent を送る処理を追加
+    - スクリーンキャストサンプルは画面内に動きがなく、画面を動かすまで映像が送信されない問題があったため
+  - `Could not create virtual display` というエラーが出て 1 つのアプリでスクリーンキャストできない問題を修正
+    -  SoraScreencastService を起動する Activity タスクを分けることで回避できることがわかったため、`ScreencastSetupActivity` の launchMode を `singleInstance` に変更した
+    - Activity のタスクを分けることに合わせて画面遷移の見直しを行った
+  - 動作確認は Android 14 の Pixel 端末でのみ行っており、他の端末での動作は未確認
+  - @tnoho
+- [FIX] `Handler ()` で現在のスレッドに関連付けられた Looper を利用するようになっていたことで発生していた以下の問題を修正する
+  - 発生した問題
+    - スクリーンキャストが正常終了しなかった場合に、`SoraScreencastService.closeChannel()` の処理が main スレッド以外で実行されて `CalledFromWrongThreadException` が発生する
+    - `SoraMediaChannel.Listener.onClose()` の呼び出しにより `SoraScreencastService.closeChannel()` を実行するときに内部の `Handler()` 呼び出しがブロッキングされ、アプリが停止するケースがあった
+  - 修正内容
+   - `Handler (Looper looper)` に `getMainLooper()` で取得した、メインスレッドに関連付けられた Looper を利用するようにした
+  - @tnoho
+
+## sora-andoroid-sdk-2024.3.0
+
+Sora Android SDK 2024.3.0 のリリース作業時に発生した問題によりスキップしました。
+
 ## sora-andoroid-sdk-2024.2.0
 
 - [UPDATE] システム条件を更新する
@@ -39,7 +97,7 @@
 
 ## sora-andoroid-sdk-2024.1.0
 
-Sora Android SDK 2024.1.0 のリリースミスによりスキップしました。
+Sora Android SDK 2024.1.0 のリリース作業時に発生した問題によりスキップしました。
 
 ## sora-andoroid-sdk-2023.2.0
 

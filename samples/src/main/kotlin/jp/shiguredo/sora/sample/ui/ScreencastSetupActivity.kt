@@ -4,7 +4,6 @@ import android.annotation.TargetApi
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.materialspinner.MaterialSpinner
@@ -21,7 +20,7 @@ class ScreencastSetupActivity : AppCompatActivity() {
         val TAG = ScreencastSetupActivity::class.simpleName
     }
 
-    private val videoCodecOptions = listOf("VP9", "VP8", "H264", "AV1")
+    private val videoCodecOptions = listOf("VP9", "VP8", "H264", "H265", "AV1")
     private val audioCodecOptions = listOf("OPUS")
     private val multistreamOptions = listOf("有効", "無効")
 
@@ -91,22 +90,10 @@ class ScreencastSetupActivity : AppCompatActivity() {
             serviceClass = SoraScreencastService::class
         )
         screencastStarter?.start()
-        showNavigationMessage()
-    }
-
-    private fun showNavigationMessage() {
-        AlertDialog.Builder(this)
-            .setPositiveButton("OK") { _, _ -> goToHome() }
-            .setCancelable(false)
-            .setMessage("スクリーンキャストを終了するときは上のナビゲーションバーから終了ボタンを押してください。")
-            .show()
-    }
-
-    private fun goToHome() {
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.addCategory(Intent.CATEGORY_HOME)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(intent)
+        /*
+         * 1つのアプリ をスクリーンキャスト時にはここに下に何か書いても、
+         * すでに選ばれたアプリに遷移しているためユーザーの視界に入ることはない
+         */
     }
 
     private fun selectedItem(spinner: MaterialSpinner): String {
