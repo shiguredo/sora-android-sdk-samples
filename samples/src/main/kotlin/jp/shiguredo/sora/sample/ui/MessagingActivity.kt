@@ -582,7 +582,7 @@ class SoraMessagingChannel {
         val egl: EglBase? = EglBase.create()
         mediaOption.role = SoraChannelRole.RECVONLY
         mediaOption.enableMultistream()
-        // 映像の送受信を行わず、メッセージング機能のみを利用する場合は  Sora 側で data_channel_messaging_only = true を設定する必要があります
+        // 映像の送受信を行わず、リアルタイムメッセージング機能のみを利用する場合は  Sora 側で data_channel_messaging_only = true を設定する必要があります
         // このサンプルでは Sora の設定に関わらず動作するように、不要な映像の受信 (enableVideoDownstream) を行なっています。
         // Sora 側で data_channel_messaging_only = true を設定している場合、 この enableVideoDownstream は不要になります。
         mediaOption.enableVideoDownstream(egl!!.eglBaseContext)
@@ -656,7 +656,7 @@ class MessagingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         this.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        title = "メッセージング"
+        title = "リアルタイムメッセージング"
 
         setContent {
             TopComposable(channel)

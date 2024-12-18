@@ -79,8 +79,8 @@ class MainActivity : AppCompatActivity() {
                     description = "スポットライトのデモです。スポットライト数を固定したチャットが可能です。"
                 ),
                 Feature(
-                    title = "メッセージング",
-                    description = "メッセージングのデモです"
+                    title = "リアルタイムメッセージング",
+                    description = "リアルタイムメッセージングのデモです"
                 ),
                 Feature(
                     title = "スクリーンキャスト",
