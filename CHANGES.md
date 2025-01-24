@@ -12,8 +12,8 @@
 ## develop
 
 - [UPDATE] システム条件を更新する
-  - Android Studio 2024.1.2 以降
-  - @miosakuma
+  - Android Studio 2024.2.2 以降
+  - @miosakuma @zztkm
 
 ## sora-andoroid-sdk-2024.3.1
 
