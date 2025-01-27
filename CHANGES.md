@@ -11,6 +11,14 @@
 
 ## develop
 
+## sora-andoroid-sdk-2025.1.0
+
+**リリース日**: 2025-01-27
+
+- [UPDATE] システム条件を更新する
+  - Android Studio 2024.2.2 以降
+  - @miosakuma @zztkm
+
 ## sora-andoroid-sdk-2024.3.1
 
 **リリース日**: 2024-08-30
