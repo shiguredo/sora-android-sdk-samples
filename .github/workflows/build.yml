@@ -7,8 +7,6 @@ on:
       - 'CHANGES.md'
       - 'LICENSE'
       - 'THANKS'
-  schedule:
-    - cron: "0 0 * * *"
 
 jobs:
   build:

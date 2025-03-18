@@ -13,6 +13,9 @@
 
 ### misc
 
+- [UPDATE] GitHub Actions の定期実行をやめる
+  - @zztkm
+
 ## sora-andoroid-sdk-2025.1.0
 
 **リリース日**: 2025-01-27
