@@ -11,6 +11,11 @@
 
 ## develop
 
+- [UPDATE] Sora Android SDK を 2025.2.0 にあげる
+  - @miosakuma
+- [UPDATE] ビデオチャットサンプル、サイマルキャストサンプル、スポットライトサンプルの映像コーデックに `未指定` を追加する
+  - @miosakuma
+
 ### misc
 
 - [UPDATE] GitHub Actions の定期実行をやめる

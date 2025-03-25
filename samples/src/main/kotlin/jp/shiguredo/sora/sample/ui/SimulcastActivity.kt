@@ -42,7 +42,7 @@ class SimulcastActivity : AppCompatActivity() {
 
     private var channelName = ""
     private var videoEnabled = true
-    private var videoCodec: SoraVideoOption.Codec = SoraVideoOption.Codec.VP9
+    private var videoCodec: SoraVideoOption.Codec = SoraVideoOption.Codec.DEFAULT
     private var audioCodec: SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
     private var audioEnabled = true
     private var audioBitRate: Int? = null
@@ -89,7 +89,15 @@ class SimulcastActivity : AppCompatActivity() {
             else -> true
         }
 
-        videoCodec = SoraVideoOption.Codec.valueOf(intent.getStringExtra("VIDEO_CODEC") ?: "VP9")
+        videoCodec = when (intent.getStringExtra("VIDEO_CODEC")) {
+            "未指定" -> SoraVideoOption.Codec.DEFAULT
+            "VP8" -> SoraVideoOption.Codec.VP8
+            "VP9" -> SoraVideoOption.Codec.VP9
+            "AV1" -> SoraVideoOption.Codec.AV1
+            "H264" -> SoraVideoOption.Codec.H264
+            "H265" -> SoraVideoOption.Codec.H265
+            else -> SoraVideoOption.Codec.DEFAULT
+        }
 
         audioCodec = SoraAudioOption.Codec.valueOf(intent.getStringExtra("AUDIO_CODEC") ?: "OPUS")
 

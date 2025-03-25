@@ -61,7 +61,7 @@ class SoraVideoChannel(
     private val fixedResolution: Boolean = false,
     private val resolutionAdjustment: SoraVideoOption.ResolutionAdjustment? = null,
     private val cameraFacing: Boolean = true,
-    private val videoCodec: SoraVideoOption.Codec = SoraVideoOption.Codec.VP9,
+    private val videoCodec: SoraVideoOption.Codec = SoraVideoOption.Codec.DEFAULT,
     private val audioCodec: SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
     private val videoBitRate: Int? = null,
     private val audioBitRate: Int? = null,
