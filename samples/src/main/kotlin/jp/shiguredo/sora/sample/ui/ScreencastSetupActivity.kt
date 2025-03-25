@@ -20,7 +20,7 @@ class ScreencastSetupActivity : AppCompatActivity() {
         val TAG = ScreencastSetupActivity::class.simpleName
     }
 
-    private val videoCodecOptions = listOf("VP9", "VP8", "H264", "H265", "AV1")
+    private val videoCodecOptions = listOf("VP8", "VP9", "AV1", "H264", "H265")
     private val audioCodecOptions = listOf("OPUS")
     private val multistreamOptions = listOf("有効", "無効")
 

@@ -22,7 +22,7 @@ class SoraScreencastServiceStarter(
     private val signalingMetadata: String = "",
     private val videoScale: Float = 0.5f,
     private val videoFPS: Int = 30,
-    private val videoCodec: String = "VP9",
+    private val videoCodec: String = "未指定",
     private val audioCodec: String = "OPUS",
     private val multistream: Boolean = false,
     private val boundActivityName: String = activity.javaClass.canonicalName!!,

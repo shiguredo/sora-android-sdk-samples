@@ -15,7 +15,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
         val TAG = SimulcastSetupActivity::class.simpleName
     }
 
-    private val videoCodecOptions = listOf("VP8", "VP9", "H264", "H265", "AV1")
+    private val videoCodecOptions = listOf("未指定", "VP8", "VP9", "H264", "H265", "AV1")
     private val videoEnabledOptions = listOf("有効", "無効")
     private val audioCodecOptions = listOf("OPUS")
     private val audioEnabledOptions = listOf("有効", "無効")
