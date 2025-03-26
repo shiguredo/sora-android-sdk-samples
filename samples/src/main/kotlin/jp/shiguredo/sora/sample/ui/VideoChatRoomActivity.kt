@@ -43,7 +43,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var channelName = ""
     private var videoEnabled = true
     private var videoCodec: SoraVideoOption.Codec = SoraVideoOption.Codec.DEFAULT
-    private var audioCodec: SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
+    private var audioCodec: SoraAudioOption.Codec = SoraAudioOption.Codec.DEFAULT
     private var audioEnabled = true
     private var audioBitRate: Int? = null
     private var audioStereo: Boolean = false
@@ -100,7 +100,11 @@ class VideoChatRoomActivity : AppCompatActivity() {
             else -> SoraVideoOption.Codec.DEFAULT
         }
 
-        audioCodec = SoraAudioOption.Codec.valueOf(intent.getStringExtra("AUDIO_CODEC") ?: "OPUS")
+        audioCodec = when (intent.getStringExtra("AUDIO_CODEC")) {
+            "未指定" -> SoraAudioOption.Codec.DEFAULT
+            "OPUS" -> SoraAudioOption.Codec.OPUS
+            else -> SoraAudioOption.Codec.DEFAULT
+        }
 
         role = when (intent.getStringExtra("ROLE")) {
             "SENDONLY" -> SoraRoleType.SENDONLY

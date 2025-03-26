@@ -14,7 +14,7 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
         val TAG = VoiceChatRoomSetupActivity::class.simpleName
     }
 
-    private val audioCodecOptions = listOf("OPUS")
+    private val audioCodecOptions = listOf("未指定", "OPUS")
     private val audioBitRateOptions = listOf(
         "未指定", "8", "16", "24", "32",
         "64", "96", "128", "256"
