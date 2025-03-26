@@ -23,7 +23,7 @@ class SoraAudioChannel(
     private val signalingMetadata: Any? = "",
     private var roleType: SoraRoleType,
     private var multistream: Boolean = true,
-    private var audioCodec: SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS,
+    private var audioCodec: SoraAudioOption.Codec = SoraAudioOption.Codec.DEFAULT,
     private val audioBitRate: Int? = null,
     private var listener: Listener?
 ) {

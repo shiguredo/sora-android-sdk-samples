@@ -17,7 +17,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
 
     private val videoCodecOptions = listOf("未指定", "VP8", "VP9", "H264", "H265", "AV1")
     private val videoEnabledOptions = listOf("有効", "無効")
-    private val audioCodecOptions = listOf("OPUS")
+    private val audioCodecOptions = listOf("未指定", "OPUS")
     private val audioEnabledOptions = listOf("有効", "無効")
     private val audioBitRateOptions = listOf(
         "未指定", "8", "16", "24", "32",

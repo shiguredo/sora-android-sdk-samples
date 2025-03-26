@@ -30,7 +30,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
     private var channelName: String = ""
 
-    private var audioCodec: SoraAudioOption.Codec = SoraAudioOption.Codec.OPUS
+    private var audioCodec: SoraAudioOption.Codec = SoraAudioOption.Codec.DEFAULT
     private var audioBitRate: Int? = null
     private var role = SoraRoleType.SENDRECV
     private var multistream: Boolean = true
@@ -50,7 +50,11 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
         channelName = intent.getStringExtra("CHANNEL_NAME") ?: getString(R.string.channelId)
 
-        audioCodec = SoraAudioOption.Codec.valueOf(intent.getStringExtra("AUDIO_CODEC") ?: "OPUS")
+        audioCodec = when (intent.getStringExtra("AUDIO_CODEC")) {
+            "未指定" -> SoraAudioOption.Codec.DEFAULT
+            "OPUS" -> SoraAudioOption.Codec.OPUS
+            else -> SoraAudioOption.Codec.DEFAULT
+        }
 
         audioBitRate = when (intent.getStringExtra("AUDIO_BIT_RATE")) {
             "未指定" -> null
