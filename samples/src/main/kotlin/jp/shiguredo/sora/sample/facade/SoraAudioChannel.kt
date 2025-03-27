@@ -22,7 +22,6 @@ class SoraAudioChannel(
     private val ignoreDisconnectWebSocket: Boolean? = null,
     private val signalingMetadata: Any? = "",
     private var roleType: SoraRoleType,
-    private var multistream: Boolean = true,
     private var audioCodec: SoraAudioOption.Codec = SoraAudioOption.Codec.DEFAULT,
     private val audioBitRate: Int? = null,
     private var listener: Listener?
@@ -85,10 +84,6 @@ class SoraAudioChannel(
 
             if (roleType.hasDownstream()) {
                 enableAudioDownstream()
-            }
-
-            if (multistream) {
-                enableMultistream()
             }
 
             audioCodec = this@SoraAudioChannel.audioCodec

@@ -48,7 +48,6 @@ class SoraVideoChannel(
     private val spotlightFocusRid: SoraVideoOption.SpotlightRid? = null,
     private val spotlightUnfocusRid: SoraVideoOption.SpotlightRid? = null,
     private var roleType: SoraRoleType = SoraRoleType.SENDRECV,
-    private var multistream: Boolean = true,
     private var videoEnabled: Boolean = true,
     private val videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x,
     private val videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y,
@@ -259,10 +258,6 @@ class SoraVideoChannel(
                 if (videoEnabled || roleType == SoraRoleType.SENDRECV) {
                     enableVideoDownstream(egl!!.eglBaseContext)
                 }
-            }
-
-            if (multistream) {
-                enableMultistream()
             }
 
             if (this@SoraVideoChannel.simulcast) {

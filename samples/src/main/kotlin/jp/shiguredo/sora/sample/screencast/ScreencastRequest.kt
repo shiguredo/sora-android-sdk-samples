@@ -20,7 +20,6 @@ class ScreencastRequest(
     val stateIcon: Int,
     val notificationIcon: Int,
     val boundActivityName: String?,
-    val multistream: Boolean
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readParcelable(Intent::class.java.classLoader),
@@ -35,8 +34,7 @@ class ScreencastRequest(
         parcel.readString(),
         parcel.readInt(),
         parcel.readInt(),
-        parcel.readString(),
-        parcel.readByte() != 0.toByte()
+        parcel.readString()
     ) {
     }
 
@@ -54,7 +52,6 @@ class ScreencastRequest(
         parcel.writeInt(stateIcon)
         parcel.writeInt(notificationIcon)
         parcel.writeString(boundActivityName)
-        parcel.writeByte(if (multistream) 1 else 0)
     }
 
     override fun describeContents(): Int {

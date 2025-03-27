@@ -268,10 +268,6 @@ class SoraScreencastService : Service() {
             videoCodec = SoraVideoOption.Codec.valueOf(req!!.videoCodec!!)
             audioCodec = SoraAudioOption.Codec.valueOf(req!!.audioCodec!!)
 
-            if (req!!.multistream) {
-                enableMultistream()
-            }
-
             audioOption = SoraAudioOption().apply {
                 useHardwareAcousticEchoCanceler = true
                 useHardwareNoiseSuppressor = true

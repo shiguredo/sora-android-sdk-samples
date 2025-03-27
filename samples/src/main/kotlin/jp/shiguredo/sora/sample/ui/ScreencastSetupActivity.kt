@@ -22,7 +22,6 @@ class ScreencastSetupActivity : AppCompatActivity() {
 
     private val videoCodecOptions = listOf("VP8", "VP9", "AV1", "H264", "H265")
     private val audioCodecOptions = listOf("OPUS")
-    private val multistreamOptions = listOf("有効", "無効")
 
     private var screencastStarter: SoraScreencastServiceStarter? = null
 
@@ -38,15 +37,12 @@ class ScreencastSetupActivity : AppCompatActivity() {
         binding.videoCodecSelection.spinner.setItems(videoCodecOptions)
         binding.audioCodecSelection.name.text = "音声コーデック"
         binding.audioCodecSelection.spinner.setItems(audioCodecOptions)
-        binding.multistreamSelection.name.text = "マルチストリーム"
-        binding.multistreamSelection.spinner.setItems(multistreamOptions)
 
         binding.start.setOnClickListener {
             val channelName = binding.channelNameInput.text.toString()
             val videoCodec = selectedItem(binding.videoCodecSelection.spinner)
             val audioCodec = selectedItem(binding.audioCodecSelection.spinner)
-            var multistream = selectedItem(binding.multistreamSelection.spinner)
-            startScreencast(channelName, videoCodec, audioCodec, multistream == "有効")
+            startScreencast(channelName, videoCodec, audioCodec)
         }
     }
 
@@ -58,8 +54,7 @@ class ScreencastSetupActivity : AppCompatActivity() {
     private fun startScreencast(
         channelId: String,
         videoCodec: String,
-        audioCodec: String,
-        multistream: Boolean
+        audioCodec: String
     ) {
         if (SoraScreencastService.isRunning()) {
             Snackbar.make(
@@ -81,7 +76,6 @@ class ScreencastSetupActivity : AppCompatActivity() {
             audioCodec = audioCodec,
             videoScale = 0.5f,
             videoFPS = 30,
-            multistream = multistream,
             stateTitle = "Sora Screencast",
             stateText = "live on $channelId",
             stateIcon = R.drawable.icon,

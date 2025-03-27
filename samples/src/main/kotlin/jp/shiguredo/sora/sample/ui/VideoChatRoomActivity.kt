@@ -53,7 +53,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var videoVp9Params: Any? = null
     private var videoAv1Params: Any? = null
     private var videoH264Params: Any? = null
-    private var multistream = true
     private var spotlight = false
     private var spotlightNumber: Int? = null
     private var fps: Int = 30
@@ -126,11 +125,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 videoWidth = p.x
                 videoHeight = p.y
             }
-        }
-
-        multistream = when (intent.getStringExtra("MULTISTREAM")) {
-            "有効" -> true
-            else -> false
         }
 
         spotlight = when (intent.getStringExtra("SPOTLIGHT")) {
@@ -372,7 +366,6 @@ class VideoChatRoomActivity : AppCompatActivity() {
             audioBitRate = audioBitRate,
             audioStereo = audioStereo,
             roleType = role,
-            multistream = multistream,
             cameraFacing = cameraFacing,
             clientId = clientId,
             bundleId = bundleId,
