@@ -25,7 +25,6 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     )
     private val audioStereoOptions = listOf("モノラル", "ステレオ")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
-    private val multistreamOptions = listOf("有効", "無効")
     private val videoBitRateOptions = listOf(
         "未指定", "100", "300", "500", "800", "1000", "1500",
         "2000", "2500", "3000", "5000", "10000", "15000", "20000", "30000"
@@ -69,8 +68,6 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         binding.audioStereoSelection.spinner.setItems(audioStereoOptions)
         binding.roleSelection.name.text = "ロール"
         binding.roleSelection.spinner.setItems(roleOptions)
-        binding.multistreamSelection.name.text = "マルチストリーム"
-        binding.multistreamSelection.spinner.setItems(multistreamOptions)
         binding.videoBitRateSelection.name.text = "映像ビットレート"
         binding.videoBitRateSelection.spinner.setItems(videoBitRateOptions)
         binding.videoSizeSelection.name.text = "映像サイズ"
@@ -110,7 +107,6 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         }
 
         val role = selectedItem(binding.roleSelection.spinner)
-        val multistream = selectedItem(binding.multistreamSelection.spinner)
         val videoCodec = selectedItem(binding.videoCodecSelection.spinner)
         val videoEnabled = selectedItem(binding.videoEnabledSelection.spinner)
         val audioCodec = selectedItem(binding.audioCodecSelection.spinner)
@@ -135,7 +131,6 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val intent = Intent(this, VideoChatRoomActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
         intent.putExtra("ROLE", role)
-        intent.putExtra("MULTISTREAM", multistream)
         intent.putExtra("VIDEO_CODEC", videoCodec)
         intent.putExtra("VIDEO_ENABLED", videoEnabled)
         intent.putExtra("AUDIO_CODEC", audioCodec)

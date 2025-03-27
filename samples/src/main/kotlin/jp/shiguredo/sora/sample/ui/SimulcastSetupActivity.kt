@@ -25,7 +25,6 @@ class SimulcastSetupActivity : AppCompatActivity() {
     )
     private val audioStereoOptions = listOf("モノラル", "ステレオ")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
-    private val multistreamOptions = listOf("有効", "無効")
     private val videoBitRateOptions = listOf("200", "500", "700", "1200", "2500", "4000", "5000", "10000", "15000", "20000", "30000")
 
     private val videoSizeOptions = SoraFrameSize.landscape.keys.toList()
@@ -62,8 +61,6 @@ class SimulcastSetupActivity : AppCompatActivity() {
         binding.audioStereoSelection.spinner.setItems(audioStereoOptions)
         binding.roleSelection.name.text = "ロール"
         binding.roleSelection.spinner.setItems(roleOptions)
-        binding.multistreamSelection.name.text = "マルチストリーム"
-        binding.multistreamSelection.spinner.setItems(multistreamOptions)
         binding.videoBitRateSelection.name.text = "映像ビットレート"
         binding.videoBitRateSelection.spinner.setItems(videoBitRateOptions)
         binding.videoSizeSelection.name.text = "映像サイズ"
@@ -97,7 +94,6 @@ class SimulcastSetupActivity : AppCompatActivity() {
         }
 
         val role = selectedItem(binding.roleSelection.spinner)
-        val multistream = selectedItem(binding.multistreamSelection.spinner)
         val videoCodec = selectedItem(binding.videoCodecSelection.spinner)
         val videoEnabled = selectedItem(binding.videoEnabledSelection.spinner)
         val audioCodec = selectedItem(binding.audioCodecSelection.spinner)
@@ -118,7 +114,6 @@ class SimulcastSetupActivity : AppCompatActivity() {
         val intent = Intent(this, SimulcastActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
         intent.putExtra("ROLE", role)
-        intent.putExtra("MULTISTREAM", multistream)
         intent.putExtra("VIDEO_CODEC", videoCodec)
         intent.putExtra("VIDEO_ENABLED", videoEnabled)
         intent.putExtra("AUDIO_CODEC", audioCodec)

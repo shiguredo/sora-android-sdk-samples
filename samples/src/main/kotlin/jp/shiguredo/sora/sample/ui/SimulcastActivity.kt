@@ -50,7 +50,6 @@ class SimulcastActivity : AppCompatActivity() {
     private var videoBitRate: Int? = null
     private var videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x
     private var videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y
-    private var multistream = true
     private var spotlight = false
     private var spotlightNumber: Int? = null
     private var spotlightFocusRid: SoraVideoOption.SpotlightRid? = null
@@ -125,11 +124,6 @@ class SimulcastActivity : AppCompatActivity() {
                 videoWidth = p.x
                 videoHeight = p.y
             }
-        }
-
-        multistream = when (intent.getStringExtra("MULTISTREAM")) {
-            "有効" -> true
-            else -> false
         }
 
         spotlight = when (intent.getStringExtra("SPOTLIGHT")) {
@@ -368,7 +362,6 @@ class SimulcastActivity : AppCompatActivity() {
             audioBitRate = audioBitRate,
             audioStereo = audioStereo,
             roleType = role,
-            multistream = multistream,
             listener = channelListener,
             needLocalRenderer = true
         )

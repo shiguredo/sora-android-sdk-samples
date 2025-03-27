@@ -24,7 +24,6 @@ class SoraScreencastServiceStarter(
     private val videoFPS: Int = 30,
     private val videoCodec: String = "未指定",
     private val audioCodec: String = "OPUS",
-    private val multistream: Boolean = false,
     private val boundActivityName: String = activity.javaClass.canonicalName!!,
     private val serviceClass: KClass<SoraScreencastService>
 ) {
@@ -96,8 +95,7 @@ class SoraScreencastServiceStarter(
             stateText = stateText,
             stateIcon = stateIcon,
             notificationIcon = notificationIcon,
-            boundActivityName = boundActivityName,
-            multistream = multistream
+            boundActivityName = boundActivityName
         )
         intent.putExtra("SCREENCAST_REQUEST", request)
         activity.startService(intent)

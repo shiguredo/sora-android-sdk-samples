@@ -33,7 +33,6 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     private var audioCodec: SoraAudioOption.Codec = SoraAudioOption.Codec.DEFAULT
     private var audioBitRate: Int? = null
     private var role = SoraRoleType.SENDRECV
-    private var multistream: Boolean = true
     private var dataChannelSignaling: Boolean? = null
     private var ignoreDisconnectWebSocket: Boolean? = null
 
@@ -66,11 +65,6 @@ class VoiceChatRoomActivity : AppCompatActivity() {
             "SENDONLY" -> SoraRoleType.SENDONLY
             "RECVONLY" -> SoraRoleType.RECVONLY
             else -> SoraRoleType.SENDRECV
-        }
-
-        multistream = when (intent.getStringExtra("MULTISTREAM")) {
-            "有効" -> true
-            else -> false
         }
 
         dataChannelSignaling = when (intent.getStringExtra("DATA_CHANNEL_SIGNALING")) {
@@ -177,7 +171,6 @@ class VoiceChatRoomActivity : AppCompatActivity() {
             audioCodec = audioCodec,
             audioBitRate = audioBitRate,
             roleType = role,
-            multistream = multistream,
             listener = channelListener
         )
         channel!!.connect()

@@ -45,9 +45,6 @@
 
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/multistreamSelection"/>
-                <include
-                    layout="@layout/signaling_selection"
                     android:id="@+id/videoCodecSelection"/>
                 <include
                     layout="@layout/signaling_selection"

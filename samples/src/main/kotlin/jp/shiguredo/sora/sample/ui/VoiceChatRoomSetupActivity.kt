@@ -21,7 +21,6 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
     )
 
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
-    private val multistreamOptions = listOf("有効", "無効")
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
     private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
 
@@ -39,8 +38,6 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
         binding.audioBitRateSelection.spinner.setItems(audioBitRateOptions)
         binding.roleSelection.name.text = "ロール"
         binding.roleSelection.spinner.setItems(roleOptions)
-        binding.multistreamSelection.name.text = "マルチストリーム"
-        binding.multistreamSelection.spinner.setItems(multistreamOptions)
         binding.dataChannelSignalingSelection.name.text = "データチャネル"
         binding.dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
         binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
@@ -55,7 +52,6 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
         }
 
         val role = selectedItem(binding.roleSelection.spinner)
-        val multistream = selectedItem(binding.multistreamSelection.spinner)
         val audioCodec = selectedItem(binding.audioCodecSelection.spinner)
         val audioBitRate = selectedItem(binding.audioBitRateSelection.spinner)
         val dataChannelSignaling = selectedItem(binding.dataChannelSignalingSelection.spinner)
@@ -64,7 +60,6 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
         val intent = Intent(this, VoiceChatRoomActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
         intent.putExtra("ROLE", role)
-        intent.putExtra("MULTISTREAM", multistream)
         intent.putExtra("AUDIO_CODEC", audioCodec)
         intent.putExtra("AUDIO_BIT_RATE", audioBitRate)
         intent.putExtra("DATA_CHANNEL_SIGNALING", dataChannelSignaling)
