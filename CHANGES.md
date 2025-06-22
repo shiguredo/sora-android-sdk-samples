@@ -28,6 +28,8 @@
 
 - [UPDATE] GitHub Actions の定期実行をやめる
   - @zztkm
+- [ADD] .github ディレクトリに copilot-instructions.md を追加
+  - @torikizi
 
 ## sora-andoroid-sdk-2025.1.0
 
