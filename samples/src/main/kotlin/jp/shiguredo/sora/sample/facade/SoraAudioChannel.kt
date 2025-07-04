@@ -34,7 +34,7 @@ class SoraAudioChannel(
     interface Listener {
         fun onConnect(channel: SoraAudioChannel) {}
         fun onClose(channel: SoraAudioChannel) {}
-        fun onError(channel: SoraAudioChannel, reason: SoraErrorReason) {}
+        fun onError(channel: SoraAudioChannel, reason: SoraErrorReason, message: String) {}
         fun onAttendeesCountUpdated(channel: SoraAudioChannel, attendees: ChannelAttendeesCount) {}
     }
 
@@ -50,9 +50,9 @@ class SoraAudioChannel(
             disconnect()
         }
 
-        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason) {
-            SoraLogger.d(TAG, "[audio_channel] @onError")
-            handler.post { listener?.onError(this@SoraAudioChannel, reason) }
+        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {
+            SoraLogger.d(TAG, "[audio_channel] @onError [$reason]: $message")
+            handler.post { listener?.onError(this@SoraAudioChannel, reason, message) }
             disconnect()
         }
 

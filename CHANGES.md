@@ -16,6 +16,7 @@
   - Sora がデフォルトでレガシーストリームを使用するように設定されている場合、接続エラーになる
   - @zztkm
 - [UPDATE] Sora Android SDK を 2025.2.0 にあげる
+  - onError(SoraMediaChannel, SoraErrorReason) の廃止に対応する
   - @miosakuma
 - [UPDATE] ビデオチャットサンプル、サイマルキャストサンプル、スポットライトサンプルの映像コーデックに `未指定` を追加する
   - @miosakuma

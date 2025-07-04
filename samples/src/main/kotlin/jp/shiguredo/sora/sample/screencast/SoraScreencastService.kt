@@ -67,8 +67,8 @@ class SoraScreencastService : Service() {
             closeChannel()
         }
 
-        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason) {
-            SoraLogger.d(TAG, "[screencast] @onError")
+        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {
+            SoraLogger.d(TAG, "[screencast] @onError [$reason]: $message")
         }
 
         override fun onAddLocalStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {

@@ -212,20 +212,6 @@ fun SetupComposable(
                             }
                         }
 
-                        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason) {
-                            super.onError(mediaChannel, reason)
-                            SoraLogger.e(SoraMessagingChannel.TAG, "onError: reason=${reason.name}")
-                            setConnected(false)
-                            setIsLoading(false)
-
-                            val handler = Handler(Looper.getMainLooper())
-                            handler.post {
-                                run {
-                                    Toast.makeText(c, reason.toString(), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                        }
-
                         override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {
                             super.onError(mediaChannel, reason, message)
                             SoraLogger.e(SoraMessagingChannel.TAG, "onError: reason=${reason.name}, message=$message")

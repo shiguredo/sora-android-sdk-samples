@@ -145,9 +145,9 @@ class VoiceChatRoomActivity : AppCompatActivity() {
             close()
         }
 
-        override fun onError(channel: SoraAudioChannel, reason: SoraErrorReason) {
+        override fun onError(channel: SoraAudioChannel, reason: SoraErrorReason, message: String) {
             changeStateText("ERROR")
-            Toast.makeText(this@VoiceChatRoomActivity, "Error: ${reason.name}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this@VoiceChatRoomActivity, "Error: [$reason]: $message", Toast.LENGTH_LONG).show()
             close()
         }
 
