@@ -20,6 +20,7 @@ import com.google.gson.Gson
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.databinding.ScreencastServiceBinding
 import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
+import jp.shiguredo.sora.sdk.channel.SoraCloseEvent
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
@@ -62,13 +63,13 @@ class SoraScreencastService : Service() {
             sendInvalidateBroadcast()
         }
 
-        override fun onClose(mediaChannel: SoraMediaChannel) {
-            SoraLogger.d(TAG, "[screencast] @onClose")
+        override fun onClose(mediaChannel: SoraMediaChannel, closeEvent: SoraCloseEvent) {
+            SoraLogger.d(TAG, "[screencast] @onClose $closeEvent")
             closeChannel()
         }
 
-        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason) {
-            SoraLogger.d(TAG, "[screencast] @onError")
+        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {
+            SoraLogger.d(TAG, "[screencast] @onError [$reason]: $message")
         }
 
         override fun onAddLocalStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {

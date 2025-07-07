@@ -9,6 +9,7 @@ import jp.shiguredo.sora.sample.camera.DefaultCameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sample.stats.VideoUpstreamLatencyStatsCollector
 import jp.shiguredo.sora.sample.ui.util.SoraRemoteRendererSlot
+import jp.shiguredo.sora.sdk.channel.SoraCloseEvent
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.PeerConnectionOption
@@ -101,16 +102,9 @@ class SoraVideoChannel(
             }
         }
 
-        override fun onClose(mediaChannel: SoraMediaChannel) {
-            SoraLogger.d(TAG, "[video_channel] @onClose")
+        override fun onClose(mediaChannel: SoraMediaChannel, closeEvent: SoraCloseEvent) {
+            SoraLogger.d(TAG, "[video_channel] @onClose $closeEvent")
             disconnect()
-        }
-
-        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason) {
-            SoraLogger.d(TAG, "[video_channel] @onError $reason")
-            handler.post {
-                listener?.onError(this@SoraVideoChannel, reason)
-            }
         }
 
         override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {

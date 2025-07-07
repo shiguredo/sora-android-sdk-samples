@@ -74,6 +74,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
+import jp.shiguredo.sora.sdk.channel.SoraCloseEvent
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
 import jp.shiguredo.sora.sdk.channel.option.SoraChannelRole
 import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
@@ -169,9 +170,9 @@ fun SetupComposable(
                             )
                         }
 
-                        override fun onClose(mediaChannel: SoraMediaChannel) {
-                            super.onClose(mediaChannel)
-                            SoraLogger.d(SoraMessagingChannel.TAG, "onClose")
+                        override fun onClose(mediaChannel: SoraMediaChannel, closeEvent: SoraCloseEvent) {
+                            super.onClose(mediaChannel, closeEvent)
+                            SoraLogger.d(SoraMessagingChannel.TAG, "onClose: $closeEvent")
                             setConnected(false)
                             setIsLoading(false)
                         }
@@ -209,20 +210,6 @@ fun SetupComposable(
 
                             message.let {
                                 messages.add(Message(label, it, MessageType.RECEIVED))
-                            }
-                        }
-
-                        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason) {
-                            super.onError(mediaChannel, reason)
-                            SoraLogger.e(SoraMessagingChannel.TAG, "onError: reason=${reason.name}")
-                            setConnected(false)
-                            setIsLoading(false)
-
-                            val handler = Handler(Looper.getMainLooper())
-                            handler.post {
-                                run {
-                                    Toast.makeText(c, reason.toString(), Toast.LENGTH_LONG).show()
-                                }
                             }
                         }
 

@@ -3,6 +3,7 @@ package jp.shiguredo.sora.sample.facade
 import android.content.Context
 import android.os.Handler
 import jp.shiguredo.sora.sample.option.SoraRoleType
+import jp.shiguredo.sora.sdk.channel.SoraCloseEvent
 import jp.shiguredo.sora.sdk.channel.SoraMediaChannel
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
@@ -34,7 +35,7 @@ class SoraAudioChannel(
     interface Listener {
         fun onConnect(channel: SoraAudioChannel) {}
         fun onClose(channel: SoraAudioChannel) {}
-        fun onError(channel: SoraAudioChannel, reason: SoraErrorReason) {}
+        fun onError(channel: SoraAudioChannel, reason: SoraErrorReason, message: String) {}
         fun onAttendeesCountUpdated(channel: SoraAudioChannel, attendees: ChannelAttendeesCount) {}
     }
 
@@ -45,14 +46,14 @@ class SoraAudioChannel(
             handler.post { listener?.onConnect(this@SoraAudioChannel) }
         }
 
-        override fun onClose(mediaChannel: SoraMediaChannel) {
-            SoraLogger.d(TAG, "[audio_channel] @onClose")
+        override fun onClose(mediaChannel: SoraMediaChannel, closeEvent: SoraCloseEvent) {
+            SoraLogger.d(TAG, "[audio_channel] @onClose $closeEvent")
             disconnect()
         }
 
-        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason) {
-            SoraLogger.d(TAG, "[audio_channel] @onError")
-            handler.post { listener?.onError(this@SoraAudioChannel, reason) }
+        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {
+            SoraLogger.d(TAG, "[audio_channel] @onError [$reason]: $message")
+            handler.post { listener?.onError(this@SoraAudioChannel, reason, message) }
             disconnect()
         }
 
