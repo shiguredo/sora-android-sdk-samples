@@ -1,9 +1,9 @@
+// 現在は一種類のカメラキャプチャしか使用していないが、将来的に複数のカメラキャプチャーを実装する可能性があるため、インターフェースを定義している
+// 将来的に、複数のカメラキャプチャーをサポートする場合は、このインターフェースを実装した複数のファクトリを用意することができる
 package jp.shiguredo.sora.sample.camera
 
 import android.content.Context
 import jp.shiguredo.sora.sdk.camera.CameraCapturerFactory
-import jp.shiguredo.webrtc.video.effector.RTCVideoEffector
-import jp.shiguredo.webrtc.video.effector.camera.EffectCameraCapturerFactory
 import org.webrtc.CameraVideoCapturer
 
 interface CameraVideoCapturerFactory {
@@ -18,14 +18,5 @@ class DefaultCameraVideoCapturerFactory(
 
     override fun createCapturer(): CameraVideoCapturer? {
         return CameraCapturerFactory.create(context, fixedResolution, frontFacingFirst)
-    }
-}
-
-class EffectCameraVideoCapturerFactory(
-    private val effector: RTCVideoEffector
-) : CameraVideoCapturerFactory {
-
-    override fun createCapturer(): CameraVideoCapturer? {
-        return EffectCameraCapturerFactory.create(effector)
     }
 }

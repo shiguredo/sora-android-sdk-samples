@@ -1,1 +1,1 @@
-include ':samples', ':webrtc-video-effector'
+include ':samples'

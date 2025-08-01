@@ -68,11 +68,6 @@
             android:launchMode="singleInstance"
             android:exported="true"  />
         <activity
-            android:name=".ui.EffectedVideoChatSetupActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
-            android:label="ビデオエフェクト"
-            android:exported="true" />
-        <activity
             android:name=".ui.SimulcastSetupActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:label="サイマルキャスト"
@@ -108,11 +103,6 @@
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:enabled="true"
             android:foregroundServiceType="mediaProjection" />
-        <activity
-            android:name=".ui.EffectedVideoChatActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
-            android:label="エフェクト付きビデオチャット"
-            android:exported="true" />
         <activity
             android:name=".ui.SimulcastActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
