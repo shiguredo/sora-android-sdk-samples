@@ -48,10 +48,6 @@ Please read https://github.com/shiguredo/oss before use.
 
 クライアント端末の画面を動画配信するデモです。
 
-### ビデオエフェクト
-
-エフェクト付きのビデオチャットのデモです。
-
 ## Copyright
 
 - Copyright 2023, Shiguredo Inc. and Lyo Kato <lyo.kato at gmail.com>

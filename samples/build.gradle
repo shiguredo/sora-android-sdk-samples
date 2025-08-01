@@ -100,6 +100,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlin_version}"
     implementation "org.jetbrains.kotlin:kotlin-reflect:${kotlin_version}"
 
+    implementation "com.github.shiguredo:sora-android-sdk:${sora_android_sdk_version}"
+
     implementation 'com.google.code.gson:gson:2.11.0'
 
     implementation 'androidx.appcompat:appcompat:1.7.0'
@@ -119,8 +121,6 @@ dependencies {
     ext.pd_version = '4.9.2'
     implementation "com.github.permissions-dispatcher:permissionsdispatcher:${pd_version}"
     kapt "com.github.permissions-dispatcher:permissionsdispatcher-processor:${pd_version}"
-
-    implementation project(path: ':webrtc-video-effector')
 }
 
 repositories {
