@@ -625,6 +625,7 @@ fun TopComposable(channel: SoraMessagingChannel) {
     val labels = remember { mutableStateListOf<String>() }
     val messages = remember { mutableStateListOf<Message>() }
 
+    // ステータスバーやナビゲーションバーに重ならないように、システムバーのパディングを設定する
     Box(modifier = Modifier.systemBarsPadding()) {
         if (connected) {
             TimelineComposable(channel, setConnected, labels, messages, listState)
