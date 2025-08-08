@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -624,10 +625,12 @@ fun TopComposable(channel: SoraMessagingChannel) {
     val labels = remember { mutableStateListOf<String>() }
     val messages = remember { mutableStateListOf<Message>() }
 
-    if (connected) {
-        TimelineComposable(channel, setConnected, labels, messages, listState)
-    } else {
-        SetupComposable(channel, defaultChannelId, setConnected, labels, messages)
+    Box(modifier = Modifier.systemBarsPadding()) {
+        if (connected) {
+            TimelineComposable(channel, setConnected, labels, messages, listState)
+        } else {
+            SetupComposable(channel, defaultChannelId, setConnected, labels, messages)
+        }
     }
 }
 
