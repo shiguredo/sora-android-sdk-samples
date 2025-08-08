@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/app_background"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     android:padding="6dp">
 
     <androidx.recyclerview.widget.RecyclerView
