@@ -30,6 +30,7 @@
 - [UPDATE] edge-to-edge の画面表示に対応する
   - targetSdkVersion 35 以降 edge-to-edge の画面表示がデフォルトとなった
   - 各画面レイアウト に `android:fitsSystemWindows="true"` を指定する
+  - リアルタイムメッセージングサンプルのコンポーザブルに systemBarsPadding() を設定する
   - バックグラウンドカラーを白以外にしてステータスバーの文字が見えるようにする
   - @miosakuma
 - [UPDATE] 権限に FOREGROUND_SERVICE_MEDIA_PROJECTION を追加する 
