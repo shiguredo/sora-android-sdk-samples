@@ -11,6 +11,31 @@
 
 ## develop
 
+- [UPDATE] 依存ライブラリーのバージョンを上げる
+  - com.google.code.gson:gson を 2.13.1 に上げる
+  - androidx.appcompat:appcompat を 1.7.1 に上げる
+  - androidx.recyclerview:recyclerview を 1.4.0 に上げる
+  - androidx.constraintlayout:constraintlayout を 2.2.1 に上げる
+  - androidx.navigation:navigation-fragment-ktx を 2.9.3 に上げる
+  - androidx.navigation:navigation-ui-ktx を 2.9.3 に上げる
+  - androidx.compose.ui:ui を 1.8.3 に上げる
+  - androidx.compose.material:material を 1.8.3 に上げる
+  - androidx.compose.material:material-icons-extended を 1.7.8 に上げる
+  - androidx.activity:activity-compose を 1.10.1 に上げる
+  - com.android.tools.build:gradle を 8.11.1 に上げる
+  - Gradle を 8.14.3 に上げる
+  - compileSdkVersion を 36 に上げる
+  - targetSdkVersion を 36 に上げる
+  - @miosakuma
+- [UPDATE] edge-to-edge の画面表示に対応する
+  - targetSdkVersion 35 以降 edge-to-edge の画面表示がデフォルトとなった
+  - 各画面レイアウト に `android:fitsSystemWindows="true"` を指定する
+  - バックグラウンドカラーを白以外にしてステータスバーの文字が見えるようにする
+  - @miosakuma
+- [UPDATE] 権限に FOREGROUND_SERVICE_MEDIA_PROJECTION を追加する 
+  - スクリーンキャストのサービスを起動するために必要な権限
+  - Android 14 (API level 34) 以降で必要になる
+  - @miosakuma
 - [UPDATE] ビデオエフェクトサンプルを削除する
   - `jp.co.cyberagent.android:gpuimage:2.1.0` が 16 KB ページサイズに対応していないため
   - @miosakuma
