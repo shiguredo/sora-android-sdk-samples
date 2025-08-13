@@ -15,8 +15,8 @@ Please read https://github.com/shiguredo/oss before use.
 ## システム条件
 
 - Android 8.0 以降 (エミュレーターでの動作は保証しません)
-- Android Studio 2024.2.2 以降
-- WebRTC SFU Sora 2024.2.0 以降
+- Android Studio 2025.1.1 以降
+- WebRTC SFU Sora 2025.1.0 以降
 
 ## サンプルの使い方
 
@@ -51,5 +51,3 @@ Please read https://github.com/shiguredo/oss before use.
 ## Copyright
 
 - Copyright 2023, Shiguredo Inc. and Lyo Kato <lyo.kato at gmail.com>
-
-- LibYuv ライブラリ: Copyright 2011 The LibYuv Project Authors.
