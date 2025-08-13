@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -624,10 +625,14 @@ fun TopComposable(channel: SoraMessagingChannel) {
     val labels = remember { mutableStateListOf<String>() }
     val messages = remember { mutableStateListOf<Message>() }
 
-    if (connected) {
-        TimelineComposable(channel, setConnected, labels, messages, listState)
-    } else {
-        SetupComposable(channel, defaultChannelId, setConnected, labels, messages)
+    // targetSdkVersion 35 以降 edge-to-edge の画面表示がデフォルトになったため、
+    // ステータスバーやナビゲーションバーに重ならないように、明示的にシステムバーのパディングを設定する必要がある
+    Box(modifier = Modifier.systemBarsPadding()) {
+        if (connected) {
+            TimelineComposable(channel, setConnected, labels, messages, listState)
+        } else {
+            SetupComposable(channel, defaultChannelId, setConnected, labels, messages)
+        }
     }
 }
 
