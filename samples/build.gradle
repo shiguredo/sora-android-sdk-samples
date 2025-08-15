@@ -100,8 +100,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlin_version}"
     implementation "org.jetbrains.kotlin:kotlin-reflect:${kotlin_version}"
 
-    implementation "com.github.shiguredo:sora-android-sdk:${sora_android_sdk_version}"
-
     implementation 'com.google.code.gson:gson:2.13.1'
 
     implementation 'androidx.appcompat:appcompat:1.7.1'
@@ -121,6 +119,17 @@ dependencies {
     ext.pd_version = '4.9.2'
     implementation "com.github.permissions-dispatcher:permissionsdispatcher:${pd_version}"
     kapt "com.github.permissions-dispatcher:permissionsdispatcher-processor:${pd_version}"
+
+    // Sora Android SDK
+    if (findProject(':sora-android-sdk') != null) {
+        // module is included
+        api project(':sora-android-sdk')
+    } else {
+        // external dependency
+        implementation("com.github.shiguredo:sora-android-sdk:${sora_android_sdk_version}@aar") {
+            transitive = true
+        }
+    }
 }
 
 repositories {
