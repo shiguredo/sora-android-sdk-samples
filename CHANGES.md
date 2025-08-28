@@ -11,6 +11,9 @@
 
 ## develop
 
+- [UPDATE] Kotlin のバージョンを上げる
+  - kotlin 2.0.20 に上げる
+  - @t-miya
 - [UPDATE] 依存ライブラリーのバージョンを上げる
   - com.google.code.gson:gson を 2.13.1 に上げる
   - androidx.appcompat:appcompat を 1.7.1 に上げる
@@ -57,6 +60,10 @@
 
 ### misc
 
+- [UPDATE] gragle を Kotlin DSL 対応する
+  - build.gradle、settings.gradle、samples/build.gradle を kts ファイルに置き換えた
+  - ライブラリバージョン管理を Version Catalog による管理に変更した
+  - @t-miya
 - [UPDATE] GitHub Actions の定期実行をやめる
   - @zztkm
 - [ADD] .github ディレクトリに copilot-instructions.md を追加
