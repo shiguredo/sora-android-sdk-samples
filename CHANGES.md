@@ -126,6 +126,10 @@
 
 ### misc
 
+- [UPDATE] gragle を Kotlin DSL 対応する
+  - build.gradle、settings.gradle、samples/build.gradle を kts ファイルに置き換えた
+  - ライブラリバージョン管理を Version Catalog による管理に変更した
+  - @t-miya
 - [UPDATE] GitHub Actions の定期実行をやめる
   - @zztkm
 - [ADD] .github ディレクトリに copilot-instructions.md を追加
