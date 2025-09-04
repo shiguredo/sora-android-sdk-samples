@@ -378,7 +378,8 @@ class SimulcastActivity : AppCompatActivity() {
     }
 
     private var muted = false
-    private var cameraMuted = false
+    private enum class CameraState { ON, SOFT_MUTED, HARD_MUTED }
+    private var cameraState: CameraState = CameraState.ON
 
     internal fun toggleMuted() {
         if (muted) {
@@ -391,13 +392,27 @@ class SimulcastActivity : AppCompatActivity() {
     }
 
     internal fun toggleCamera() {
-        if (cameraMuted) {
-            ui?.showCameraOnButton()
-        } else {
-            ui?.showCameraOffButton()
+        when (cameraState) {
+            CameraState.ON -> {
+                // ON -> ソフトウェアミュート
+                ui?.showCameraSoftOffButton()
+                channel?.muteCameraSoft(true)
+                cameraState = CameraState.SOFT_MUTED
+            }
+            CameraState.SOFT_MUTED -> {
+                // ソフトウェアミュート -> ハードウェアミュート
+                ui?.showCameraOffButton()
+                channel?.muteCamera(true)
+                cameraState = CameraState.HARD_MUTED
+            }
+            CameraState.HARD_MUTED -> {
+                // ハードウェアミュート -> ON
+                ui?.showCameraOnButton()
+                channel?.muteCamera(false)
+                channel?.muteCameraSoft(false)
+                cameraState = CameraState.ON
+            }
         }
-        cameraMuted = !cameraMuted
-        channel?.muteCamera(cameraMuted)
     }
 }
 
@@ -465,6 +480,12 @@ class SimulcastActivityUI(
     internal fun showCameraOffButton() {
         binding.toggleCameraButton.setImageDrawable(
             resources.getDrawable(R.drawable.ic_videocam_off_black_48dp, null)
+        )
+    }
+
+    internal fun showCameraSoftOffButton() {
+        binding.toggleCameraButton.setImageDrawable(
+            resources.getDrawable(R.drawable.ic_videocam_off_white_48dp, null)
         )
     }
 

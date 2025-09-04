@@ -158,6 +158,8 @@ class SoraVideoChannel(
                 handler.post {
                     if (ms.videoTracks.size > 0) {
                         localVideoTrack = ms.videoTracks[0]
+                        // ソフトウェアミュート状態を反映
+                        localVideoTrack?.setEnabled(!cameraSoftMuted)
                         localRenderer = createSurfaceViewRenderer()
                         localVideoTrack!!.addSink(localRenderer!!)
                         listener?.onAddLocalRenderer(this@SoraVideoChannel, localRenderer!!)
@@ -200,7 +202,8 @@ class SoraVideoChannel(
     private var capturer: CameraVideoCapturer? = null
 
     private var capturing = false
-    private var cameraMuted = false
+    private var cameraHardMuted = false // ハードウェアミュート状態
+    private var cameraSoftMuted = false // ソフトウェアミュート状態（VideoTrack の有効/無効）
 
     private var closed = false
 
@@ -403,6 +406,12 @@ class SoraVideoChannel(
         localAudioTrack?.setEnabled(!mute)
     }
 
+    // ソフトウェアミュート: VideoCapture は維持しつつ、送出を一時停止
+    fun muteCameraSoft(mute: Boolean) {
+        cameraSoftMuted = mute
+        localVideoTrack?.setEnabled(!mute)
+    }
+
     fun muteCamera(mute: Boolean) {
         if (mute) {
             muteCameraHard()
@@ -412,7 +421,7 @@ class SoraVideoChannel(
     }
 
     private fun muteCameraHard() {
-        if (cameraMuted) return
+        if (cameraHardMuted) return
 
         // ハードウェアミュート: キャプチャを停止してハードウェアを解放
         ioExecutor.execute {
@@ -430,11 +439,11 @@ class SoraVideoChannel(
             }
         }
 
-        cameraMuted = true
+        cameraHardMuted = true
     }
 
     private fun unmuteCameraHard() {
-        if (!cameraMuted) return
+        if (!cameraHardMuted) return
 
         // ハードウェアミュート解除: キャプチャを再開
         ioExecutor.execute {
@@ -450,7 +459,12 @@ class SoraVideoChannel(
             }
         }
 
-        cameraMuted = false
+        cameraHardMuted = false
+        // ハードウェアミュート解除時にソフトミュートが残っていると映らないため解除
+        if (cameraSoftMuted) {
+            cameraSoftMuted = false
+            localVideoTrack?.setEnabled(true)
+        }
     }
 
     fun disconnect() {
