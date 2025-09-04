@@ -31,6 +31,7 @@ import org.webrtc.RTCStatsReport
 import org.webrtc.RtpParameters
 import org.webrtc.SurfaceViewRenderer
 import java.lang.Exception
+import java.util.concurrent.Executors
 
 class SoraVideoChannel(
     private val context: Context,
@@ -156,8 +157,9 @@ class SoraVideoChannel(
             if (needLocalRenderer) {
                 handler.post {
                     if (ms.videoTracks.size > 0) {
+                        localVideoTrack = ms.videoTracks[0]
                         localRenderer = createSurfaceViewRenderer()
-                        ms.videoTracks[0].addSink(localRenderer!!)
+                        localVideoTrack!!.addSink(localRenderer!!)
                         listener?.onAddLocalRenderer(this@SoraVideoChannel, localRenderer!!)
                     }
                 }
@@ -198,12 +200,16 @@ class SoraVideoChannel(
     private var capturer: CameraVideoCapturer? = null
 
     private var capturing = false
+    private var cameraMuted = false
 
     private var closed = false
+
+    private val ioExecutor = Executors.newSingleThreadExecutor()
 
     private var remoteRenderersSlot: SoraRemoteRendererSlot? = null
     private var localRenderer: SurfaceViewRenderer? = null
     private var localAudioTrack: AudioTrack? = null
+    private var localVideoTrack: org.webrtc.VideoTrack? = null
 
     private val rendererSlotListener = object : SoraRemoteRendererSlot.Listener {
 
@@ -397,6 +403,56 @@ class SoraVideoChannel(
         localAudioTrack?.setEnabled(!mute)
     }
 
+    fun muteCamera(mute: Boolean) {
+        if (mute) {
+            muteCameraHard()
+        } else {
+            unmuteCameraHard()
+        }
+    }
+
+    private fun muteCameraHard() {
+        if (cameraMuted) return
+
+        // ハードウェアミュート: キャプチャを停止してハードウェアを解放
+        ioExecutor.execute {
+            try {
+                capturer?.let {
+                    if (capturing) {
+                        capturing = false
+                        it.stopCapture()
+                    }
+                }
+            } catch (e: InterruptedException) {
+                Thread.currentThread().interrupt()
+            } catch (e: Exception) {
+                SoraLogger.e(TAG, "Failed to stop camera capture", e)
+            }
+        }
+
+        cameraMuted = true
+    }
+
+    private fun unmuteCameraHard() {
+        if (!cameraMuted) return
+
+        // ハードウェアミュート解除: キャプチャを再開
+        ioExecutor.execute {
+            try {
+                capturer?.let {
+                    if (!capturing) {
+                        capturing = true
+                        it.startCapture(videoWidth, videoHeight, videoFPS)
+                    }
+                }
+            } catch (e: Exception) {
+                SoraLogger.e(TAG, "Failed to restart camera capture", e)
+            }
+        }
+
+        cameraMuted = false
+    }
+
     fun disconnect() {
         stopCapturer()
         mediaChannel?.disconnect()
@@ -413,6 +469,7 @@ class SoraVideoChannel(
                 localRenderer = null
 
                 localAudioTrack = null
+                localVideoTrack = null
 
                 remoteRenderersSlot?.dispose()
                 remoteRenderersSlot = null
@@ -422,6 +479,7 @@ class SoraVideoChannel(
 
     fun dispose() {
         disconnect()
+        ioExecutor.shutdown()
         egl?.release()
         egl = null
         listener = null

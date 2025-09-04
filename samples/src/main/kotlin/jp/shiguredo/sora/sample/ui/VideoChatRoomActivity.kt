@@ -386,6 +386,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     }
 
     private var muted = false
+    private var cameraMuted = false
 
     internal fun toggleMuted() {
         if (muted) {
@@ -395,6 +396,16 @@ class VideoChatRoomActivity : AppCompatActivity() {
         }
         muted = !muted
         channel?.mute(muted)
+    }
+
+    internal fun toggleCamera() {
+        if (cameraMuted) {
+            ui?.showCameraOnButton()
+        } else {
+            ui?.showCameraOffButton()
+        }
+        cameraMuted = !cameraMuted
+        channel?.muteCamera(cameraMuted)
     }
 }
 
@@ -420,6 +431,7 @@ class VideoChatRoomActivityUI(
             height = SoraScreenUtil.size(activity).y - dp2px(20 * 2 + 100)
         )
         binding.toggleMuteButton.setOnClickListener { activity.toggleMuted() }
+        binding.toggleCameraButton.setOnClickListener { activity.toggleCamera() }
         binding.switchCameraButton.setOnClickListener { activity.switchCamera() }
         binding.closeButton.setOnClickListener { activity.close() }
     }
@@ -454,6 +466,18 @@ class VideoChatRoomActivityUI(
     internal fun showMuteButton() {
         binding.toggleMuteButton.setImageDrawable(
             resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
+        )
+    }
+
+    internal fun showCameraOffButton() {
+        binding.toggleCameraButton.setImageDrawable(
+            resources.getDrawable(R.drawable.ic_videocam_off_black_48dp, null)
+        )
+    }
+
+    internal fun showCameraOnButton() {
+        binding.toggleCameraButton.setImageDrawable(
+            resources.getDrawable(R.drawable.ic_videocam_on_white_48dp, null)
         )
     }
 
