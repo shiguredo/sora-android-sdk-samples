@@ -327,6 +327,23 @@ class SimulcastActivity : AppCompatActivity() {
         override fun onAttendeesCountUpdated(channel: SoraVideoChannel, attendees: ChannelAttendeesCount) {
             // nop
         }
+
+        override fun onCameraMuteStateChanged(
+            channel: SoraVideoChannel,
+            hardMuted: Boolean,
+            softMuted: Boolean
+        ) {
+            if (hardMuted) {
+                cameraState = CameraState.HARD_MUTED
+                ui?.showCameraOffButton()
+            } else if (softMuted) {
+                cameraState = CameraState.SOFT_MUTED
+                ui?.showCameraSoftOffButton()
+            } else {
+                cameraState = CameraState.ON
+                ui?.showCameraOnButton()
+            }
+        }
     }
 
     private fun connectChannel() {

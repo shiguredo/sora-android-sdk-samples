@@ -90,6 +90,8 @@ class SoraVideoChannel(
         fun onRemoveRemoteRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {}
         fun onAddLocalRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {}
         fun onAttendeesCountUpdated(channel: SoraVideoChannel, attendees: ChannelAttendeesCount) {}
+        // カメラミュート状態が変化した際の通知（任意実装）
+        fun onCameraMuteStateChanged(channel: SoraVideoChannel, hardMuted: Boolean, softMuted: Boolean) {}
     }
 
     private val statsCollector = VideoUpstreamLatencyStatsCollector()
@@ -410,6 +412,7 @@ class SoraVideoChannel(
     fun muteCameraSoft(mute: Boolean) {
         cameraSoftMuted = mute
         localVideoTrack?.setEnabled(!mute)
+        notifyCameraMuteState()
     }
 
     fun muteCamera(mute: Boolean) {
@@ -440,6 +443,7 @@ class SoraVideoChannel(
         }
 
         cameraHardMuted = true
+        notifyCameraMuteState()
     }
 
     private fun unmuteCameraHard() {
@@ -460,12 +464,22 @@ class SoraVideoChannel(
         }
 
         cameraHardMuted = false
-        // ハードウェアミュート解除時にソフトミュートが残っていると映らないため解除
-        if (cameraSoftMuted) {
-            cameraSoftMuted = false
-            localVideoTrack?.setEnabled(true)
+        // ソフトミュート状態は維持し、VideoTrack の有効/無効のみ同期する
+        handler.post {
+            localVideoTrack?.setEnabled(!cameraSoftMuted)
+        }
+        notifyCameraMuteState()
+    }
+
+    private fun notifyCameraMuteState() {
+        handler.post {
+            listener?.onCameraMuteStateChanged(this@SoraVideoChannel, cameraHardMuted, cameraSoftMuted)
         }
     }
+
+    // 状態参照用（UI 側と同期したい場合に利用）
+    fun isCameraSoftMuted(): Boolean = cameraSoftMuted
+    fun isCameraHardMuted(): Boolean = cameraHardMuted
 
     fun disconnect() {
         stopCapturer()
