@@ -204,8 +204,8 @@ class SoraVideoChannel(
     private var capturer: CameraVideoCapturer? = null
 
     private var capturing = false
-    private var cameraHardMuted = false // ハードウェアミュート状態
-    private var cameraSoftMuted = false // ソフトウェアミュート状態（VideoTrack の有効/無効）
+    private var hardMuted = false // ハードウェアミュート状態
+    private var softMuted = false // ソフトウェアミュート状態（VideoTrack の有効/無効）
 
     private var closed = false
 
@@ -409,15 +409,15 @@ class SoraVideoChannel(
     }
 
     // ソフトウェアミュート: VideoCapture は維持しつつ、送出を一時停止
-    fun muteCameraSoft(mute: Boolean) {
-        cameraSoftMuted = mute
+    fun setCameraSoftMuted(muted: Boolean) {
+        softMuted = muted
         // 反映は UI スレッドで統一
         handler.post { applyCameraMuteState() }
         notifyCameraMuteState()
     }
 
-    fun muteCamera(mute: Boolean) {
-        if (mute) {
+    fun setCameraHardMuted(muted: Boolean) {
+        if (muted) {
             muteCameraHard()
         } else {
             unmuteCameraHard()
@@ -425,7 +425,7 @@ class SoraVideoChannel(
     }
 
     private fun muteCameraHard() {
-        if (cameraHardMuted) return
+        if (hardMuted) return
 
         // ハードウェアミュート: キャプチャを停止してハードウェアを解放
         ioExecutor.execute {
@@ -445,19 +445,19 @@ class SoraVideoChannel(
             } finally {
                 if (changed) {
                     handler.post {
-                        cameraHardMuted = true
+                        hardMuted = true
                         notifyCameraMuteState()
                     }
                 }
             }
         }
 
-        cameraHardMuted = true
+        hardMuted = true
         notifyCameraMuteState()
     }
 
     private fun unmuteCameraHard() {
-        if (!cameraHardMuted) return
+        if (!hardMuted) return
 
         // ハードウェアミュート解除: キャプチャを再開
         ioExecutor.execute {
@@ -475,7 +475,7 @@ class SoraVideoChannel(
             } finally {
                 if (changed) {
                     handler.post {
-                        cameraHardMuted = false
+                        hardMuted = false
                         applyCameraMuteState() // ソフトミュートを反映
                         notifyCameraMuteState()
                     }
@@ -483,25 +483,25 @@ class SoraVideoChannel(
             }
         }
 
-        cameraHardMuted = false
+        hardMuted = false
         // ソフトミュート状態は維持し、VideoTrack の有効/無効のみ同期する
         handler.post { applyCameraMuteState() }
         notifyCameraMuteState()
     }
 
     private fun applyCameraMuteState() {
-        localVideoTrack?.setEnabled(!cameraSoftMuted)
+        localVideoTrack?.setEnabled(!softMuted)
     }
 
     private fun notifyCameraMuteState() {
         handler.post {
-            listener?.onCameraMuteStateChanged(this@SoraVideoChannel, cameraHardMuted, cameraSoftMuted)
+            listener?.onCameraMuteStateChanged(this@SoraVideoChannel, hardMuted, softMuted)
         }
     }
 
     // 状態参照用（UI 側と同期したい場合に利用）
-    fun isCameraSoftMuted(): Boolean = cameraSoftMuted
-    fun isCameraHardMuted(): Boolean = cameraHardMuted
+    fun isCameraSoftMuted(): Boolean = softMuted
+    fun isCameraHardMuted(): Boolean = hardMuted
 
     fun disconnect() {
         stopCapturer()

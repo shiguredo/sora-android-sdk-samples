@@ -420,14 +420,14 @@ class VideoChatRoomActivity : AppCompatActivity() {
         // UI 更新は onCameraMuteStateChanged で行う
         when (cameraState) {
             CameraState.ON -> {
-                channel?.muteCameraSoft(true)
+                channel?.setCameraSoftMuted(true)
             }
             CameraState.SOFT_MUTED -> {
-                channel?.muteCamera(true)
+                channel?.setCameraHardMuted(true)
             }
             CameraState.HARD_MUTED -> {
-                channel?.muteCamera(false)
-                channel?.muteCameraSoft(false)
+                channel?.setCameraHardMuted(false)
+                channel?.setCameraSoftMuted(false)
             }
         }
     }

@@ -413,16 +413,16 @@ class SimulcastActivity : AppCompatActivity() {
         when (cameraState) {
             CameraState.ON -> {
                 // ON -> ソフトウェアミュート
-                channel?.muteCameraSoft(true)
+                channel?.setCameraSoftMuted(true)
             }
             CameraState.SOFT_MUTED -> {
                 // ソフトウェアミュート -> ハードウェアミュート
-                channel?.muteCamera(true)
+                channel?.setCameraHardMuted(true)
             }
             CameraState.HARD_MUTED -> {
                 // ハードウェアミュート -> ON
-                channel?.muteCamera(false)
-                channel?.muteCameraSoft(false)
+                channel?.setCameraHardMuted(false)
+                channel?.setCameraSoftMuted(false)
             }
         }
     }
