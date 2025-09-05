@@ -30,6 +30,7 @@ import org.webrtc.ProxyType
 import org.webrtc.RTCStatsReport
 import org.webrtc.RtpParameters
 import org.webrtc.SurfaceViewRenderer
+import org.webrtc.VideoTrack
 import java.lang.Exception
 import java.util.concurrent.Executors
 
@@ -90,7 +91,7 @@ class SoraVideoChannel(
         fun onRemoveRemoteRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {}
         fun onAddLocalRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {}
         fun onAttendeesCountUpdated(channel: SoraVideoChannel, attendees: ChannelAttendeesCount) {}
-        // カメラミュート状態が変化した際の通知（任意実装）
+        // カメラミュート状態が変化した際の通知
         fun onCameraMuteStateChanged(channel: SoraVideoChannel, hardMuted: Boolean, softMuted: Boolean) {}
     }
 
@@ -204,8 +205,8 @@ class SoraVideoChannel(
     private var capturer: CameraVideoCapturer? = null
 
     private var capturing = false
-    private var hardMuted = false // ハードウェアミュート状態
-    private var softMuted = false // ソフトウェアミュート状態（VideoTrack の有効/無効）
+    private var hardMuted = false // ハードウェアミュート状態かどうか
+    private var softMuted = false // ソフトウェアミュート状態かどうか（VideoTrack の有効/無効）
 
     private var closed = false
 
@@ -214,7 +215,7 @@ class SoraVideoChannel(
     private var remoteRenderersSlot: SoraRemoteRendererSlot? = null
     private var localRenderer: SurfaceViewRenderer? = null
     private var localAudioTrack: AudioTrack? = null
-    private var localVideoTrack: org.webrtc.VideoTrack? = null
+    private var localVideoTrack: VideoTrack? = null
 
     private val rendererSlotListener = object : SoraRemoteRendererSlot.Listener {
 
