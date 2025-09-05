@@ -160,8 +160,8 @@ class SoraVideoChannel(
                 handler.post {
                     if (ms.videoTracks.size > 0) {
                         localVideoTrack = ms.videoTracks[0]
-                        // ソフトウェアミュート状態を反映
-                        localVideoTrack?.setEnabled(!cameraSoftMuted)
+                        // ソフトウェアミュート状態を反映（初期化順序を統一）
+                        applyCameraMuteState()
                         localRenderer = createSurfaceViewRenderer()
                         localVideoTrack!!.addSink(localRenderer!!)
                         listener?.onAddLocalRenderer(this@SoraVideoChannel, localRenderer!!)
@@ -411,7 +411,8 @@ class SoraVideoChannel(
     // ソフトウェアミュート: VideoCapture は維持しつつ、送出を一時停止
     fun muteCameraSoft(mute: Boolean) {
         cameraSoftMuted = mute
-        localVideoTrack?.setEnabled(!mute)
+        // 反映は UI スレッドで統一
+        handler.post { applyCameraMuteState() }
         notifyCameraMuteState()
     }
 
@@ -465,10 +466,12 @@ class SoraVideoChannel(
 
         cameraHardMuted = false
         // ソフトミュート状態は維持し、VideoTrack の有効/無効のみ同期する
-        handler.post {
-            localVideoTrack?.setEnabled(!cameraSoftMuted)
-        }
+        handler.post { applyCameraMuteState() }
         notifyCameraMuteState()
+    }
+
+    private fun applyCameraMuteState() {
+        localVideoTrack?.setEnabled(!cameraSoftMuted)
     }
 
     private fun notifyCameraMuteState() {
