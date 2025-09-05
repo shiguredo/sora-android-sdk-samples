@@ -417,22 +417,17 @@ class VideoChatRoomActivity : AppCompatActivity() {
     }
 
     internal fun toggleCamera() {
+        // UI 更新は onCameraMuteStateChanged で行う
         when (cameraState) {
             CameraState.ON -> {
-                ui?.showCameraSoftOffButton()
                 channel?.muteCameraSoft(true)
-                cameraState = CameraState.SOFT_MUTED
             }
             CameraState.SOFT_MUTED -> {
-                ui?.showCameraOffButton()
                 channel?.muteCamera(true)
-                cameraState = CameraState.HARD_MUTED
             }
             CameraState.HARD_MUTED -> {
-                ui?.showCameraOnButton()
                 channel?.muteCamera(false)
                 channel?.muteCameraSoft(false)
-                cameraState = CameraState.ON
             }
         }
     }
