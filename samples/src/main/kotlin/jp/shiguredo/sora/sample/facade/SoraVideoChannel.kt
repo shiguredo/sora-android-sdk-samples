@@ -429,17 +429,26 @@ class SoraVideoChannel(
 
         // ハードウェアミュート: キャプチャを停止してハードウェアを解放
         ioExecutor.execute {
+            var changed = false
             try {
                 capturer?.let {
                     if (capturing) {
-                        capturing = false
                         it.stopCapture()
+                        capturing = false
+                        changed = true
                     }
                 }
             } catch (e: InterruptedException) {
                 Thread.currentThread().interrupt()
             } catch (e: Exception) {
                 SoraLogger.e(TAG, "Failed to stop camera capture", e)
+            } finally {
+                if (changed) {
+                    handler.post {
+                        cameraHardMuted = true
+                        notifyCameraMuteState()
+                    }
+                }
             }
         }
 
@@ -452,15 +461,25 @@ class SoraVideoChannel(
 
         // ハードウェアミュート解除: キャプチャを再開
         ioExecutor.execute {
+            var changed = false
             try {
                 capturer?.let {
                     if (!capturing) {
-                        capturing = true
                         it.startCapture(videoWidth, videoHeight, videoFPS)
+                        capturing = true
+                        changed = true
                     }
                 }
             } catch (e: Exception) {
                 SoraLogger.e(TAG, "Failed to restart camera capture", e)
+            } finally {
+                if (changed) {
+                    handler.post {
+                        cameraHardMuted = false
+                        applyCameraMuteState() // ソフトミュートを反映
+                        notifyCameraMuteState()
+                    }
+                }
             }
         }
 
