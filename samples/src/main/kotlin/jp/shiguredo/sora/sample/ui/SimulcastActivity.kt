@@ -327,6 +327,23 @@ class SimulcastActivity : AppCompatActivity() {
         override fun onAttendeesCountUpdated(channel: SoraVideoChannel, attendees: ChannelAttendeesCount) {
             // nop
         }
+
+        override fun onCameraMuteStateChanged(
+            channel: SoraVideoChannel,
+            hardMuted: Boolean,
+            softMuted: Boolean
+        ) {
+            if (hardMuted) {
+                cameraState = CameraState.HARD_MUTED
+                ui?.showCameraOffButton()
+            } else if (softMuted) {
+                cameraState = CameraState.SOFT_MUTED
+                ui?.showCameraSoftOffButton()
+            } else {
+                cameraState = CameraState.ON
+                ui?.showCameraOnButton()
+            }
+        }
     }
 
     private fun connectChannel() {
@@ -378,6 +395,8 @@ class SimulcastActivity : AppCompatActivity() {
     }
 
     private var muted = false
+    private enum class CameraState { ON, SOFT_MUTED, HARD_MUTED }
+    private var cameraState: CameraState = CameraState.ON
 
     internal fun toggleMuted() {
         if (muted) {
@@ -387,6 +406,25 @@ class SimulcastActivity : AppCompatActivity() {
         }
         muted = !muted
         channel?.mute(muted)
+    }
+
+    internal fun toggleCamera() {
+        // UI 更新は onCameraMuteStateChanged で行う
+        when (cameraState) {
+            CameraState.ON -> {
+                // ON -> ソフトウェアミュート
+                channel?.setCameraSoftMuted(true)
+            }
+            CameraState.SOFT_MUTED -> {
+                // ソフトウェアミュート -> ハードウェアミュート
+                channel?.setCameraHardMuted(true)
+            }
+            CameraState.HARD_MUTED -> {
+                // ハードウェアミュート -> ON
+                channel?.setCameraHardMuted(false)
+                channel?.setCameraSoftMuted(false)
+            }
+        }
     }
 }
 
@@ -413,6 +451,7 @@ class SimulcastActivityUI(
             height = SoraScreenUtil.size(activity).y - dp2px(20 * 2 + 100)
         )
         binding.toggleMuteButton.setOnClickListener { activity.toggleMuted() }
+        binding.toggleCameraButton.setOnClickListener { activity.toggleCamera() }
         binding.switchCameraButton.setOnClickListener { activity.switchCamera() }
         binding.closeButton.setOnClickListener { activity.close() }
     }
@@ -447,6 +486,24 @@ class SimulcastActivityUI(
     internal fun showMuteButton() {
         binding.toggleMuteButton.setImageDrawable(
             resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
+        )
+    }
+
+    internal fun showCameraOffButton() {
+        binding.toggleCameraButton.setImageDrawable(
+            resources.getDrawable(R.drawable.ic_videocam_off_black_48dp, null)
+        )
+    }
+
+    internal fun showCameraSoftOffButton() {
+        binding.toggleCameraButton.setImageDrawable(
+            resources.getDrawable(R.drawable.ic_videocam_off_white_48dp, null)
+        )
+    }
+
+    internal fun showCameraOnButton() {
+        binding.toggleCameraButton.setImageDrawable(
+            resources.getDrawable(R.drawable.ic_videocam_on_white_48dp, null)
         )
     }
 

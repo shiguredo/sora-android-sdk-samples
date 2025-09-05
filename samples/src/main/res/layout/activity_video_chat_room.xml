@@ -67,6 +67,16 @@
                 app:srcCompat="@drawable/ic_mic_off_black_48dp" />
 
             <ImageButton
+                android:id="@+id/toggleCameraButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="10dp"
+                android:scaleType="fitCenter"
+                android:background="@drawable/enabled_button_background"
+                android:padding="6dp"
+                app:srcCompat="@drawable/ic_videocam_on_white_48dp" />
+
+            <ImageButton
                 android:id="@+id/switchCameraButton"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
