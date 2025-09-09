@@ -52,6 +52,7 @@ class SoraVideoChannel(
     private val spotlightUnfocusRid: SoraVideoOption.SpotlightRid? = null,
     private var roleType: SoraRoleType = SoraRoleType.SENDRECV,
     private var videoEnabled: Boolean = true,
+    private val startWithCamera: Boolean = true,
     private val videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x,
     private val videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y,
     private val videoVp9Params: Any? = null,
@@ -68,7 +69,6 @@ class SoraVideoChannel(
     private val videoBitRate: Int? = null,
     private val audioBitRate: Int? = null,
     private val audioStereo: Boolean = false,
-    private val needLocalRenderer: Boolean = true,
     private val audioEnabled: Boolean = true,
     private val audioStreamingLanguageCode: String? = null,
     private val capturerFactory: CameraVideoCapturerFactory =
@@ -157,20 +157,30 @@ class SoraVideoChannel(
                 localAudioTrack = ms.audioTracks[0]
             }
 
-            if (needLocalRenderer) {
-                handler.post {
-                    if (ms.videoTracks.size > 0) {
-                        localVideoTrack = ms.videoTracks[0]
-                        // ソフトウェアミュート状態を反映（初期化順序を統一）
-                        applyCameraMuteState()
-                        localRenderer = createSurfaceViewRenderer()
-                        localVideoTrack!!.addSink(localRenderer!!)
-                        listener?.onAddLocalRenderer(this@SoraVideoChannel, localRenderer!!)
+            // UI 初期化
+            handler.post {
+                if (ms.videoTracks.size > 0) {
+                    localVideoTrack = ms.videoTracks[0]
+                    // 開始時カメラOFFなら、ローカルトラック追加前にソフトミュートを立てて反映
+                    if (!startWithCamera) {
+                        softMuted = true
+                    }
+                    // ソフトウェアミュート状態を反映（初期化順序を統一）
+                    applyCameraMuteState()
+                    // 初期ON時のみローカルレンダラーを即時追加。OFF時は後で有効化タイミングで追加する
+                    if (startWithCamera) {
+                        ensureLocalRenderer()
                     }
                 }
             }
+            // カメラ動作開始
             handler.post {
-                startCapturer()
+                if (startWithCamera) {
+                    startCapturer()
+                } else {
+                    // 開始時カメラOFFならハードミュート状態にする（キャプチャ未開始のまま）
+                    setCameraHardMuted(true)
+                }
             }
         }
 
@@ -430,25 +440,32 @@ class SoraVideoChannel(
 
         // ハードウェアミュート: キャプチャを停止してハードウェアを解放
         ioExecutor.execute {
-            var stopped = false
+            var interrupted = false
+            var success = false
             try {
                 capturer?.let {
                     if (capturing) {
                         it.stopCapture()
                         capturing = false
-                        stopped = true
                     }
                 }
+                // capturer が null でも、以後の状態としてはハードミュートに遷移してよい
+                success = true
             } catch (e: InterruptedException) {
+                interrupted = true
                 Thread.currentThread().interrupt()
             } catch (e: Exception) {
                 SoraLogger.e(TAG, "Failed to stop camera capture", e)
+                success = false
             } finally {
-                // 完了後に一箇所で状態更新・通知（成功時のみ）
-                if (stopped) {
+                // 割り込み時はUI更新を行わない（整合性優先）
+                if (interrupted) return@execute
+                if (success) {
                     handler.post {
-                        hardMuted = true
-                        notifyCameraMuteState()
+                        if (!hardMuted) {
+                            hardMuted = true
+                            notifyCameraMuteState()
+                        }
                     }
                 }
             }
@@ -461,6 +478,7 @@ class SoraVideoChannel(
         // ハードウェアミュート解除: キャプチャを再開
         ioExecutor.execute {
             var started = false
+            var interrupted = false
             try {
                 capturer?.let {
                     if (!capturing) {
@@ -469,15 +487,21 @@ class SoraVideoChannel(
                         started = true
                     }
                 }
+            } catch (e: InterruptedException) {
+                interrupted = true
+                Thread.currentThread().interrupt()
             } catch (e: Exception) {
                 // 失敗時は確実に非キャプチャ状態へ整合
                 capturing = false
                 SoraLogger.e(TAG, "Failed to restart camera capture", e)
             } finally {
+                // 割り込み時はUI更新を行わない
+                if (interrupted) return@execute
                 // 完了後に一箇所で状態更新・通知（成功時のみ）
                 if (started) {
                     handler.post {
                         hardMuted = false
+                        ensureLocalRenderer()
                         applyCameraMuteState() // ソフトミュートを反映
                         notifyCameraMuteState()
                     }
@@ -493,6 +517,15 @@ class SoraVideoChannel(
     private fun notifyCameraMuteState() {
         handler.post {
             listener?.onCameraMuteStateChanged(this@SoraVideoChannel, hardMuted, softMuted)
+        }
+    }
+
+    // 未生成であればローカルレンダラーを生成し即時UIへ追加
+    private fun ensureLocalRenderer() {
+        if (localRenderer == null && localVideoTrack != null) {
+            localRenderer = createSurfaceViewRenderer()
+            localVideoTrack!!.addSink(localRenderer!!)
+            listener?.onAddLocalRenderer(this@SoraVideoChannel, localRenderer!!)
         }
     }
 

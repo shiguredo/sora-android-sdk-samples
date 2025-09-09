@@ -53,6 +53,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var videoVp9Params: Any? = null
     private var videoAv1Params: Any? = null
     private var videoH264Params: Any? = null
+    private var startWithCamera: Boolean = true
     private var spotlight = false
     private var spotlightNumber: Int? = null
     private var fps: Int = 30
@@ -113,6 +114,12 @@ class VideoChatRoomActivity : AppCompatActivity() {
         }
 
         audioEnabled = when (intent.getStringExtra("AUDIO_ENABLED")) {
+            "有効" -> true
+            "無効" -> false
+            else -> true
+        }
+
+        startWithCamera = when (intent.getStringExtra("INITIAL_CAMERA")) {
             "有効" -> true
             "無効" -> false
             else -> true
@@ -250,6 +257,15 @@ class VideoChatRoomActivity : AppCompatActivity() {
             density = this.resources.displayMetrics.density
         )
 
+        // 初期表示を反映（接続直後のコールバック前にアイコン状態を整える）
+        if (videoEnabled && startWithCamera) {
+            cameraState = CameraState.ON
+            ui?.showCameraOnButton()
+        } else {
+            cameraState = CameraState.HARD_MUTED
+            ui?.showCameraOffButton()
+        }
+
         connectChannel()
     }
 
@@ -368,6 +384,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
             spotlight = spotlight,
             spotlightNumber = spotlightNumber,
             videoEnabled = videoEnabled,
+            startWithCamera = startWithCamera,
             videoWidth = videoWidth,
             videoHeight = videoHeight,
             videoFPS = fps,
@@ -387,8 +404,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
             clientId = clientId,
             bundleId = bundleId,
             audioStreamingLanguageCode = audioStreamingLanguageCode,
-            listener = channelListener,
-            needLocalRenderer = true
+            listener = channelListener
         )
         channel!!.connect()
     }

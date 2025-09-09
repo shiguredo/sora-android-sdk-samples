@@ -17,6 +17,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
 
     private val videoCodecOptions = listOf("未指定", "VP8", "VP9", "H264", "H265", "AV1")
     private val videoEnabledOptions = listOf("有効", "無効")
+    private val initialCameraOptions = listOf("有効", "無効")
     private val audioCodecOptions = listOf("未指定", "OPUS")
     private val audioEnabledOptions = listOf("有効", "無効")
     private val audioBitRateOptions = listOf(
@@ -49,6 +50,8 @@ class SimulcastSetupActivity : AppCompatActivity() {
 
         binding.videoEnabledSelection.name.text = "映像の有無"
         binding.videoEnabledSelection.spinner.setItems(videoEnabledOptions)
+        binding.initialCameraSelection.name.text = "開始時カメラ"
+        binding.initialCameraSelection.spinner.setItems(initialCameraOptions)
         binding.videoCodecSelection.name.text = "映像コーデック"
         binding.videoCodecSelection.spinner.setItems(videoCodecOptions)
         binding.audioEnabledSelection.name.text = "音声の有無"
@@ -110,6 +113,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
         val bundleId = selectedItem(binding.bundleIdSelection.spinner)
         val dataChannelSignaling = selectedItem(binding.dataChannelSignalingSelection.spinner)
         val ignoreDisconnectWebSocket = selectedItem(binding.ignoreDisconnectWebSocketSelection.spinner)
+        val initialCamera = selectedItem(binding.initialCameraSelection.spinner)
 
         val intent = Intent(this, SimulcastActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
@@ -131,6 +135,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
         intent.putExtra("BUNDLE_ID", bundleId)
         intent.putExtra("DATA_CHANNEL_SIGNALING", dataChannelSignaling)
         intent.putExtra("IGNORE_DISCONNECT_WEBSOCKET", ignoreDisconnectWebSocket)
+        intent.putExtra("INITIAL_CAMERA", initialCamera)
 
         startActivity(intent)
     }
