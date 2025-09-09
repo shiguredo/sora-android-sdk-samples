@@ -96,6 +96,9 @@
                     android:id="@+id/cameraFacingSelection"/>
                 <include
                     layout="@layout/signaling_selection"
+                    android:id="@+id/initialCameraSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
                     android:id="@+id/clientIdSelection"/>
                 <include
                     layout="@layout/signaling_selection"

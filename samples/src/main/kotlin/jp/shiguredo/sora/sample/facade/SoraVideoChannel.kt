@@ -52,6 +52,7 @@ class SoraVideoChannel(
     private val spotlightUnfocusRid: SoraVideoOption.SpotlightRid? = null,
     private var roleType: SoraRoleType = SoraRoleType.SENDRECV,
     private var videoEnabled: Boolean = true,
+    private val startWithCamera: Boolean = true,
     private val videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x,
     private val videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y,
     private val videoVp9Params: Any? = null,
@@ -68,7 +69,6 @@ class SoraVideoChannel(
     private val videoBitRate: Int? = null,
     private val audioBitRate: Int? = null,
     private val audioStereo: Boolean = false,
-    private val needLocalRenderer: Boolean = true,
     private val audioEnabled: Boolean = true,
     private val audioStreamingLanguageCode: String? = null,
     private val capturerFactory: CameraVideoCapturerFactory =
@@ -157,20 +157,30 @@ class SoraVideoChannel(
                 localAudioTrack = ms.audioTracks[0]
             }
 
-            if (needLocalRenderer) {
-                handler.post {
-                    if (ms.videoTracks.size > 0) {
-                        localVideoTrack = ms.videoTracks[0]
-                        // ソフトウェアミュート状態を反映（初期化順序を統一）
-                        applyCameraMuteState()
-                        localRenderer = createSurfaceViewRenderer()
-                        localVideoTrack!!.addSink(localRenderer!!)
-                        listener?.onAddLocalRenderer(this@SoraVideoChannel, localRenderer!!)
+            // UI 初期化
+            handler.post {
+                if (ms.videoTracks.size > 0) {
+                    localVideoTrack = ms.videoTracks[0]
+                    // 開始時カメラOFFなら、ローカルトラック追加前にソフトミュートを立てて反映
+                    if (!startWithCamera) {
+                        softMuted = true
+                    }
+                    // ソフトウェアミュート状態を反映（初期化順序を統一）
+                    applyCameraMuteState()
+                    // 初期ON時のみローカルレンダラーを即時追加。OFF時は後で有効化タイミングで追加する
+                    if (startWithCamera) {
+                        ensureLocalRenderer()
                     }
                 }
             }
+            // カメラ動作開始
             handler.post {
-                startCapturer()
+                if (startWithCamera) {
+                    startCapturer()
+                } else {
+                    // 開始時カメラOFFならハードミュート状態にする（キャプチャ未開始のまま）
+                    setCameraHardMuted(true)
+                }
             }
         }
 
@@ -430,13 +440,11 @@ class SoraVideoChannel(
 
         // ハードウェアミュート: キャプチャを停止してハードウェアを解放
         ioExecutor.execute {
-            var stopped = false
             try {
                 capturer?.let {
                     if (capturing) {
                         it.stopCapture()
                         capturing = false
-                        stopped = true
                     }
                 }
             } catch (e: InterruptedException) {
@@ -444,9 +452,9 @@ class SoraVideoChannel(
             } catch (e: Exception) {
                 SoraLogger.e(TAG, "Failed to stop camera capture", e)
             } finally {
-                // 完了後に一箇所で状態更新・通知（成功時のみ）
-                if (stopped) {
-                    handler.post {
+                // 完了後に一箇所で状態更新・通知
+                handler.post {
+                    if (!hardMuted) {
                         hardMuted = true
                         notifyCameraMuteState()
                     }
@@ -478,6 +486,7 @@ class SoraVideoChannel(
                 if (started) {
                     handler.post {
                         hardMuted = false
+                        ensureLocalRenderer()
                         applyCameraMuteState() // ソフトミュートを反映
                         notifyCameraMuteState()
                     }
@@ -493,6 +502,15 @@ class SoraVideoChannel(
     private fun notifyCameraMuteState() {
         handler.post {
             listener?.onCameraMuteStateChanged(this@SoraVideoChannel, hardMuted, softMuted)
+        }
+    }
+
+    // 未生成であればローカルレンダラーを生成し即時UIへ追加
+    private fun ensureLocalRenderer() {
+        if (localRenderer == null && localVideoTrack != null) {
+            localRenderer = createSurfaceViewRenderer()
+            localVideoTrack!!.addSink(localRenderer!!)
+            listener?.onAddLocalRenderer(this@SoraVideoChannel, localRenderer!!)
         }
     }
 

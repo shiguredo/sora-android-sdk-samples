@@ -50,6 +50,7 @@ class SimulcastActivity : AppCompatActivity() {
     private var videoBitRate: Int? = null
     private var videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x
     private var videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y
+    private var startWithCamera: Boolean = true
     private var spotlight = false
     private var spotlightNumber: Int? = null
     private var spotlightFocusRid: SoraVideoOption.SpotlightRid? = null
@@ -112,6 +113,12 @@ class SimulcastActivity : AppCompatActivity() {
         }
 
         audioEnabled = when (intent.getStringExtra("AUDIO_ENABLED")) {
+            "有効" -> true
+            "無効" -> false
+            else -> true
+        }
+
+        startWithCamera = when (intent.getStringExtra("INITIAL_CAMERA")) {
             "有効" -> true
             "無効" -> false
             else -> true
@@ -243,6 +250,15 @@ class SimulcastActivity : AppCompatActivity() {
             density = this.resources.displayMetrics.density
         )
 
+        // 初期表示を反映（接続直後のコールバック前にアイコン状態を整える）
+        if (videoEnabled && startWithCamera) {
+            cameraState = CameraState.ON
+            ui?.showCameraOnButton()
+        } else {
+            cameraState = CameraState.HARD_MUTED
+            ui?.showCameraOffButton()
+        }
+
         connectChannel()
     }
 
@@ -365,6 +381,7 @@ class SimulcastActivity : AppCompatActivity() {
             spotlightFocusRid = spotlightFocusRid,
             spotlightUnfocusRid = spotlightUnfocusRid,
             videoEnabled = videoEnabled,
+            startWithCamera = startWithCamera,
             videoWidth = videoWidth,
             videoHeight = videoHeight,
             simulcast = simulcastEnabled,
@@ -379,8 +396,7 @@ class SimulcastActivity : AppCompatActivity() {
             audioBitRate = audioBitRate,
             audioStereo = audioStereo,
             roleType = role,
-            listener = channelListener,
-            needLocalRenderer = true
+            listener = channelListener
         )
         channel!!.connect()
     }
