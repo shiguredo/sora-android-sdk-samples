@@ -440,6 +440,8 @@ class SoraVideoChannel(
 
         // ハードウェアミュート: キャプチャを停止してハードウェアを解放
         ioExecutor.execute {
+            var interrupted = false
+            var success = false
             try {
                 capturer?.let {
                     if (capturing) {
@@ -447,16 +449,23 @@ class SoraVideoChannel(
                         capturing = false
                     }
                 }
+                // capturer が null でも、以後の状態としてはハードミュートに遷移してよい
+                success = true
             } catch (e: InterruptedException) {
+                interrupted = true
                 Thread.currentThread().interrupt()
             } catch (e: Exception) {
                 SoraLogger.e(TAG, "Failed to stop camera capture", e)
+                success = false
             } finally {
-                // 完了後に一箇所で状態更新・通知
-                handler.post {
-                    if (!hardMuted) {
-                        hardMuted = true
-                        notifyCameraMuteState()
+                // 割り込み時はUI更新を行わない（整合性優先）
+                if (interrupted) return@execute
+                if (success) {
+                    handler.post {
+                        if (!hardMuted) {
+                            hardMuted = true
+                            notifyCameraMuteState()
+                        }
                     }
                 }
             }
@@ -469,6 +478,7 @@ class SoraVideoChannel(
         // ハードウェアミュート解除: キャプチャを再開
         ioExecutor.execute {
             var started = false
+            var interrupted = false
             try {
                 capturer?.let {
                     if (!capturing) {
@@ -477,11 +487,16 @@ class SoraVideoChannel(
                         started = true
                     }
                 }
+            } catch (e: InterruptedException) {
+                interrupted = true
+                Thread.currentThread().interrupt()
             } catch (e: Exception) {
                 // 失敗時は確実に非キャプチャ状態へ整合
                 capturing = false
                 SoraLogger.e(TAG, "Failed to restart camera capture", e)
             } finally {
+                // 割り込み時はUI更新を行わない
+                if (interrupted) return@execute
                 // 完了後に一箇所で状態更新・通知（成功時のみ）
                 if (started) {
                     handler.post {
