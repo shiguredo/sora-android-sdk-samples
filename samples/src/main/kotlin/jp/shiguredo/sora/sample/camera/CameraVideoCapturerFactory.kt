@@ -17,6 +17,6 @@ class DefaultCameraVideoCapturerFactory(
 ) : CameraVideoCapturerFactory {
 
     override fun createCapturer(): CameraVideoCapturer? {
-        return CameraCapturerFactory.create(context, fixedResolution, frontFacingFirst)
+        return CameraCapturerFactory.create(context, frontFacingFirst)
     }
 }

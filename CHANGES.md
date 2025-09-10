@@ -47,6 +47,8 @@
 - [UPDATE] Sora Android SDK を 2025.2.0 にあげる
   - onError(SoraMediaChannel, SoraErrorReason) の廃止に対応する
   - onClose(mediaChannel: SoraMediaChannel) から onClose(mediaChannel: SoraMediaChannel, closeEvent: SoraCloseEvent) へ移行する
+  - CameraCapturerFactory.create() の引数から fixedResolution を削除する
+    - fixedResolution の値は false 固定であったため単純削除しても動作に変更はない
   - @miosakuma
 - [UPDATE] ビデオチャットサンプル、サイマルキャストサンプル、スポットライトサンプルの映像コーデックに `未指定` を追加する
   - @miosakuma
