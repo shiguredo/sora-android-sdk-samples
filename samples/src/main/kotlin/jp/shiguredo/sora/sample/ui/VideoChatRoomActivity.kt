@@ -71,6 +71,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var role = SoraRoleType.SENDRECV
 
     private var ui: VideoChatRoomActivityUI? = null
+    private enum class MicState { ON, SOFT_MUTED, HARD_MUTED }
+    private var micState: MicState = MicState.ON
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         SoraLogger.d(TAG, "onConfigurationChanged: orientation=${newConfig.orientation}")
@@ -295,6 +297,14 @@ class VideoChatRoomActivity : AppCompatActivity() {
         oldAudioMode = audioManager.mode
         Log.d(TAG, "AudioManager mode change: $oldAudioMode => MODE_IN_COMMUNICATION(3)")
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+        // 端末のハードミュート状態をUIに反映
+        if (audioManager.isMicrophoneMute) {
+            micState = MicState.HARD_MUTED
+            ui?.showMicHardMuteButton()
+        } else {
+            micState = MicState.ON
+            ui?.showMicOnButton()
+        }
     }
 
     override fun onPause() {
@@ -423,13 +433,33 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var cameraState: CameraState = CameraState.ON
 
     internal fun toggleMuted() {
-        if (muted) {
-            ui?.showMuteButton()
-        } else {
-            ui?.showUnmuteButton()
+        val am = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        when (micState) {
+            MicState.ON -> {
+                // ON -> ソフトミュート
+                am.setMicrophoneMute(false)
+                channel?.mute(true)
+                muted = true
+                micState = MicState.SOFT_MUTED
+                ui?.showMicSoftMuteButton()
+            }
+            MicState.SOFT_MUTED -> {
+                // ソフト -> ハード
+                channel?.mute(false)
+                muted = false
+                am.setMicrophoneMute(true)
+                micState = MicState.HARD_MUTED
+                ui?.showMicHardMuteButton()
+            }
+            MicState.HARD_MUTED -> {
+                // ハード -> ON
+                am.setMicrophoneMute(false)
+                channel?.mute(false)
+                muted = false
+                micState = MicState.ON
+                ui?.showMicOnButton()
+            }
         }
-        muted = !muted
-        channel?.mute(muted)
     }
 
     internal fun toggleCamera() {
@@ -471,6 +501,8 @@ class VideoChatRoomActivityUI(
             height = SoraScreenUtil.size(activity).y - dp2px(20 * 2 + 100)
         )
         binding.toggleMuteButton.setOnClickListener { activity.toggleMuted() }
+        // 初期は ON アイコン
+        showMicOnButton()
         binding.toggleCameraButton.setOnClickListener { activity.toggleCamera() }
         binding.switchCameraButton.setOnClickListener { activity.switchCamera() }
         binding.closeButton.setOnClickListener { activity.close() }
@@ -497,13 +529,19 @@ class VideoChatRoomActivityUI(
         renderersLayoutCalculator.remove(renderer)
     }
 
-    internal fun showUnmuteButton() {
+    internal fun showMicOnButton() {
         binding.toggleMuteButton.setImageDrawable(
             resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
         )
     }
 
-    internal fun showMuteButton() {
+    internal fun showMicSoftMuteButton() {
+        binding.toggleMuteButton.setImageDrawable(
+            resources.getDrawable(R.drawable.ic_mic_off_white_48dp, null)
+        )
+    }
+
+    internal fun showMicHardMuteButton() {
         binding.toggleMuteButton.setImageDrawable(
             resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
         )

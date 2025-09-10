@@ -37,6 +37,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     private var ignoreDisconnectWebSocket: Boolean? = null
 
     private var oldAudioMode: Int = AudioManager.MODE_INVALID
+    private var micHardwareMuted: Boolean = false
 
     private lateinit var binding: ActivityVoiceChatRoomBinding
 
@@ -113,6 +114,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         oldAudioMode = audioManager.mode
         Log.d(TAG, "AudioManager mode change: $oldAudioMode => MODE_IN_COMMUNICATION(3)")
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+        micHardwareMuted = audioManager.isMicrophoneMute
     }
 
     // AudioManager.MODE_INVALID が使われているため lint でエラーが出るので一時的に抑制しておく
@@ -183,5 +185,14 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     private fun disposeChannel() {
         Log.d(TAG, "disposeChannel")
         channel?.dispose()
+    }
+
+    private fun toggleMicHardwareMute() {
+        val am = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val next = !am.isMicrophoneMute
+        am.setMicrophoneMute(next)
+        micHardwareMuted = am.isMicrophoneMute
+        val msg = if (micHardwareMuted) "マイクをハードウェアミュートしました" else "マイクのハードウェアミュートを解除しました"
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 }
