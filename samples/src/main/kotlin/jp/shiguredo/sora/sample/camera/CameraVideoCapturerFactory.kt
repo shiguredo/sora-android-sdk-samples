@@ -12,7 +12,6 @@ interface CameraVideoCapturerFactory {
 
 class DefaultCameraVideoCapturerFactory(
     private val context: Context,
-    private val fixedResolution: Boolean = false,
     private val frontFacingFirst: Boolean = true
 ) : CameraVideoCapturerFactory {
 

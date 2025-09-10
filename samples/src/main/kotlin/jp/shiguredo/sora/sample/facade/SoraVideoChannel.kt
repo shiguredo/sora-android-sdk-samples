@@ -72,7 +72,7 @@ class SoraVideoChannel(
     private val audioEnabled: Boolean = true,
     private val audioStreamingLanguageCode: String? = null,
     private val capturerFactory: CameraVideoCapturerFactory =
-        DefaultCameraVideoCapturerFactory(context, fixedResolution, cameraFacing),
+        DefaultCameraVideoCapturerFactory(context, cameraFacing),
     private var listener: Listener?
 ) {
 
