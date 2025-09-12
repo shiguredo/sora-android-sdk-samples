@@ -33,6 +33,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         "10000", "15000", "20000", "30000"
     )
     private val videoSizeOptions = SoraFrameSize.landscape.keys.toList()
+    private val resolutionChangeOptions = listOf("未指定", "MAINTAIN_RESOLUTION", "MAINTAIN_FRAMERATE", "BALANCED", "DISABLED")
     private val resolutionAdjustmentOptions = listOf("未指定", "16", "8", "4", "2", "無効")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val clientIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
@@ -74,6 +75,8 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         binding.videoBitRateSelection.spinner.setItems(videoBitRateOptions)
         binding.videoSizeSelection.name.text = "映像サイズ"
         binding.videoSizeSelection.spinner.setItems(videoSizeOptions)
+        binding.resolutionChangeSelection.name.text = "解像度の変更"
+        binding.resolutionChangeSelection.spinner.setItems(resolutionChangeOptions)
         binding.resolutionAdjustmentSelection.name.text = "解像度の調整"
         binding.resolutionAdjustmentSelection.spinner.setItems(resolutionAdjustmentOptions)
         binding.videoSizeSelection.spinner.selectedIndex = 3
@@ -108,6 +111,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         val videoEnabled = selectedItem(binding.videoEnabledSelection.spinner)
         val videoBitRate = selectedItem(binding.videoBitRateSelection.spinner)
         val videoSize = selectedItem(binding.videoSizeSelection.spinner)
+        val resolutionChange = selectedItem(binding.resolutionChangeSelection.spinner)
         val resolutionAdjusment = selectedItem(binding.resolutionAdjustmentSelection.spinner)
         val fps = selectedItem(binding.fpsSelection.spinner)
         val clientId = selectedItem(binding.clientIdSelection.spinner)
@@ -130,6 +134,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("VIDEO_ENABLED", videoEnabled)
         intent.putExtra("VIDEO_BIT_RATE", videoBitRate)
         intent.putExtra("VIDEO_SIZE", videoSize)
+        intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
         intent.putExtra("RESOLUTION_ADJUSTMENT", resolutionAdjusment)
         intent.putExtra("FPS", fps)
         intent.putExtra("CLIENT_ID", clientId)

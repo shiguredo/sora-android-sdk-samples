@@ -61,7 +61,7 @@ class SoraVideoChannel(
     private val simulcast: Boolean = false,
     private val simulcastRid: SoraVideoOption.SimulcastRid? = null,
     private val videoFPS: Int = 30,
-    private val fixedResolution: Boolean = false,
+    private val degradationPreference: SoraVideoOption.DegradationPreference? = null,
     private val resolutionAdjustment: SoraVideoOption.ResolutionAdjustment? = null,
     private val cameraFacing: Boolean = true,
     private val videoCodec: SoraVideoOption.Codec = SoraVideoOption.Codec.DEFAULT,
@@ -72,7 +72,7 @@ class SoraVideoChannel(
     private val audioEnabled: Boolean = true,
     private val audioStreamingLanguageCode: String? = null,
     private val capturerFactory: CameraVideoCapturerFactory =
-        DefaultCameraVideoCapturerFactory(context, fixedResolution, cameraFacing),
+        DefaultCameraVideoCapturerFactory(context, cameraFacing),
     private var listener: Listener?
 ) {
 
@@ -293,7 +293,9 @@ class SoraVideoChannel(
             videoVp9Params = this@SoraVideoChannel.videoVp9Params
             videoAv1Params = this@SoraVideoChannel.videoAv1Params
             videoH264Params = this@SoraVideoChannel.videoH264Params
-
+            this@SoraVideoChannel.degradationPreference?.let {
+                degradationPreference = this@SoraVideoChannel.degradationPreference
+            }
             audioCodec = this@SoraVideoChannel.audioCodec
             audioBitrate = this@SoraVideoChannel.audioBitRate
 

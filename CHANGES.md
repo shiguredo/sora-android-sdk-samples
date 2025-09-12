@@ -11,6 +11,10 @@
 
 ## develop
 
+- [CHANGE] ビデオチャットサンプル、サイマルキャストサンプル、スポットライトサンプルの「解像度の変更」項目の内容を fixedResolution から DegradationPreference に変更する
+  - 2025.2.0 で解像度維持の設定が fixedResolution から DegradationPreference に変更したことに伴う対応
+  - スポットライトサンプルは「解像度の変更」項目がないため、他のサンプルに合わせるために追加をした
+  - @miosakuma
 - [UPDATE] 依存ライブラリーのバージョンを上げる
   - com.google.code.gson:gson を 2.13.1 に上げる
   - androidx.appcompat:appcompat を 1.7.1 に上げる
@@ -47,6 +51,7 @@
 - [UPDATE] Sora Android SDK を 2025.2.0 にあげる
   - onError(SoraMediaChannel, SoraErrorReason) の廃止に対応する
   - onClose(mediaChannel: SoraMediaChannel) から onClose(mediaChannel: SoraMediaChannel, closeEvent: SoraCloseEvent) へ移行する
+  - CameraCapturerFactory.create() の引数から fixedResolution を削除する
   - @miosakuma
 - [UPDATE] ビデオチャットサンプル、サイマルキャストサンプル、スポットライトサンプルの映像コーデックに `未指定` を追加する
   - @miosakuma
