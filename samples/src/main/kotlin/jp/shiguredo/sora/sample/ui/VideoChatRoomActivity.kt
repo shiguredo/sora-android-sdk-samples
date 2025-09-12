@@ -57,7 +57,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var spotlight = false
     private var spotlightNumber: Int? = null
     private var fps: Int = 30
-    private var fixedResolution = false
+    private var degradationPreference: SoraVideoOption.DegradationPreference? = null
     private var resolutionAdjustment: SoraVideoOption.ResolutionAdjustment? = null
     private var cameraFacing = true
     private var clientId: String? = null
@@ -146,10 +146,13 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
         Log.d(TAG, "spotlight => $spotlight, $spotlightNumber")
 
-        fixedResolution = when (intent.getStringExtra("RESOLUTION_CHANGE")) {
-            "可変" -> false
-            "固定" -> true
-            else -> false
+        degradationPreference = when (intent.getStringExtra("RESOLUTION_CHANGE")) {
+            "未指定" -> null
+            "MAINTAIN_RESOLUTION" -> SoraVideoOption.DegradationPreference.MAINTAIN_RESOLUTION
+            "MAINTAIN_FRAMERATE" -> SoraVideoOption.DegradationPreference.MAINTAIN_FRAMERATE
+            "BALANCED" -> SoraVideoOption.DegradationPreference.BALANCED
+            "DISABLED" -> SoraVideoOption.DegradationPreference.DISABLED
+            else -> null
         }
 
         videoVp9Params = when (val stringValue = intent.getStringExtra("VP9_PROFILE_ID")) {
@@ -391,7 +394,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
             videoVp9Params = videoVp9Params,
             videoAv1Params = videoAv1Params,
             videoH264Params = videoH264Params,
-            fixedResolution = fixedResolution,
+            degradationPreference = degradationPreference,
             resolutionAdjustment = resolutionAdjustment,
             videoCodec = videoCodec,
             videoBitRate = videoBitRate,

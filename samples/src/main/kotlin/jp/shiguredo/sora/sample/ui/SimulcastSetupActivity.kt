@@ -30,7 +30,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
 
     private val videoSizeOptions = SoraFrameSize.landscape.keys.toList()
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
-    private val resolutionChangeOptions = listOf("可変", "固定")
+    private val resolutionChangeOptions = listOf("未指定", "MAINTAIN_RESOLUTION", "MAINTAIN_FRAMERATE", "BALANCED", "DISABLED")
     private val resolutionAdjustmentOptions = listOf("未指定", "16", "8", "4", "2", "無効")
     private val simulcastRidOptions = listOf("未指定", "r0", "r1", "r2")
     private val clientIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")

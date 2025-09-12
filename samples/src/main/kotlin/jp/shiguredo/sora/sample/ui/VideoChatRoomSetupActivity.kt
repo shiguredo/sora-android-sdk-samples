@@ -34,7 +34,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     private val av1ProfileOptions = listOf("未指定", "0", "1", "2")
     private val h264ProfileLevelIdOptions = listOf("未指定", "42e01f", "42e020", "42e034")
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
-    private val resolutionChangeOptions = listOf("可変", "固定")
+    private val resolutionChangeOptions = listOf("未指定", "MAINTAIN_RESOLUTION", "MAINTAIN_FRAMERATE", "BALANCED", "DISABLED")
     private val resolutionAdjustmentOptions = listOf("未指定", "16", "8", "4", "2", "無効")
     private val cameraFacingOptions = listOf("前面", "背面")
     private val clientIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
