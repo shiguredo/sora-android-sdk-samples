@@ -11,6 +11,10 @@
 
 ## develop
 
+- [CHANGE] マルチストリーム設定を廃止する
+  - レガシーストリーム機能は 2025 年 6 月リリースの Sora にて廃止されるため、サンプルアプリケーションでもマルチストリーム設定を廃止する
+  - Sora がデフォルトでレガシーストリームを使用するように設定されている場合、接続エラーになる
+  - @zztkm
 - [CHANGE] ビデオチャットサンプル、サイマルキャストサンプル、スポットライトサンプルの「解像度の変更」項目の内容を fixedResolution から DegradationPreference に変更する
   - 2025.2.0 で解像度維持の設定が fixedResolution から DegradationPreference に変更したことに伴う対応
   - スポットライトサンプルは「解像度の変更」項目がないため、他のサンプルに合わせるために追加をした
@@ -44,10 +48,6 @@
 - [UPDATE] ビデオエフェクトサンプルを削除する
   - `jp.co.cyberagent.android:gpuimage:2.1.0` が 16 KB ページサイズに対応していないため
   - @miosakuma
-- [CHANGE] マルチストリーム設定を廃止する
-  - レガシーストリーム機能は 2025 年 6 月リリースの Sora にて廃止されるため、サンプルアプリケーションでもマルチストリーム設定を廃止する
-  - Sora がデフォルトでレガシーストリームを使用するように設定されている場合、接続エラーになる
-  - @zztkm
 - [UPDATE] Sora Android SDK を 2025.2.0 にあげる
   - onError(SoraMediaChannel, SoraErrorReason) の廃止に対応する
   - onClose(mediaChannel: SoraMediaChannel) から onClose(mediaChannel: SoraMediaChannel, closeEvent: SoraCloseEvent) へ移行する
