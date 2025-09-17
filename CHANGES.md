@@ -9,7 +9,9 @@
 - FIX
   - バグ修正
 
-## 2025.2
+## sora-andoroid-sdk-2025.2.0
+
+**リリース日**: 2025-09-17
 
 - [CHANGE] マルチストリーム設定を廃止する
   - レガシーストリーム機能は 2025 年 6 月リリースの Sora にて廃止されるため、サンプルアプリケーションでもマルチストリーム設定を廃止する
@@ -19,6 +21,10 @@
   - 2025.2.0 で解像度維持の設定が fixedResolution から DegradationPreference に変更したことに伴う対応
   - スポットライトサンプルは「解像度の変更」項目がないため、他のサンプルに合わせるために追加をした
   - @miosakuma
+- [UPDATE] システム条件を更新する
+  - Android Studio 2025.1.1 以降
+  - WebRTC SFU Sora 2025.1.0 以降
+  - @miosakuma @zztkm
 - [UPDATE] 依存ライブラリーのバージョンを上げる
   - com.google.code.gson:gson を 2.13.1 に上げる
   - androidx.appcompat:appcompat を 1.7.1 に上げる
