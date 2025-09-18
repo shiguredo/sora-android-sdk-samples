@@ -13,7 +13,7 @@
 
 ### misc
 
-- [UPDATE] gragle を Kotlin DSL 対応する
+- [UPDATE] gradle を Kotlin DSL 対応する
   - build.gradle、settings.gradle、samples/build.gradle を kts ファイルに置き換えた
   - ライブラリバージョン管理を Version Catalog による管理に変更した
   - @t-miya

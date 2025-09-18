@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ktlint)
 }
 
@@ -55,6 +54,7 @@ android {
     }
 
     composeOptions {
+        // Kotlin 1.9.x 系では Compose Compiler を明示指定
         kotlinCompilerExtensionVersion = libs.versions.kotlin.compiler.extension.get()
     }
 
