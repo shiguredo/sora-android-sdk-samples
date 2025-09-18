@@ -54,8 +54,8 @@ android {
     }
 
     composeOptions {
-        // Kotlin 1.9.x 系では Compose Compiler を明示指定
-        kotlinCompilerExtensionVersion = libs.versions.kotlin.compiler.extension.get()
+        // Kotlin と Compose Compiler は互換表に従い Version Catalog で同期
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.extension.get()
     }
 
     compileOptions {
@@ -105,10 +105,7 @@ dependencies {
 
     implementation(libs.gson)
 
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.cardview)
-    implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.constraintlayout)
+    implementation(libs.bundles.androidx.ui)
     implementation(libs.bundles.androidx.navigation)
     implementation(libs.bundles.compose)
 

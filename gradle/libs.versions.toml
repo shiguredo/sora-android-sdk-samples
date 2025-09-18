@@ -1,8 +1,12 @@
 [versions]
 # Build tools
 android-gradle-plugin = "8.11.1"
+
+# Kotlin / Compose (互換性は下記マップに従い要整合)
+# https://developer.android.com/jetpack/androidx/releases/compose-kotlin
+# Kotlin 1.9.25 ↔ Compose Compiler 1.5.15
 kotlin = "1.9.25"
-kotlin-compiler-extension = "1.5.15"
+compose-compiler-extension = "1.5.15"
 dokka = "1.9.20"
 ktlint-gradle = "11.3.1"
 versions-plugin = "0.46.0"
@@ -123,3 +127,4 @@ reactive = ["rxjava2", "rxandroid2", "rxkotlin2"]
 coroutines = ["kotlinx-coroutines-core", "kotlinx-coroutines-android"]
 compose = ["androidx-compose-ui", "androidx-compose-material", "androidx-compose-material-icons", "androidx-activity-compose"]
 androidx-navigation = ["androidx-navigation-fragment", "androidx-navigation-ui"]
+androidx-ui = ["androidx-appcompat", "androidx-cardview", "androidx-recyclerview", "androidx-constraintlayout"]
