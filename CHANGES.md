@@ -9,7 +9,10 @@
 - FIX
   - バグ修正
 
-## develop
+## 2025.3
+
+- [UPDATE] Sora Android SDK を 2025.3.0 に上げる
+  - @zztkm
 
 ### misc
 
