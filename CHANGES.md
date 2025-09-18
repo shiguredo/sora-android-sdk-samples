@@ -9,6 +9,15 @@
 - FIX
   - バグ修正
 
+## develop
+
+### misc
+
+- [UPDATE] gragle を Kotlin DSL 対応する
+  - build.gradle、settings.gradle、samples/build.gradle を kts ファイルに置き換えた
+  - ライブラリバージョン管理を Version Catalog による管理に変更した
+  - @t-miya
+
 ## sora-andoroid-sdk-2025.2.0
 
 **リリース日**: 2025-09-17
