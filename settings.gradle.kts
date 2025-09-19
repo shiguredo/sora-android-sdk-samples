@@ -17,3 +17,16 @@ dependencyResolutionManagement {
 
 rootProject.name = "sora-android-sdk-samples"
 include(":samples")
+
+// ローカル SDK を composite build で取り込む場合は、
+// gradle.properties の `soraSdkDirPath` または環境変数 `SORA_SDK_DIR` を設定した上で以下をアンコメントする
+// val soraSdkDirPath = providers.gradleProperty("soraSdkDirPath").orNull?.trim()
+//     ?: System.getenv("SORA_SDK_DIR")?.trim()
+//
+// if (!soraSdkDirPath.isNullOrBlank() && file(soraSdkDirPath).isDirectory) {
+//     includeBuild(soraSdkDirPath!!) {
+//         dependencySubstitution {
+//             substitute(module("com.github.shiguredo:sora-android-sdk")).using(project(":sora-android-sdk"))
+//         }
+//     }
+// }

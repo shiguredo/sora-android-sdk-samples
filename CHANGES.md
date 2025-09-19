@@ -20,6 +20,11 @@
   - build.gradle、settings.gradle、samples/build.gradle を kts ファイルに置き換えた
   - ライブラリバージョン管理を Version Catalog による管理に変更した
   - @t-miya
+- [ADD] ローカルの sora-android-sdk を Composite build で取り込めるようにする
+  - gradle.properties.example にローカルの sora-android-sdk のソースコードのパスを指定する `soraSdkDirPath` キーを追加
+  - settings.gradle.kts に `soraSdkDirPath` のパスを Composite build で取り込む処理を追加
+  - settings.gradle.kts の実装は Composite build 利用時のみコメントアウトする。デフォルトでは JitPack 経由での SDK 利用となる
+  - @t-miya
 
 ## sora-andoroid-sdk-2025.2.0
 
