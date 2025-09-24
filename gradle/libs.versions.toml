@@ -108,7 +108,6 @@ kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit" }
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-maven = { id = "com.github.dcendents.android-maven", version.ref = "android-maven-plugin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
