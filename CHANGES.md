@@ -11,6 +11,13 @@
 
 ## 2025.3
 
+- [UPDATE] デバイス権限処理を PermissionDispacher から Activity Result API へ移行
+  - kapt が Kotlin 2 に対応していないため警告が出て 1.9.0 にフォールバックされる
+  - kapt を ksp へ移行しようとすると PermissionDispatcher が対応していないためビルドエラーとなる
+  - PermissionDispatcher は 2022 年以降更新されておらずサードパーティー製ライブラリであるため Google 製の Activity Result API へ移行
+  - @t-miya
+- [UPDATE] Kotlin バージョンを 2.0.20 に上げる
+  - @t-miya
 - [UPDATE] Sora Android SDK を 2025.3.0 に上げる
   - @zztkm
 
