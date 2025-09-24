@@ -2,6 +2,7 @@ package jp.shiguredo.sora.sample.screencast
 
 import android.annotation.TargetApi
 import android.content.Intent
+import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 
@@ -22,7 +23,12 @@ class ScreencastRequest(
     val boundActivityName: String?,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readParcelable(Intent::class.java.classLoader),
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            parcel.readParcelable(Intent::class.java.classLoader, Intent::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            parcel.readParcelable(Intent::class.java.classLoader)
+        },
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString(),

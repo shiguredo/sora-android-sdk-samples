@@ -86,7 +86,12 @@ class SoraScreencastService : Service() {
         SoraScreencastService.running = true
 
         egl = EglBase.create()
-        req = intent.getParcelableExtra("SCREENCAST_REQUEST")
+        req = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("SCREENCAST_REQUEST", ScreencastRequest::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra("SCREENCAST_REQUEST")
+        }
         if (req == null) {
             SoraLogger.w(TAG, "request not found")
             stopSelf()
