@@ -20,6 +20,8 @@
   - build.gradle、settings.gradle、samples/build.gradle を kts ファイルに置き換えた
   - ライブラリバージョン管理を Version Catalog による管理に変更した
   - @t-miya
+- [UPDATE] actions/checkout を v5 に上げる
+  - @miosakuma
 - [ADD] ローカルの sora-android-sdk を Composite build で取り込めるようにする
   - gradle.properties.example にローカルの sora-android-sdk のソースコードのパスを指定する `soraSdkDirPath` キーを追加
   - settings.gradle.kts に `soraSdkDirPath` のパスを Composite build で取り込む処理を追加
