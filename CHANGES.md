@@ -11,6 +11,26 @@
 
 ## 2025.3
 
+- [UPDATE] デバイス権限処理を PermissionDispacher から Activity Result API へ移行
+  - kapt が Kotlin 2 に対応していないため警告が出て 1.9.0 にフォールバックされる
+  - kapt を ksp へ移行しようとすると PermissionDispatcher が対応していないためビルドエラーとなる
+  - PermissionDispatcher は 2022 年以降更新されておらずサードパーティー製ライブラリであるため Google 製の Activity Result API へ移行
+  - @t-miya
+- [UPDATE] Android の非推奨 API を後方互換しつつ移行する
+  - ScreencastRequest
+    - Parcel.readParcelable(ClassLoader?) → API 33 以降は readParcelable(ClassLoader, Class)、未満は非推奨 API を抑制して分岐
+  - SoraScreencastService
+    - Intent.getParcelableExtra(String) → API 33 以降は getParcelableExtra(String, Class)、未満は非推奨 API を抑制して分岐
+  - MessagingActivity
+    - Icons.Filled.Send → Icons.AutoMirrored.Filled.Send(import も automirrored に更新)
+  - SimulcastActivity / VideoChatRoomActivity / VoiceChatRoomActivity
+    - 画面フルスクリーン制御 `FLAG_FULLSCREEN` / `systemUiVisibility` → `WindowCompat` + `WindowInsetsControllerCompat` に置換
+  - Handler() → Handler(Looper.getMainLooper()) に置換
+  - SoraScreenUtil
+    - 画面サイズ取得 `WindowManager.defaultDisplay.getSize` → API 30 以降は `currentWindowMetrics`、未満は `displayMetrics` に置換
+  - @t-miya
+- [UPDATE] Kotlin バージョンを 2.0.20 に上げる
+  - @t-miya
 - [UPDATE] Sora Android SDK を 2025.3.0 に上げる
   - @zztkm
 

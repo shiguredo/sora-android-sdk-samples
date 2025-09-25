@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ktlint)
 }
 
@@ -51,11 +51,6 @@ android {
         compose = true
         // AGP 8.0 からデフォルトで false になった
         buildConfig = true
-    }
-
-    composeOptions {
-        // Kotlin と Compose Compiler は互換表に従い Version Catalog で同期
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.extension.get()
     }
 
     compileOptions {
@@ -111,9 +106,6 @@ dependencies {
 
     implementation(libs.material)
     implementation(libs.material.spinner)
-
-    implementation(libs.permissions.dispatcher)
-    kapt(libs.permissions.dispatcher.processor)
 
     // Sora Android SDK
     if (findProject(":sora-android-sdk") != null) {

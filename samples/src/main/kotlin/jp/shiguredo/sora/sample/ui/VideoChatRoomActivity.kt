@@ -10,9 +10,13 @@ import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
@@ -275,19 +279,16 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private fun setupWindow() {
         supportActionBar?.hide()
 
-        window.addFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-                or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-        )
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setWindowVisibility()
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     private fun setWindowVisibility() {
-        window.decorView.systemUiVisibility =
-            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-            View.SYSTEM_UI_FLAG_FULLSCREEN or
-            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        val controller = WindowInsetsControllerCompat(window, window.decorView)
+        controller.hide(WindowInsetsCompat.Type.systemBars())
+        controller.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     }
 
     override fun onResume() {
@@ -378,7 +379,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
         val signalingMetadata = Gson().fromJson(BuildConfig.SIGNALING_METADATA, Map::class.java)
         channel = SoraVideoChannel(
             context = this,
-            handler = Handler(),
+            handler = Handler(Looper.getMainLooper()),
             signalingEndpointCandidates = signalingEndpointCandidates,
             channelId = channelName,
             signalingMetadata = signalingMetadata,

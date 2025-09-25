@@ -16,18 +16,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import android.content.pm.PackageManager
 import com.google.android.material.snackbar.Snackbar
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.databinding.ActivityMainBinding
 import jp.shiguredo.sora.sample.screencast.SoraScreencastService
 import jp.shiguredo.sora.sdk.util.SoraLogger
-import permissions.dispatcher.NeedsPermission
-import permissions.dispatcher.OnPermissionDenied
-import permissions.dispatcher.OnShowRationale
-import permissions.dispatcher.PermissionRequest
-import permissions.dispatcher.RuntimePermissions
-
-@RuntimePermissions
 class MainActivity : AppCompatActivity() {
 
     companion object {
@@ -118,10 +114,32 @@ class MainActivity : AppCompatActivity() {
         unregisterReceiver(invalidateReceiver)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        onRequestPermissionsResult(requestCode, grantResults)
+    // Activity Result API launchers
+    private val requestAudioPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            pendingActionAfterPermission?.invoke()
+        } else {
+            onAudioDenied()
+        }
+        pendingActionAfterPermission = null
     }
+
+    private val requestCameraAndAudioPermissions = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { results ->
+        val cameraGranted = results[Manifest.permission.CAMERA] == true
+        val audioGranted = results[Manifest.permission.RECORD_AUDIO] == true
+        if (cameraGranted && audioGranted) {
+            pendingActionAfterPermission?.invoke()
+        } else {
+            onCameraAndAudioDenied()
+        }
+        pendingActionAfterPermission = null
+    }
+
+    private var pendingActionAfterPermission: (() -> Unit)? = null
 
     internal fun goToDemo(position: Int) {
         when (position) {
@@ -138,8 +156,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @TargetApi(21)
-    @NeedsPermission(Manifest.permission.RECORD_AUDIO)
-    fun goToScreencastActivity() {
+    private fun goToScreencastActivity() {
         /*
          * 1つのアプリ でこのサンプルを指定してスクリーンキャストを実行した場合、
          * android:launchMode="singleInstance" で別タスクとした ScreencastSetupActivity は
@@ -154,26 +171,22 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    @NeedsPermission(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
-    fun goToVideoRoomDemo() {
+    private fun goToVideoRoomDemo() {
         val intent = Intent(this, VideoChatRoomSetupActivity::class.java)
         startActivity(intent)
     }
 
-    @NeedsPermission(Manifest.permission.RECORD_AUDIO)
-    fun goToVoiceRoomDemo() {
+    private fun goToVoiceRoomDemo() {
         val intent = Intent(this, VoiceChatRoomSetupActivity::class.java)
         startActivity(intent)
     }
 
-    @NeedsPermission(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
-    fun goToSpotlight() {
+    private fun goToSpotlight() {
         val intent = Intent(this, SpotlightRoomSetupActivity::class.java)
         startActivity(intent)
     }
 
-    @NeedsPermission(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
-    fun goToSimulcast() {
+    private fun goToSimulcast() {
         val intent = Intent(this, SimulcastSetupActivity::class.java)
         startActivity(intent)
     }
@@ -183,23 +196,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    @OnShowRationale(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
-    fun showRationaleForCameraAndAudio(request: PermissionRequest) {
-        Log.d(TAG, "showRationaleForCameraAndAudio")
-        showRationaleDialog(
-            "ビデオチャットを利用するには、カメラとマイクの使用許可が必要です", request
-        )
-    }
-
-    @OnShowRationale(Manifest.permission.RECORD_AUDIO)
-    fun showRationaleForAudio(request: PermissionRequest) {
-        showRationaleDialog(
-            "ボイスチャット・スクリーンキャストを利用するには、マイクの使用許可が必要です", request
-        )
-    }
-
-    @OnPermissionDenied(value = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
-    fun onCameraAndAudioDenied() {
+    private fun onCameraAndAudioDenied() {
         Log.d(TAG, "onCameraAndAudioDenied")
         Snackbar.make(
             binding.rootLayout,
@@ -210,8 +207,7 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    @OnPermissionDenied(Manifest.permission.RECORD_AUDIO)
-    fun onAudioDenied() {
+    private fun onAudioDenied() {
         Snackbar.make(
             binding.rootLayout,
             "ボイスチャットを利用するには、マイクの使用を許可してください",
@@ -221,12 +217,102 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun showRationaleDialog(message: String, request: PermissionRequest) {
+    private fun showRationaleDialog(message: String, onProceed: () -> Unit) {
         AlertDialog.Builder(this)
-            .setPositiveButton(getString(R.string.permission_button_positive)) { _, _ -> request.proceed() }
-            .setNegativeButton(getString(R.string.permission_button_negative)) { _, _ -> request.cancel() }
+            .setPositiveButton(getString(R.string.permission_button_positive)) { _, _ -> onProceed() }
+            .setNegativeButton(getString(R.string.permission_button_negative)) { _, _ -> }
             .setCancelable(false)
             .setMessage(message)
             .show()
+    }
+
+    // ===== Permission check entry points (replace *WithPermissionCheck generated methods) =====
+    private fun goToVideoRoomDemoWithPermissionCheck() {
+        val cameraGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+        val audioGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+        if (cameraGranted && audioGranted) {
+            goToVideoRoomDemo()
+            return
+        }
+        pendingActionAfterPermission = { goToVideoRoomDemo() }
+        val needRationale = shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
+            shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)
+        if (needRationale) {
+            showRationaleDialog("ビデオチャットを利用するには、カメラとマイクの使用許可が必要です") {
+                requestCameraAndAudioPermissions.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO))
+            }
+        } else {
+            requestCameraAndAudioPermissions.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO))
+        }
+    }
+
+    private fun goToSpotlightWithPermissionCheck() {
+        val cameraGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+        val audioGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+        if (cameraGranted && audioGranted) {
+            goToSpotlight()
+            return
+        }
+        pendingActionAfterPermission = { goToSpotlight() }
+        val needRationale = shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
+            shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)
+        if (needRationale) {
+            showRationaleDialog("ビデオチャットを利用するには、カメラとマイクの使用許可が必要です") {
+                requestCameraAndAudioPermissions.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO))
+            }
+        } else {
+            requestCameraAndAudioPermissions.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO))
+        }
+    }
+
+    private fun goToSimulcastWithPermissionCheck() {
+        val cameraGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+        val audioGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+        if (cameraGranted && audioGranted) {
+            goToSimulcast()
+            return
+        }
+        pendingActionAfterPermission = { goToSimulcast() }
+        val needRationale = shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
+            shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)
+        if (needRationale) {
+            showRationaleDialog("ビデオチャットを利用するには、カメラとマイクの使用許可が必要です") {
+                requestCameraAndAudioPermissions.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO))
+            }
+        } else {
+            requestCameraAndAudioPermissions.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO))
+        }
+    }
+
+    private fun goToVoiceRoomDemoWithPermissionCheck() {
+        val audioGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+        if (audioGranted) {
+            goToVoiceRoomDemo()
+            return
+        }
+        pendingActionAfterPermission = { goToVoiceRoomDemo() }
+        if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+            showRationaleDialog("ボイスチャット・スクリーンキャストを利用するには、マイクの使用許可が必要です") {
+                requestAudioPermission.launch(Manifest.permission.RECORD_AUDIO)
+            }
+        } else {
+            requestAudioPermission.launch(Manifest.permission.RECORD_AUDIO)
+        }
+    }
+
+    private fun goToScreencastActivityWithPermissionCheck() {
+        val audioGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+        if (audioGranted) {
+            goToScreencastActivity()
+            return
+        }
+        pendingActionAfterPermission = { goToScreencastActivity() }
+        if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+            showRationaleDialog("ボイスチャット・スクリーンキャストを利用するには、マイクの使用許可が必要です") {
+                requestAudioPermission.launch(Manifest.permission.RECORD_AUDIO)
+            }
+        } else {
+            requestAudioPermission.launch(Manifest.permission.RECORD_AUDIO)
+        }
     }
 }
