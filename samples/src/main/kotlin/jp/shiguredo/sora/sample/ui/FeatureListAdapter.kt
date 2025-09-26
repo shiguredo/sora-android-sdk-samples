@@ -34,9 +34,7 @@ class FeatureListAdapter(
         return ViewHolder(v)
     }
 
-    override fun getItemCount(): Int {
-        return features.size
-    }
+    override fun getItemCount(): Int = features.size
 
     override fun onBindViewHolder(
         holder: ViewHolder,
@@ -48,7 +46,9 @@ class FeatureListAdapter(
         }
     }
 
-    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(
+        val view: View,
+    ) : RecyclerView.ViewHolder(view) {
         private val title: TextView = view.findViewById(R.id.featureTitle) as TextView
         private val description: TextView = view.findViewById(R.id.featureDescription) as TextView
 

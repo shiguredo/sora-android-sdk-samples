@@ -15,7 +15,5 @@ class DefaultCameraVideoCapturerFactory(
     private val context: Context,
     private val frontFacingFirst: Boolean = true,
 ) : CameraVideoCapturerFactory {
-    override fun createCapturer(): CameraVideoCapturer? {
-        return CameraCapturerFactory.create(context, frontFacingFirst = frontFacingFirst)
-    }
+    override fun createCapturer(): CameraVideoCapturer? = CameraCapturerFactory.create(context, frontFacingFirst = frontFacingFirst)
 }

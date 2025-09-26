@@ -131,7 +131,8 @@ class SoraScreencastService : Service() {
         val activityIntent = createBoundActivityIntent()
         val pendingIntent = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_MUTABLE)
         val notification =
-            NotificationCompat.Builder(this, notificationChannelId)
+            NotificationCompat
+                .Builder(this, notificationChannelId)
                 .setContentTitle(req!!.stateTitle)
                 .setContentText(req!!.stateText)
                 .setContentIntent(pendingIntent)
@@ -191,9 +192,7 @@ class SoraScreencastService : Service() {
         super.onDestroy()
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
+    override fun onBind(intent: Intent?): IBinder? = null
 
     private var muted = true
 

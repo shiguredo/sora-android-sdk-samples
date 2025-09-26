@@ -60,12 +60,12 @@ class ScreencastSetupActivity : AppCompatActivity() {
         audioCodec: String,
     ) {
         if (SoraScreencastService.isRunning()) {
-            Snackbar.make(
-                binding.rootLayout,
-                "既に起動中です",
-                Snackbar.LENGTH_LONG,
-            )
-                .setAction("OK") { }
+            Snackbar
+                .make(
+                    binding.rootLayout,
+                    "既に起動中です",
+                    Snackbar.LENGTH_LONG,
+                ).setAction("OK") { }
                 .show()
             return
         }
@@ -94,7 +94,5 @@ class ScreencastSetupActivity : AppCompatActivity() {
          */
     }
 
-    private fun selectedItem(spinner: MaterialSpinner): String {
-        return spinner.getItems<String>()[spinner.selectedIndex]
-    }
+    private fun selectedItem(spinner: MaterialSpinner): String = spinner.getItems<String>()[spinner.selectedIndex]
 }

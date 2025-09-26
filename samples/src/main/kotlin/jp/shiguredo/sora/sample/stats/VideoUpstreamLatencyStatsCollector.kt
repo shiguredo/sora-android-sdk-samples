@@ -47,35 +47,38 @@ class VideoUpstreamLatencyStatsCollector {
         prevReport = statsReport
     }
 
-    private fun outboundRtpVideoStreamStats(statsReport: RTCStatsReport?): RTCStats? {
-        return statsReport?.statsMap?.entries?.firstOrNull {
-            val stats = it.value
-            val type = stats.type
-            val kind = stats.members["kind"]
-            type == "outbound-rtp" && kind == "video"
-        }?.value
-    }
+    private fun outboundRtpVideoStreamStats(statsReport: RTCStatsReport?): RTCStats? =
+        statsReport
+            ?.statsMap
+            ?.entries
+            ?.firstOrNull {
+                val stats = it.value
+                val type = stats.type
+                val kind = stats.members["kind"]
+                type == "outbound-rtp" && kind == "video"
+            }?.value
 
-    private fun nominatedIceCandidatePairStats(statsReport: RTCStatsReport?): RTCStats? {
-        return statsReport?.statsMap?.entries?.firstOrNull {
-            val stats = it.value
-            val type = stats.type
-            val nominated = stats.members["nominated"]
-            type == "candidate-pair" && nominated == true
-        }?.value
-    }
+    private fun nominatedIceCandidatePairStats(statsReport: RTCStatsReport?): RTCStats? =
+        statsReport
+            ?.statsMap
+            ?.entries
+            ?.firstOrNull {
+                val stats = it.value
+                val type = stats.type
+                val nominated = stats.members["nominated"]
+                type == "candidate-pair" && nominated == true
+            }?.value
 
     private fun valueAsDouble(
         key: String,
         stats: RTCStats?,
-    ): Double? {
-        return when (val value = stats?.members?.get(key)) {
+    ): Double? =
+        when (val value = stats?.members?.get(key)) {
             is Number ->
                 value.toDouble()
             else ->
                 null
         }
-    }
 
     private fun difference(
         key: String,

@@ -336,7 +336,10 @@ fun setupComposable(
     }
 }
 
-class BalloonTailTriangleShape(private val size: Int, private val type: MessageType) : Shape {
+class BalloonTailTriangleShape(
+    private val size: Int,
+    private val type: MessageType,
+) : Shape {
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
@@ -378,8 +381,7 @@ fun balloonTailComposable(
                 .background(
                     color = color,
                     shape = BalloonTailTriangleShape(20, type),
-                )
-                .width(16.dp)
+                ).width(16.dp)
                 .fillMaxHeight(),
     ) {}
 }
@@ -423,8 +425,7 @@ fun messageComposable(
                             } else {
                                 RoundedCornerShape(4.dp, 4.dp, 4.dp, 0.dp)
                             },
-                    )
-                    .padding(8.dp),
+                    ).padding(8.dp),
         ) {
             Text(
                 "$label: $message",
@@ -676,16 +677,19 @@ class SoraMessagingChannel {
         mediaChannel?.disconnect()
     }
 
-    fun dataToString(data: ByteBuffer): String? {
-        return try {
+    fun dataToString(data: ByteBuffer): String? =
+        try {
             mediaChannel!!.dataToString(data)
         } catch (e: CharacterCodingException) {
             null
         }
-    }
 }
 
-data class Message(val label: String, val message: String, val type: MessageType)
+data class Message(
+    val label: String,
+    val message: String,
+    val type: MessageType,
+)
 
 @Composable
 fun topComposable(channel: SoraMessagingChannel) {

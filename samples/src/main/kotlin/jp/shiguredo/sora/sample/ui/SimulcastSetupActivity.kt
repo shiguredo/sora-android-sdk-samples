@@ -147,17 +147,15 @@ class SimulcastSetupActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun selectedItem(spinner: MaterialSpinner): String {
-        return spinner.getItems<String>()[spinner.selectedIndex]
-    }
+    private fun selectedItem(spinner: MaterialSpinner): String = spinner.getItems<String>()[spinner.selectedIndex]
 
     private fun showInputError() {
-        Snackbar.make(
-            binding.rootLayout,
-            "チャネル名 を適切に入力してください",
-            Snackbar.LENGTH_LONG,
-        )
-            .setAction("OK") { }
+        Snackbar
+            .make(
+                binding.rootLayout,
+                "チャネル名 を適切に入力してください",
+                Snackbar.LENGTH_LONG,
+            ).setAction("OK") { }
             .show()
     }
 }

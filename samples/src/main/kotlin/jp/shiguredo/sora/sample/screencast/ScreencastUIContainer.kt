@@ -46,12 +46,11 @@ class ScreencastUIContainer(
         )
     }
 
-    private fun createWindowFrags(): Int {
-        return WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+    private fun createWindowFrags(): Int =
+        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
             WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
             WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-    }
 
     fun togglePosition() {
         val params = view.layoutParams as WindowManager.LayoutParams

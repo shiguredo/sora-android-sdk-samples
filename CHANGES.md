@@ -37,8 +37,8 @@
 ### misc
 
 - [UPDATE] ktlint バージョンを上げる
-  - ktlint を 1.2.1 に上げる
-  - ktlint-gradle を 12.1.1 に上げる
+  - ktlint を 1.7.1 に上げる
+  - ktlint-gradle を 13.1.0 に上げる
   - @t-miya
 - [UPDATE] gradle を Kotlin DSL 対応する
   - build.gradle、settings.gradle、samples/build.gradle を kts ファイルに置き換えた

@@ -39,13 +39,12 @@ class SoraScreencastServiceStarter(
         reqCode: Int,
         resultCode: Int,
         data: Intent?,
-    ): Boolean {
-        return when (reqCode) {
+    ): Boolean =
+        when (reqCode) {
             REQ_CODE_SCREEN_CAPTURE -> handleScreenCaptureResult(resultCode, data)
             REQ_CODE_OVERLAY -> startScreenCaptureService()
             else -> false
         }
-    }
 
     fun start() {
         val manager: MediaProjectionManager =
