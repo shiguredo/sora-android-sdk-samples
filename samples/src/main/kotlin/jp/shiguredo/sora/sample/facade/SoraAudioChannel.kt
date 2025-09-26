@@ -25,50 +25,76 @@ class SoraAudioChannel(
     private var roleType: SoraRoleType,
     private var audioCodec: SoraAudioOption.Codec = SoraAudioOption.Codec.DEFAULT,
     private val audioBitRate: Int? = null,
-    private var listener: Listener?
+    private var listener: Listener?,
 ) {
-
     companion object {
         private val TAG = SoraAudioChannel::class.simpleName
     }
 
     interface Listener {
         fun onConnect(channel: SoraAudioChannel) {}
+
         fun onClose(channel: SoraAudioChannel) {}
-        fun onError(channel: SoraAudioChannel, reason: SoraErrorReason, message: String) {}
-        fun onAttendeesCountUpdated(channel: SoraAudioChannel, attendees: ChannelAttendeesCount) {}
+
+        fun onError(
+            channel: SoraAudioChannel,
+            reason: SoraErrorReason,
+            message: String,
+        ) {}
+
+        fun onAttendeesCountUpdated(
+            channel: SoraAudioChannel,
+            attendees: ChannelAttendeesCount,
+        ) {}
     }
 
-    private val channelListener = object : SoraMediaChannel.Listener {
+    private val channelListener =
+        object : SoraMediaChannel.Listener {
+            override fun onConnect(mediaChannel: SoraMediaChannel) {
+                SoraLogger.d(
+                    TAG,
+                    "[audio_channel] @onConnect contactSignalingEndpoint:${mediaChannel.contactSignalingEndpoint} " +
+                        "connectedSignalingEndpoint:${mediaChannel.connectedSignalingEndpoint}",
+                )
+                handler.post { listener?.onConnect(this@SoraAudioChannel) }
+            }
 
-        override fun onConnect(mediaChannel: SoraMediaChannel) {
-            SoraLogger.d(TAG, "[audio_channel] @onConnect contactSignalingEndpoint:${mediaChannel.contactSignalingEndpoint} connectedSignalingEndpoint:${mediaChannel.connectedSignalingEndpoint}")
-            handler.post { listener?.onConnect(this@SoraAudioChannel) }
-        }
+            override fun onClose(
+                mediaChannel: SoraMediaChannel,
+                closeEvent: SoraCloseEvent,
+            ) {
+                SoraLogger.d(TAG, "[audio_channel] @onClose $closeEvent")
+                disconnect()
+            }
 
-        override fun onClose(mediaChannel: SoraMediaChannel, closeEvent: SoraCloseEvent) {
-            SoraLogger.d(TAG, "[audio_channel] @onClose $closeEvent")
-            disconnect()
-        }
+            override fun onError(
+                mediaChannel: SoraMediaChannel,
+                reason: SoraErrorReason,
+                message: String,
+            ) {
+                SoraLogger.d(TAG, "[audio_channel] @onError [$reason]: $message")
+                handler.post { listener?.onError(this@SoraAudioChannel, reason, message) }
+                disconnect()
+            }
 
-        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {
-            SoraLogger.d(TAG, "[audio_channel] @onError [$reason]: $message")
-            handler.post { listener?.onError(this@SoraAudioChannel, reason, message) }
-            disconnect()
-        }
+            override fun onAddLocalStream(
+                mediaChannel: SoraMediaChannel,
+                ms: MediaStream,
+            ) {
+                SoraLogger.d(TAG, "[audio_channel] @onAddLocalStream")
+                if (ms.audioTracks.size > 0) {
+                    localAudioTrack = ms.audioTracks[0]
+                }
+            }
 
-        override fun onAddLocalStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
-            SoraLogger.d(TAG, "[audio_channel] @onAddLocalStream")
-            if (ms.audioTracks.size > 0) {
-                localAudioTrack = ms.audioTracks[0]
+            override fun onAttendeesCountUpdated(
+                mediaChannel: SoraMediaChannel,
+                attendees: ChannelAttendeesCount,
+            ) {
+                SoraLogger.d(TAG, "[audio_channel] @onAttendeesCountUpdated")
+                handler.post { listener?.onAttendeesCountUpdated(this@SoraAudioChannel, attendees) }
             }
         }
-
-        override fun onAttendeesCountUpdated(mediaChannel: SoraMediaChannel, attendees: ChannelAttendeesCount) {
-            SoraLogger.d(TAG, "[audio_channel] @onAttendeesCountUpdated")
-            handler.post { listener?.onAttendeesCountUpdated(this@SoraAudioChannel, attendees) }
-        }
-    }
 
     private var mediaChannel: SoraMediaChannel? = null
     private var localAudioTrack: AudioTrack? = null
@@ -76,32 +102,32 @@ class SoraAudioChannel(
     private var closed = false
 
     fun connect() {
+        val mediaOption =
+            SoraMediaOption().apply {
+                if (roleType.hasUpstream()) {
+                    enableAudioUpstream()
+                }
 
-        val mediaOption = SoraMediaOption().apply {
+                if (roleType.hasDownstream()) {
+                    enableAudioDownstream()
+                }
 
-            if (roleType.hasUpstream()) {
-                enableAudioUpstream()
+                audioCodec = this@SoraAudioChannel.audioCodec
+                audioBitrate = this@SoraAudioChannel.audioBitRate
             }
 
-            if (roleType.hasDownstream()) {
-                enableAudioDownstream()
-            }
-
-            audioCodec = this@SoraAudioChannel.audioCodec
-            audioBitrate = this@SoraAudioChannel.audioBitRate
-        }
-
-        mediaChannel = SoraMediaChannel(
-            context = context,
-            signalingEndpoint = signalingEndpoint,
-            signalingEndpointCandidates = signalingEndpointCandidates,
-            channelId = channelId,
-            dataChannelSignaling = dataChannelSignaling,
-            ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
-            signalingMetadata = signalingMetadata,
-            mediaOption = mediaOption,
-            listener = channelListener
-        )
+        mediaChannel =
+            SoraMediaChannel(
+                context = context,
+                signalingEndpoint = signalingEndpoint,
+                signalingEndpointCandidates = signalingEndpointCandidates,
+                channelId = channelId,
+                dataChannelSignaling = dataChannelSignaling,
+                ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
+                signalingMetadata = signalingMetadata,
+                mediaOption = mediaOption,
+                listener = channelListener,
+            )
 
         mediaChannel!!.connect()
     }

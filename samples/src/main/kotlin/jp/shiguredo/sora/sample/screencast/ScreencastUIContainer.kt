@@ -13,7 +13,7 @@ class ScreencastUIContainer(
     val context: Context,
     val view: View,
     width: Int = WindowManager.LayoutParams.MATCH_PARENT,
-    height: Int = WindowManager.LayoutParams.WRAP_CONTENT
+    height: Int = WindowManager.LayoutParams.WRAP_CONTENT,
 ) {
     private var isOnTop = true
     private var windowManager: WindowManager? =
@@ -25,7 +25,10 @@ class ScreencastUIContainer(
         windowManager?.addView(view, params)
     }
 
-    private fun createLayoutParams(width: Int, height: Int): WindowManager.LayoutParams {
+    private fun createLayoutParams(
+        width: Int,
+        height: Int,
+    ): WindowManager.LayoutParams {
         val windowType =
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
@@ -35,8 +38,11 @@ class ScreencastUIContainer(
             }
 
         return WindowManager.LayoutParams(
-            width, height, windowType,
-            createWindowFrags(), PixelFormat.TRANSLUCENT
+            width,
+            height,
+            windowType,
+            createWindowFrags(),
+            PixelFormat.TRANSLUCENT,
         )
     }
 

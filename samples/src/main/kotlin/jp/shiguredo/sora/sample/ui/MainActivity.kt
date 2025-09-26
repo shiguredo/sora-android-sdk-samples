@@ -7,25 +7,25 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import android.content.pm.PackageManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.databinding.ActivityMainBinding
 import jp.shiguredo.sora.sample.screencast.SoraScreencastService
 import jp.shiguredo.sora.sdk.util.SoraLogger
-class MainActivity : AppCompatActivity() {
 
+class MainActivity : AppCompatActivity() {
     companion object {
         val TAG = MainActivity::class.simpleName
     }
@@ -35,20 +35,23 @@ class MainActivity : AppCompatActivity() {
     // スクリーンキャストが開始された通知を受け取る BroadcastReceiver
     // スクリーンキャストを 1つのアプリ で開始した場合はこのアプリだと画面内に動きがないので映像が飛ばない
     // 強制的に映像を飛ばすため SoraScreencastService より開始したことを示す Intent を送って invalidate を実行する
-    private val invalidateReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            // スクリーンキャストが実際に行われるまではタイムラグが発生しているので、
-            // あまりよくはないが 1000ms 後に invalidate を実行する
-            Handler(Looper.getMainLooper()).postDelayed({
-                // この関数で画面が再描画されスクリーンキャストに映る
-                window.decorView.rootView.invalidate()
-            }, 1000)
+    private val invalidateReceiver =
+        object : BroadcastReceiver() {
+            override fun onReceive(
+                context: Context?,
+                intent: Intent?,
+            ) {
+                // スクリーンキャストが実際に行われるまではタイムラグが発生しているので、
+                // あまりよくはないが 1000ms 後に invalidate を実行する
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // この関数で画面が再描画されスクリーンキャストに映る
+                    window.decorView.rootView.invalidate()
+                }, 1000)
+            }
         }
-    }
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onCreate(savedInstanceState: Bundle?) {
-
         SoraLogger.enabled = true
         SoraLogger.libjingle_enabled = true
 
@@ -56,41 +59,44 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val adapter = FeatureListAdapter(
-            arrayListOf(
-                Feature(
-                    title = "ビデオチャット",
-                    description = "ビデオチャットのデモです。複数人でのグループチャットも可能です。"
-                ),
-                Feature(
-                    title = "ボイスチャット",
-                    description = "ボイスチャットのデモです。複数人でのグループチャットも可能です。"
-                ),
-                Feature(
-                    title = "サイマルキャスト",
-                    description = "サイマルキャストのデモです。"
-                ),
-                Feature(
-                    title = "スポットライト",
-                    description = "スポットライトのデモです。スポットライト数を固定したチャットが可能です。"
-                ),
-                Feature(
-                    title = "リアルタイムメッセージング",
-                    description = "リアルタイムメッセージングのデモです"
-                ),
-                Feature(
-                    title = "スクリーンキャスト",
-                    description = "スクリーンキャストのデモです。"
+        val adapter =
+            FeatureListAdapter(
+                arrayListOf(
+                    Feature(
+                        title = "ビデオチャット",
+                        description = "ビデオチャットのデモです。複数人でのグループチャットも可能です。",
+                    ),
+                    Feature(
+                        title = "ボイスチャット",
+                        description = "ボイスチャットのデモです。複数人でのグループチャットも可能です。",
+                    ),
+                    Feature(
+                        title = "サイマルキャスト",
+                        description = "サイマルキャストのデモです。",
+                    ),
+                    Feature(
+                        title = "スポットライト",
+                        description = "スポットライトのデモです。スポットライト数を固定したチャットが可能です。",
+                    ),
+                    Feature(
+                        title = "リアルタイムメッセージング",
+                        description = "リアルタイムメッセージングのデモです",
+                    ),
+                    Feature(
+                        title = "スクリーンキャスト",
+                        description = "スクリーンキャストのデモです。",
+                    ),
                 ),
             )
-        )
 
-        adapter.setOnItemClickListener(object : FeatureListAdapter.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                Log.d(TAG, "clicked:$position")
-                goToDemo(position)
-            }
-        })
+        adapter.setOnItemClickListener(
+            object : FeatureListAdapter.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    Log.d(TAG, "clicked:$position")
+                    goToDemo(position)
+                }
+            },
+        )
 
         val llm = LinearLayoutManager(this)
         binding.featureList.setHasFixedSize(true)
@@ -100,8 +106,9 @@ class MainActivity : AppCompatActivity() {
         // スクリーンキャストが開始された通知を受け取る BroadcastReceiver を登録
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(
-                invalidateReceiver, IntentFilter("ACTION_INVALIDATE_VIEW"),
-                RECEIVER_NOT_EXPORTED
+                invalidateReceiver,
+                IntentFilter("ACTION_INVALIDATE_VIEW"),
+                RECEIVER_NOT_EXPORTED,
             )
         } else {
             registerReceiver(invalidateReceiver, IntentFilter("ACTION_INVALIDATE_VIEW"))
@@ -115,29 +122,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Activity Result API launchers
-    private val requestAudioPermission = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        if (granted) {
-            pendingActionAfterPermission?.invoke()
-        } else {
-            onAudioDenied()
+    private val requestAudioPermission =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission(),
+        ) { granted ->
+            if (granted) {
+                pendingActionAfterPermission?.invoke()
+            } else {
+                onAudioDenied()
+            }
+            pendingActionAfterPermission = null
         }
-        pendingActionAfterPermission = null
-    }
 
-    private val requestCameraAndAudioPermissions = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { results ->
-        val cameraGranted = results[Manifest.permission.CAMERA] == true
-        val audioGranted = results[Manifest.permission.RECORD_AUDIO] == true
-        if (cameraGranted && audioGranted) {
-            pendingActionAfterPermission?.invoke()
-        } else {
-            onCameraAndAudioDenied()
+    private val requestCameraAndAudioPermissions =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions(),
+        ) { results ->
+            val cameraGranted = results[Manifest.permission.CAMERA] == true
+            val audioGranted = results[Manifest.permission.RECORD_AUDIO] == true
+            if (cameraGranted && audioGranted) {
+                pendingActionAfterPermission?.invoke()
+            } else {
+                onCameraAndAudioDenied()
+            }
+            pendingActionAfterPermission = null
         }
-        pendingActionAfterPermission = null
-    }
 
     private var pendingActionAfterPermission: (() -> Unit)? = null
 
@@ -201,7 +210,7 @@ class MainActivity : AppCompatActivity() {
         Snackbar.make(
             binding.rootLayout,
             "ビデオチャットを利用するには、カメラとマイクの使用を許可してください",
-            Snackbar.LENGTH_LONG
+            Snackbar.LENGTH_LONG,
         )
             .setAction("OK") { }
             .show()
@@ -211,13 +220,16 @@ class MainActivity : AppCompatActivity() {
         Snackbar.make(
             binding.rootLayout,
             "ボイスチャットを利用するには、マイクの使用を許可してください",
-            Snackbar.LENGTH_LONG
+            Snackbar.LENGTH_LONG,
         )
             .setAction("OK") { }
             .show()
     }
 
-    private fun showRationaleDialog(message: String, onProceed: () -> Unit) {
+    private fun showRationaleDialog(
+        message: String,
+        onProceed: () -> Unit,
+    ) {
         AlertDialog.Builder(this)
             .setPositiveButton(getString(R.string.permission_button_positive)) { _, _ -> onProceed() }
             .setNegativeButton(getString(R.string.permission_button_negative)) { _, _ -> }
@@ -235,8 +247,9 @@ class MainActivity : AppCompatActivity() {
             return
         }
         pendingActionAfterPermission = { goToVideoRoomDemo() }
-        val needRationale = shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
-            shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)
+        val needRationale =
+            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
+                shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)
         if (needRationale) {
             showRationaleDialog("ビデオチャットを利用するには、カメラとマイクの使用許可が必要です") {
                 requestCameraAndAudioPermissions.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO))
@@ -254,8 +267,9 @@ class MainActivity : AppCompatActivity() {
             return
         }
         pendingActionAfterPermission = { goToSpotlight() }
-        val needRationale = shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
-            shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)
+        val needRationale =
+            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
+                shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)
         if (needRationale) {
             showRationaleDialog("ビデオチャットを利用するには、カメラとマイクの使用許可が必要です") {
                 requestCameraAndAudioPermissions.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO))
@@ -273,8 +287,9 @@ class MainActivity : AppCompatActivity() {
             return
         }
         pendingActionAfterPermission = { goToSimulcast() }
-        val needRationale = shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
-            shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)
+        val needRationale =
+            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
+                shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)
         if (needRationale) {
             showRationaleDialog("ビデオチャットを利用するには、カメラとマイクの使用許可が必要です") {
                 requestCameraAndAudioPermissions.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO))

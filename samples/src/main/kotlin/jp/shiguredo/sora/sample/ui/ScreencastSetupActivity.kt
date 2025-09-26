@@ -15,7 +15,6 @@ import jp.shiguredo.sora.sample.screencast.SoraScreencastServiceStarter
 
 @TargetApi(21)
 class ScreencastSetupActivity : AppCompatActivity() {
-
     companion object {
         val TAG = ScreencastSetupActivity::class.simpleName
     }
@@ -46,7 +45,11 @@ class ScreencastSetupActivity : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?,
+    ) {
         super.onActivityResult(requestCode, resultCode, data)
         screencastStarter?.onActivityResult(requestCode, resultCode, data)
     }
@@ -54,35 +57,36 @@ class ScreencastSetupActivity : AppCompatActivity() {
     private fun startScreencast(
         channelId: String,
         videoCodec: String,
-        audioCodec: String
+        audioCodec: String,
     ) {
         if (SoraScreencastService.isRunning()) {
             Snackbar.make(
                 binding.rootLayout,
                 "既に起動中です",
-                Snackbar.LENGTH_LONG
+                Snackbar.LENGTH_LONG,
             )
                 .setAction("OK") { }
                 .show()
             return
         }
 
-        screencastStarter = SoraScreencastServiceStarter(
-            activity = this,
-            signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
-            signalingMetadata = BuildConfig.SIGNALING_METADATA,
-            channelId = channelId,
-            videoCodec = videoCodec,
-            audioCodec = audioCodec,
-            videoScale = 0.5f,
-            videoFPS = 30,
-            stateTitle = "Sora Screencast",
-            stateText = "live on $channelId",
-            stateIcon = R.drawable.icon,
-            notificationIcon = R.drawable.icon,
-            boundActivityName = MainActivity::class.java.canonicalName!!,
-            serviceClass = SoraScreencastService::class
-        )
+        screencastStarter =
+            SoraScreencastServiceStarter(
+                activity = this,
+                signalingEndpoint = BuildConfig.SIGNALING_ENDPOINT,
+                signalingMetadata = BuildConfig.SIGNALING_METADATA,
+                channelId = channelId,
+                videoCodec = videoCodec,
+                audioCodec = audioCodec,
+                videoScale = 0.5f,
+                videoFPS = 30,
+                stateTitle = "Sora Screencast",
+                stateText = "live on $channelId",
+                stateIcon = R.drawable.icon,
+                notificationIcon = R.drawable.icon,
+                boundActivityName = MainActivity::class.java.canonicalName!!,
+                serviceClass = SoraScreencastService::class,
+            )
         screencastStarter?.start()
         /*
          * 1つのアプリ をスクリーンキャスト時にはここに下に何か書いても、

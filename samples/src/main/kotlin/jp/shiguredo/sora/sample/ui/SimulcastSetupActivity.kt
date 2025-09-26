@@ -10,7 +10,6 @@ import jp.shiguredo.sora.sample.databinding.ActivitySimulcastSetupBinding
 import jp.shiguredo.sora.sample.option.SoraFrameSize
 
 class SimulcastSetupActivity : AppCompatActivity() {
-
     companion object {
         val TAG = SimulcastSetupActivity::class.simpleName
     }
@@ -20,10 +19,18 @@ class SimulcastSetupActivity : AppCompatActivity() {
     private val initialCameraOptions = listOf("有効", "無効")
     private val audioCodecOptions = listOf("未指定", "OPUS")
     private val audioEnabledOptions = listOf("有効", "無効")
-    private val audioBitRateOptions = listOf(
-        "未指定", "8", "16", "24", "32",
-        "64", "96", "128", "256"
-    )
+    private val audioBitRateOptions =
+        listOf(
+            "未指定",
+            "8",
+            "16",
+            "24",
+            "32",
+            "64",
+            "96",
+            "128",
+            "256",
+        )
     private val audioStereoOptions = listOf("モノラル", "ステレオ")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
     private val videoBitRateOptions = listOf("200", "500", "700", "1200", "2500", "4000", "5000", "10000", "15000", "20000", "30000")
@@ -148,7 +155,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
         Snackbar.make(
             binding.rootLayout,
             "チャネル名 を適切に入力してください",
-            Snackbar.LENGTH_LONG
+            Snackbar.LENGTH_LONG,
         )
             .setAction("OK") { }
             .show()

@@ -36,11 +36,11 @@ import org.webrtc.VideoCapturer
 
 @TargetApi(21)
 class SoraScreencastService : Service() {
-
     companion object {
         val TAG = SoraScreencastService::class.simpleName
 
         private var running = false
+
         fun isRunning() = running
     }
 
@@ -54,44 +54,59 @@ class SoraScreencastService : Service() {
 
     private var capturing = false
 
-    private val channelListener = object : SoraMediaChannel.Listener {
-
-        override fun onConnect(mediaChannel: SoraMediaChannel) {
-            SoraLogger.d(TAG, "[screencast] @onConnected")
-            // MainActivity に画面更新を促す Intent を送る
-            // 取れるイベントの中では最も遅いが、このタイミングでも送信が開始されているとは限らない
-            sendInvalidateBroadcast()
-        }
-
-        override fun onClose(mediaChannel: SoraMediaChannel, closeEvent: SoraCloseEvent) {
-            SoraLogger.d(TAG, "[screencast] @onClose $closeEvent")
-            closeChannel()
-        }
-
-        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {
-            SoraLogger.d(TAG, "[screencast] @onError [$reason]: $message")
-        }
-
-        override fun onAddLocalStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
-            SoraLogger.d(TAG, "[screencast] @onAddLocalStream")
-            if (ms.audioTracks.size > 0) {
-                localAudioTrack = ms.audioTracks[0]
-                localAudioTrack?.setEnabled(!muted)
+    private val channelListener =
+        object : SoraMediaChannel.Listener {
+            override fun onConnect(mediaChannel: SoraMediaChannel) {
+                SoraLogger.d(TAG, "[screencast] @onConnected")
+                // MainActivity に画面更新を促す Intent を送る
+                // 取れるイベントの中では最も遅いが、このタイミングでも送信が開始されているとは限らない
+                sendInvalidateBroadcast()
             }
-            startCapturer()
-        }
-    }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+            override fun onClose(
+                mediaChannel: SoraMediaChannel,
+                closeEvent: SoraCloseEvent,
+            ) {
+                SoraLogger.d(TAG, "[screencast] @onClose $closeEvent")
+                closeChannel()
+            }
+
+            override fun onError(
+                mediaChannel: SoraMediaChannel,
+                reason: SoraErrorReason,
+                message: String,
+            ) {
+                SoraLogger.d(TAG, "[screencast] @onError [$reason]: $message")
+            }
+
+            override fun onAddLocalStream(
+                mediaChannel: SoraMediaChannel,
+                ms: MediaStream,
+            ) {
+                SoraLogger.d(TAG, "[screencast] @onAddLocalStream")
+                if (ms.audioTracks.size > 0) {
+                    localAudioTrack = ms.audioTracks[0]
+                    localAudioTrack?.setEnabled(!muted)
+                }
+                startCapturer()
+            }
+        }
+
+    override fun onStartCommand(
+        intent: Intent,
+        flags: Int,
+        startId: Int,
+    ): Int {
         SoraScreencastService.running = true
 
         egl = EglBase.create()
-        req = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra("SCREENCAST_REQUEST", ScreencastRequest::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            intent.getParcelableExtra("SCREENCAST_REQUEST")
-        }
+        req =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                intent.getParcelableExtra("SCREENCAST_REQUEST", ScreencastRequest::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                intent.getParcelableExtra("SCREENCAST_REQUEST")
+            }
         if (req == null) {
             SoraLogger.w(TAG, "request not found")
             stopSelf()
@@ -115,12 +130,13 @@ class SoraScreencastService : Service() {
 
         val activityIntent = createBoundActivityIntent()
         val pendingIntent = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_MUTABLE)
-        val notification = NotificationCompat.Builder(this, notificationChannelId)
-            .setContentTitle(req!!.stateTitle)
-            .setContentText(req!!.stateText)
-            .setContentIntent(pendingIntent)
-            .setSmallIcon(req!!.notificationIcon)
-            .build()
+        val notification =
+            NotificationCompat.Builder(this, notificationChannelId)
+                .setContentTitle(req!!.stateTitle)
+                .setContentText(req!!.stateText)
+                .setContentIntent(pendingIntent)
+                .setSmallIcon(req!!.notificationIcon)
+                .build()
         startForeground(startId, notification)
     }
 
@@ -128,10 +144,12 @@ class SoraScreencastService : Service() {
     private fun createNotificationChannel(): String {
         val notificationChannelId = "jp.shiguredo.sora.sample"
         val notificationChannelName = "Sora SDK Sample"
-        val channel = NotificationChannel(
-            notificationChannelId,
-            notificationChannelName, NotificationManager.IMPORTANCE_NONE
-        )
+        val channel =
+            NotificationChannel(
+                notificationChannelId,
+                notificationChannelName,
+                NotificationManager.IMPORTANCE_NONE,
+            )
         val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         service.createNotificationChannel(channel)
         return notificationChannelId
@@ -178,14 +196,16 @@ class SoraScreencastService : Service() {
     }
 
     private var muted = true
+
     private fun toggleMuted() {
         muted = !muted
         localAudioTrack?.setEnabled(!muted)
-        val resourceId = if (muted) {
-            R.drawable.ic_mic_white_48dp
-        } else {
-            R.drawable.ic_mic_off_black_48dp
-        }
+        val resourceId =
+            if (muted) {
+                R.drawable.ic_mic_white_48dp
+            } else {
+                R.drawable.ic_mic_off_black_48dp
+            }
         binding?.toggleMutedButton?.setImageResource(resourceId)
     }
 
@@ -203,7 +223,7 @@ class SoraScreencastService : Service() {
             it.changeCaptureFormat(
                 Math.round(size.x * req!!.videoScale),
                 Math.round(size.y * req!!.videoScale),
-                req!!.videoFPS
+                req!!.videoFPS,
             )
         }
     }
@@ -230,7 +250,7 @@ class SoraScreencastService : Service() {
                 it.startCapture(
                     Math.round(size.x * req!!.videoScale),
                     Math.round(size.y * req!!.videoScale),
-                    req!!.videoFPS
+                    req!!.videoFPS,
                 )
             }
         }
@@ -259,7 +279,6 @@ class SoraScreencastService : Service() {
         }
 
     private fun openChannel() {
-
         capturer = ScreenCapturerAndroid(req!!.data, mediaProjectionCallback)
 
         if (capturer == null) {
@@ -267,34 +286,37 @@ class SoraScreencastService : Service() {
             return
         }
 
-        val mediaOption = SoraMediaOption().apply {
-            // when audio stream is disabled, it'll crush.
-            enableAudioUpstream()
-            enableVideoUpstream(capturer!!, egl?.eglBaseContext)
-            videoCodec = SoraVideoOption.Codec.valueOf(req!!.videoCodec!!)
-            audioCodec = SoraAudioOption.Codec.valueOf(req!!.audioCodec!!)
+        val mediaOption =
+            SoraMediaOption().apply {
+                // when audio stream is disabled, it'll crush.
+                enableAudioUpstream()
+                enableVideoUpstream(capturer!!, egl?.eglBaseContext)
+                videoCodec = SoraVideoOption.Codec.valueOf(req!!.videoCodec!!)
+                audioCodec = SoraAudioOption.Codec.valueOf(req!!.audioCodec!!)
 
-            audioOption = SoraAudioOption().apply {
-                useHardwareAcousticEchoCanceler = true
-                useHardwareNoiseSuppressor = true
+                audioOption =
+                    SoraAudioOption().apply {
+                        useHardwareAcousticEchoCanceler = true
+                        useHardwareNoiseSuppressor = true
 
-                audioProcessingEchoCancellation = true
-                audioProcessingAutoGainControl = true
-                audioProcessingHighpassFilter = true
-                audioProcessingNoiseSuppression = true
+                        audioProcessingEchoCancellation = true
+                        audioProcessingAutoGainControl = true
+                        audioProcessingHighpassFilter = true
+                        audioProcessingNoiseSuppression = true
+                    }
             }
-        }
 
         val signalingEndpointCandidates = req!!.signalingEndpoint!!.split(",").map { it.trim() }
         val signalingMetadata = Gson().fromJson(req!!.signalingMetadata!!, Map::class.java)
-        mediaChannel = SoraMediaChannel(
-            context = this,
-            signalingEndpointCandidates = signalingEndpointCandidates,
-            channelId = req!!.channelId,
-            signalingMetadata = signalingMetadata,
-            mediaOption = mediaOption,
-            listener = channelListener
-        )
+        mediaChannel =
+            SoraMediaChannel(
+                context = this,
+                signalingEndpointCandidates = signalingEndpointCandidates,
+                channelId = req!!.channelId,
+                signalingMetadata = signalingMetadata,
+                mediaOption = mediaOption,
+                listener = channelListener,
+            )
         mediaChannel!!.connect()
     }
 

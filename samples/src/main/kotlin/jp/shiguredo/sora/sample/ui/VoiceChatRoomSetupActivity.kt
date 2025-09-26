@@ -9,22 +9,30 @@ import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.databinding.ActivityVoiceChatRoomSetupBinding
 
 class VoiceChatRoomSetupActivity : AppCompatActivity() {
-
     companion object {
         val TAG = VoiceChatRoomSetupActivity::class.simpleName
     }
 
     private val audioCodecOptions = listOf("未指定", "OPUS")
-    private val audioBitRateOptions = listOf(
-        "未指定", "8", "16", "24", "32",
-        "64", "96", "128", "256"
-    )
+    private val audioBitRateOptions =
+        listOf(
+            "未指定",
+            "8",
+            "16",
+            "24",
+            "32",
+            "64",
+            "96",
+            "128",
+            "256",
+        )
 
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
     private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
 
     private lateinit var binding: ActivityVoiceChatRoomSetupBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
@@ -76,7 +84,7 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
         Snackbar.make(
             binding.rootLayout,
             "チャネル名を適切に入力してください",
-            Snackbar.LENGTH_LONG
+            Snackbar.LENGTH_LONG,
         )
             .setAction("OK") { }
             .show()

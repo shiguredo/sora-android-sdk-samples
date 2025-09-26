@@ -25,7 +25,7 @@ class SoraScreencastServiceStarter(
     private val videoCodec: String = "未指定",
     private val audioCodec: String = "OPUS",
     private val boundActivityName: String = activity.javaClass.canonicalName!!,
-    private val serviceClass: KClass<SoraScreencastService>
+    private val serviceClass: KClass<SoraScreencastService>,
 ) {
     companion object {
         const val REQ_CODE_SCREEN_CAPTURE = 4901
@@ -35,7 +35,11 @@ class SoraScreencastServiceStarter(
     private var resultCode: Int? = null
     private var resultData: Intent? = null
 
-    fun onActivityResult(reqCode: Int, resultCode: Int, data: Intent?): Boolean {
+    fun onActivityResult(
+        reqCode: Int,
+        resultCode: Int,
+        data: Intent?,
+    ): Boolean {
         return when (reqCode) {
             REQ_CODE_SCREEN_CAPTURE -> handleScreenCaptureResult(resultCode, data)
             REQ_CODE_OVERLAY -> startScreenCaptureService()
@@ -44,16 +48,20 @@ class SoraScreencastServiceStarter(
     }
 
     fun start() {
-        val manager: MediaProjectionManager = activity.application.getSystemService(
-            Context.MEDIA_PROJECTION_SERVICE
-        ) as MediaProjectionManager
+        val manager: MediaProjectionManager =
+            activity.application.getSystemService(
+                Context.MEDIA_PROJECTION_SERVICE,
+            ) as MediaProjectionManager
         activity.startActivityForResult(
-            manager.createScreenCaptureIntent(), REQ_CODE_SCREEN_CAPTURE
+            manager.createScreenCaptureIntent(),
+            REQ_CODE_SCREEN_CAPTURE,
         )
     }
 
-    private fun handleScreenCaptureResult(resultCode: Int, data: Intent?): Boolean {
-
+    private fun handleScreenCaptureResult(
+        resultCode: Int,
+        data: Intent?,
+    ): Boolean {
         if (data == null) {
             return true
         }
@@ -82,21 +90,22 @@ class SoraScreencastServiceStarter(
 
     private fun startScreenCaptureService(): Boolean {
         val intent = Intent(activity, serviceClass.java)
-        val request = ScreencastRequest(
-            data = resultData!!,
-            signalingEndpoint = signalingEndpoint,
-            channelId = channelId,
-            signalingMetadata = signalingMetadata,
-            audioCodec = audioCodec,
-            videoCodec = videoCodec,
-            videoFPS = videoFPS,
-            videoScale = videoScale,
-            stateTitle = stateTitle,
-            stateText = stateText,
-            stateIcon = stateIcon,
-            notificationIcon = notificationIcon,
-            boundActivityName = boundActivityName
-        )
+        val request =
+            ScreencastRequest(
+                data = resultData!!,
+                signalingEndpoint = signalingEndpoint,
+                channelId = channelId,
+                signalingMetadata = signalingMetadata,
+                audioCodec = audioCodec,
+                videoCodec = videoCodec,
+                videoFPS = videoFPS,
+                videoScale = videoScale,
+                stateTitle = stateTitle,
+                stateText = stateText,
+                stateIcon = stateIcon,
+                notificationIcon = notificationIcon,
+                boundActivityName = boundActivityName,
+            )
         intent.putExtra("SCREENCAST_REQUEST", request)
         activity.startService(intent)
         /*

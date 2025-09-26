@@ -46,9 +46,9 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
-import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
@@ -72,6 +72,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
@@ -90,8 +91,8 @@ import kotlin.random.Random
 // ランダムなバイト列を送信する (テスト用)
 const val SEND_RANDOM_BINARY = false
 
-val COLOR_PRIMARY_BUTTON = android.graphics.Color.parseColor("#F06292")
-val COLOR_SETUP_BACKGROUND = android.graphics.Color.parseColor("#2288dd")
+val primaryButtonColor = android.graphics.Color.parseColor("#F06292")
+val setupBackgroundColor = android.graphics.Color.parseColor("#2288dd")
 const val DEFAULT_DATA_CHANNELS = """
 [
     {
@@ -116,33 +117,36 @@ enum class MessageType {
 }
 
 @Composable
-fun SetupComposable(
+fun setupComposable(
     channel: SoraMessagingChannel,
     defaultChannel: String,
     setConnected: (Boolean) -> Unit,
     labels: SnapshotStateList<String>,
-    messages: SnapshotStateList<Message>
+    messages: SnapshotStateList<Message>,
 ) {
     val textChannel = remember { mutableStateOf(defaultChannel) }
     val (isLoading, setIsLoading) = remember { mutableStateOf(false) }
-    val textDataChannels = remember {
-        mutableStateOf(DEFAULT_DATA_CHANNELS.trim())
-    }
+    val textDataChannels =
+        remember {
+            mutableStateOf(DEFAULT_DATA_CHANNELS.trim())
+        }
     val c = LocalContext.current
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(COLOR_SETUP_BACKGROUND))
-            .padding(16.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color(setupBackgroundColor))
+                .padding(16.dp),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(8.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(Color.White)
+                    .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             TextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -151,83 +155,101 @@ fun SetupComposable(
                     textChannel.value = it
                 },
                 label = { Text("チャネル名", color = Color.Gray) },
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Black,
-                    unfocusedIndicatorColor = Color.Black
-                ),
-                textStyle = TextStyle(fontSize = 20.sp)
+                colors =
+                    TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Black,
+                        unfocusedIndicatorColor = Color.Black,
+                    ),
+                textStyle = TextStyle(fontSize = 20.sp),
             )
             Button(
                 onClick = {
-                    val channelListener = object : SoraMediaChannel.Listener {
-
-                        override fun onConnect(mediaChannel: SoraMediaChannel) {
-                            super.onConnect(mediaChannel)
-                            SoraLogger.d(
-                                SoraMessagingChannel.TAG,
-                                "onConnect: contactSignalingEndpoint=${mediaChannel.contactSignalingEndpoint}, " +
-                                    "connectedSignalingEndpoint=${mediaChannel.connectedSignalingEndpoint}"
-                            )
-                        }
-
-                        override fun onClose(mediaChannel: SoraMediaChannel, closeEvent: SoraCloseEvent) {
-                            super.onClose(mediaChannel, closeEvent)
-                            SoraLogger.d(SoraMessagingChannel.TAG, "onClose: $closeEvent")
-                            setConnected(false)
-                            setIsLoading(false)
-                        }
-
-                        override fun onDataChannel(mediaChannel: SoraMediaChannel, dataChannels: List<Map<String, Any>>?) {
-                            super.onDataChannel(mediaChannel, dataChannels)
-                            SoraLogger.d(SoraMessagingChannel.TAG, "onDataChannel: data_channels=$dataChannels")
-                            // DataChannel の接続をもって接続したとみなす
-                            setConnected(true)
-                            dataChannels?.map { it["label"] as String }?.let {
-                                labels.addAll(it)
-                            }
-                        }
-
-                        override fun onDataChannelMessage(mediaChannel: SoraMediaChannel, label: String, data: ByteBuffer) {
-                            SoraLogger.d(SoraMessagingChannel.TAG, "onDataChannelMessage: label=$label received_data_in_bytes=${data.remaining()}")
-                            // 受信した data を UTF-8 の文字列に変換する
-                            var message: String? = channel.dataToString(data)
-                            if (message == null) {
-                                // バイナリ形式のメッセージを受信した場合など、 UTF-8 への変換が失敗する場合、
-                                // 10進数の数値のリストに data を変換する
-                                //
-                                // ランダムなバイト列を受信する場合、受信した data が偶然 UTF-8 な文字列になる可能性もあるが、
-                                // ここでは考慮しない
-                                // 実際のアプリケーションでは、ラベル毎に受信するメッセージの種類 (文字列 or バイナリ) を選択することが想定されるため、
-                                // このようなフォールバックを実装する必要はないと思われる
-                                data.rewind()
-                                val bytes = ByteArray(data.remaining())
-                                data.get(bytes)
-
-                                // UByte は experimental なので一旦使用を控える
-                                // message = bytes.toUByteArray().contentToString()
-                                message = bytes.map { it.toInt() and 0xff }.toTypedArray().contentToString()
+                    val channelListener =
+                        object : SoraMediaChannel.Listener {
+                            override fun onConnect(mediaChannel: SoraMediaChannel) {
+                                super.onConnect(mediaChannel)
+                                SoraLogger.d(
+                                    SoraMessagingChannel.TAG,
+                                    "onConnect: contactSignalingEndpoint=${mediaChannel.contactSignalingEndpoint}, " +
+                                        "connectedSignalingEndpoint=${mediaChannel.connectedSignalingEndpoint}",
+                                )
                             }
 
-                            message.let {
-                                messages.add(Message(label, it, MessageType.RECEIVED))
+                            override fun onClose(
+                                mediaChannel: SoraMediaChannel,
+                                closeEvent: SoraCloseEvent,
+                            ) {
+                                super.onClose(mediaChannel, closeEvent)
+                                SoraLogger.d(SoraMessagingChannel.TAG, "onClose: $closeEvent")
+                                setConnected(false)
+                                setIsLoading(false)
                             }
-                        }
 
-                        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {
-                            super.onError(mediaChannel, reason, message)
-                            SoraLogger.e(SoraMessagingChannel.TAG, "onError: reason=${reason.name}, message=$message")
-                            setConnected(false)
-                            setIsLoading(false)
+                            override fun onDataChannel(
+                                mediaChannel: SoraMediaChannel,
+                                dataChannels: List<Map<String, Any>>?,
+                            ) {
+                                super.onDataChannel(mediaChannel, dataChannels)
+                                SoraLogger.d(SoraMessagingChannel.TAG, "onDataChannel: data_channels=$dataChannels")
+                                // DataChannel の接続をもって接続したとみなす
+                                setConnected(true)
+                                dataChannels?.map { it["label"] as String }?.let {
+                                    labels.addAll(it)
+                                }
+                            }
 
-                            val handler = Handler(Looper.getMainLooper())
-                            handler.post {
-                                run {
-                                    Toast.makeText(c, "$reason: $message", Toast.LENGTH_LONG).show()
+                            override fun onDataChannelMessage(
+                                mediaChannel: SoraMediaChannel,
+                                label: String,
+                                data: ByteBuffer,
+                            ) {
+                                SoraLogger.d(
+                                    SoraMessagingChannel.TAG,
+                                    "onDataChannelMessage: label=$label received_data_in_bytes=${data.remaining()}",
+                                )
+                                // 受信した data を UTF-8 の文字列に変換する
+                                var message: String? = channel.dataToString(data)
+                                if (message == null) {
+                                    // バイナリ形式のメッセージを受信した場合など、 UTF-8 への変換が失敗する場合、
+                                    // 10進数の数値のリストに data を変換する
+                                    //
+                                    // ランダムなバイト列を受信する場合、受信した data が偶然 UTF-8 な文字列になる可能性もあるが、
+                                    // ここでは考慮しない
+                                    // 実際のアプリケーションでは、ラベル毎に受信するメッセージの種類 (文字列 or バイナリ) を選択することが想定されるため、
+                                    // このようなフォールバックを実装する必要はないと思われる
+                                    data.rewind()
+                                    val bytes = ByteArray(data.remaining())
+                                    data.get(bytes)
+
+                                    // UByte は experimental なので一旦使用を控える
+                                    // message = bytes.toUByteArray().contentToString()
+                                    message = bytes.map { it.toInt() and 0xff }.toTypedArray().contentToString()
+                                }
+
+                                message.let {
+                                    messages.add(Message(label, it, MessageType.RECEIVED))
+                                }
+                            }
+
+                            override fun onError(
+                                mediaChannel: SoraMediaChannel,
+                                reason: SoraErrorReason,
+                                message: String,
+                            ) {
+                                super.onError(mediaChannel, reason, message)
+                                SoraLogger.e(SoraMessagingChannel.TAG, "onError: reason=${reason.name}, message=$message")
+                                setConnected(false)
+                                setIsLoading(false)
+
+                                val handler = Handler(Looper.getMainLooper())
+                                handler.post {
+                                    run {
+                                        Toast.makeText(c, "$reason: $message", Toast.LENGTH_LONG).show()
+                                    }
                                 }
                             }
                         }
-                    }
 
                     /**
                      * サンプル・アプリで、文字列の data_channels を List<Map<String, Any>> に変換して利用する仕様にしたところ、
@@ -240,8 +262,13 @@ fun SetupComposable(
                         lateinit var label: String
                         lateinit var direction: String
                         var compress: Boolean? = null
-                        var max_packet_life_time: Int? = null
-                        var max_retransmits: Int? = null
+
+                        @SerializedName("max_packet_life_time")
+                        var maxPacketLifeTime: Int? = null
+
+                        @SerializedName("max_retransmits")
+                        var maxRetransmits: Int? = null
+
                         var protocol: String? = null
                         var ordered: Boolean? = null
 
@@ -249,10 +276,10 @@ fun SetupComposable(
                             val map = mutableMapOf<String, Any>()
                             val fields = this.javaClass.declaredFields
                             for (field in fields) {
-                                val k = field.name
-                                val v = field.get(this)
-                                if (v != null) {
-                                    map[k] = v
+                                val key = field.getAnnotation(SerializedName::class.java)?.value ?: field.name
+                                val value = field.get(this)
+                                if (value != null) {
+                                    map[key] = value
                                 }
                             }
 
@@ -267,11 +294,12 @@ fun SetupComposable(
                     channel.connect(c, textChannel.value, connectDataChannels, channelListener)
                     setIsLoading(true)
                 },
-                modifier = Modifier
-                    .fillMaxWidth(0.95f)
-                    .height(40.dp),
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color(COLOR_PRIMARY_BUTTON)),
-                shape = RoundedCornerShape(0)
+                modifier =
+                    Modifier
+                        .fillMaxWidth(0.95f)
+                        .height(40.dp),
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color(primaryButtonColor)),
+                shape = RoundedCornerShape(0),
             ) {
                 Text("接続する", color = Color.White)
             }
@@ -282,21 +310,23 @@ fun SetupComposable(
                     textDataChannels.value = it
                 },
                 label = { Text("データチャネル", color = Color.Gray) },
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Black,
-                    unfocusedIndicatorColor = Color.Black
-                )
+                colors =
+                    TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Color.Black,
+                        unfocusedIndicatorColor = Color.Black,
+                    ),
             )
             if (isLoading) {
                 Dialog(
                     onDismissRequest = {},
-                    DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+                    DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
                 ) {
                     Box(
                         contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .size(100.dp)
-                            .background(Color.White, shape = RoundedCornerShape(8.dp))
+                        modifier =
+                            Modifier
+                                .size(100.dp)
+                                .background(Color.White, shape = RoundedCornerShape(8.dp)),
                     ) {
                         CircularProgressIndicator()
                     }
@@ -307,95 +337,113 @@ fun SetupComposable(
 }
 
 class BalloonTailTriangleShape(private val size: Int, private val type: MessageType) : Shape {
-
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
-        density: Density
+        density: Density,
     ): Outline {
-        val x = if (type == MessageType.RECEIVED) {
-            size.width
-        } else {
-            0f
-        }
+        val x =
+            if (type == MessageType.RECEIVED) {
+                size.width
+            } else {
+                0f
+            }
 
-        val path = Path().apply {
-            moveTo(x = x, y = size.height - this@BalloonTailTriangleShape.size)
-            lineTo(x = x, y = size.height)
-            lineTo(
-                x = if (type == MessageType.RECEIVED) {
-                    x - this@BalloonTailTriangleShape.size
-                } else {
-                    x + this@BalloonTailTriangleShape.size
-                },
-                y = size.height
-            )
-        }
+        val path =
+            Path().apply {
+                moveTo(x = x, y = size.height - this@BalloonTailTriangleShape.size)
+                lineTo(x = x, y = size.height)
+                lineTo(
+                    x =
+                        if (type == MessageType.RECEIVED) {
+                            x - this@BalloonTailTriangleShape.size
+                        } else {
+                            x + this@BalloonTailTriangleShape.size
+                        },
+                    y = size.height,
+                )
+            }
         return Outline.Generic(path = path)
     }
 }
 
 @Composable
-fun BalloonTailComposable(color: Color, type: MessageType) {
+fun balloonTailComposable(
+    color: Color,
+    type: MessageType,
+) {
     Column(
-        modifier = Modifier
-            .background(
-                color = color,
-                shape = BalloonTailTriangleShape(20, type)
-            )
-            .width(16.dp)
-            .fillMaxHeight()
+        modifier =
+            Modifier
+                .background(
+                    color = color,
+                    shape = BalloonTailTriangleShape(20, type),
+                )
+                .width(16.dp)
+                .fillMaxHeight(),
     ) {}
 }
 
 @Composable
-fun MessageComposable(label: String, message: String, type: MessageType = MessageType.SENT) {
-    val backgroundColor = if (type == MessageType.SENT) {
-        Color.Green
-    } else {
-        Color.LightGray
-    }
+fun messageComposable(
+    label: String,
+    message: String,
+    type: MessageType = MessageType.SENT,
+) {
+    val backgroundColor =
+        if (type == MessageType.SENT) {
+            Color.Green
+        } else {
+            Color.LightGray
+        }
 
     val screenWidth = LocalConfiguration.current.screenWidthDp
     Row(
         Modifier
             .height(IntrinsicSize.Max)
             .fillMaxWidth(),
-        horizontalArrangement = if (type == MessageType.SENT) { Arrangement.End } else { Arrangement.Start }
+        horizontalArrangement =
+            if (type == MessageType.SENT) {
+                Arrangement.End
+            } else {
+                Arrangement.Start
+            },
     ) {
         if (type == MessageType.RECEIVED) {
-            BalloonTailComposable(color = backgroundColor, type = MessageType.RECEIVED)
+            balloonTailComposable(color = backgroundColor, type = MessageType.RECEIVED)
         }
         Column(
-            modifier = Modifier
-                .background(
-                    color = backgroundColor,
-                    shape = if (type == MessageType.SENT) {
-                        RoundedCornerShape(4.dp, 4.dp, 0.dp, 4.dp)
-                    } else {
-                        RoundedCornerShape(4.dp, 4.dp, 4.dp, 0.dp)
-                    }
-                )
-                .padding(8.dp)
+            modifier =
+                Modifier
+                    .background(
+                        color = backgroundColor,
+                        shape =
+                            if (type == MessageType.SENT) {
+                                RoundedCornerShape(4.dp, 4.dp, 0.dp, 4.dp)
+                            } else {
+                                RoundedCornerShape(4.dp, 4.dp, 4.dp, 0.dp)
+                            },
+                    )
+                    .padding(8.dp),
         ) {
             Text(
                 "$label: $message",
-                Modifier.widthIn(0.dp, (screenWidth * 0.7).dp)
+                Modifier.widthIn(0.dp, (screenWidth * 0.7).dp),
             )
         }
         if (type == MessageType.SENT) {
-            BalloonTailComposable(color = backgroundColor, type = MessageType.SENT)
+            balloonTailComposable(color = backgroundColor, type = MessageType.SENT)
         }
     }
 }
 
 @Composable
-fun TimelineComposable(
+fun timelineComposable(
     channel: SoraMessagingChannel,
     setConnected: (Boolean) -> Unit,
     labels: SnapshotStateList<String>,
     messages: SnapshotStateList<Message>,
-    listState: LazyListState
+    listState: LazyListState,
 ) {
     BackHandler {
         // 設定画面に戻る
@@ -406,11 +454,12 @@ fun TimelineComposable(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
     ) {
         Column(
             modifier = Modifier.fillMaxHeight(0.9f),
@@ -419,10 +468,10 @@ fun TimelineComposable(
             LazyColumn(
                 state = listState,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(8.dp),
             ) {
                 items(messages) { message ->
-                    MessageComposable(message.label, message.message, message.type)
+                    messageComposable(message.label, message.message, message.type)
                 }
             }
         }
@@ -430,7 +479,7 @@ fun TimelineComposable(
             color = Color.Gray,
             thickness = 1.dp,
         )
-        MessageInput(channel, labels, messages)
+        messageInput(channel, labels, messages)
     }
 
     // 新しく追加されたメッセージが表示されるように自動でスクロールする
@@ -440,51 +489,64 @@ fun TimelineComposable(
 }
 
 @Composable
-fun MessageInput(
+fun messageInput(
     channel: SoraMessagingChannel,
     labels: SnapshotStateList<String>,
-    messages: SnapshotStateList<Message>
+    messages: SnapshotStateList<Message>,
 ) {
     val (textMessage, setTextMessage) = remember { mutableStateOf("") }
     val (expanded, setExpanded) = remember { mutableStateOf(false) }
-    val (selectedLabel, setSelectedLabel) = remember {
-        mutableStateOf(if (labels.isNotEmpty()) { labels.first() } else { "" })
-    }
+    val (selectedLabel, setSelectedLabel) =
+        remember {
+            mutableStateOf(
+                if (labels.isNotEmpty()) {
+                    labels.first()
+                } else {
+                    ""
+                },
+            )
+        }
     val c = LocalContext.current
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
-        modifier = Modifier
-            .fillMaxHeight()
-            .padding(2.dp)
+        modifier =
+            Modifier
+                .fillMaxHeight()
+                .padding(2.dp),
     ) {
         OutlinedTextField(
             value = selectedLabel,
             onValueChange = { setSelectedLabel(it) },
-            modifier = Modifier
-                .fillMaxWidth(0.3f)
-                .clickable { setExpanded(true) },
+            modifier =
+                Modifier
+                    .fillMaxWidth(0.3f)
+                    .clickable { setExpanded(true) },
             label = { Text("ラベル") },
             trailingIcon = {
                 Icon(
-                    if (expanded) { Icons.Filled.ArrowDropUp } else { Icons.Filled.ArrowDropDown },
+                    if (expanded) {
+                        Icons.Filled.ArrowDropUp
+                    } else {
+                        Icons.Filled.ArrowDropDown
+                    },
                     "拡大",
-                    Modifier.clickable { setExpanded(!expanded) }
+                    Modifier.clickable { setExpanded(!expanded) },
                 )
             },
             singleLine = true,
         )
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { setExpanded(false) }
+            onDismissRequest = { setExpanded(false) },
         ) {
             labels.forEach { label ->
                 DropdownMenuItem(
                     onClick = {
                         setSelectedLabel(label)
                         setExpanded(false)
-                    }
+                    },
                 ) {
                     Text(label)
                 }
@@ -541,13 +603,13 @@ fun MessageInput(
             },
             modifier = Modifier.size(50.dp),
             shape = CircleShape,
-            border = BorderStroke(2.dp, Color(COLOR_PRIMARY_BUTTON)),
+            border = BorderStroke(2.dp, Color(primaryButtonColor)),
             contentPadding = PaddingValues(0.dp),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(COLOR_PRIMARY_BUTTON))
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(primaryButtonColor)),
         ) {
             Icon(
                 Icons.AutoMirrored.Filled.Send,
-                contentDescription = "送信"
+                contentDescription = "送信",
             )
         }
     }
@@ -557,11 +619,15 @@ class SoraMessagingChannel {
     private var mediaChannel: SoraMediaChannel? = null
 
     companion object {
-        val TAG = SoraMessagingChannel::class.simpleName
+        const val TAG = "SoraMessagingChannel"
     }
 
-    fun connect(context: Context, channelId: String, dataChannels: List<Map<String, Any>>, listener: SoraMediaChannel.Listener) {
-
+    fun connect(
+        context: Context,
+        channelId: String,
+        dataChannels: List<Map<String, Any>>,
+        listener: SoraMediaChannel.Listener,
+    ) {
         // Sora に接続する
         val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map { it.trim() }
         val signalingMetadata = Gson().fromJson(BuildConfig.SIGNALING_METADATA, Map::class.java)
@@ -574,26 +640,33 @@ class SoraMessagingChannel {
         // Sora 側で data_channel_messaging_only = true を設定している場合、 この enableVideoDownstream は不要になります。
         mediaOption.enableVideoDownstream(egl!!.eglBaseContext)
 
-        mediaChannel = SoraMediaChannel(
-            context = context,
-            signalingEndpointCandidates = signalingEndpointCandidates,
-            channelId = channelId,
-            signalingMetadata = signalingMetadata,
-            mediaOption = mediaOption,
-            listener = listener,
-            dataChannelSignaling = true,
-            dataChannels = dataChannels,
-        )
+        mediaChannel =
+            SoraMediaChannel(
+                context = context,
+                signalingEndpointCandidates = signalingEndpointCandidates,
+                channelId = channelId,
+                signalingMetadata = signalingMetadata,
+                mediaOption = mediaOption,
+                listener = listener,
+                dataChannelSignaling = true,
+                dataChannels = dataChannels,
+            )
         mediaChannel!!.connect()
     }
 
-    fun sendMessage(label: String, message: String): SoraMessagingError {
+    fun sendMessage(
+        label: String,
+        message: String,
+    ): SoraMessagingError {
         val error = mediaChannel!!.sendDataChannelMessage(label, message)
         SoraLogger.d(TAG, "sendMessage: error=$error")
         return error
     }
 
-    fun sendMessage(label: String, message: ByteBuffer): SoraMessagingError {
+    fun sendMessage(
+        label: String,
+        message: ByteBuffer,
+    ): SoraMessagingError {
         val error = mediaChannel!!.sendDataChannelMessage(label, message)
         SoraLogger.d(TAG, "sendMessage: error=$error")
         return error
@@ -615,7 +688,7 @@ class SoraMessagingChannel {
 data class Message(val label: String, val message: String, val type: MessageType)
 
 @Composable
-fun TopComposable(channel: SoraMessagingChannel) {
+fun topComposable(channel: SoraMessagingChannel) {
     val defaultChannelId = LocalContext.current.getString(R.string.channelId)
     val (connected, setConnected) = remember { mutableStateOf(false) }
 
@@ -629,16 +702,16 @@ fun TopComposable(channel: SoraMessagingChannel) {
     // ステータスバーやナビゲーションバーに重ならないように、明示的にシステムバーのパディングを設定する必要がある
     Box(modifier = Modifier.systemBarsPadding()) {
         if (connected) {
-            TimelineComposable(channel, setConnected, labels, messages, listState)
+            timelineComposable(channel, setConnected, labels, messages, listState)
         } else {
-            SetupComposable(channel, defaultChannelId, setConnected, labels, messages)
+            setupComposable(channel, defaultChannelId, setConnected, labels, messages)
         }
     }
 }
 
 class MessagingActivity : AppCompatActivity() {
     companion object {
-        val TAG = MessagingActivity::class.simpleName
+        const val TAG = "MessagingActivity"
     }
 
     var channel = SoraMessagingChannel()
@@ -650,7 +723,7 @@ class MessagingActivity : AppCompatActivity() {
         title = "リアルタイムメッセージング"
 
         setContent {
-            TopComposable(channel)
+            topComposable(channel)
         }
     }
 }

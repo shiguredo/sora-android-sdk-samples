@@ -85,7 +85,7 @@ configurations {
 
 ktlint {
     // 設定フェーズでは動的解決や Version Catalog を使えないため固定
-    version.set("0.45.2")
+    version.set("1.2.1")
     android.set(false)
     outputToConsole.set(true)
     reporters {

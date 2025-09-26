@@ -10,7 +10,6 @@ import jp.shiguredo.sora.sample.databinding.ActivitySpotlightRoomSetupBinding
 import jp.shiguredo.sora.sample.option.SoraFrameSize
 
 class SpotlightRoomSetupActivity : AppCompatActivity() {
-
     companion object {
         private val TAG = SpotlightRoomSetupActivity::class.simpleName
     }
@@ -18,20 +17,38 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     private val spotlightNumberOptions = listOf("未指定", "1", "2", "3", "4", "5", "6", "7", "8")
     private val videoCodecOptions = listOf("未指定", "VP8", "VP9", "H264", "H265", "AV1")
     private val audioCodecOptions = listOf("未指定", "OPUS")
-    private val audioBitRateOptions = listOf(
-        "未指定", "8", "16", "24", "32",
-        "64", "96", "128", "256"
-    )
+    private val audioBitRateOptions =
+        listOf(
+            "未指定",
+            "8",
+            "16",
+            "24",
+            "32",
+            "64",
+            "96",
+            "128",
+            "256",
+        )
     private val videoEnabledOptions = listOf("有効", "無効")
     private val audioEnabledOptions = listOf("有効", "無効")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
     private val spotlightFocusRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
     private val spotlightUnfocusRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
     private val simulcastEnabledOptions = listOf("有効", "無効")
-    private val videoBitRateOptions = listOf(
-        "500", "200", "700", "1200", "2500", "4000", "5000",
-        "10000", "15000", "20000", "30000"
-    )
+    private val videoBitRateOptions =
+        listOf(
+            "500",
+            "200",
+            "700",
+            "1200",
+            "2500",
+            "4000",
+            "5000",
+            "10000",
+            "15000",
+            "20000",
+            "30000",
+        )
     private val videoSizeOptions = SoraFrameSize.landscape.keys.toList()
     private val resolutionChangeOptions = listOf("未指定", "MAINTAIN_RESOLUTION", "MAINTAIN_FRAMERATE", "BALANCED", "DISABLED")
     private val resolutionAdjustmentOptions = listOf("未指定", "16", "8", "4", "2", "無効")
@@ -153,7 +170,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         Snackbar.make(
             binding.rootLayout,
             "チャネル名を適切に入力してください",
-            Snackbar.LENGTH_LONG
+            Snackbar.LENGTH_LONG,
         )
             .setAction("OK") { }
             .show()
