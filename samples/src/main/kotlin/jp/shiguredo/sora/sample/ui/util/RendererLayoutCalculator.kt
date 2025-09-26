@@ -5,9 +5,8 @@ import android.widget.RelativeLayout
 
 class RendererLayoutCalculator(
     val width: Int,
-    val height: Int
+    val height: Int,
 ) {
-
     private var views = mutableListOf<View>()
 
     fun add(view: View) {
@@ -24,23 +23,53 @@ class RendererLayoutCalculator(
         val count = views.size
         when (count) {
             0 -> {}
-            1 -> { layout1() }
-            2 -> { layout2() }
-            3 -> { layout3() }
-            4 -> { layout4() }
-            5 -> { layout5() }
-            6 -> { layout6() }
-            7 -> { layout7() }
-            8 -> { layout8() }
-            9 -> { layout9() }
-            10 -> { layout10() }
-            11 -> { layout11() }
-            12 -> { layout12() }
+            1 -> {
+                layout1()
+            }
+            2 -> {
+                layout2()
+            }
+            3 -> {
+                layout3()
+            }
+            4 -> {
+                layout4()
+            }
+            5 -> {
+                layout5()
+            }
+            6 -> {
+                layout6()
+            }
+            7 -> {
+                layout7()
+            }
+            8 -> {
+                layout8()
+            }
+            9 -> {
+                layout9()
+            }
+            10 -> {
+                layout10()
+            }
+            11 -> {
+                layout11()
+            }
+            12 -> {
+                layout12()
+            }
             else -> {}
         }
     }
 
-    private fun layoutView(view: View, w: Int, h: Int, x: Int, y: Int) {
+    private fun layoutView(
+        view: View,
+        w: Int,
+        h: Int,
+        x: Int,
+        y: Int,
+    ) {
         val params = view.layoutParams as RelativeLayout.LayoutParams
         params.width = w
         params.height = h

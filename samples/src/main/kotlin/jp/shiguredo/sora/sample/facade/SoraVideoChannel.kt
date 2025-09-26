@@ -73,9 +73,8 @@ class SoraVideoChannel(
     private val audioStreamingLanguageCode: String? = null,
     private val capturerFactory: CameraVideoCapturerFactory =
         DefaultCameraVideoCapturerFactory(context, cameraFacing),
-    private var listener: Listener?
+    private var listener: Listener?,
 ) {
-
     companion object {
         private val TAG = SoraVideoChannel::class.simpleName
     }
@@ -84,132 +83,207 @@ class SoraVideoChannel(
 
     interface Listener {
         fun onConnect(channel: SoraVideoChannel) {}
+
         fun onClose(channel: SoraVideoChannel) {}
-        fun onError(channel: SoraVideoChannel, reason: SoraErrorReason) {}
-        fun onWarning(channel: SoraVideoChannel, reason: SoraErrorReason) {}
-        fun onAddRemoteRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {}
-        fun onRemoveRemoteRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {}
-        fun onAddLocalRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {}
-        fun onAttendeesCountUpdated(channel: SoraVideoChannel, attendees: ChannelAttendeesCount) {}
+
+        fun onError(
+            channel: SoraVideoChannel,
+            reason: SoraErrorReason,
+        ) {}
+
+        fun onWarning(
+            channel: SoraVideoChannel,
+            reason: SoraErrorReason,
+        ) {}
+
+        fun onAddRemoteRenderer(
+            channel: SoraVideoChannel,
+            renderer: SurfaceViewRenderer,
+        ) {}
+
+        fun onRemoveRemoteRenderer(
+            channel: SoraVideoChannel,
+            renderer: SurfaceViewRenderer,
+        ) {}
+
+        fun onAddLocalRenderer(
+            channel: SoraVideoChannel,
+            renderer: SurfaceViewRenderer,
+        ) {}
+
+        fun onAttendeesCountUpdated(
+            channel: SoraVideoChannel,
+            attendees: ChannelAttendeesCount,
+        ) {}
+
         // カメラミュート状態が変化した際の通知
-        fun onCameraMuteStateChanged(channel: SoraVideoChannel, hardMuted: Boolean, softMuted: Boolean) {}
+        fun onCameraMuteStateChanged(
+            channel: SoraVideoChannel,
+            hardMuted: Boolean,
+            softMuted: Boolean,
+        ) {}
     }
 
     private val statsCollector = VideoUpstreamLatencyStatsCollector()
 
-    private val channelListener = object : SoraMediaChannel.Listener {
-
-        override fun onConnect(mediaChannel: SoraMediaChannel) {
-            SoraLogger.d(TAG, "[video_channel] @onConnect contactSignalingEndpoint:${mediaChannel.contactSignalingEndpoint} connectedSignalingEndpoint:${mediaChannel.connectedSignalingEndpoint}")
-            handler.post {
-                listener?.onConnect(this@SoraVideoChannel)
-            }
-        }
-
-        override fun onClose(mediaChannel: SoraMediaChannel, closeEvent: SoraCloseEvent) {
-            SoraLogger.d(TAG, "[video_channel] @onClose $closeEvent")
-            disconnect()
-        }
-
-        override fun onError(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {
-            SoraLogger.d(TAG, "[video_channel] @onError $reason: $message")
-            handler.post {
-                listener?.onError(this@SoraVideoChannel, reason)
-            }
-        }
-
-        override fun onWarning(mediaChannel: SoraMediaChannel, reason: SoraErrorReason) {
-            SoraLogger.d(TAG, "[video_channel] @onWarning $reason")
-            handler.post {
-                listener?.onWarning(this@SoraVideoChannel, reason)
-            }
-        }
-
-        override fun onWarning(mediaChannel: SoraMediaChannel, reason: SoraErrorReason, message: String) {
-            SoraLogger.d(TAG, "[video_channel] @onWarning $reason: $message")
-            handler.post {
-                listener?.onWarning(this@SoraVideoChannel, reason)
-            }
-        }
-
-        override fun onSenderEncodings(mediaChannel: SoraMediaChannel, encodings: List<RtpParameters.Encoding>) {
-            SoraLogger.d(TAG, "[video_channel] @onSenderEncodings: encodings=$encodings")
-        }
-
-        override fun onAddRemoteStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
-            SoraLogger.d(TAG, "[video_channel] @onAddRemoteStream:${ms.id}")
-            handler.post {
-                remoteRenderersSlot?.onAddRemoteStream(ms)
-            }
-        }
-
-        override fun onRemoveRemoteStream(mediaChannel: SoraMediaChannel, label: String) {
-            SoraLogger.d(TAG, "[video_channel] @onRemoveRemoteStream:$label")
-            handler.post {
-                remoteRenderersSlot?.onRemoveRemoteStream(label)
-            }
-        }
-
-        override fun onAddLocalStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
-            SoraLogger.d(TAG, "[video_channel] @onAddLocalStream")
-
-            if (ms.audioTracks.size > 0) {
-                localAudioTrack = ms.audioTracks[0]
+    private val channelListener =
+        object : SoraMediaChannel.Listener {
+            override fun onConnect(mediaChannel: SoraMediaChannel) {
+                SoraLogger.d(
+                    TAG,
+                    "[video_channel] @onConnect contactSignalingEndpoint:${mediaChannel.contactSignalingEndpoint} " +
+                        "connectedSignalingEndpoint:${mediaChannel.connectedSignalingEndpoint}",
+                )
+                handler.post {
+                    listener?.onConnect(this@SoraVideoChannel)
+                }
             }
 
-            // UI 初期化
-            handler.post {
-                if (ms.videoTracks.size > 0) {
-                    localVideoTrack = ms.videoTracks[0]
-                    // 開始時カメラOFFなら、ローカルトラック追加前にソフトミュートを立てて反映
-                    if (!startWithCamera) {
-                        softMuted = true
+            override fun onClose(
+                mediaChannel: SoraMediaChannel,
+                closeEvent: SoraCloseEvent,
+            ) {
+                SoraLogger.d(TAG, "[video_channel] @onClose $closeEvent")
+                disconnect()
+            }
+
+            override fun onError(
+                mediaChannel: SoraMediaChannel,
+                reason: SoraErrorReason,
+                message: String,
+            ) {
+                SoraLogger.d(TAG, "[video_channel] @onError $reason: $message")
+                handler.post {
+                    listener?.onError(this@SoraVideoChannel, reason)
+                }
+            }
+
+            override fun onWarning(
+                mediaChannel: SoraMediaChannel,
+                reason: SoraErrorReason,
+            ) {
+                SoraLogger.d(TAG, "[video_channel] @onWarning $reason")
+                handler.post {
+                    listener?.onWarning(this@SoraVideoChannel, reason)
+                }
+            }
+
+            override fun onWarning(
+                mediaChannel: SoraMediaChannel,
+                reason: SoraErrorReason,
+                message: String,
+            ) {
+                SoraLogger.d(TAG, "[video_channel] @onWarning $reason: $message")
+                handler.post {
+                    listener?.onWarning(this@SoraVideoChannel, reason)
+                }
+            }
+
+            override fun onSenderEncodings(
+                mediaChannel: SoraMediaChannel,
+                encodings: List<RtpParameters.Encoding>,
+            ) {
+                SoraLogger.d(TAG, "[video_channel] @onSenderEncodings: encodings=$encodings")
+            }
+
+            override fun onAddRemoteStream(
+                mediaChannel: SoraMediaChannel,
+                ms: MediaStream,
+            ) {
+                SoraLogger.d(TAG, "[video_channel] @onAddRemoteStream:${ms.id}")
+                handler.post {
+                    remoteRenderersSlot?.onAddRemoteStream(ms)
+                }
+            }
+
+            override fun onRemoveRemoteStream(
+                mediaChannel: SoraMediaChannel,
+                label: String,
+            ) {
+                SoraLogger.d(TAG, "[video_channel] @onRemoveRemoteStream:$label")
+                handler.post {
+                    remoteRenderersSlot?.onRemoveRemoteStream(label)
+                }
+            }
+
+            override fun onAddLocalStream(
+                mediaChannel: SoraMediaChannel,
+                ms: MediaStream,
+            ) {
+                SoraLogger.d(TAG, "[video_channel] @onAddLocalStream")
+
+                if (ms.audioTracks.size > 0) {
+                    localAudioTrack = ms.audioTracks[0]
+                }
+
+                // UI 初期化
+                handler.post {
+                    if (ms.videoTracks.size > 0) {
+                        localVideoTrack = ms.videoTracks[0]
+                        // 開始時カメラOFFなら、ローカルトラック追加前にソフトミュートを立てて反映
+                        if (!startWithCamera) {
+                            softMuted = true
+                        }
+                        // ソフトウェアミュート状態を反映（初期化順序を統一）
+                        applyCameraMuteState()
+                        // 初期ON時のみローカルレンダラーを即時追加。OFF時は後で有効化タイミングで追加する
+                        if (startWithCamera) {
+                            ensureLocalRenderer()
+                        }
                     }
-                    // ソフトウェアミュート状態を反映（初期化順序を統一）
-                    applyCameraMuteState()
-                    // 初期ON時のみローカルレンダラーを即時追加。OFF時は後で有効化タイミングで追加する
+                }
+                // カメラ動作開始
+                handler.post {
                     if (startWithCamera) {
-                        ensureLocalRenderer()
+                        startCapturer()
+                    } else {
+                        // 開始時カメラOFFならハードミュート状態にする（キャプチャ未開始のまま）
+                        setCameraHardMuted(true)
                     }
                 }
             }
-            // カメラ動作開始
-            handler.post {
-                if (startWithCamera) {
-                    startCapturer()
-                } else {
-                    // 開始時カメラOFFならハードミュート状態にする（キャプチャ未開始のまま）
-                    setCameraHardMuted(true)
+
+            override fun onAttendeesCountUpdated(
+                mediaChannel: SoraMediaChannel,
+                attendees: ChannelAttendeesCount,
+            ) {
+                SoraLogger.d(TAG, "[video_channel] @onAttendeesCountUpdated")
+                handler.post {
+                    listener?.onAttendeesCountUpdated(this@SoraVideoChannel, attendees)
                 }
             }
-        }
 
-        override fun onAttendeesCountUpdated(mediaChannel: SoraMediaChannel, attendees: ChannelAttendeesCount) {
-            SoraLogger.d(TAG, "[video_channel] @onAttendeesCountUpdated")
-            handler.post {
-                listener?.onAttendeesCountUpdated(this@SoraVideoChannel, attendees)
+            override fun onOfferMessage(
+                mediaChannel: SoraMediaChannel,
+                offer: OfferMessage,
+            ) {
+                SoraLogger.d(TAG, "[video_channel] @onOfferMessage $offer")
+            }
+
+            override fun onNotificationMessage(
+                mediaChannel: SoraMediaChannel,
+                notification: NotificationMessage,
+            ) {
+                SoraLogger.d(TAG, "[video_channel] @onNotificationmessage ${notification.eventType} $notification")
+            }
+
+            override fun onPushMessage(
+                mediaChannel: SoraMediaChannel,
+                push: PushMessage,
+            ) {
+                SoraLogger.d(TAG, "[video_channel] @onPushMessage $push")
+            }
+
+            override fun onPeerConnectionStatsReady(
+                mediaChannel: SoraMediaChannel,
+                statsReport: RTCStatsReport,
+            ) {
+                // statsReport.statsMap.entries.forEach {
+                //     SoraLogger.d(TAG, "${it.key}=${it.value}")
+                // }
+                statsCollector.newStatsReport(statsReport)
             }
         }
-
-        override fun onOfferMessage(mediaChannel: SoraMediaChannel, offer: OfferMessage) {
-            SoraLogger.d(TAG, "[video_channel] @onOfferMessage $offer")
-        }
-
-        override fun onNotificationMessage(mediaChannel: SoraMediaChannel, notification: NotificationMessage) {
-            SoraLogger.d(TAG, "[video_channel] @onNotificationmessage ${notification.eventType} $notification")
-        }
-
-        override fun onPushMessage(mediaChannel: SoraMediaChannel, push: PushMessage) {
-            SoraLogger.d(TAG, "[video_channel] @onPushMessage $push")
-        }
-
-        override fun onPeerConnectionStatsReady(mediaChannel: SoraMediaChannel, statsReport: RTCStatsReport) {
-            // statsReport.statsMap.entries.forEach {
-            //     SoraLogger.d(TAG, "${it.key}=${it.value}")
-            // }
-            statsCollector.newStatsReport(statsReport)
-        }
-    }
 
     var mediaChannel: SoraMediaChannel? = null
     private var capturer: CameraVideoCapturer? = null
@@ -227,20 +301,20 @@ class SoraVideoChannel(
     private var localAudioTrack: AudioTrack? = null
     private var localVideoTrack: VideoTrack? = null
 
-    private val rendererSlotListener = object : SoraRemoteRendererSlot.Listener {
+    private val rendererSlotListener =
+        object : SoraRemoteRendererSlot.Listener {
+            override fun onAddRenderer(renderer: SurfaceViewRenderer) {
+                handler.post {
+                    listener?.onAddRemoteRenderer(this@SoraVideoChannel, renderer)
+                }
+            }
 
-        override fun onAddRenderer(renderer: SurfaceViewRenderer) {
-            handler.post {
-                listener?.onAddRemoteRenderer(this@SoraVideoChannel, renderer)
+            override fun onRemoveRenderer(renderer: SurfaceViewRenderer) {
+                handler.post {
+                    listener?.onRemoveRemoteRenderer(this@SoraVideoChannel, renderer)
+                }
             }
         }
-
-        override fun onRemoveRenderer(renderer: SurfaceViewRenderer) {
-            handler.post {
-                listener?.onRemoveRemoteRenderer(this@SoraVideoChannel, renderer)
-            }
-        }
-    }
 
     private fun createSurfaceViewRenderer(): SurfaceViewRenderer {
         val renderer = SurfaceViewRenderer(context)
@@ -249,129 +323,133 @@ class SoraVideoChannel(
     }
 
     fun connect() {
+        remoteRenderersSlot =
+            SoraRemoteRendererSlot(
+                context = context,
+                eglContext = egl!!.eglBaseContext,
+                listener = rendererSlotListener,
+            )
 
-        remoteRenderersSlot = SoraRemoteRendererSlot(
-            context = context,
-            eglContext = egl!!.eglBaseContext,
-            listener = rendererSlotListener
-        )
-
-        val mediaOption = SoraMediaOption().apply {
-            if (roleType.hasUpstream()) {
-                if (audioEnabled) {
-                    enableAudioUpstream()
-                }
-                if (videoEnabled) {
-                    capturer = capturerFactory.createCapturer()
-                    enableVideoUpstream(capturer!!, egl!!.eglBaseContext)
-                }
-            }
-
-            if (roleType.hasDownstream()) {
-                if (audioEnabled) {
-                    enableAudioDownstream()
-                }
-                if (videoEnabled || roleType == SoraRoleType.SENDRECV) {
-                    enableVideoDownstream(egl!!.eglBaseContext)
-                }
-            }
-
-            if (this@SoraVideoChannel.simulcast) {
-                enableSimulcast(simulcastRid)
-            }
-
-            if (this@SoraVideoChannel.spotlight) {
-                val option = SoraSpotlightOption()
-                option.spotlightNumber = spotlightNumber
-                option.spotlightFocusRid = spotlightFocusRid
-                option.spotlightUnfocusRid = spotlightUnfocusRid
-                enableSpotlight(option, this@SoraVideoChannel.simulcast)
-            }
-
-            videoCodec = this@SoraVideoChannel.videoCodec
-            videoBitrate = this@SoraVideoChannel.videoBitRate
-            videoVp9Params = this@SoraVideoChannel.videoVp9Params
-            videoAv1Params = this@SoraVideoChannel.videoAv1Params
-            videoH264Params = this@SoraVideoChannel.videoH264Params
-            this@SoraVideoChannel.degradationPreference?.let {
-                degradationPreference = this@SoraVideoChannel.degradationPreference
-            }
-            audioCodec = this@SoraVideoChannel.audioCodec
-            audioBitrate = this@SoraVideoChannel.audioBitRate
-
-            audioOption = SoraAudioOption().apply {
-                // 全部デフォルト値なので、実際には指定する必要はない
-                useHardwareAcousticEchoCanceler = true
-                useHardwareNoiseSuppressor = true
-
-                audioProcessingEchoCancellation = true
-                audioProcessingAutoGainControl = true
-                audioProcessingHighpassFilter = true
-                audioProcessingNoiseSuppression = true
-
-                // 配信にステレオを使う場合の設定。
-                // AndroidManifest で portrait 固定だが、ステレオで配信するときは landscape に
-                // 変更したほうが良い。
-                if (audioStereo) {
-                    // libwebrtc の AGC が有効のときはステレオで出ないため無効化する
-                    audioProcessingAutoGainControl = false
-
-                    // MediaRecorder.AudioSource.MIC の場合、両側のマイクの真ん中あたりで
-                    // 不連続に音量が下がるように聞こえる (Pixel 3 XL -> Sora で録音)。
-                    // マイクから離れることに依る近接センサーの影響か??
-                    // CAMCORDER にすると端末のマイクから離れたときの影響が小さい。
-                    audioSource = MediaRecorder.AudioSource.CAMCORDER
-                    useStereoInput = true
-                }
-            }
-
-            if (resolutionAdjustment != null) {
-                this.hardwareVideoEncoderResolutionAdjustment = resolutionAdjustment
-            }
-
-            // プロキシ
-            if (BuildConfig.PROXY_HOSTNAME.isNotBlank()) {
-                this.proxy.type = ProxyType.HTTPS
-                this.proxy.hostname = BuildConfig.PROXY_HOSTNAME
-
-                // エージェントは指定されている場合のみデフォルト値を上書きする
-                if (BuildConfig.PROXY_AGENT.isNotBlank()) {
-                    this.proxy.agent = BuildConfig.PROXY_AGENT
+        val mediaOption =
+            SoraMediaOption().apply {
+                if (roleType.hasUpstream()) {
+                    if (audioEnabled) {
+                        enableAudioUpstream()
+                    }
+                    if (videoEnabled) {
+                        capturer = capturerFactory.createCapturer()
+                        enableVideoUpstream(capturer!!, egl!!.eglBaseContext)
+                    }
                 }
 
-                try {
-                    this.proxy.port = BuildConfig.PROXY_PORT.toInt()
-                } catch (e: Exception) {
-                    SoraLogger.e(TAG, "failed to set SoraMediaOption.proxy.port", e)
+                if (roleType.hasDownstream()) {
+                    if (audioEnabled) {
+                        enableAudioDownstream()
+                    }
+                    if (videoEnabled || roleType == SoraRoleType.SENDRECV) {
+                        enableVideoDownstream(egl!!.eglBaseContext)
+                    }
                 }
 
-                if (BuildConfig.PROXY_USERNAME.isNotBlank()) {
-                    this.proxy.username = BuildConfig.PROXY_USERNAME
-                    this.proxy.password = BuildConfig.PROXY_PASSWORD
+                if (this@SoraVideoChannel.simulcast) {
+                    enableSimulcast(simulcastRid)
                 }
+
+                if (this@SoraVideoChannel.spotlight) {
+                    val option = SoraSpotlightOption()
+                    option.spotlightNumber = spotlightNumber
+                    option.spotlightFocusRid = spotlightFocusRid
+                    option.spotlightUnfocusRid = spotlightUnfocusRid
+                    enableSpotlight(option, this@SoraVideoChannel.simulcast)
+                }
+
+                videoCodec = this@SoraVideoChannel.videoCodec
+                videoBitrate = this@SoraVideoChannel.videoBitRate
+                videoVp9Params = this@SoraVideoChannel.videoVp9Params
+                videoAv1Params = this@SoraVideoChannel.videoAv1Params
+                videoH264Params = this@SoraVideoChannel.videoH264Params
+                this@SoraVideoChannel.degradationPreference?.let {
+                    degradationPreference = this@SoraVideoChannel.degradationPreference
+                }
+                audioCodec = this@SoraVideoChannel.audioCodec
+                audioBitrate = this@SoraVideoChannel.audioBitRate
+
+                audioOption =
+                    SoraAudioOption().apply {
+                        // 全部デフォルト値なので、実際には指定する必要はない
+                        useHardwareAcousticEchoCanceler = true
+                        useHardwareNoiseSuppressor = true
+
+                        audioProcessingEchoCancellation = true
+                        audioProcessingAutoGainControl = true
+                        audioProcessingHighpassFilter = true
+                        audioProcessingNoiseSuppression = true
+
+                        // 配信にステレオを使う場合の設定。
+                        // AndroidManifest で portrait 固定だが、ステレオで配信するときは landscape に
+                        // 変更したほうが良い。
+                        if (audioStereo) {
+                            // libwebrtc の AGC が有効のときはステレオで出ないため無効化する
+                            audioProcessingAutoGainControl = false
+
+                            // MediaRecorder.AudioSource.MIC の場合、両側のマイクの真ん中あたりで
+                            // 不連続に音量が下がるように聞こえる (Pixel 3 XL -> Sora で録音)。
+                            // マイクから離れることに依る近接センサーの影響か??
+                            // CAMCORDER にすると端末のマイクから離れたときの影響が小さい。
+                            audioSource = MediaRecorder.AudioSource.CAMCORDER
+                            useStereoInput = true
+                        }
+                    }
+
+                if (resolutionAdjustment != null) {
+                    this.hardwareVideoEncoderResolutionAdjustment = resolutionAdjustment
+                }
+
+                // プロキシ
+                if (BuildConfig.PROXY_HOSTNAME.isNotBlank()) {
+                    this.proxy.type = ProxyType.HTTPS
+                    this.proxy.hostname = BuildConfig.PROXY_HOSTNAME
+
+                    // エージェントは指定されている場合のみデフォルト値を上書きする
+                    if (BuildConfig.PROXY_AGENT.isNotBlank()) {
+                        this.proxy.agent = BuildConfig.PROXY_AGENT
+                    }
+
+                    try {
+                        this.proxy.port = BuildConfig.PROXY_PORT.toInt()
+                    } catch (e: Exception) {
+                        SoraLogger.e(TAG, "failed to set SoraMediaOption.proxy.port", e)
+                    }
+
+                    if (BuildConfig.PROXY_USERNAME.isNotBlank()) {
+                        this.proxy.username = BuildConfig.PROXY_USERNAME
+                        this.proxy.password = BuildConfig.PROXY_PASSWORD
+                    }
+                }
+                audioStreamingLanguageCode = this@SoraVideoChannel.audioStreamingLanguageCode
             }
-            audioStreamingLanguageCode = this@SoraVideoChannel.audioStreamingLanguageCode
-        }
 
-        val peerConnectionOption = PeerConnectionOption().apply {
-            getStatsIntervalMSec = 5000
-        }
+        val peerConnectionOption =
+            PeerConnectionOption().apply {
+                getStatsIntervalMSec = 5000
+            }
 
-        mediaChannel = SoraMediaChannel(
-            context = context,
-            signalingEndpoint = signalingEndpoint,
-            signalingEndpointCandidates = signalingEndpointCandidates,
-            channelId = channelId,
-            dataChannelSignaling = dataChannelSignaling,
-            ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
-            signalingMetadata = signalingMetadata,
-            signalingNotifyMetadata = signalingNotifyMetatada,
-            mediaOption = mediaOption,
-            listener = channelListener,
-            clientId = clientId,
-            bundleId = bundleId,
-            peerConnectionOption = peerConnectionOption
-        )
+        mediaChannel =
+            SoraMediaChannel(
+                context = context,
+                signalingEndpoint = signalingEndpoint,
+                signalingEndpointCandidates = signalingEndpointCandidates,
+                channelId = channelId,
+                dataChannelSignaling = dataChannelSignaling,
+                ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
+                signalingMetadata = signalingMetadata,
+                signalingNotifyMetadata = signalingNotifyMetatada,
+                mediaOption = mediaOption,
+                listener = channelListener,
+                clientId = clientId,
+                bundleId = bundleId,
+                peerConnectionOption = peerConnectionOption,
+            )
         mediaChannel!!.connect()
     }
 
@@ -394,18 +472,22 @@ class SoraVideoChannel(
         }
     }
 
-    private val cameraSwitchHandler = object : CameraVideoCapturer.CameraSwitchHandler {
+    private val cameraSwitchHandler =
+        object : CameraVideoCapturer.CameraSwitchHandler {
+            override fun onCameraSwitchDone(isFront: Boolean) {
+                SoraLogger.d(TAG, "camera switched.")
+            }
 
-        override fun onCameraSwitchDone(isFront: Boolean) {
-            SoraLogger.d(TAG, "camera switched.")
+            override fun onCameraSwitchError(msg: String?) {
+                SoraLogger.w(TAG, "failed to switch camera $msg")
+            }
         }
 
-        override fun onCameraSwitchError(msg: String?) {
-            SoraLogger.w(TAG, "failed to switch camera $msg")
-        }
-    }
-
-    fun changeCameraFormat(width: Int, height: Int, fps: Int) {
+    fun changeCameraFormat(
+        width: Int,
+        height: Int,
+        fps: Int,
+    ) {
         capturer?.let {
             it.changeCaptureFormat(width, height, fps)
         }
@@ -533,6 +615,7 @@ class SoraVideoChannel(
 
     // 状態参照用（UI 側と同期したい場合に利用）
     fun isCameraSoftMuted(): Boolean = softMuted
+
     fun isCameraHardMuted(): Boolean = hardMuted
 
     fun disconnect() {

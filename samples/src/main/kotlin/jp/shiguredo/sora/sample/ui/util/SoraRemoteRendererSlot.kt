@@ -11,7 +11,7 @@ import org.webrtc.VideoTrack
 class SoraRemoteRendererSlot(
     val context: Context,
     val eglContext: EglBase.Context,
-    var listener: Listener?
+    var listener: Listener?,
 ) {
     companion object {
         private val TAG = SoraRemoteRendererSlot::class.simpleName
@@ -19,6 +19,7 @@ class SoraRemoteRendererSlot(
 
     interface Listener {
         fun onAddRenderer(renderer: SurfaceViewRenderer)
+
         fun onRemoveRenderer(renderer: SurfaceViewRenderer)
     }
 
@@ -44,11 +45,9 @@ class SoraRemoteRendererSlot(
     }
 
     fun onRemoveRemoteStream(msid: String) {
-
         SoraLogger.d(TAG, "onRemoveRemoteStream:$msid")
 
         if (workingRenderers.containsKey(msid)) {
-
             SoraLogger.d(TAG, "track for $msid found")
 
             val renderer = workingRenderers.get(msid)

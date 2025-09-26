@@ -1,6 +1,5 @@
 package jp.shiguredo.sora.sample.ui
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
@@ -12,15 +11,14 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.View
 import android.view.WindowManager
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.google.gson.Gson
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
@@ -39,7 +37,6 @@ import org.webrtc.SurfaceViewRenderer
 import java.util.UUID
 
 class VideoChatRoomActivity : AppCompatActivity() {
-
     companion object {
         private val TAG = VideoChatRoomActivity::class.simpleName
     }
@@ -88,46 +85,52 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
         channelName = intent.getStringExtra("CHANNEL_NAME") ?: getString(R.string.channelId)
 
-        videoEnabled = when (intent.getStringExtra("VIDEO_ENABLED")) {
-            "有効" -> true
-            "無効" -> false
-            else -> true
-        }
+        videoEnabled =
+            when (intent.getStringExtra("VIDEO_ENABLED")) {
+                "有効" -> true
+                "無効" -> false
+                else -> true
+            }
 
-        videoCodec = when (intent.getStringExtra("VIDEO_CODEC")) {
-            "未指定" -> SoraVideoOption.Codec.DEFAULT
-            "VP8" -> SoraVideoOption.Codec.VP8
-            "VP9" -> SoraVideoOption.Codec.VP9
-            "AV1" -> SoraVideoOption.Codec.AV1
-            "H264" -> SoraVideoOption.Codec.H264
-            "H265" -> SoraVideoOption.Codec.H265
-            else -> SoraVideoOption.Codec.DEFAULT
-        }
+        videoCodec =
+            when (intent.getStringExtra("VIDEO_CODEC")) {
+                "未指定" -> SoraVideoOption.Codec.DEFAULT
+                "VP8" -> SoraVideoOption.Codec.VP8
+                "VP9" -> SoraVideoOption.Codec.VP9
+                "AV1" -> SoraVideoOption.Codec.AV1
+                "H264" -> SoraVideoOption.Codec.H264
+                "H265" -> SoraVideoOption.Codec.H265
+                else -> SoraVideoOption.Codec.DEFAULT
+            }
 
-        audioCodec = when (intent.getStringExtra("AUDIO_CODEC")) {
-            "未指定" -> SoraAudioOption.Codec.DEFAULT
-            "OPUS" -> SoraAudioOption.Codec.OPUS
-            else -> SoraAudioOption.Codec.DEFAULT
-        }
+        audioCodec =
+            when (intent.getStringExtra("AUDIO_CODEC")) {
+                "未指定" -> SoraAudioOption.Codec.DEFAULT
+                "OPUS" -> SoraAudioOption.Codec.OPUS
+                else -> SoraAudioOption.Codec.DEFAULT
+            }
 
-        role = when (intent.getStringExtra("ROLE")) {
-            "SENDONLY" -> SoraRoleType.SENDONLY
-            "RECVONLY" -> SoraRoleType.RECVONLY
-            "SENDRECV" -> SoraRoleType.SENDRECV
-            else -> SoraRoleType.SENDRECV
-        }
+        role =
+            when (intent.getStringExtra("ROLE")) {
+                "SENDONLY" -> SoraRoleType.SENDONLY
+                "RECVONLY" -> SoraRoleType.RECVONLY
+                "SENDRECV" -> SoraRoleType.SENDRECV
+                else -> SoraRoleType.SENDRECV
+            }
 
-        audioEnabled = when (intent.getStringExtra("AUDIO_ENABLED")) {
-            "有効" -> true
-            "無効" -> false
-            else -> true
-        }
+        audioEnabled =
+            when (intent.getStringExtra("AUDIO_ENABLED")) {
+                "有効" -> true
+                "無効" -> false
+                else -> true
+            }
 
-        startWithCamera = when (intent.getStringExtra("INITIAL_CAMERA")) {
-            "有効" -> true
-            "無効" -> false
-            else -> true
-        }
+        startWithCamera =
+            when (intent.getStringExtra("INITIAL_CAMERA")) {
+                "有効" -> true
+                "無効" -> false
+                else -> true
+            }
 
         fps = (intent.getStringExtra("FPS") ?: "30").toInt()
 
@@ -138,114 +141,124 @@ class VideoChatRoomActivity : AppCompatActivity() {
             }
         }
 
-        spotlight = when (intent.getStringExtra("SPOTLIGHT")) {
-            "有効" -> true
-            else -> false
-        }
+        spotlight =
+            when (intent.getStringExtra("SPOTLIGHT")) {
+                "有効" -> true
+                else -> false
+            }
 
-        spotlightNumber = when (val stringValue = intent.getStringExtra("SPOTLIGHT_NUMBER")) {
-            "未指定" -> null
-            else -> stringValue?.toInt()
-        }
+        spotlightNumber =
+            when (val stringValue = intent.getStringExtra("SPOTLIGHT_NUMBER")) {
+                "未指定" -> null
+                else -> stringValue?.toInt()
+            }
 
         Log.d(TAG, "spotlight => $spotlight, $spotlightNumber")
 
-        degradationPreference = when (intent.getStringExtra("RESOLUTION_CHANGE")) {
-            "未指定" -> null
-            "MAINTAIN_RESOLUTION" -> SoraVideoOption.DegradationPreference.MAINTAIN_RESOLUTION
-            "MAINTAIN_FRAMERATE" -> SoraVideoOption.DegradationPreference.MAINTAIN_FRAMERATE
-            "BALANCED" -> SoraVideoOption.DegradationPreference.BALANCED
-            "DISABLED" -> SoraVideoOption.DegradationPreference.DISABLED
-            else -> null
-        }
-
-        videoVp9Params = when (val stringValue = intent.getStringExtra("VP9_PROFILE_ID")) {
-            "未指定" -> null
-            else -> object {
-                var profile_id: Int? = stringValue?.toIntOrNull()
+        degradationPreference =
+            when (intent.getStringExtra("RESOLUTION_CHANGE")) {
+                "未指定" -> null
+                "MAINTAIN_RESOLUTION" -> SoraVideoOption.DegradationPreference.MAINTAIN_RESOLUTION
+                "MAINTAIN_FRAMERATE" -> SoraVideoOption.DegradationPreference.MAINTAIN_FRAMERATE
+                "BALANCED" -> SoraVideoOption.DegradationPreference.BALANCED
+                "DISABLED" -> SoraVideoOption.DegradationPreference.DISABLED
+                else -> null
             }
-        }
 
-        videoAv1Params = when (val stringValue = intent.getStringExtra("AV1_PROFILE")) {
-            "未指定" -> null
-            else -> object {
-                var profile: Int? = stringValue?.toIntOrNull()
+        videoVp9Params =
+            when (val stringValue = intent.getStringExtra("VP9_PROFILE_ID")) {
+                "未指定" -> null
+                else -> stringValue?.toIntOrNull()?.let { mapOf("profile_id" to it) }
             }
-        }
 
-        videoH264Params = when (val stringValue = intent.getStringExtra("H264_PROFILE_LEVEL_ID")) {
-            "未指定" -> null
-            else -> object {
-                var profile_level_id: String? = stringValue
+        videoAv1Params =
+            when (val stringValue = intent.getStringExtra("AV1_PROFILE")) {
+                "未指定" -> null
+                else -> stringValue?.toIntOrNull()?.let { mapOf("profile" to it) }
             }
-        }
-        resolutionAdjustment = when (intent.getStringExtra("RESOLUTION_ADJUSTMENT")) {
-            "16" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_16
-            "8" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_8
-            "4" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_4
-            "2" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_2
-            "無効" -> SoraVideoOption.ResolutionAdjustment.NONE
-            else -> null
-        }
 
-        videoBitRate = when (val stringValue = intent.getStringExtra("VIDEO_BIT_RATE")) {
-            "未指定" -> null
-            else -> stringValue?.toInt()
-        }
+        videoH264Params =
+            when (val stringValue = intent.getStringExtra("H264_PROFILE_LEVEL_ID")) {
+                "未指定" -> null
+                else -> stringValue?.let { mapOf("profile_level_id" to it) }
+            }
+        resolutionAdjustment =
+            when (intent.getStringExtra("RESOLUTION_ADJUSTMENT")) {
+                "16" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_16
+                "8" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_8
+                "4" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_4
+                "2" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_2
+                "無効" -> SoraVideoOption.ResolutionAdjustment.NONE
+                else -> null
+            }
 
-        audioBitRate = when (val stringValue = intent.getStringExtra("AUDIO_BIT_RATE")) {
-            "未指定" -> null
-            else -> stringValue?.toInt()
-        }
+        videoBitRate =
+            when (val stringValue = intent.getStringExtra("VIDEO_BIT_RATE")) {
+                "未指定" -> null
+                else -> stringValue?.toInt()
+            }
 
-        audioStereo = when (intent.getStringExtra("AUDIO_STEREO")) {
-            "モノラル" -> false
-            "ステレオ" -> true
-            else -> false
-        }
+        audioBitRate =
+            when (val stringValue = intent.getStringExtra("AUDIO_BIT_RATE")) {
+                "未指定" -> null
+                else -> stringValue?.toInt()
+            }
 
-        cameraFacing = when (intent.getStringExtra("CAMERA_FACING")) {
-            "前面" -> true
-            "背面" -> false
-            else -> true
-        }
+        audioStereo =
+            when (intent.getStringExtra("AUDIO_STEREO")) {
+                "モノラル" -> false
+                "ステレオ" -> true
+                else -> false
+            }
 
-        clientId = when (intent.getStringExtra("CLIENT_ID")) {
-            "なし" -> null
-            "端末情報" -> Build.MODEL
-            "時雨堂" -> "🍖時雨堂🍗"
-            "ランダム" -> UUID.randomUUID().toString()
-            else -> null
-        }
+        cameraFacing =
+            when (intent.getStringExtra("CAMERA_FACING")) {
+                "前面" -> true
+                "背面" -> false
+                else -> true
+            }
 
-        bundleId = when (intent.getStringExtra("BUNDLE_ID")) {
-            "なし" -> null
-            "端末情報" -> Build.MODEL
-            "時雨堂" -> "☔時雨堂🌂"
-            "ランダム" -> UUID.randomUUID().toString()
-            else -> null
-        }
+        clientId =
+            when (intent.getStringExtra("CLIENT_ID")) {
+                "なし" -> null
+                "端末情報" -> Build.MODEL
+                "時雨堂" -> "🍖時雨堂🍗"
+                "ランダム" -> UUID.randomUUID().toString()
+                else -> null
+            }
 
-        dataChannelSignaling = when (intent.getStringExtra("DATA_CHANNEL_SIGNALING")) {
-            "無効" -> false
-            "有効" -> true
-            "未指定" -> null
-            else -> null
-        }
+        bundleId =
+            when (intent.getStringExtra("BUNDLE_ID")) {
+                "なし" -> null
+                "端末情報" -> Build.MODEL
+                "時雨堂" -> "☔時雨堂🌂"
+                "ランダム" -> UUID.randomUUID().toString()
+                else -> null
+            }
 
-        ignoreDisconnectWebSocket = when (intent.getStringExtra("IGNORE_DISCONNECT_WEBSOCKET")) {
-            "無効" -> false
-            "有効" -> true
-            "未指定" -> null
-            else -> null
-        }
+        dataChannelSignaling =
+            when (intent.getStringExtra("DATA_CHANNEL_SIGNALING")) {
+                "無効" -> false
+                "有効" -> true
+                "未指定" -> null
+                else -> null
+            }
 
-        audioStreamingLanguageCode = when (intent.getStringExtra("AUDIO_STREAMING_LANGUAGE_CODE")) {
-            "ja-JP" -> "ja-JP"
-            "en-US" -> "en-US"
-            "未指定" -> null
-            else -> null
-        }
+        ignoreDisconnectWebSocket =
+            when (intent.getStringExtra("IGNORE_DISCONNECT_WEBSOCKET")) {
+                "無効" -> false
+                "有効" -> true
+                "未指定" -> null
+                else -> null
+            }
+
+        audioStreamingLanguageCode =
+            when (intent.getStringExtra("AUDIO_STREAMING_LANGUAGE_CODE")) {
+                "ja-JP" -> "ja-JP"
+                "en-US" -> "en-US"
+                "未指定" -> null
+                else -> null
+            }
 
         // ステレオでは landscape にしたほうが内蔵マイクを使うときに自然な向きとなる。
         if (audioStereo) {
@@ -254,15 +267,16 @@ class VideoChatRoomActivity : AppCompatActivity() {
             }
         }
 
-        ui = VideoChatRoomActivityUI(
-            activity = this,
-            channelName = channelName,
-            resources = resources,
-            videoViewWidth = 100,
-            videoViewHeight = 100,
-            videoViewMargin = 10,
-            density = this.resources.displayMetrics.density
-        )
+        ui =
+            VideoChatRoomActivityUI(
+                activity = this,
+                channelName = channelName,
+                resources = resources,
+                videoViewWidth = 100,
+                videoViewHeight = 100,
+                videoViewMargin = 10,
+                density = this.resources.displayMetrics.density,
+            )
 
         // 初期表示を反映（接続直後のコールバック前にアイコン状態を整える）
         if (videoEnabled && startWithCamera) {
@@ -294,8 +308,9 @@ class VideoChatRoomActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         this.volumeControlStream = AudioManager.STREAM_VOICE_CALL
-        val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
-            as AudioManager
+        val audioManager =
+            applicationContext.getSystemService(Context.AUDIO_SERVICE)
+                as AudioManager
         oldAudioMode = audioManager.mode
         Log.d(TAG, "AudioManager mode change: $oldAudioMode => MODE_IN_COMMUNICATION(3)")
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
@@ -304,8 +319,9 @@ class VideoChatRoomActivity : AppCompatActivity() {
     override fun onPause() {
         Log.d(TAG, "onPause")
         super.onPause()
-        val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
-            as AudioManager
+        val audioManager =
+            applicationContext.getSystemService(Context.AUDIO_SERVICE)
+                as AudioManager
         Log.d(TAG, "AudioManager mode change: MODE_IN_COMMUNICATION(3) => $oldAudioMode")
         audioManager.mode = oldAudioMode
         close()
@@ -318,98 +334,117 @@ class VideoChatRoomActivity : AppCompatActivity() {
     }
 
     private var channel: SoraVideoChannel? = null
-    private var channelListener: SoraVideoChannel.Listener = object : SoraVideoChannel.Listener {
+    private var channelListener: SoraVideoChannel.Listener =
+        object : SoraVideoChannel.Listener {
+            override fun onConnect(channel: SoraVideoChannel) {
+                ui?.changeState("#00C853")
+            }
 
-        override fun onConnect(channel: SoraVideoChannel) {
-            ui?.changeState("#00C853")
-        }
+            override fun onClose(channel: SoraVideoChannel) {
+                ui?.changeState("#37474F")
+                close()
+            }
 
-        override fun onClose(channel: SoraVideoChannel) {
-            ui?.changeState("#37474F")
-            close()
-        }
+            override fun onError(
+                channel: SoraVideoChannel,
+                reason: SoraErrorReason,
+            ) {
+                ui?.changeState("#DD2C00")
+                Toast.makeText(this@VideoChatRoomActivity, "Error: ${reason.name}", Toast.LENGTH_LONG).show()
+                close()
+            }
 
-        override fun onError(channel: SoraVideoChannel, reason: SoraErrorReason) {
-            ui?.changeState("#DD2C00")
-            Toast.makeText(this@VideoChatRoomActivity, "Error: ${reason.name}", Toast.LENGTH_LONG).show()
-            close()
-        }
+            override fun onWarning(
+                channel: SoraVideoChannel,
+                reason: SoraErrorReason,
+            ) {
+                Toast.makeText(this@VideoChatRoomActivity, "Error: ${reason.name}", Toast.LENGTH_LONG).show()
+            }
 
-        override fun onWarning(channel: SoraVideoChannel, reason: SoraErrorReason) {
-            Toast.makeText(this@VideoChatRoomActivity, "Error: ${reason.name}", Toast.LENGTH_LONG).show()
-        }
+            override fun onAddLocalRenderer(
+                channel: SoraVideoChannel,
+                renderer: SurfaceViewRenderer,
+            ) {
+                ui?.addLocalRenderer(renderer)
+            }
 
-        override fun onAddLocalRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {
-            ui?.addLocalRenderer(renderer)
-        }
+            override fun onAddRemoteRenderer(
+                channel: SoraVideoChannel,
+                renderer: SurfaceViewRenderer,
+            ) {
+                ui?.addRenderer(renderer)
+            }
 
-        override fun onAddRemoteRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {
-            ui?.addRenderer(renderer)
-        }
+            override fun onRemoveRemoteRenderer(
+                channel: SoraVideoChannel,
+                renderer: SurfaceViewRenderer,
+            ) {
+                ui?.removeRenderer(renderer)
+            }
 
-        override fun onRemoveRemoteRenderer(channel: SoraVideoChannel, renderer: SurfaceViewRenderer) {
-            ui?.removeRenderer(renderer)
-        }
+            override fun onAttendeesCountUpdated(
+                channel: SoraVideoChannel,
+                attendees: ChannelAttendeesCount,
+            ) {
+                // nop
+            }
 
-        override fun onAttendeesCountUpdated(channel: SoraVideoChannel, attendees: ChannelAttendeesCount) {
-            // nop
-        }
-
-        override fun onCameraMuteStateChanged(
-            channel: SoraVideoChannel,
-            hardMuted: Boolean,
-            softMuted: Boolean
-        ) {
-            if (hardMuted) {
-                cameraState = CameraState.HARD_MUTED
-                ui?.showCameraOffButton()
-            } else if (softMuted) {
-                cameraState = CameraState.SOFT_MUTED
-                ui?.showCameraSoftOffButton()
-            } else {
-                cameraState = CameraState.ON
-                ui?.showCameraOnButton()
+            override fun onCameraMuteStateChanged(
+                channel: SoraVideoChannel,
+                hardMuted: Boolean,
+                softMuted: Boolean,
+            ) {
+                if (hardMuted) {
+                    cameraState = CameraState.HARD_MUTED
+                    ui?.showCameraOffButton()
+                } else if (softMuted) {
+                    cameraState = CameraState.SOFT_MUTED
+                    ui?.showCameraSoftOffButton()
+                } else {
+                    cameraState = CameraState.ON
+                    ui?.showCameraOnButton()
+                }
             }
         }
-    }
 
     private fun connectChannel() {
         Log.d(TAG, "openChannel")
         val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map { it.trim() }
         val signalingMetadata = Gson().fromJson(BuildConfig.SIGNALING_METADATA, Map::class.java)
-        channel = SoraVideoChannel(
-            context = this,
-            handler = Handler(Looper.getMainLooper()),
-            signalingEndpointCandidates = signalingEndpointCandidates,
-            channelId = channelName,
-            signalingMetadata = signalingMetadata,
-            dataChannelSignaling = dataChannelSignaling,
-            ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
-            spotlight = spotlight,
-            spotlightNumber = spotlightNumber,
-            videoEnabled = videoEnabled,
-            startWithCamera = startWithCamera,
-            videoWidth = videoWidth,
-            videoHeight = videoHeight,
-            videoFPS = fps,
-            videoVp9Params = videoVp9Params,
-            videoAv1Params = videoAv1Params,
-            videoH264Params = videoH264Params,
-            degradationPreference = degradationPreference,
-            resolutionAdjustment = resolutionAdjustment,
-            videoCodec = videoCodec,
-            videoBitRate = videoBitRate,
-            audioEnabled = audioEnabled,
-            audioCodec = audioCodec,
-            audioBitRate = audioBitRate,
-            audioStereo = audioStereo,
-            roleType = role,
-            cameraFacing = cameraFacing,
-            clientId = clientId,
-            bundleId = bundleId,
-            audioStreamingLanguageCode = audioStreamingLanguageCode,
-            listener = channelListener
-        )
+        channel =
+            SoraVideoChannel(
+                context = this,
+                handler = Handler(Looper.getMainLooper()),
+                signalingEndpointCandidates = signalingEndpointCandidates,
+                channelId = channelName,
+                signalingMetadata = signalingMetadata,
+                dataChannelSignaling = dataChannelSignaling,
+                ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
+                spotlight = spotlight,
+                spotlightNumber = spotlightNumber,
+                videoEnabled = videoEnabled,
+                startWithCamera = startWithCamera,
+                videoWidth = videoWidth,
+                videoHeight = videoHeight,
+                videoFPS = fps,
+                videoVp9Params = videoVp9Params,
+                videoAv1Params = videoAv1Params,
+                videoH264Params = videoH264Params,
+                degradationPreference = degradationPreference,
+                resolutionAdjustment = resolutionAdjustment,
+                videoCodec = videoCodec,
+                videoBitRate = videoBitRate,
+                audioEnabled = audioEnabled,
+                audioCodec = audioCodec,
+                audioBitRate = audioBitRate,
+                audioStereo = audioStereo,
+                roleType = role,
+                cameraFacing = cameraFacing,
+                clientId = clientId,
+                bundleId = bundleId,
+                audioStreamingLanguageCode = audioStreamingLanguageCode,
+                listener = channelListener,
+            )
         channel!!.connect()
     }
 
@@ -423,7 +458,9 @@ class VideoChatRoomActivity : AppCompatActivity() {
     }
 
     private var muted = false
+
     private enum class CameraState { ON, SOFT_MUTED, HARD_MUTED }
+
     private var cameraState: CameraState = CameraState.ON
 
     internal fun toggleMuted() {
@@ -460,9 +497,8 @@ class VideoChatRoomActivityUI(
     val videoViewWidth: Int,
     val videoViewHeight: Int,
     val videoViewMargin: Int,
-    val density: Float
+    val density: Float,
 ) {
-
     private val renderersLayoutCalculator: RendererLayoutCalculator
     private var binding: ActivityVideoChatRoomBinding
 
@@ -470,10 +506,11 @@ class VideoChatRoomActivityUI(
         binding = ActivityVideoChatRoomBinding.inflate(activity.layoutInflater)
         activity.setContentView(binding.root)
         binding.channelNameText.text = channelName
-        this.renderersLayoutCalculator = RendererLayoutCalculator(
-            width = SoraScreenUtil.size(activity).x - dp2px(20 * 2),
-            height = SoraScreenUtil.size(activity).y - dp2px(20 * 2 + 100)
-        )
+        this.renderersLayoutCalculator =
+            RendererLayoutCalculator(
+                width = SoraScreenUtil.size(activity).x - dp2px(20 * 2),
+                height = SoraScreenUtil.size(activity).y - dp2px(20 * 2 + 100),
+            )
         binding.toggleMuteButton.setOnClickListener { activity.toggleMuted() }
         binding.toggleCameraButton.setOnClickListener { activity.toggleCamera() }
         binding.switchCameraButton.setOnClickListener { activity.switchCamera() }
@@ -503,31 +540,31 @@ class VideoChatRoomActivityUI(
 
     internal fun showUnmuteButton() {
         binding.toggleMuteButton.setImageDrawable(
-            resources.getDrawable(R.drawable.ic_mic_white_48dp, null)
+            resources.getDrawable(R.drawable.ic_mic_white_48dp, null),
         )
     }
 
     internal fun showMuteButton() {
         binding.toggleMuteButton.setImageDrawable(
-            resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null)
+            resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null),
         )
     }
 
     internal fun showCameraOffButton() {
         binding.toggleCameraButton.setImageDrawable(
-            resources.getDrawable(R.drawable.ic_videocam_off_black_48dp, null)
+            resources.getDrawable(R.drawable.ic_videocam_off_black_48dp, null),
         )
     }
 
     internal fun showCameraSoftOffButton() {
         binding.toggleCameraButton.setImageDrawable(
-            resources.getDrawable(R.drawable.ic_videocam_off_white_48dp, null)
+            resources.getDrawable(R.drawable.ic_videocam_off_white_48dp, null),
         )
     }
 
     internal fun showCameraOnButton() {
         binding.toggleCameraButton.setImageDrawable(
-            resources.getDrawable(R.drawable.ic_videocam_on_white_48dp, null)
+            resources.getDrawable(R.drawable.ic_videocam_on_white_48dp, null),
         )
     }
 

@@ -40,11 +40,14 @@ class ScreencastRequest(
         parcel.readString(),
         parcel.readInt(),
         parcel.readInt(),
-        parcel.readString()
+        parcel.readString(),
     ) {
     }
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
+    override fun writeToParcel(
+        parcel: Parcel,
+        flags: Int,
+    ) {
         parcel.writeParcelable(data, flags)
         parcel.writeString(signalingEndpoint)
         parcel.writeString(channelId)
@@ -60,17 +63,11 @@ class ScreencastRequest(
         parcel.writeString(boundActivityName)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents(): Int = 0
 
     companion object CREATOR : Parcelable.Creator<ScreencastRequest> {
-        override fun createFromParcel(parcel: Parcel): ScreencastRequest {
-            return ScreencastRequest(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel): ScreencastRequest = ScreencastRequest(parcel)
 
-        override fun newArray(size: Int): Array<ScreencastRequest?> {
-            return arrayOfNulls(size)
-        }
+        override fun newArray(size: Int): Array<ScreencastRequest?> = arrayOfNulls(size)
     }
 }

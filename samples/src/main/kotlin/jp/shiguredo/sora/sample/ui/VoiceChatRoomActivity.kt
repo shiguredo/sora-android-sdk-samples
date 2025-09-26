@@ -1,21 +1,18 @@
 package jp.shiguredo.sora.sample.ui
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.content.Context
 import android.media.AudioManager
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
@@ -27,7 +24,6 @@ import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 
 class VoiceChatRoomActivity : AppCompatActivity() {
-
     companion object {
         private val TAG = VoiceChatRoomActivity::class.simpleName
     }
@@ -53,37 +49,42 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
         channelName = intent.getStringExtra("CHANNEL_NAME") ?: getString(R.string.channelId)
 
-        audioCodec = when (intent.getStringExtra("AUDIO_CODEC")) {
-            "未指定" -> SoraAudioOption.Codec.DEFAULT
-            "OPUS" -> SoraAudioOption.Codec.OPUS
-            else -> SoraAudioOption.Codec.DEFAULT
-        }
+        audioCodec =
+            when (intent.getStringExtra("AUDIO_CODEC")) {
+                "未指定" -> SoraAudioOption.Codec.DEFAULT
+                "OPUS" -> SoraAudioOption.Codec.OPUS
+                else -> SoraAudioOption.Codec.DEFAULT
+            }
 
-        audioBitRate = when (intent.getStringExtra("AUDIO_BIT_RATE")) {
-            "未指定" -> null
-            else -> intent.getStringExtra("AUDIO_BIT_RATE")?.toInt()
-        }
+        audioBitRate =
+            when (intent.getStringExtra("AUDIO_BIT_RATE")) {
+                "未指定" -> null
+                else -> intent.getStringExtra("AUDIO_BIT_RATE")?.toInt()
+            }
 
-        role = when (intent.getStringExtra("ROLE")) {
-            "SENDRECV" -> SoraRoleType.SENDRECV
-            "SENDONLY" -> SoraRoleType.SENDONLY
-            "RECVONLY" -> SoraRoleType.RECVONLY
-            else -> SoraRoleType.SENDRECV
-        }
+        role =
+            when (intent.getStringExtra("ROLE")) {
+                "SENDRECV" -> SoraRoleType.SENDRECV
+                "SENDONLY" -> SoraRoleType.SENDONLY
+                "RECVONLY" -> SoraRoleType.RECVONLY
+                else -> SoraRoleType.SENDRECV
+            }
 
-        dataChannelSignaling = when (intent.getStringExtra("DATA_CHANNEL_SIGNALING")) {
-            "無効" -> false
-            "有効" -> true
-            "未指定" -> null
-            else -> null
-        }
+        dataChannelSignaling =
+            when (intent.getStringExtra("DATA_CHANNEL_SIGNALING")) {
+                "無効" -> false
+                "有効" -> true
+                "未指定" -> null
+                else -> null
+            }
 
-        ignoreDisconnectWebSocket = when (intent.getStringExtra("IGNORE_DISCONNECT_WEBSOCKET")) {
-            "無効" -> false
-            "有効" -> true
-            "未指定" -> null
-            else -> null
-        }
+        ignoreDisconnectWebSocket =
+            when (intent.getStringExtra("IGNORE_DISCONNECT_WEBSOCKET")) {
+                "無効" -> false
+                "有効" -> true
+                "未指定" -> null
+                else -> null
+            }
 
         binding.channelNameText.text = channelName
         binding.closeButton.setOnClickListener { close() }
@@ -109,8 +110,9 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         super.onResume()
         this.volumeControlStream = AudioManager.STREAM_VOICE_CALL
 
-        val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
-            as AudioManager
+        val audioManager =
+            applicationContext.getSystemService(Context.AUDIO_SERVICE)
+                as AudioManager
         oldAudioMode = audioManager.mode
         Log.d(TAG, "AudioManager mode change: $oldAudioMode => MODE_IN_COMMUNICATION(3)")
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
@@ -121,8 +123,9 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     override fun onPause() {
         Log.d(TAG, "onPause")
         super.onPause()
-        val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
-            as AudioManager
+        val audioManager =
+            applicationContext.getSystemService(Context.AUDIO_SERVICE)
+                as AudioManager
         Log.d(TAG, "AudioManager mode change: MODE_IN_COMMUNICATION(3) => $oldAudioMode")
         audioManager.mode = oldAudioMode
         close()
@@ -135,45 +138,53 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     }
 
     private var channel: SoraAudioChannel? = null
-    private var channelListener: SoraAudioChannel.Listener = object : SoraAudioChannel.Listener {
+    private var channelListener: SoraAudioChannel.Listener =
+        object : SoraAudioChannel.Listener {
+            override fun onConnect(channel: SoraAudioChannel) {
+                changeStateText("CONNECTED")
+            }
 
-        override fun onConnect(channel: SoraAudioChannel) {
-            changeStateText("CONNECTED")
-        }
+            override fun onClose(channel: SoraAudioChannel) {
+                changeStateText("CLOSED")
+                close()
+            }
 
-        override fun onClose(channel: SoraAudioChannel) {
-            changeStateText("CLOSED")
-            close()
-        }
+            override fun onError(
+                channel: SoraAudioChannel,
+                reason: SoraErrorReason,
+                message: String,
+            ) {
+                changeStateText("ERROR")
+                Toast.makeText(this@VoiceChatRoomActivity, "Error: [$reason]: $message", Toast.LENGTH_LONG).show()
+                close()
+            }
 
-        override fun onError(channel: SoraAudioChannel, reason: SoraErrorReason, message: String) {
-            changeStateText("ERROR")
-            Toast.makeText(this@VoiceChatRoomActivity, "Error: [$reason]: $message", Toast.LENGTH_LONG).show()
-            close()
+            override fun onAttendeesCountUpdated(
+                channel: SoraAudioChannel,
+                attendees: ChannelAttendeesCount,
+            ) {
+                Log.d(TAG, "onAttendeesCountUpdated")
+            }
         }
-
-        override fun onAttendeesCountUpdated(channel: SoraAudioChannel, attendees: ChannelAttendeesCount) {
-            Log.d(TAG, "onAttendeesCountUpdated")
-        }
-    }
 
     private fun connectChannel() {
         Log.d(TAG, "connectChannel")
         val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map { it.trim() }
         val signalingMetadata = Gson().fromJson(BuildConfig.SIGNALING_METADATA, Map::class.java)
-        channel = SoraAudioChannel(
-            context = this,
-            handler = Handler(Looper.getMainLooper()),
-            signalingEndpointCandidates = signalingEndpointCandidates,
-            channelId = channelName,
-            dataChannelSignaling = dataChannelSignaling,
-            ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
-            signalingMetadata = signalingMetadata,
-            audioCodec = audioCodec,
-            audioBitRate = audioBitRate,
-            roleType = role,
-            listener = channelListener
-        )
+        channel =
+            SoraAudioChannel(
+                context = this,
+                handler = Handler(Looper.getMainLooper()),
+                signalingEndpointCandidates = signalingEndpointCandidates,
+                channelId = channelName,
+                dataChannelSignaling = dataChannelSignaling,
+                ignoreDisconnectWebSocket = ignoreDisconnectWebSocket,
+                signalingMetadata = signalingMetadata,
+                audioCodec = audioCodec,
+                audioBitRate = audioBitRate,
+                roleType = role,
+                listener = channelListener,
+            )
         channel!!.connect()
     }
 

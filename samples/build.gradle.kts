@@ -7,18 +7,30 @@ plugins {
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.fromTarget(libs.versions.jvmTarget.get()))
+        jvmTarget.set(
+            org.jetbrains.kotlin.gradle.dsl.JvmTarget
+                .fromTarget(libs.versions.jvmTarget.get()),
+        )
     }
 }
 
 android {
     namespace = "jp.shiguredo.sora.sample"
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    compileSdk =
+        libs.versions.compileSdk
+            .get()
+            .toInt()
 
     defaultConfig {
         applicationId = "jp.shiguredo.sora.sample"
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
+        minSdk =
+            libs.versions.minSdk
+                .get()
+                .toInt()
+        targetSdk =
+            libs.versions.targetSdk
+                .get()
+                .toInt()
         versionCode = 1
         versionName = "1.0"
 
@@ -85,7 +97,7 @@ configurations {
 
 ktlint {
     // 設定フェーズでは動的解決や Version Catalog を使えないため固定
-    version.set("0.45.2")
+    version.set("1.7.1")
     android.set(false)
     outputToConsole.set(true)
     reporters {

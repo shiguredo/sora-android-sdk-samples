@@ -13,7 +13,7 @@ class ScreencastUIContainer(
     val context: Context,
     val view: View,
     width: Int = WindowManager.LayoutParams.MATCH_PARENT,
-    height: Int = WindowManager.LayoutParams.WRAP_CONTENT
+    height: Int = WindowManager.LayoutParams.WRAP_CONTENT,
 ) {
     private var isOnTop = true
     private var windowManager: WindowManager? =
@@ -25,7 +25,10 @@ class ScreencastUIContainer(
         windowManager?.addView(view, params)
     }
 
-    private fun createLayoutParams(width: Int, height: Int): WindowManager.LayoutParams {
+    private fun createLayoutParams(
+        width: Int,
+        height: Int,
+    ): WindowManager.LayoutParams {
         val windowType =
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
@@ -35,17 +38,19 @@ class ScreencastUIContainer(
             }
 
         return WindowManager.LayoutParams(
-            width, height, windowType,
-            createWindowFrags(), PixelFormat.TRANSLUCENT
+            width,
+            height,
+            windowType,
+            createWindowFrags(),
+            PixelFormat.TRANSLUCENT,
         )
     }
 
-    private fun createWindowFrags(): Int {
-        return WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+    private fun createWindowFrags(): Int =
+        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
             WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
             WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-    }
 
     fun togglePosition() {
         val params = view.layoutParams as WindowManager.LayoutParams

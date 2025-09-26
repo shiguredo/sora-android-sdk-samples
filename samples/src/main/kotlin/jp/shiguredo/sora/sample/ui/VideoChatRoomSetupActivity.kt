@@ -10,7 +10,6 @@ import jp.shiguredo.sora.sample.databinding.ActivityVideoChatRoomSetupBinding
 import jp.shiguredo.sora.sample.option.SoraFrameSize
 
 class VideoChatRoomSetupActivity : AppCompatActivity() {
-
     companion object {
         val TAG = VideoChatRoomSetupActivity::class.simpleName
     }
@@ -19,16 +18,38 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     private val videoEnabledOptions = listOf("有効", "無効")
     private val audioCodecOptions = listOf("未指定", "OPUS")
     private val audioEnabledOptions = listOf("有効", "無効")
-    private val audioBitRateOptions = listOf(
-        "未指定", "8", "16", "24", "32",
-        "64", "96", "128", "256"
-    )
+    private val audioBitRateOptions =
+        listOf(
+            "未指定",
+            "8",
+            "16",
+            "24",
+            "32",
+            "64",
+            "96",
+            "128",
+            "256",
+        )
     private val audioStereoOptions = listOf("モノラル", "ステレオ")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
-    private val videoBitRateOptions = listOf(
-        "未指定", "100", "300", "500", "800", "1000", "1500",
-        "2000", "2500", "3000", "5000", "10000", "15000", "20000", "30000"
-    )
+    private val videoBitRateOptions =
+        listOf(
+            "未指定",
+            "100",
+            "300",
+            "500",
+            "800",
+            "1000",
+            "1500",
+            "2000",
+            "2500",
+            "3000",
+            "5000",
+            "10000",
+            "15000",
+            "20000",
+            "30000",
+        )
     private val videoSizeOptions = SoraFrameSize.all.keys.toList()
     private val vp9ProfileIdOptions = listOf("未指定", "0", "1", "2", "3")
     private val av1ProfileOptions = listOf("未指定", "0", "1", "2")
@@ -160,17 +181,15 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun selectedItem(spinner: MaterialSpinner): String {
-        return spinner.getItems<String>()[spinner.selectedIndex]
-    }
+    private fun selectedItem(spinner: MaterialSpinner): String = spinner.getItems<String>()[spinner.selectedIndex]
 
     private fun showInputError() {
-        Snackbar.make(
-            binding.rootLayout,
-            "チャネル名 を適切に入力してください",
-            Snackbar.LENGTH_LONG
-        )
-            .setAction("OK") { }
+        Snackbar
+            .make(
+                binding.rootLayout,
+                "チャネル名 を適切に入力してください",
+                Snackbar.LENGTH_LONG,
+            ).setAction("OK") { }
             .show()
     }
 }

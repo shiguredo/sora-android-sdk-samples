@@ -6,9 +6,7 @@ import android.os.Build
 import android.view.WindowManager
 
 class SoraScreenUtil {
-
     companion object {
-
         fun size(context: Context): Point {
             val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
