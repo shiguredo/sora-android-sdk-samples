@@ -494,9 +494,9 @@ class SoraVideoChannel(
     }
 
     fun switchCamera() {
-        val currentCapturer = capturer
+        val capturerRef = capturer
 
-        if (currentCapturer == null) {
+        if (capturerRef == null) {
             SoraLogger.w(TAG, "switchCamera called but capturer is null")
             return
         }
@@ -506,7 +506,11 @@ class SoraVideoChannel(
             return
         }
 
-        currentCapturer.switchCamera(cameraSwitchHandler)
+        try {
+            capturerRef.switchCamera(cameraSwitchHandler)
+        } catch (e: Exception) {
+            SoraLogger.e(TAG, "switchCamera failed", e)
+        }
     }
 
     fun mute(mute: Boolean) {
