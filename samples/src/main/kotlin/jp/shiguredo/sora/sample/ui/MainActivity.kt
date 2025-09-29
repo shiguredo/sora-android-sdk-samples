@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onCreate(savedInstanceState: Bundle?) {
         SoraLogger.enabled = true
-        SoraLogger.libjingleEnabled = true
+        SoraLogger.libjingle_enabled = true
 
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
