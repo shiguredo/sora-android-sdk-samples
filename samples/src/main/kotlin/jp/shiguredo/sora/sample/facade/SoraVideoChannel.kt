@@ -33,6 +33,7 @@ import org.webrtc.SurfaceViewRenderer
 import org.webrtc.VideoTrack
 import java.lang.Exception
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicBoolean
 
 class SoraVideoChannel(
     private val context: Context,
@@ -288,7 +289,7 @@ class SoraVideoChannel(
     var mediaChannel: SoraMediaChannel? = null
     private var capturer: CameraVideoCapturer? = null
 
-    @Volatile private var capturing = false
+    private val capturing = AtomicBoolean(false)
     private var hardMuted = false // ハードウェアミュート状態かどうか
     private var softMuted = false // ソフトウェアミュート状態かどうか（VideoTrack の有効/無効）
 
@@ -455,9 +456,8 @@ class SoraVideoChannel(
 
     fun startCapturer() {
         capturer?.let {
-            if (!capturing) {
+            if (capturing.compareAndSet(false, true)) {
                 SoraLogger.d(TAG, "start capturer => width: $videoWidth, height: $videoHeight, fps: $videoFPS")
-                capturing = true
                 it.startCapture(videoWidth, videoHeight, videoFPS)
             }
         }
@@ -465,8 +465,7 @@ class SoraVideoChannel(
 
     fun stopCapturer() {
         capturer?.let {
-            if (capturing) {
-                capturing = false
+            if (capturing.compareAndSet(true, false)) {
                 it.stopCapture()
             }
         }
@@ -501,7 +500,7 @@ class SoraVideoChannel(
             return
         }
 
-        if (!capturing) {
+        if (!capturing.get()) {
             SoraLogger.w(TAG, "switchCamera ignored because capturer is not running")
             return
         }
@@ -542,9 +541,8 @@ class SoraVideoChannel(
             var success = false
             try {
                 capturer?.let {
-                    if (capturing) {
+                    if (capturing.compareAndSet(true, false)) {
                         it.stopCapture()
-                        capturing = false
                     }
                 }
                 // capturer が null でも、以後の状態としてはハードミュートに遷移してよい
@@ -579,9 +577,8 @@ class SoraVideoChannel(
             var interrupted = false
             try {
                 capturer?.let {
-                    if (!capturing) {
+                    if (capturing.compareAndSet(false, true)) {
                         it.startCapture(videoWidth, videoHeight, videoFPS)
-                        capturing = true
                         started = true
                     }
                 }
@@ -590,7 +587,7 @@ class SoraVideoChannel(
                 Thread.currentThread().interrupt()
             } catch (e: Exception) {
                 // 失敗時は確実に非キャプチャ状態へ整合
-                capturing = false
+                capturing.set(false)
                 SoraLogger.e(TAG, "Failed to restart camera capture", e)
             } finally {
                 // 割り込み時はUI更新を行わない
