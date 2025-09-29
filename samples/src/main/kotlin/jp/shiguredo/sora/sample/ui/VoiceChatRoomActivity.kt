@@ -116,6 +116,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         oldAudioMode = audioManager.mode
         Log.d(TAG, "AudioManager mode change: $oldAudioMode => MODE_IN_COMMUNICATION(3)")
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+        Log.d(TAG, "AudioManager.isMicrophoneMute=${audioManager.isMicrophoneMute}")
     }
 
     // AudioManager.MODE_INVALID が使われているため lint でエラーが出るので一時的に抑制しておく

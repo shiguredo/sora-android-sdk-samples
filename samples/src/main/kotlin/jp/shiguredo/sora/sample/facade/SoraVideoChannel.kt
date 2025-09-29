@@ -516,6 +516,11 @@ class SoraVideoChannel(
         localAudioTrack?.setEnabled(!mute)
     }
 
+    // 音声ハードミュート（キャプチャ停止/再開）
+    fun setAudioHardwareMuted(muted: Boolean): Boolean = mediaChannel?.setAudioHardwareMuted(muted) ?: false
+
+    fun isAudioHardwareMuted(): Boolean = mediaChannel?.isAudioHardwareMuted() ?: false
+
     // ソフトウェアミュート: VideoCapture は維持しつつ、送出を一時停止
     fun setCameraSoftMuted(muted: Boolean) {
         softMuted = muted

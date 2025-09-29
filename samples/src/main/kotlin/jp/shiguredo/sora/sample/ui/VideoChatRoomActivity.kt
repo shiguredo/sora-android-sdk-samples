@@ -314,6 +314,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
         oldAudioMode = audioManager.mode
         Log.d(TAG, "AudioManager mode change: $oldAudioMode => MODE_IN_COMMUNICATION(3)")
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+        Log.d(TAG, "AudioManager.isMicrophoneMute=${audioManager.isMicrophoneMute}")
     }
 
     override fun onPause() {
@@ -457,6 +458,10 @@ class VideoChatRoomActivity : AppCompatActivity() {
         channel?.switchCamera()
     }
 
+    // マイクの3段階ミュート状態
+    private enum class MicState { ON, SOFT_MUTED, HARD_MUTED }
+
+    private var micState: MicState = MicState.ON
     private var muted = false
 
     private enum class CameraState { ON, SOFT_MUTED, HARD_MUTED }
@@ -464,13 +469,33 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var cameraState: CameraState = CameraState.ON
 
     internal fun toggleMuted() {
-        if (muted) {
-            ui?.showMuteButton()
-        } else {
-            ui?.showUnmuteButton()
+        Log.d(TAG, "micState: $micState")
+        when (micState) {
+            MicState.ON -> {
+                // ON -> ソフトウェアミュート（トラック無効化）
+                channel?.mute(true)
+                muted = true
+                micState = MicState.SOFT_MUTED
+                ui?.showMicSoftMuteButton()
+            }
+            MicState.SOFT_MUTED -> {
+                Log.d(TAG, "HardwearMute")
+                // ソフト -> ハード（ハードウェアミュートAPI）
+                channel?.mute(false)
+                muted = false
+                channel?.setAudioHardwareMuted(true)
+                micState = MicState.HARD_MUTED
+                ui?.showMicHardMuteButton()
+            }
+            MicState.HARD_MUTED -> {
+                // ハード -> ON
+                channel?.setAudioHardwareMuted(false)
+                channel?.mute(false)
+                muted = false
+                micState = MicState.ON
+                ui?.showMicOnButton()
+            }
         }
-        muted = !muted
-        channel?.mute(muted)
     }
 
     internal fun toggleCamera() {
@@ -515,6 +540,8 @@ class VideoChatRoomActivityUI(
         binding.toggleCameraButton.setOnClickListener { activity.toggleCamera() }
         binding.switchCameraButton.setOnClickListener { activity.switchCamera() }
         binding.closeButton.setOnClickListener { activity.close() }
+        // 初期表示はマイク ON
+        showMicOnButton()
     }
 
     internal fun changeState(colorCode: String) {
@@ -538,13 +565,19 @@ class VideoChatRoomActivityUI(
         renderersLayoutCalculator.remove(renderer)
     }
 
-    internal fun showUnmuteButton() {
+    internal fun showMicOnButton() {
         binding.toggleMuteButton.setImageDrawable(
             resources.getDrawable(R.drawable.ic_mic_white_48dp, null),
         )
     }
 
-    internal fun showMuteButton() {
+    internal fun showMicSoftMuteButton() {
+        binding.toggleMuteButton.setImageDrawable(
+            resources.getDrawable(R.drawable.ic_mic_off_white_48dp, null),
+        )
+    }
+
+    internal fun showMicHardMuteButton() {
         binding.toggleMuteButton.setImageDrawable(
             resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null),
         )
