@@ -288,7 +288,7 @@ class SoraVideoChannel(
     var mediaChannel: SoraMediaChannel? = null
     private var capturer: CameraVideoCapturer? = null
 
-    private var capturing = false
+    @Volatile private var capturing = false
     private var hardMuted = false // ハードウェアミュート状態かどうか
     private var softMuted = false // ソフトウェアミュート状態かどうか（VideoTrack の有効/無効）
 
@@ -494,9 +494,19 @@ class SoraVideoChannel(
     }
 
     fun switchCamera() {
-        capturer?.let {
-            it.switchCamera(cameraSwitchHandler)
+        val currentCapturer = capturer
+
+        if (currentCapturer == null) {
+            SoraLogger.w(TAG, "switchCamera called but capturer is null")
+            return
         }
+
+        if (!capturing) {
+            SoraLogger.w(TAG, "switchCamera ignored because capturer is not running")
+            return
+        }
+
+        currentCapturer.switchCamera(cameraSwitchHandler)
     }
 
     fun mute(mute: Boolean) {
