@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:background="#3A3A3A"
+    android:layout_marginVertical="2dp"
+    android:elevation="1dp">
+
+    <!-- 音量インジケーター -->
+    <View
+        android:id="@+id/volumeIndicator"
+        android:layout_width="8dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="12dp"
+        android:background="#4CAF50" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- ユーザーID -->
+        <TextView
+            android:id="@+id/userIdText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User: stream123"
+            android:textSize="14sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+        <!-- 音量バー -->
+        <TextView
+            android:id="@+id/volumeBarText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="████████████░░░░░░░░"
+            android:textSize="12sp"
+            android:typeface="monospace"
+            android:textColor="#E0E0E0" />
+
+        <!-- 数値情報表示行 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <!-- 音量パーセンテージ -->
+            <TextView
+                android:id="@+id/volumePercentText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="85%"
+                android:textSize="12sp"
+                android:textColor="#B0BEC5"
+                android:textStyle="bold"
+                android:gravity="start" />
+
+            <!-- ピーク音量 -->
+            <TextView
+                android:id="@+id/volumePeakText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Peak: -8.2"
+                android:textSize="12sp"
+                android:textColor="#B0BEC5"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- dB値表示 -->
+    <TextView
+        android:id="@+id/volumeDbText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="8dp"
+        android:text="-12.3 dB"
+        android:textSize="13sp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:minWidth="70dp"
+        android:gravity="end"
+        android:background="#455A64"
+        android:padding="4dp" />
+
+</LinearLayout>

@@ -37,6 +37,10 @@ import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import org.webrtc.SurfaceViewRenderer
 import java.util.UUID
+// 音量監視機能のインポート
+import jp.shiguredo.sora.sample.audio.AlternativeVolumeMonitor
+import jp.shiguredo.sora.sample.ui.widget.VolumeIndicatorView
+import org.webrtc.MediaStream
 
 class VideoChatRoomActivity : AppCompatActivity() {
 
@@ -75,6 +79,9 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var role = SoraRoleType.SENDRECV
 
     private var ui: VideoChatRoomActivityUI? = null
+
+    // 音量監視用（代替実装）
+    private var volumeMonitor: AlternativeVolumeMonitor? = null
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         SoraLogger.d(TAG, "onConfigurationChanged: orientation=${newConfig.orientation}")
@@ -264,6 +271,9 @@ class VideoChatRoomActivity : AppCompatActivity() {
             density = this.resources.displayMetrics.density
         )
 
+        // 音量監視の初期化
+        initializeVolumeMonitoring()
+
         // 初期表示を反映（接続直後のコールバック前にアイコン状態を整える）
         if (videoEnabled && startWithCamera) {
             cameraState = CameraState.ON
@@ -274,6 +284,19 @@ class VideoChatRoomActivity : AppCompatActivity() {
         }
 
         connectChannel()
+    }
+
+    private fun initializeVolumeMonitoring() {
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        volumeMonitor = AlternativeVolumeMonitor(audioManager).apply {
+            addVolumeListener(object : AlternativeVolumeMonitor.VolumeListener {
+                override fun onVolumeChanged(trackId: String, volumeLevel: AlternativeVolumeMonitor.VolumeLevel) {
+                    runOnUiThread {
+                        ui?.updateVolumeLevel(trackId, volumeLevel)
+                    }
+                }
+            })
+        }
     }
 
     private fun setupWindow() {
@@ -299,6 +322,9 @@ class VideoChatRoomActivity : AppCompatActivity() {
         oldAudioMode = audioManager.mode
         Log.d(TAG, "AudioManager mode change: $oldAudioMode => MODE_IN_COMMUNICATION(3)")
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+
+        // 音量監視開始
+        volumeMonitor?.startMonitoring()
     }
 
     override fun onPause() {
@@ -308,6 +334,10 @@ class VideoChatRoomActivity : AppCompatActivity() {
             as AudioManager
         Log.d(TAG, "AudioManager mode change: MODE_IN_COMMUNICATION(3) => $oldAudioMode")
         audioManager.mode = oldAudioMode
+
+        // 音量監視停止
+        volumeMonitor?.stopMonitoring()
+
         close()
     }
 
@@ -465,6 +495,7 @@ class VideoChatRoomActivityUI(
 
     private val renderersLayoutCalculator: RendererLayoutCalculator
     private var binding: ActivityVideoChatRoomBinding
+    private var volumeIndicator: VolumeIndicatorView? = null
 
     init {
         binding = ActivityVideoChatRoomBinding.inflate(activity.layoutInflater)
@@ -478,6 +509,26 @@ class VideoChatRoomActivityUI(
         binding.toggleCameraButton.setOnClickListener { activity.toggleCamera() }
         binding.switchCameraButton.setOnClickListener { activity.switchCamera() }
         binding.closeButton.setOnClickListener { activity.close() }
+
+        // 音量インジケーターの追加
+        setupVolumeIndicator()
+    }
+
+    private fun setupVolumeIndicator() {
+        volumeIndicator = VolumeIndicatorView(activity).apply {
+            val params = RelativeLayout.LayoutParams(
+                dp2px(200),
+                dp2px(80)
+            ).apply {
+                addRule(RelativeLayout.ALIGN_PARENT_TOP)
+                addRule(RelativeLayout.CENTER_HORIZONTAL)
+                topMargin = dp2px(50)
+            }
+            layoutParams = params
+        }
+
+        // ルートビューに音量インジケーターを追加
+        (binding.root as? RelativeLayout)?.addView(volumeIndicator)
     }
 
     internal fun changeState(colorCode: String) {
@@ -529,6 +580,13 @@ class VideoChatRoomActivityUI(
         binding.toggleCameraButton.setImageDrawable(
             resources.getDrawable(R.drawable.ic_videocam_on_white_48dp, null)
         )
+    }
+
+    /**
+     * 音量レベルを更新
+     */
+    internal fun updateVolumeLevel(trackId: String, volumeLevel: AlternativeVolumeMonitor.VolumeLevel) {
+        volumeIndicator?.updateVolumeLevel(trackId, volumeLevel)
     }
 
     private fun dp2px(d: Int): Int = (density * d).toInt()
