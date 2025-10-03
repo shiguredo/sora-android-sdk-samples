@@ -37,6 +37,8 @@ class SoraAudioChannel(
         fun onClose(channel: SoraAudioChannel) {}
         fun onError(channel: SoraAudioChannel, reason: SoraErrorReason, message: String) {}
         fun onAttendeesCountUpdated(channel: SoraAudioChannel, attendees: ChannelAttendeesCount) {}
+        fun onAddRemoteStream(channel: SoraAudioChannel, ms: MediaStream) {}
+        fun onRemoveRemoteStream(channel: SoraAudioChannel, label: String) {}
     }
 
     private val channelListener = object : SoraMediaChannel.Listener {
@@ -62,6 +64,16 @@ class SoraAudioChannel(
             if (ms.audioTracks.size > 0) {
                 localAudioTrack = ms.audioTracks[0]
             }
+        }
+
+        override fun onAddRemoteStream(mediaChannel: SoraMediaChannel, ms: MediaStream) {
+            SoraLogger.d(TAG, "[audio_channel] @onAddRemoteStream:${ms.id}")
+            handler.post { listener?.onAddRemoteStream(this@SoraAudioChannel, ms) }
+        }
+
+        override fun onRemoveRemoteStream(mediaChannel: SoraMediaChannel, label: String) {
+            SoraLogger.d(TAG, "[audio_channel] @onRemoveRemoteStream:$label")
+            handler.post { listener?.onRemoveRemoteStream(this@SoraAudioChannel, label) }
         }
 
         override fun onAttendeesCountUpdated(mediaChannel: SoraMediaChannel, attendees: ChannelAttendeesCount) {

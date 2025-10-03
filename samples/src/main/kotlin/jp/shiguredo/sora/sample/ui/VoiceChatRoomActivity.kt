@@ -26,8 +26,11 @@ import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
-import jp.shiguredo.sora.sample.audio.StreamVolumeMonitor
+import jp.shiguredo.sora.sample.audio.VolumeMonitoringSink
+import jp.shiguredo.sora.sample.audio.MediaStreamAudioHelper.attachAudioSink
+import jp.shiguredo.sora.sample.audio.MediaStreamAudioHelper.detachAudioSink
 import jp.shiguredo.sora.sample.ui.adapter.UserVolumeAdapter
+import org.webrtc.MediaStream
 
 class VoiceChatRoomActivity : AppCompatActivity() {
 
@@ -47,10 +50,11 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityVoiceChatRoomBinding
 
-    // 音量監視関連
-    private var streamVolumeMonitor: StreamVolumeMonitor? = null
+    // 音量監視関連（VolumeMonitoringSinkベース）
+    private lateinit var volumeMonitoringSink: VolumeMonitoringSink
     private lateinit var userVolumeAdapter: UserVolumeAdapter
-    private val connectedUsers = mutableSetOf<String>()
+    private val connectedTracks = mutableMapOf<String, String>() // streamId -> trackId
+    private val connectedStreams = mutableSetOf<MediaStream>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -127,10 +131,9 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     }
 
     private fun initializeVolumeMonitoring() {
-        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        streamVolumeMonitor = StreamVolumeMonitor(audioManager).apply {
-            addVolumeListener(object : StreamVolumeMonitor.VolumeListener {
-                override fun onVolumeChanged(streamId: String, volumeLevel: StreamVolumeMonitor.VolumeLevel) {
+        volumeMonitoringSink = VolumeMonitoringSink().apply {
+            addVolumeListener(object : VolumeMonitoringSink.VolumeListener {
+                override fun onVolumeChanged(trackId: String, volumeLevel: VolumeMonitoringSink.VolumeLevel) {
                     runOnUiThread {
                         updateVolumeDisplay()
                     }
@@ -140,12 +143,10 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     }
 
     private fun updateVolumeDisplay() {
-        val volumeMonitor = streamVolumeMonitor ?: return
-
-        val userVolumeItems = connectedUsers.map { streamId ->
+        val userVolumeItems = connectedTracks.map { (streamId, trackId) ->
             UserVolumeAdapter.UserVolumeItem(
-                streamId = streamId,
-                volumeLevel = volumeMonitor.getVolumeLevel(streamId)
+                trackId = trackId,
+                volumeLevel = volumeMonitoringSink.getVolumeLevel(trackId)
             )
         }
 
@@ -162,17 +163,15 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         Log.d(TAG, "AudioManager mode change: $oldAudioMode => MODE_IN_COMMUNICATION(3)")
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
 
-        // 音量監視開始
-        streamVolumeMonitor?.startMonitoring()
+        // VolumeMonitoringSinkは自動で動作するため、明示的な開始は不要
     }
 
     // AudioManager.MODE_INVALID が使われているため lint でエラーが出るので一時的に抑制しておく
     @SuppressLint("WrongConstant")
     override fun onPause() {
         Log.d(TAG, "onPause")
-
-        // 音量監視停止
-        streamVolumeMonitor?.stopMonitoring()
+        // VolumeMonitoringSinkのクリーンアップ
+        cleanupVolumeMonitoring()
 
         super.onPause()
         val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE)
@@ -185,8 +184,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     internal fun close() {
         Log.d(TAG, "close")
         // 音量監視のクリーンアップ
-        streamVolumeMonitor?.stopMonitoring()
-        streamVolumeMonitor = null
+        cleanupVolumeMonitoring()
         disposeChannel()
         finish()
     }
@@ -196,10 +194,6 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
         override fun onConnect(channel: SoraAudioChannel) {
             changeStateText("CONNECTED")
-            // 自分のストリームを追加（送信する場合）
-            if (role == SoraRoleType.SENDRECV || role == SoraRoleType.SENDONLY) {
-                addUser("local_stream")
-            }
         }
 
         override fun onClose(channel: SoraAudioChannel) {
@@ -213,50 +207,53 @@ class VoiceChatRoomActivity : AppCompatActivity() {
             close()
         }
 
+        override fun onAddRemoteStream(channel: SoraAudioChannel, ms: MediaStream) {
+            Log.d(TAG, "リモートストリームを追加: ${ms.id}")
+            // 実際の受信音声ストリームにVolumeMonitoringSinkを接続
+            try {
+                ms.attachAudioSink(volumeMonitoringSink)
+                connectedStreams.add(ms)
+
+                // AudioTrackのIDを取得してマッピングに追加
+                ms.audioTracks.forEach { audioTrack ->
+                    connectedTracks[ms.id] = audioTrack.id()
+                    Log.d(TAG, "AudioTrackを登録: StreamID=${ms.id}, TrackID=${audioTrack.id()}")
+                }
+
+                updateVolumeDisplay()
+            } catch (e: Exception) {
+                Log.e(TAG, "AudioSinkの接続に失敗: ${e.message}")
+            }
+        }
+
+        override fun onRemoveRemoteStream(channel: SoraAudioChannel, label: String) {
+            Log.d(TAG, "リモートストリームを削除: $label")
+            try {
+                // labelに一致するMediaStreamを見つける
+                val streamToRemove = connectedStreams.find { it.id == label }
+                streamToRemove?.let { ms ->
+                    ms.detachAudioSink(volumeMonitoringSink)
+                    connectedStreams.remove(ms)
+
+                    // マッピングからも削除
+                    connectedTracks.remove(ms.id)
+
+                    // 音量データをクリア
+                    ms.audioTracks.forEach { audioTrack ->
+                        volumeMonitoringSink.clearVolumeData(audioTrack.id())
+                    }
+
+                    updateVolumeDisplay()
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "AudioSinkの切断に失敗: ${e.message}")
+            }
+        }
+
         override fun onAttendeesCountUpdated(channel: SoraAudioChannel, attendees: ChannelAttendeesCount) {
             Log.d(TAG, "onAttendeesCountUpdated: ${attendees.numberOfConnections} users")
-            // 参加者数の変化に基づいてダミーユーザーを管理
-            updateUsersBasedOnAttendees(attendees.numberOfConnections)
+            // 実際のストリーム管理に変更したため、ダミーユーザー管理は不要
         }
-    }
-
-    private fun addUser(streamId: String) {
-        if (connectedUsers.add(streamId)) {
-            Log.d(TAG, "ユーザーを追加: $streamId")
-            streamVolumeMonitor?.registerStream(streamId)
-            updateVolumeDisplay()
-        }
-    }
-
-    private fun removeUser(streamId: String) {
-        if (connectedUsers.remove(streamId)) {
-            Log.d(TAG, "ユーザーを削除: $streamId")
-            streamVolumeMonitor?.unregisterStream(streamId)
-            updateVolumeDisplay()
-        }
-    }
-
-    private fun updateUsersBasedOnAttendees(numberOfConnections: Int) {
-        // 現在の接続数に基づいてユーザーリストを調整
-        val targetUsers = mutableSetOf<String>()
-
-        // 自分のストリーム
-        if (role == SoraRoleType.SENDRECV || role == SoraRoleType.SENDONLY) {
-            targetUsers.add("local_stream")
-        }
-
-        // リモートユーザー（実際のstreamIdの代わりにダミーIDを使用）
-        for (i in 1 until numberOfConnections) {
-            targetUsers.add("remote_user_$i")
-        }
-
-        // 削除されたユーザーを処理
-        val usersToRemove = connectedUsers - targetUsers
-        usersToRemove.forEach { removeUser(it) }
-
-        // 新しいユーザーを追加
-        val usersToAdd = targetUsers - connectedUsers
-        usersToAdd.forEach { addUser(it) }
     }
 
     private fun connectChannel() {
@@ -286,5 +283,19 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     private fun disposeChannel() {
         Log.d(TAG, "disposeChannel")
         channel?.dispose()
+    }
+
+    private fun cleanupVolumeMonitoring() {
+        // 全てのストリームからAudioSinkをデタッチ
+        connectedStreams.forEach { stream ->
+            try {
+                stream.detachAudioSink(volumeMonitoringSink)
+            } catch (e: Exception) {
+                Log.w(TAG, "AudioSinkのデタッチに失敗: ${e.message}")
+            }
+        }
+        connectedStreams.clear()
+        connectedTracks.clear()
+        volumeMonitoringSink.clearAllVolumeData()
     }
 }

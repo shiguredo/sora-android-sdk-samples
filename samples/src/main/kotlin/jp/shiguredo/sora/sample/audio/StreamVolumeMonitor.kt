@@ -124,15 +124,30 @@ class StreamVolumeMonitor(
     private fun processWaveform(waveform: ByteArray, @Suppress("UNUSED_PARAMETER") samplingRate: Int) {
         // 登録されたストリームごとに個別の音量レベルを生成
         registeredStreams.forEach { streamId ->
-            // ストリームごとに異なる音量レベルをシミュレート
+            // 実際の音量を先に計算
+            val baseRmsVolume = calculateRmsVolume(waveform)
+            val basePeakVolume = calculatePeakVolume(waveform)
+
+            // [kensaku] 実際の音声データが無音の場合は0にする
+            if (baseRmsVolume == 0f && basePeakVolume == 0f) {
+                val volumeLevel = VolumeLevel(0f, 0f, -60f, -60f, SILENCE_LEVEL)
+                streamVolumeData[streamId] = volumeLevel
+
+                // メインスレッドでリスナーに通知
+                mainHandler.post {
+                    volumeListeners.forEach { listener ->
+                        listener.onVolumeChanged(streamId, volumeLevel)
+                    }
+                }
+                return@forEach
+            }
+
+            // 音がある場合のみ variationFactor を適用
             val variationFactor = getStreamVariationFactor(streamId)
 
             // RTP Audio Level準拠の計算を使用
             val rtpLevel = calculateRtpAudioLevel(waveform, variationFactor)
 
-            // 既存の計算も維持（互換性のため）
-            val baseRmsVolume = calculateRmsVolume(waveform)
-            val basePeakVolume = calculatePeakVolume(waveform)
             val rmsVolume = (baseRmsVolume * variationFactor).coerceIn(0f, 1f)
             val peakVolume = (basePeakVolume * variationFactor * 1.2f).coerceIn(0f, 1f)
             val rmsDb = volumeToDb(rmsVolume)

@@ -9,6 +9,7 @@ import kotlin.math.*
 
 /**
  * 音量レベルを視覚的に表示するカスタムビュー
+ * シンプルなゲージ表示で音量レベルを可視化
  */
 class VolumeIndicatorView @JvmOverloads constructor(
     context: Context,
@@ -16,34 +17,32 @@ class VolumeIndicatorView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val gaugePaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     private var volumeLevel: AlternativeVolumeMonitor.VolumeLevel? = null
-    private var trackId: String = ""
 
     // 色の定義
     private val lowVolumeColor = Color.parseColor("#4CAF50")    // 緑
     private val mediumVolumeColor = Color.parseColor("#FF9800")  // オレンジ
     private val highVolumeColor = Color.parseColor("#F44336")   // 赤
-    private val backgroundColor = Color.parseColor("#E0E0E0")   // グレー
-    private val textColor = Color.parseColor("#212121")        // ダークグレー
+    private val backgroundColor = Color.parseColor("#F5F5F5")   // 薄いグレー
+    private val borderColor = Color.parseColor("#BDBDBD")       // ボーダーグレー
 
     init {
-        paint.style = Paint.Style.FILL
-        textPaint.color = textColor
-        textPaint.textSize = 24f
-        textPaint.textAlign = Paint.Align.CENTER
+        gaugePaint.style = Paint.Style.FILL
         backgroundPaint.color = backgroundColor
         backgroundPaint.style = Paint.Style.FILL
+        borderPaint.color = borderColor
+        borderPaint.style = Paint.Style.STROKE
+        borderPaint.strokeWidth = 2f
     }
 
     /**
      * 音量レベルを更新
      */
     fun updateVolumeLevel(trackId: String, volumeLevel: AlternativeVolumeMonitor.VolumeLevel) {
-        this.trackId = trackId
         this.volumeLevel = volumeLevel
         invalidate()
     }
@@ -61,76 +60,50 @@ class VolumeIndicatorView @JvmOverloads constructor(
 
         val width = width.toFloat()
         val height = height.toFloat()
+        val cornerRadius = height * 0.2f
 
-        // 背景を描画
-        canvas.drawRoundRect(0f, 0f, width, height, 8f, 8f, backgroundPaint)
+        // 背景ゲージを描画（グレー）
+        canvas.drawRoundRect(0f, 0f, width, height, cornerRadius, cornerRadius, backgroundPaint)
+        canvas.drawRoundRect(0f, 0f, width, height, cornerRadius, cornerRadius, borderPaint)
 
         val level = volumeLevel
         if (level != null) {
-            // 音量バーを描画 (0.0 - 10.0 スケール)
-            drawVolumeBar(canvas, width, height, level)
-
-            // テキスト情報を描画
-            drawVolumeText(canvas, width, height, level)
-        } else {
-            // 音量データがない場合
-            drawNoDataText(canvas, width, height)
+            drawVolumeGauge(canvas, width, height, cornerRadius, level)
         }
     }
 
-    private fun drawVolumeBar(canvas: Canvas, width: Float, height: Float, level: AlternativeVolumeMonitor.VolumeLevel) {
-        val barHeight = height * 0.30f
-        val barY = height * 0.10f
-        val barWidth = width * 0.80f
-        val barX = width * 0.10f
+    private fun drawVolumeGauge(canvas: Canvas, width: Float, height: Float, cornerRadius: Float, level: AlternativeVolumeMonitor.VolumeLevel) {
+        // RTP Audio Level (0-127) から音量比率を計算
+        // 0が最大音量、127が無音なので反転が必要
+        val rtpLevel = level.rtpLevel
+        val volumeRatio = ((127 - rtpLevel) / 127f).coerceIn(0f, 1f)
 
-        // ピークインジケータ: peakVolume (0-1) を webrtc スケールへ換算し位置を描画
-        val peakRatio = level.peakVolume.coerceIn(0f, 1f)
-        val peakX = barX + (barWidth * peakRatio)
-        paint.color = Color.WHITE
-        canvas.drawRect(peakX - 2f, barY, peakX + 2f, barY + barHeight, paint)
-
-        // 目盛 (0, 5, 10) を簡易表示
-        textPaint.textSize = 12f
-        textPaint.color = textColor
-        listOf(0f, 5f, 10f).forEach { tick ->
-            val tx = barX + barWidth * (tick / 10f)
-            canvas.drawText(tick.toInt().toString(), tx, barY + barHeight + 16f, textPaint)
+        // 音量が非常に小さい場合（95%以上が無音に近い場合）は表示しない
+        if (volumeRatio < 0.05f) {
+            return
         }
-    }
 
-    private fun drawVolumeText(canvas: Canvas, width: Float, height: Float, level: AlternativeVolumeMonitor.VolumeLevel) {
-        val centerX = width / 2f
+        // ゲージの幅を計算（音量が大きいほど右に伸びる）
+        val gaugeWidth = width * volumeRatio
 
-        // トラックID (短縮)
-        textPaint.textSize = 18f
-        textPaint.color = textColor
-        canvas.drawText("Track: ${trackId.take(8)}", centerX, height * 0.60f, textPaint)
+        // 音量レベルに応じて色を決定
+        gaugePaint.color = getVolumeColor(volumeRatio)
 
-        // dB 情報 (RMS / Peak)
-        textPaint.textSize = 14f
-        val dbText = "RMS ${String.format("%.1f", level.rmsDb)} dB  |  Peak ${String.format("%.1f", level.peakDb)} dB"
-        canvas.drawText(dbText, centerX, height * 0.93f, textPaint)
-    }
-
-    private fun drawNoDataText(canvas: Canvas, width: Float, height: Float) {
-        textPaint.textSize = 18f
-        textPaint.color = Color.GRAY
-        canvas.drawText("No Audio Data", width / 2f, height / 2f, textPaint)
-        textPaint.color = textColor
+        // 音量ゲージを描画
+        canvas.drawRoundRect(0f, 0f, gaugeWidth, height, cornerRadius, cornerRadius, gaugePaint)
     }
 
     private fun getVolumeColor(ratio: Float): Int {
         return when {
-            ratio < 0.3f -> lowVolumeColor
-            ratio < 0.7f -> mediumVolumeColor
-            else -> highVolumeColor
+            ratio < 0.3f -> lowVolumeColor      // 低音量: 緑
+            ratio < 0.7f -> mediumVolumeColor   // 中音量: オレンジ
+            else -> highVolumeColor             // 高音量: 赤
         }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val desiredWidth = 220
-        val desiredHeight = 100
+        val desiredWidth = 200
+        val desiredHeight = 20
 
         val widthMode = MeasureSpec.getMode(widthMeasureSpec)
         val widthSize = MeasureSpec.getSize(widthMeasureSpec)

@@ -5,4 +5,13 @@
 
     <string name="permission_button_positive">許可する</string>
     <string name="permission_button_negative">許可しない</string>
+
+    <!-- 音量表示用の文字列リソース -->
+    <string name="user_id_format">User: %s</string>
+    <string name="peak_amplitude_format">Peak Amplitude: %s</string>
+    <string name="volume_db_format">%s dB</string>
+    <string name="peak_db_format">Peak: %s</string>
+    <string name="no_data_db">-- dB</string>
+    <string name="no_data_peak">Peak: --</string>
+    <string name="no_data_amplitude">Peak Amplitude: --</string>
 </resources>
