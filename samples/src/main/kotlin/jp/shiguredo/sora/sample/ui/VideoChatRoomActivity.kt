@@ -527,8 +527,8 @@ class VideoChatRoomActivityUI(
             layoutParams = params
         }
 
-        // ルートビューに音量インジケーターを追加
-        (binding.root as? RelativeLayout)?.addView(volumeIndicator)
+        // rendererContainerに音量インジケーターを追加
+        binding.rendererContainer.addView(volumeIndicator)
     }
 
     internal fun changeState(colorCode: String) {
