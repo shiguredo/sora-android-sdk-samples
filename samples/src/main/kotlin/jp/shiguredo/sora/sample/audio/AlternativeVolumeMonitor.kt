@@ -21,6 +21,7 @@ class AlternativeVolumeMonitor(
         val peakVolume: Float,
         val rmsDb: Float,
         val peakDb: Float,
+        val rtpLevel: Int, // RTP準拠の0-127レベル
         val timestamp: Long = System.currentTimeMillis()
     )
 
@@ -38,6 +39,10 @@ class AlternativeVolumeMonitor(
     companion object {
         private const val TAG = "AlternativeVolumeMonitor"
         private const val UPDATE_INTERVAL_MS = 50L
+        // RTP Audio Level準拠の定数
+        private const val MIN_AUDIO_LEVEL = -127.0
+        private const val MAX_AUDIO_LEVEL = 0.0
+        private const val SILENCE_LEVEL = 127 // デジタル無音時のレベル
     }
 
     /**
@@ -108,7 +113,10 @@ class AlternativeVolumeMonitor(
         val rmsDb = volumeToDb(rmsVolume)
         val peakDb = volumeToDb(peakVolume)
 
-        val volumeLevel = VolumeLevel(rmsVolume, peakVolume, rmsDb, peakDb)
+        // RTP Audio Level準拠の計算
+        val rtpLevel = calculateRtpAudioLevel(waveform)
+
+        val volumeLevel = VolumeLevel(rmsVolume, peakVolume, rmsDb, peakDb, rtpLevel)
         trackVolumeData[trackId] = volumeLevel
 
         // メインスレッドでリスナーに通知
@@ -137,7 +145,7 @@ class AlternativeVolumeMonitor(
 
         var maxAmplitude = 0
         for (sample in waveform) {
-            val amplitude = abs(sample.toInt() - 128)
+            val amplitude = kotlin.math.abs(sample.toInt() - 128)
             maxAmplitude = max(maxAmplitude, amplitude)
         }
 
@@ -150,6 +158,62 @@ class AlternativeVolumeMonitor(
         } else {
             -60f // 最小値として-60dBを設定
         }
+    }
+
+    /**
+     * RTP Audio Level (RFC 6465) 準拠の音量計算
+     * dBovベースで0-127の範囲で表現
+     */
+    private fun calculateRtpAudioLevel(waveform: ByteArray): Int {
+        if (waveform.isEmpty()) return SILENCE_LEVEL
+
+        // PCMサンプルを-128から127の範囲として扱う
+        val samples = IntArray(waveform.size) { i ->
+            waveform[i].toInt() - 128
+        }
+
+        return calculateAudioLevel(samples, 0, samples.size, 127)
+    }
+
+    /**
+     * RFC 6465のJavaコードを基にしたKotlin実装
+     * PCMサンプルからRTP Audio Levelを計算
+     */
+    private fun calculateAudioLevel(
+        samples: IntArray,
+        offset: Int,
+        length: Int,
+        overload: Int
+    ): Int {
+        // RMS（Root Mean Square）を計算
+        var rms = 0.0
+        var actualLength = 0
+
+        for (i in offset until minOf(offset + length, samples.size)) {
+            val sample = samples[i].toDouble()
+            val normalizedSample = sample / overload
+            rms += normalizedSample * normalizedSample
+            actualLength++
+        }
+
+        rms = if (actualLength == 0) 0.0 else sqrt(rms / actualLength)
+
+        // dBovでの音量レベルを計算
+        val db = if (rms > 0) {
+            val calculatedDb = 20 * log10(rms)
+            // 最小・最大レベル内に制限
+            when {
+                calculatedDb < MIN_AUDIO_LEVEL -> MIN_AUDIO_LEVEL
+                calculatedDb > MAX_AUDIO_LEVEL -> MAX_AUDIO_LEVEL
+                else -> calculatedDb
+            }
+        } else {
+            MIN_AUDIO_LEVEL
+        }
+
+        // RFC 6465準拠: RTP Audio Level = -dBov値
+        // dBovは負の値なので、符号を反転させて0-127の範囲にする
+        return kotlin.math.round(-db).toInt().coerceIn(0, 127)
     }
 
     /**

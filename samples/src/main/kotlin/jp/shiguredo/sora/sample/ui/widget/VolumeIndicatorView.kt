@@ -67,7 +67,7 @@ class VolumeIndicatorView @JvmOverloads constructor(
 
         val level = volumeLevel
         if (level != null) {
-            // 音量バーを描画
+            // 音量バーを描画 (0.0 - 10.0 スケール)
             drawVolumeBar(canvas, width, height, level)
 
             // テキスト情報を描画
@@ -79,38 +79,38 @@ class VolumeIndicatorView @JvmOverloads constructor(
     }
 
     private fun drawVolumeBar(canvas: Canvas, width: Float, height: Float, level: AlternativeVolumeMonitor.VolumeLevel) {
-        val barHeight = height * 0.3f
-        val barY = height * 0.1f
-        val barWidth = width * 0.8f
-        val barX = width * 0.1f
+        val barHeight = height * 0.30f
+        val barY = height * 0.10f
+        val barWidth = width * 0.80f
+        val barX = width * 0.10f
 
-        // RMS音量バーを描画
-        val rmsWidth = barWidth * level.rmsVolume
-        val rmsColor = getVolumeColor(level.rmsVolume)
-        paint.color = rmsColor
-        canvas.drawRoundRect(barX, barY, barX + rmsWidth, barY + barHeight, 4f, 4f, paint)
-
-        // ピーク音量インジケーターを描画
-        val peakX = barX + (barWidth * level.peakVolume)
+        // ピークインジケータ: peakVolume (0-1) を webrtc スケールへ換算し位置を描画
+        val peakRatio = level.peakVolume.coerceIn(0f, 1f)
+        val peakX = barX + (barWidth * peakRatio)
         paint.color = Color.WHITE
         canvas.drawRect(peakX - 2f, barY, peakX + 2f, barY + barHeight, paint)
+
+        // 目盛 (0, 5, 10) を簡易表示
+        textPaint.textSize = 12f
+        textPaint.color = textColor
+        listOf(0f, 5f, 10f).forEach { tick ->
+            val tx = barX + barWidth * (tick / 10f)
+            canvas.drawText(tick.toInt().toString(), tx, barY + barHeight + 16f, textPaint)
+        }
     }
 
     private fun drawVolumeText(canvas: Canvas, width: Float, height: Float, level: AlternativeVolumeMonitor.VolumeLevel) {
         val centerX = width / 2f
 
-        // トラックID
-        textPaint.textSize = 20f
-        canvas.drawText("Track: ${trackId.take(8)}", centerX, height * 0.6f, textPaint)
+        // トラックID (短縮)
+        textPaint.textSize = 18f
+        textPaint.color = textColor
+        canvas.drawText("Track: ${trackId.take(8)}", centerX, height * 0.60f, textPaint)
 
-        // RMS音量（dB）
-        textPaint.textSize = 16f
-        val rmsDbText = "RMS: ${String.format("%.1f", level.rmsDb)} dB"
-        canvas.drawText(rmsDbText, centerX, height * 0.75f, textPaint)
-
-        // ピーク音量（dB）
-        val peakDbText = "Peak: ${String.format("%.1f", level.peakDb)} dB"
-        canvas.drawText(peakDbText, centerX, height * 0.9f, textPaint)
+        // dB 情報 (RMS / Peak)
+        textPaint.textSize = 14f
+        val dbText = "RMS ${String.format("%.1f", level.rmsDb)} dB  |  Peak ${String.format("%.1f", level.peakDb)} dB"
+        canvas.drawText(dbText, centerX, height * 0.93f, textPaint)
     }
 
     private fun drawNoDataText(canvas: Canvas, width: Float, height: Float) {
@@ -120,17 +120,17 @@ class VolumeIndicatorView @JvmOverloads constructor(
         textPaint.color = textColor
     }
 
-    private fun getVolumeColor(volume: Float): Int {
+    private fun getVolumeColor(ratio: Float): Int {
         return when {
-            volume < 0.3f -> lowVolumeColor
-            volume < 0.7f -> mediumVolumeColor
+            ratio < 0.3f -> lowVolumeColor
+            ratio < 0.7f -> mediumVolumeColor
             else -> highVolumeColor
         }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val desiredWidth = 200
-        val desiredHeight = 80
+        val desiredWidth = 220
+        val desiredHeight = 100
 
         val widthMode = MeasureSpec.getMode(widthMeasureSpec)
         val widthSize = MeasureSpec.getSize(widthMeasureSpec)

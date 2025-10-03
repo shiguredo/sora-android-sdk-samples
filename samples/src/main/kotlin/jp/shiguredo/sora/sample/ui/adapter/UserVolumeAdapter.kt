@@ -27,8 +27,8 @@ class UserVolumeAdapter : ListAdapter<UserVolumeAdapter.UserVolumeItem, UserVolu
         val volumeBarText: TextView = itemView.findViewById(R.id.volumeBarText)
         val volumeDbText: TextView = itemView.findViewById(R.id.volumeDbText)
         val volumeIndicator: View = itemView.findViewById(R.id.volumeIndicator)
-        val volumePercentText: TextView = itemView.findViewById(R.id.volumePercentText)
         val volumePeakText: TextView = itemView.findViewById(R.id.volumePeakText)
+        val rtpLevelText: TextView = itemView.findViewById(R.id.rtpLevelText) // RTP Audio Level用を追加
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -47,38 +47,41 @@ class UserVolumeAdapter : ListAdapter<UserVolumeAdapter.UserVolumeItem, UserVolu
 
         val volumeLevel = item.volumeLevel
         if (volumeLevel != null) {
-            // 音量バーの表示（0-20の範囲でバーを表示）
-            val barLength = (volumeLevel.rmsVolume * 20).roundToInt()
+            // RTP Audio Level (0-127) をメインの表示として使用
+            val rtpLevel = volumeLevel.rtpLevel // 0..127
+            val rtpRatio = ((127 - rtpLevel) / 127f).coerceIn(0f, 1f) // 0が最大音量、127が無音なので反転
+
+            // バー: 20 コマ分を rtpRatio で埋める
+            val barLength = (rtpRatio * 20).roundToInt().coerceIn(0, 20)
             val volumeBar = "█".repeat(barLength) + "░".repeat(20 - barLength)
             volumeBarText.text = volumeBar
 
-            // dB値の表示
+            // RTP Audio Level (0-127) の表示
+            rtpLevelText.text = "RTP Level: $rtpLevel / 127"
+
+            // dB値の表示 (RMS)
             volumeDbText.text = "${String.format("%.1f", volumeLevel.rmsDb)} dB"
 
-            // パーセンテージ表示（0-100%）
-            val volumePercent = (volumeLevel.rmsVolume * 100).roundToInt()
-            volumePercentText.text = "${volumePercent}%"
-
-            // ピーク音量表示
+            // Peak dB
             volumePeakText.text = "Peak: ${String.format("%.1f", volumeLevel.peakDb)}"
 
-            // 音量レベルに応じた色分け
+            // 色分け (rtpRatio 基準)
             val color = when {
-                volumeLevel.rmsVolume < 0.3f -> Color.parseColor("#4CAF50") // 緑
-                volumeLevel.rmsVolume < 0.7f -> Color.parseColor("#FF9800") // オレンジ
-                else -> Color.parseColor("#F44336") // 赤
+                rtpRatio < 0.3f -> Color.parseColor("#4CAF50") // 緑 (低音量)
+                rtpRatio < 0.7f -> Color.parseColor("#FF9800") // オレンジ (中音量)
+                else -> Color.parseColor("#F44336") // 赤 (高音量)
             }
             volumeIndicator.setBackgroundColor(color)
 
-            // 音量レベルに応じた透明度
-            val alpha = (0.3f + volumeLevel.rmsVolume * 0.7f).coerceIn(0.3f, 1.0f)
+            // 透明度 (視覚的強調) - rtpRatio ベース
+            val alpha = (0.3f + rtpRatio * 0.7f).coerceIn(0.3f, 1.0f)
             volumeIndicator.alpha = alpha
-
         } else {
+            // データなし
             volumeBarText.text = "░".repeat(20)
             volumeDbText.text = "-- dB"
-            volumePercentText.text = "--%"
             volumePeakText.text = "Peak: --"
+            rtpLevelText.text = "RTP Level: -- / 127"
             volumeIndicator.setBackgroundColor(Color.GRAY)
             volumeIndicator.alpha = 0.3f
         }
