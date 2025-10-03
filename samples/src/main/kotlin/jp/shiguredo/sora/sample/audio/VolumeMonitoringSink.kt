@@ -14,6 +14,9 @@ import kotlin.math.log10
  */
 class VolumeMonitoringSink : AudioSink {
 
+    // インスタンスを識別するためのID
+    private val instanceId = System.currentTimeMillis().toString() + "-" + hashCode()
+
     data class VolumeLevel(
         val rmsVolume: Float,
         val peakVolume: Float,
@@ -34,6 +37,10 @@ class VolumeMonitoringSink : AudioSink {
     private val updateInterval = 50L
     private var lastUpdateTime = 0L
 
+    init {
+        android.util.Log.d("VolumeMonitoringSink", "[kensaku] VolumeMonitoringSink作成: instanceId=$instanceId")
+    }
+
     override fun onData(
         audioTrack: AudioTrack,
         audioData: ByteBuffer,
@@ -42,7 +49,13 @@ class VolumeMonitoringSink : AudioSink {
         numberOfChannels: Int,
         numberOfFrames: Int
     ) {
+        val trackId = audioTrack.id()
         val currentTime = System.currentTimeMillis()
+
+        // デバッグログ（頻度制限付き）
+        if (currentTime - lastUpdateTime >= updateInterval) {
+            android.util.Log.d("VolumeMonitoringSink", "[kensaku] onData呼び出し: instanceId=$instanceId, trackId=$trackId, frames=$numberOfFrames, channels=$numberOfChannels, sampleRate=$sampleRate")
+        }
 
         // 更新頻度を制限
         if (currentTime - lastUpdateTime < updateInterval) {
@@ -62,7 +75,8 @@ class VolumeMonitoringSink : AudioSink {
         val peakDb = AudioVolumeCalculator.volumeToDb(peakVolume)
 
         val volumeLevel = VolumeLevel(rmsVolume, peakVolume, rmsDb, peakDb, currentTime)
-        val trackId = audioTrack.id()
+
+        android.util.Log.d("VolumeMonitoringSink", "[kensaku] 音量計算完了: trackId=$trackId, rmsVolume=$rmsVolume, peakVolume=$peakVolume")
 
         // データを保存
         trackVolumeData[trackId] = volumeLevel

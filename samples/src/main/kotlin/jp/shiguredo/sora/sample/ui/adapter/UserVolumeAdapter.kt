@@ -18,11 +18,13 @@ import kotlin.math.roundToInt
 class UserVolumeAdapter : ListAdapter<UserVolumeAdapter.UserVolumeItem, UserVolumeAdapter.ViewHolder>(DiffCallback()) {
 
     data class UserVolumeItem(
+        val streamId: String,
         val trackId: String,
         val volumeLevel: VolumeMonitoringSink.VolumeLevel? = null
     )
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val streamIdText: TextView = itemView.findViewById(R.id.streamIdText)
         val volumeBarText: TextView = itemView.findViewById(R.id.volumeBarText)
     }
 
@@ -38,6 +40,9 @@ class UserVolumeAdapter : ListAdapter<UserVolumeAdapter.UserVolumeItem, UserVolu
     }
 
     private fun ViewHolder.bind(item: UserVolumeItem) {
+        // StreamIDを表示
+        streamIdText.text = "Stream: ${item.streamId.take(8)}"
+
         val volumeLevel = item.volumeLevel
         if (volumeLevel != null) {
             // JSのWebRTC実装と同様の仕様でピーク振幅を使用
@@ -56,12 +61,15 @@ class UserVolumeAdapter : ListAdapter<UserVolumeAdapter.UserVolumeItem, UserVolu
 
     private class DiffCallback : DiffUtil.ItemCallback<UserVolumeItem>() {
         override fun areItemsTheSame(oldItem: UserVolumeItem, newItem: UserVolumeItem): Boolean {
-            return oldItem.trackId == newItem.trackId
+            // streamIdとtrackIdの組み合わせで一意性を判定
+            return oldItem.streamId == newItem.streamId && oldItem.trackId == newItem.trackId
         }
 
         override fun areContentsTheSame(oldItem: UserVolumeItem, newItem: UserVolumeItem): Boolean {
-            // 音量レベルの変化を検出するため、わずかな変化でも更新
-            return oldItem == newItem
+            // 音量レベルの変化を検出するため、全てのプロパティを比較
+            return oldItem.streamId == newItem.streamId &&
+                   oldItem.trackId == newItem.trackId &&
+                   oldItem.volumeLevel == newItem.volumeLevel
         }
     }
 }

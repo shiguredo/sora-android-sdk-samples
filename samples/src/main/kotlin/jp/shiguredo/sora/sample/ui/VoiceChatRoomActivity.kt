@@ -53,8 +53,9 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     // 音量監視関連（VolumeMonitoringSinkベース）
     private lateinit var volumeMonitoringSink: VolumeMonitoringSink
     private lateinit var userVolumeAdapter: UserVolumeAdapter
-    private val connectedTracks = mutableMapOf<String, String>() // streamId -> trackId
+    private val connectedTracks = mutableMapOf<String, String>() // trackId -> streamId
     private val connectedStreams = mutableSetOf<MediaStream>()
+    private val audioSinks = mutableMapOf<String, VolumeMonitoringSink>() // streamId -> AudioSink
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -134,23 +135,55 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         volumeMonitoringSink = VolumeMonitoringSink().apply {
             addVolumeListener(object : VolumeMonitoringSink.VolumeListener {
                 override fun onVolumeChanged(trackId: String, volumeLevel: VolumeMonitoringSink.VolumeLevel) {
+                    Log.d(TAG, "[kensaku] VolumeChanged: trackId=$trackId, peakVolume=${volumeLevel.peakVolume}, rmsVolume=${volumeLevel.rmsVolume}")
                     runOnUiThread {
                         updateVolumeDisplay()
                     }
                 }
             })
         }
+        Log.d(TAG, "[kensaku] VolumeMonitoringSink初期化完了")
     }
 
     private fun updateVolumeDisplay() {
-        val userVolumeItems = connectedTracks.map { (streamId, trackId) ->
+        Log.d(TAG, "[kensaku] updateVolumeDisplay開始 - connectedTracks.size=${connectedTracks.size}")
+        Log.d(TAG, "[kensaku] updateVolumeDisplay - connectedTracks: $connectedTracks")
+        Log.d(TAG, "[kensaku] updateVolumeDisplay - audioSinks.keys: ${audioSinks.keys}")
+
+        val userVolumeItems = connectedTracks.map { (trackId, streamId) ->
+            // 該当するストリームのAudioSinkから音量を取得
+            val audioSink = audioSinks[streamId]
+            val volumeLevel = audioSink?.getVolumeLevel(trackId)
+            Log.d(TAG, "[kensaku] TrackData: trackId=$trackId, streamId=$streamId, volumeLevel=${volumeLevel?.peakVolume ?: "null"}, audioSinkExists=${audioSink != null}")
+
             UserVolumeAdapter.UserVolumeItem(
+                streamId = streamId,
                 trackId = trackId,
-                volumeLevel = volumeMonitoringSink.getVolumeLevel(trackId)
+                volumeLevel = volumeLevel
             )
         }
 
-        userVolumeAdapter.submitList(userVolumeItems)
+        Log.d(TAG, "[kensaku] submitList: ${userVolumeItems.size} items")
+        Log.d(TAG, "[kensaku] submitList items details:")
+        userVolumeItems.forEachIndexed { index, item ->
+            Log.d(TAG, "[kensaku]   [$index] streamId=${item.streamId}, trackId=${item.trackId}, hasVolumeLevel=${item.volumeLevel != null}")
+        }
+
+        // 現在のアイテム数と新しいアイテム数を比較してログ出力
+        val currentItemCount = userVolumeAdapter.itemCount
+        Log.d(TAG, "[kensaku] RecyclerView更新前: currentItemCount=$currentItemCount, newItemCount=${userVolumeItems.size}")
+
+        // ListAdapterのsubmitListを使用してリストを更新
+        userVolumeAdapter.submitList(userVolumeItems.toList()) {
+            val updatedItemCount = userVolumeAdapter.itemCount
+            Log.d(TAG, "[kensaku] RecyclerView更新完了: updatedItemCount=$updatedItemCount")
+
+            // 追加の強制更新（削除が反映されない場合の対策）
+            if (updatedItemCount != userVolumeItems.size) {
+                Log.w(TAG, "[kensaku] WARNING: ItemCount不一致、強制更新実行")
+                userVolumeAdapter.notifyDataSetChanged()
+            }
+        }
     }
 
     override fun onResume() {
@@ -208,45 +241,177 @@ class VoiceChatRoomActivity : AppCompatActivity() {
         }
 
         override fun onAddRemoteStream(channel: SoraAudioChannel, ms: MediaStream) {
-            Log.d(TAG, "リモートストリームを追加: ${ms.id}")
-            // 実際の受信音声ストリームにVolumeMonitoringSinkを接続
-            try {
-                ms.attachAudioSink(volumeMonitoringSink)
-                connectedStreams.add(ms)
+            Log.d(TAG, "[kensaku] ===== onAddRemoteStream開始 =====")
+            Log.d(TAG, "[kensaku] リモートストリームを追加: streamId=${ms.id}")
+            Log.d(TAG, "[kensaku] audioTracks.size=${ms.audioTracks.size}")
 
-                // AudioTrackのIDを取得してマッピングに追加
-                ms.audioTracks.forEach { audioTrack ->
-                    connectedTracks[ms.id] = audioTrack.id()
-                    Log.d(TAG, "AudioTrackを登録: StreamID=${ms.id}, TrackID=${audioTrack.id()}")
+            // このストリーム専用のVolumeMonitoringSinkを作成
+            try {
+                Log.d(TAG, "[kensaku] AudioSink作成開始")
+                val streamAudioSink = VolumeMonitoringSink().apply {
+                    addVolumeListener(object : VolumeMonitoringSink.VolumeListener {
+                        override fun onVolumeChanged(trackId: String, volumeLevel: VolumeMonitoringSink.VolumeLevel) {
+                            Log.d(TAG, "[kensaku] VolumeChanged: streamId=${ms.id}, trackId=$trackId, peakVolume=${volumeLevel.peakVolume}")
+                            runOnUiThread {
+                                updateVolumeDisplay()
+                            }
+                        }
+                    })
                 }
 
+                Log.d(TAG, "[kensaku] AudioSink接続開始: ${streamAudioSink.hashCode()}")
+
+                // AudioTrackの詳細情報をログ出力
+                ms.audioTracks.forEachIndexed { index, audioTrack ->
+                    Log.d(TAG, "[kensaku] AudioTrack[$index] before attach: id=${audioTrack.id()}, enabled=${audioTrack.enabled()}, state=${audioTrack.state()}")
+                }
+
+                ms.attachAudioSink(streamAudioSink)
+                audioSinks[ms.id] = streamAudioSink
+                connectedStreams.add(ms)
+                Log.d(TAG, "[kensaku] AudioSink接続完了、connectedStreams.size=${connectedStreams.size}")
+
+                // AudioTrackのIDを取得してマッピングに追加
+                ms.audioTracks.forEachIndexed { index, audioTrack ->
+                    val trackId = audioTrack.id()
+                    connectedTracks[trackId] = ms.id
+                    Log.d(TAG, "[kensaku] AudioTrack[$index]を登録: StreamID=${ms.id}, TrackID=$trackId")
+                    Log.d(TAG, "[kensaku] AudioTrack[$index] after attach: enabled=${audioTrack.enabled()}, state=${audioTrack.state()}")
+                }
+
+                Log.d(TAG, "[kensaku] connectedTracks: $connectedTracks")
+                Log.d(TAG, "[kensaku] audioSinks.size=${audioSinks.size}")
+                Log.d(TAG, "[kensaku] audioSinks keys: ${audioSinks.keys}")
+                Log.d(TAG, "[kensaku] updateVolumeDisplay呼び出し")
                 updateVolumeDisplay()
+                Log.d(TAG, "[kensaku] ===== onAddRemoteStream完了 =====")
             } catch (e: Exception) {
-                Log.e(TAG, "AudioSinkの接続に失敗: ${e.message}")
+                Log.e(TAG, "[kensaku ERROR] AudioSinkの接続に失敗: ${e.message}", e)
             }
         }
 
         override fun onRemoveRemoteStream(channel: SoraAudioChannel, label: String) {
-            Log.d(TAG, "リモートストリームを削除: $label")
+            Log.d(TAG, "[kensaku] ===== onRemoveRemoteStream開始 =====")
+            Log.d(TAG, "[kensaku] リモートストリームを削除: label=$label")
+            Log.d(TAG, "[kensaku] 削除前 connectedStreams.size=${connectedStreams.size}")
+            Log.d(TAG, "[kensaku] 削除前 connectedTracks: $connectedTracks")
+            Log.d(TAG, "[kensaku] 削除前 audioSinks.size=${audioSinks.size}")
+
             try {
-                // labelに一致するMediaStreamを見つける
-                val streamToRemove = connectedStreams.find { it.id == label }
-                streamToRemove?.let { ms ->
-                    ms.detachAudioSink(volumeMonitoringSink)
-                    connectedStreams.remove(ms)
+                // labelに一致するMediaStreamを見つける（disposedされたストリームも考慮）
+                var streamToRemove: MediaStream? = null
+                var streamIdToRemove: String? = null
 
-                    // マッピングからも削除
-                    connectedTracks.remove(ms.id)
+                // connectedStreamsから対象を探す
+                for (stream in connectedStreams) {
+                    try {
+                        if (stream.id == label) {
+                            streamToRemove = stream
+                            streamIdToRemove = label
+                            break
+                        }
+                    } catch (e: IllegalStateException) {
+                        // MediaStreamがdisposeされている場合、labelと一致するかチェックできないので
+                        // audioSinksのキーで判定する
+                        if (audioSinks.containsKey(label)) {
+                            streamToRemove = stream
+                            streamIdToRemove = label
+                            Log.d(TAG, "[kensaku] dispose済みストリームを発見: label=$label")
+                            break
+                        }
+                    }
+                }
 
-                    // 音量データをクリア
-                    ms.audioTracks.forEach { audioTrack ->
-                        volumeMonitoringSink.clearVolumeData(audioTrack.id())
+                if (streamToRemove != null && streamIdToRemove != null) {
+                    Log.d(TAG, "[kensaku] 削除対象ストリーム発見: label=$streamIdToRemove")
+
+                    // 該当するAudioSinkを取得してデタッチ
+                    val streamAudioSink = audioSinks[streamIdToRemove]
+                    if (streamAudioSink != null) {
+                        try {
+                            streamToRemove.detachAudioSink(streamAudioSink)
+                            Log.d(TAG, "[kensaku] AudioSinkをデタッチ成功: $streamIdToRemove")
+                        } catch (e: IllegalStateException) {
+                            Log.d(TAG, "[kensaku] MediaStream既にdispose済み、AudioSinkデタッチをスキップ: $streamIdToRemove")
+                        }
+                        audioSinks.remove(streamIdToRemove)
+                        Log.d(TAG, "[kensaku] AudioSinkを削除: $streamIdToRemove")
+                    } else {
+                        Log.w(TAG, "[kensaku WARNING] AudioSinkが見つからない: $streamIdToRemove")
                     }
 
-                    updateVolumeDisplay()
+                    connectedStreams.remove(streamToRemove)
+
+                    // connectedTracksから該当するtrackIdを削除
+                    val tracksToRemove = connectedTracks.filter { it.value == streamIdToRemove }
+                    tracksToRemove.forEach { (trackId, _) ->
+                        Log.d(TAG, "[kensaku] AudioTrackを削除: TrackID=$trackId")
+                        connectedTracks.remove(trackId)
+                        // 該当するAudioSinkから音量データをクリア
+                        streamAudioSink?.clearVolumeData(trackId)
+                    }
+
+                    Log.d(TAG, "[kensaku] 削除後 connectedStreams.size=${connectedStreams.size}")
+                    Log.d(TAG, "[kensaku] 削除後 connectedTracks: $connectedTracks")
+                    Log.d(TAG, "[kensaku] 削除後 audioSinks.size=${audioSinks.size}")
+
+                    // UI更新を確実にメインスレッドで実行
+                    runOnUiThread {
+                        updateVolumeDisplay()
+                    }
+                } else {
+                    Log.w(TAG, "[kensaku WARNING] 削除対象ストリームが見つからない: label=$label")
+                    Log.d(TAG, "[kensaku] 現在のストリーム一覧:")
+                    connectedStreams.forEachIndexed { index, stream ->
+                        try {
+                            Log.d(TAG, "[kensaku]   [$index] streamId=${stream.id}")
+                        } catch (e: IllegalStateException) {
+                            Log.d(TAG, "[kensaku]   [$index] streamId=<disposed>")
+                        }
+                    }
+
+                    // audioSinksにlabelが存在する場合は、dispose済みストリームの削除処理を実行
+                    if (audioSinks.containsKey(label)) {
+                        Log.d(TAG, "[kensaku] audioSinksにエントリが存在するため、クリーンアップを実行: $label")
+                        val streamAudioSink = audioSinks.remove(label)
+
+                        // connectedTracksから該当するtrackIdを削除
+                        val tracksToRemove = connectedTracks.filter { it.value == label }
+                        tracksToRemove.forEach { (trackId, _) ->
+                            Log.d(TAG, "[kensaku] AudioTrackを削除: TrackID=$trackId")
+                            connectedTracks.remove(trackId)
+                            streamAudioSink?.clearVolumeData(trackId)
+                        }
+
+                        // UI更新
+                        runOnUiThread {
+                            updateVolumeDisplay()
+                        }
+                    }
                 }
+                Log.d(TAG, "[kensaku] ===== onRemoveRemoteStream完了 =====")
             } catch (e: Exception) {
-                Log.e(TAG, "AudioSinkの切断に失敗: ${e.message}")
+                Log.e(TAG, "[kensaku ERROR] AudioSinkの切断に失敗: ${e.message}", e)
+
+                // エラーが発生した場合でも、最低限のクリーンアップを実行
+                try {
+                    if (audioSinks.containsKey(label)) {
+                        Log.d(TAG, "[kensaku] エラー後のクリーンアップを実行: $label")
+                        val streamAudioSink = audioSinks.remove(label)
+
+                        val tracksToRemove = connectedTracks.filter { it.value == label }
+                        tracksToRemove.forEach { (trackId, _) ->
+                            connectedTracks.remove(trackId)
+                            streamAudioSink?.clearVolumeData(trackId)
+                        }
+
+                        runOnUiThread {
+                            updateVolumeDisplay()
+                        }
+                    }
+                } catch (cleanupError: Exception) {
+                    Log.e(TAG, "[kensaku ERROR] クリーンアップ処理も失敗: ${cleanupError.message}")
+                }
             }
         }
 
@@ -286,16 +451,20 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     }
 
     private fun cleanupVolumeMonitoring() {
-        // 全てのストリームからAudioSinkをデタッチ
-        connectedStreams.forEach { stream ->
+        // 全てのストリームから個別のAudioSinkをデタッチ
+        audioSinks.forEach { (streamId, audioSink) ->
             try {
-                stream.detachAudioSink(volumeMonitoringSink)
+                val stream = connectedStreams.find { it.id == streamId }
+                stream?.detachAudioSink(audioSink)
+                audioSink.clearAllVolumeData()
+                Log.d(TAG, "[kensaku] AudioSinkをクリーンアップ: $streamId")
             } catch (e: Exception) {
-                Log.w(TAG, "AudioSinkのデタッチに失敗: ${e.message}")
+                Log.w(TAG, "[kensaku WARNING] AudioSinkのデタッチに失敗: streamId=$streamId, ${e.message}")
             }
         }
+        audioSinks.clear()
         connectedStreams.clear()
         connectedTracks.clear()
-        volumeMonitoringSink.clearAllVolumeData()
+        Log.d(TAG, "[kensaku] 音量監視のクリーンアップ完了")
     }
 }

@@ -2,12 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="8dp"
     android:background="#3A3A3A"
     android:layout_marginVertical="1dp">
 
-    <!-- 音量バーのみ -->
+    <!-- StreamID表示 -->
+    <TextView
+        android:id="@+id/streamIdText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stream: example_id"
+        android:textSize="10sp"
+        android:textColor="#B0B0B0"
+        android:layout_marginBottom="2dp" />
+
+    <!-- 音量バー -->
     <TextView
         android:id="@+id/volumeBarText"
         android:layout_width="match_parent"
