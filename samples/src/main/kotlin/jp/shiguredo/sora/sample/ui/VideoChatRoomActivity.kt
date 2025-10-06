@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.gson.Gson
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
@@ -33,6 +34,10 @@ import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.webrtc.SurfaceViewRenderer
 import java.util.UUID
 
@@ -392,13 +397,13 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
             override fun onCameraMuteStateChanged(
                 channel: SoraVideoChannel,
-                hardMuted: Boolean,
-                softMuted: Boolean,
+                cameraHardMuted: Boolean,
+                cameraSoftMuted: Boolean,
             ) {
-                if (hardMuted) {
+                if (cameraHardMuted) {
                     cameraState = CameraState.HARD_MUTED
                     ui?.showCameraOffButton()
-                } else if (softMuted) {
+                } else if (cameraSoftMuted) {
                     cameraState = CameraState.SOFT_MUTED
                     ui?.showCameraSoftOffButton()
                 } else {
@@ -463,40 +468,71 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
     private var micState: MicState = MicState.ON
     private var muted = false
+    private var toggleMicJob: Job? = null
 
     private enum class CameraState { ON, SOFT_MUTED, HARD_MUTED }
 
     private var cameraState: CameraState = CameraState.ON
 
     internal fun toggleMuted() {
-        Log.d(TAG, "micState: $micState")
-        when (micState) {
-            MicState.ON -> {
-                // ON -> ソフトウェアミュート（トラック無効化）
-                channel?.mute(true)
-                muted = true
-                micState = MicState.SOFT_MUTED
-                ui?.showMicSoftMuteButton()
-            }
-            MicState.SOFT_MUTED -> {
-                Log.d(TAG, "HardwearMute")
-                // ソフト -> ハード（ハードウェアミュートAPI）
-                channel?.mute(false)
-                muted = false
-                channel?.setAudioHardwareMuted(true)
-                micState = MicState.HARD_MUTED
-                ui?.showMicHardMuteButton()
-            }
-            MicState.HARD_MUTED -> {
-                // ハード -> ON
-                channel?.setAudioHardwareMuted(false)
-                channel?.mute(false)
-                muted = false
-                micState = MicState.ON
-                ui?.showMicOnButton()
-            }
+        if (toggleMicJob?.isActive == true) {
+            Log.d(TAG, "toggleMuted ignored: job running")
+            return
         }
+
+        toggleMicJob =
+            lifecycleScope.launch {
+                try {
+                    Log.d(TAG, "micState: $micState")
+                    when (micState) {
+                        MicState.ON -> {
+                            // ON -> ソフトウェアミュート（トラック無効化）
+                            channel?.mute(true)
+                            muted = true
+                            micState = MicState.SOFT_MUTED
+                            ui?.showMicSoftMuteButton()
+                        }
+                        MicState.SOFT_MUTED -> {
+                            // ソフト -> ハード（ハードウェアミュートAPI）
+                            channel?.mute(false)
+                            muted = false
+                            val success = setAudioHardMuted(true)
+                            if (success) {
+                                micState = MicState.HARD_MUTED
+                                ui?.showMicHardMuteButton()
+                            } else {
+                                channel?.mute(true)
+                                muted = true
+                                ui?.showMicSoftMuteButton()
+                            }
+                        }
+                        MicState.HARD_MUTED -> {
+                            // ハード -> ON
+                            val success = setAudioHardMuted(false)
+                            if (success) {
+                                channel?.mute(false)
+                                muted = false
+                                micState = MicState.ON
+                                ui?.showMicOnButton()
+                            } else {
+                                micState = MicState.HARD_MUTED
+                                ui?.showMicHardMuteButton()
+                            }
+                        }
+                    }
+                } finally {
+                    Log.d(TAG, "micState: $micState")
+                    toggleMicJob = null
+                }
+            }
     }
+
+    private suspend fun setAudioHardMuted(muted: Boolean): Boolean =
+        withContext(Dispatchers.Default) {
+            runCatching { channel?.setAudioHardMutedAsync(muted) ?: true }
+                .onFailure { Log.e(TAG, "setAudioHardMutedAsync failed", it) }
+                .getOrElse { false }
+        }
 
     internal fun toggleCamera() {
         // UI 更新は onCameraMuteStateChanged で行う

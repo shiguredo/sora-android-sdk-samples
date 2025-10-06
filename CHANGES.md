@@ -11,7 +11,13 @@
 
 ## 2025.3
 
-- [UPDATE] 前面・背面カメラの切り替え実行時に Capture の NULL チェックを追加する
+- [CHANGE] 音声のハードミュート機能を追加した
+  - 実機のおいてマイクのインジケータが消灯する状態にできる
+  - ビデオチャットサンプル、サイマルキャストサンプル、スポットライトサンプルのマイクミュートボタンにハードミュートに切り替える機能を追加した
+    - 音声配信 -> ソフトミュート(audioトラック無効) -> ハードミュート(音声送出停止) -> 音声配信 -> ... で切り替わるボタンを追加した
+  - SoraVideoChannel の `hardMuted/softMuted` プロパティ名を `cameraHardMuted/cameraSoftMuted` に変更した
+    - オーディオ用の `audioHardMuted/audioSoftMuted` プロパティを追加に伴いコードの可読性を上げるため
+- [UPDATE] 前面・背面カメラの切り替え実行時に Capture の NULL チェックを追加した
   - 接続直後にカメラ切り替えボタンを押下した際に NullPointerException が発生することがあったため
   - @t-miya
 - [UPDATE] デバイス権限処理を PermissionDispacher から Activity Result API へ移行
