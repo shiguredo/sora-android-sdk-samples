@@ -27,6 +27,7 @@ import jp.shiguredo.sora.sample.databinding.ActivitySimulcastBinding
 import jp.shiguredo.sora.sample.facade.SoraVideoChannel
 import jp.shiguredo.sora.sample.option.SoraFrameSize
 import jp.shiguredo.sora.sample.option.SoraRoleType
+import jp.shiguredo.sora.sample.ui.util.MicMuteController
 import jp.shiguredo.sora.sample.ui.util.RendererLayoutCalculator
 import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
@@ -35,8 +36,6 @@ import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.webrtc.SurfaceViewRenderer
 import java.util.UUID
@@ -460,66 +459,24 @@ class SimulcastActivity : AppCompatActivity() {
         channel?.switchCamera()
     }
 
-    private enum class MicState { ON, SOFT_MUTED, HARD_MUTED }
-
-    private var micState: MicState = MicState.ON
-    private var muted = false
+    private val micMuteController by lazy {
+        MicMuteController(
+            scope = lifecycleScope,
+            setSoftMute = { mute -> channel?.mute(mute) },
+            setHardMute = { muted -> setAudioHardMuted(muted) },
+            showMicOn = { ui?.showMicOnButton() },
+            showMicSoft = { ui?.showMicSoftMuteButton() },
+            showMicHard = { ui?.showMicHardMuteButton() },
+            logMessage = { message -> Log.d(TAG, message) },
+        )
+    }
 
     private enum class CameraState { ON, SOFT_MUTED, HARD_MUTED }
 
     private var cameraState: CameraState = CameraState.ON
-    private var toggleMicJob: Job? = null
 
     internal fun toggleMuted() {
-        if (toggleMicJob?.isActive == true) {
-            Log.d(TAG, "toggleMuted ignored: job running")
-            return
-        }
-
-        toggleMicJob =
-            lifecycleScope.launch {
-                try {
-                    when (micState) {
-                        MicState.ON -> {
-                            // ON -> ソフトウェアミュート
-                            channel?.mute(true)
-                            muted = true
-                            micState = MicState.SOFT_MUTED
-                            ui?.showMicSoftMuteButton()
-                        }
-                        MicState.SOFT_MUTED -> {
-                            // ソフト -> ハード
-                            channel?.mute(false)
-                            muted = false
-                            val success = setAudioHardMuted(true)
-                            if (success) {
-                                micState = MicState.HARD_MUTED
-                                ui?.showMicHardMuteButton()
-                            } else {
-                                channel?.mute(true)
-                                muted = true
-                                micState = MicState.SOFT_MUTED
-                                ui?.showMicSoftMuteButton()
-                            }
-                        }
-                        MicState.HARD_MUTED -> {
-                            // ハード -> ON
-                            val success = setAudioHardMuted(false)
-                            if (success) {
-                                channel?.mute(false)
-                                muted = false
-                                micState = MicState.ON
-                                ui?.showMicOnButton()
-                            } else {
-                                micState = MicState.HARD_MUTED
-                                ui?.showMicHardMuteButton()
-                            }
-                        }
-                    }
-                } finally {
-                    toggleMicJob = null
-                }
-            }
+        micMuteController.toggleMuted()
     }
 
     private suspend fun setAudioHardMuted(muted: Boolean): Boolean =

@@ -541,6 +541,7 @@ class SoraVideoChannel(
     }
 
     // 音声ハードミュート（Recording停止/再開）
+    // libwebrtc 側で最大2秒間の呼び出しスレッド join 完了待ちが反映するため非同期で実行する必要がある
     suspend fun setAudioHardMutedAsync(muted: Boolean): Boolean {
         val channel = mediaChannel
         return if (channel != null) {
@@ -548,6 +549,8 @@ class SoraVideoChannel(
             if (result) {
                 audioHardMuted = muted
                 applyAudioMuteState()
+            } else {
+                SoraLogger.w(TAG, "setAudioRecordingPausedAsync ignored or failed (muted=$muted)")
             }
             result
         } else {

@@ -15,6 +15,7 @@
   - 実機のおいてマイクのインジケータが消灯する状態にできる
   - ビデオチャットサンプル、サイマルキャストサンプル、スポットライトサンプルのマイクミュートボタンにハードミュートに切り替える機能を追加した
     - 音声配信 -> ソフトミュート(audioトラック無効) -> ハードミュート(音声送出停止) -> 音声配信 -> ... で切り替わるボタンを追加した
+    - MicMuteController クラスを追加し、VideoChatRoomActivity/SimulcastActivity での音声ミュート切り替え処理を共通化した
   - SoraVideoChannel の `hardMuted/softMuted` プロパティ名を `cameraHardMuted/cameraSoftMuted` に変更した
     - オーディオ用の `audioHardMuted/audioSoftMuted` プロパティを追加に伴いコードの可読性を上げるため
 - [UPDATE] 前面・背面カメラの切り替え実行時に Capture の NULL チェックを追加した
