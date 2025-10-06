@@ -467,7 +467,7 @@ class SimulcastActivity : AppCompatActivity() {
             showMicOn = { ui?.showMicOnButton() },
             showMicSoft = { ui?.showMicSoftMuteButton() },
             showMicHard = { ui?.showMicHardMuteButton() },
-            logMessage = { message -> Log.d(TAG, message) },
+            log = { message -> Log.d(TAG, message) },
         )
     }
 
