@@ -37,7 +37,10 @@
 - [UPDATE] Sora Android SDK を 2025.3.0 に上げる
   - @zztkm
 - [UPDATE] samples/build.gradle.kts から不要な flavor 設定を削除する
-  - Sora Android SDK Quickstart アプリに合わせて設定をシンプルにするため
+  - 削除内容
+    - `flavorDimensions.add("tier")` の設定を削除
+    - `productFlavors { create("free") { versionNameSuffix = "-free" } }` のブロックを削除
+  - 利用していない flavor でビルドバリアントが増えていたため、Quickstart アプリと同じ構成に揃えて運用を簡素化するため
   - @zztkm
 
 ### misc
