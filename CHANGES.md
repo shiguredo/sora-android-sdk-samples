@@ -11,7 +11,7 @@
 
 ## 2025.3
 
-- [UPDATE] 前面・背面カメラの切り替え実行時に Capture の NULL チェックを追加した
+- [UPDATE] 前面・背面カメラの切り替え実行時に Capture の NULL チェックを追加する
   - 接続直後にカメラ切り替えボタンを押下した際に NullPointerException が発生することがあったため
   - @t-miya
 - [UPDATE] デバイス権限処理を PermissionDispacher から Activity Result API へ移行
@@ -35,6 +35,9 @@
 - [UPDATE] Kotlin バージョンを 2.0.20 に上げる
   - @t-miya
 - [UPDATE] Sora Android SDK を 2025.3.0 に上げる
+  - @zztkm
+- [UPDATE] samples/build.gradle.kts から不要な flavor 設定を削除する
+  - Sora Android SDK Quickstart アプリに合わせて設定をシンプルにするため
   - @zztkm
 
 ### misc

@@ -70,15 +70,6 @@ android {
         targetCompatibility = JavaVersion.toVersion(libs.versions.javaCompatibility.get())
     }
 
-    flavorDimensions.add("tier")
-
-    productFlavors {
-        create("free") {
-            dimension = "tier"
-            versionNameSuffix = "-free"
-        }
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = false
