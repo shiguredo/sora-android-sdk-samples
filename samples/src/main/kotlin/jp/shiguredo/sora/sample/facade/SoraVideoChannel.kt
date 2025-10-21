@@ -541,16 +541,16 @@ class SoraVideoChannel(
     }
 
     // 音声ハードミュート（Recording停止/再開）
-    // libwebrtc 側で呼び出しスレッドの join 完了待ちが発生する(最大2秒間)ため、非同期で実行する必要がある
-    suspend fun setAudioHardMutedAsync(muted: Boolean): Boolean {
+    // libwebrtc 側での録音スレッドの join 待ちが発生する(2秒タイムアウト)ため非同期で実行する
+    suspend fun setAudioHardMuted(muted: Boolean): Boolean {
         val channel = mediaChannel
         return if (channel != null) {
-            val result = channel.setAudioRecordingPausedAsync(muted)
+            val result = channel.setAudioRecordingPaused(muted)
             if (result) {
                 audioHardMuted = muted
                 applyAudioMuteState()
             } else {
-                SoraLogger.w(TAG, "setAudioRecordingPausedAsync ignored or failed (muted=$muted)")
+                SoraLogger.w(TAG, "setAudioRecordingPaused ignored or failed (muted=$muted)")
             }
             result
         } else {
@@ -560,7 +560,8 @@ class SoraVideoChannel(
         }
     }
 
-    // ソフトウェアミュート: VideoCapture は維持しつつ、送出を一時停止
+    // カメラソフトミュート切り替え
+    // 映像送出を停止するがキャプチャは動作し続ける
     fun setCameraSoftMuted(muted: Boolean) {
         cameraSoftMuted = muted
         // 反映は UI スレッドで統一
@@ -568,6 +569,8 @@ class SoraVideoChannel(
         notifyCameraMuteState()
     }
 
+    // カメラハードミュート切り替え
+    // 映像送出とキャプチャの両方を停止する
     fun setCameraHardMuted(muted: Boolean) {
         if (muted) {
             muteCameraHard()
@@ -579,7 +582,7 @@ class SoraVideoChannel(
     private fun muteCameraHard() {
         if (cameraHardMuted) return
 
-        // ハードウェアミュート: キャプチャを停止してハードウェアを解放
+        // ハードミュート実行。キャプチャを停止してハードウェアを解放
         ioExecutor.execute {
             var interrupted = false
             var success = false

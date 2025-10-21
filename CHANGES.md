@@ -13,12 +13,12 @@
 
 - [CHANGE] 音声のハードミュート機能を追加した
   - 実機のおいてマイクのインジケータが消灯する状態にできる
-  - ビデオチャットサンプル、サイマルキャストサンプル、スポットライトサンプルのマイクミュートボタンにハードミュートに切り替える機能を追加した
-    - 音声配信 -> ソフトミュート(audioトラック無効) -> ハードミュート(音声送出停止) -> 音声配信 -> ... で切り替わるボタンを追加した
-    - MicMuteController クラスを追加し、VideoChatRoomActivity/SimulcastActivity での音声ミュート切り替え処理を共通化した
-  - SoraVideoChannel の `hardMuted/softMuted` プロパティ名を `cameraHardMuted/cameraSoftMuted` に変更した
+  - ビデオチャットサンプル、サイマルキャストサンプル、スポットライトサンプルのマイクミュートボタンにハードミュートに切り替える機能を追加する
+    - 音声配信 -> ソフトミュート(audioトラック無効) -> ハードミュート(録音停止) -> 音声配信 -> ... で切り替わるボタンを追加する
+    - MicMuteController クラスを追加し、VideoChatRoomActivity/SimulcastActivity での音声ミュート切り替え処理を共通化する
+  - SoraVideoChannel の `hardMuted/softMuted` プロパティ名を `cameraHardMuted/cameraSoftMuted` に変更する
     - オーディオ用の `audioHardMuted/audioSoftMuted` プロパティを追加に伴いコードの可読性を上げるため
-- [UPDATE] 前面・背面カメラの切り替え実行時に Capture の NULL チェックを追加した
+- [UPDATE] 前面・背面カメラの切り替え実行時に Capture の NULL チェックを追加する
   - 接続直後にカメラ切り替えボタンを押下した際に NullPointerException が発生することがあったため
   - @t-miya
 - [UPDATE] デバイス権限処理を PermissionDispacher から Activity Result API へ移行
@@ -49,6 +49,10 @@
     - `productFlavors { create("free") { versionNameSuffix = "-free" } }` のブロックを削除
   - 利用していない flavor でビルドバリアントが増えていたため、Quickstart アプリと同じ構成に揃えて運用を簡素化するため
   - @zztkm
+- [ADD] マイクのミュート制御の共通モジュールとして MicMuteController を追加した
+  - 排他制御によりボタン連打等による不整合を防ぐ
+  - ミュートボタンを扱うアクティビティで利用できる
+  - @t-miya
 
 ### misc
 

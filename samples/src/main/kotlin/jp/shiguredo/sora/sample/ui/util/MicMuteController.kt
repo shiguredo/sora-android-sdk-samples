@@ -26,6 +26,7 @@ class MicMuteController(
     private val jobLock = Mutex()
 
     // マイクミュート制御で競合が起きないよう Mutex を導入し、toggleMuted のジョブ生成と終了処理を排他的に行っている
+    //  -> ボタン連打等でUI(ボタン)とミュート状態の整合が崩れるようなケースを防ぐ
     // 実行中ジョブの存在をロック下で判定し、Job を生成するタイミングを一意に確保
     // 終了時も同じロックで toggleJob をクリアし、重複実行やレースを防止する
     fun toggleMuted() {
@@ -74,6 +75,7 @@ class MicMuteController(
                             }
                         } finally {
                             log?.invoke("micState: ${state.name}")
+                            // toggleJob を確実に解放する後片付け
                             val currentJob = this
                             jobLock.withLock {
                                 if (toggleJob === currentJob) {

@@ -316,7 +316,6 @@ class SimulcastActivity : AppCompatActivity() {
         oldAudioMode = audioManager.mode
         Log.d(TAG, "AudioManager mode change: $oldAudioMode => MODE_IN_COMMUNICATION(3)")
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
-        Log.d(TAG, "AudioManager.isMicrophoneMute=${audioManager.isMicrophoneMute}")
     }
 
     override fun onPause() {
@@ -459,6 +458,8 @@ class SimulcastActivity : AppCompatActivity() {
         channel?.switchCamera()
     }
 
+    // マイクボタンのトグル操作用コントローラー
+    // 必要になるまで(toggleMuted()実行)生成を遅延
     private val micMuteController by lazy {
         MicMuteController(
             scope = lifecycleScope,
@@ -481,8 +482,8 @@ class SimulcastActivity : AppCompatActivity() {
 
     private suspend fun setAudioHardMuted(muted: Boolean): Boolean =
         withContext(Dispatchers.Default) {
-            runCatching { channel?.setAudioHardMutedAsync(muted) ?: true }
-                .onFailure { Log.e(TAG, "setAudioHardMutedAsync failed", it) }
+            runCatching { channel?.setAudioHardMuted(muted) ?: true }
+                .onFailure { Log.e(TAG, "setAudioHardMuted failed", it) }
                 .getOrElse { false }
         }
 

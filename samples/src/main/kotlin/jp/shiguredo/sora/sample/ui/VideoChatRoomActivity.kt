@@ -462,6 +462,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
         channel?.switchCamera()
     }
 
+    // マイクボタンのトグル操作用コントローラー
+    // 必要になるまで(toggleMuted()実行)生成を遅延
     private val micMuteController by lazy {
         MicMuteController(
             scope = lifecycleScope,
@@ -484,8 +486,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
     private suspend fun setAudioHardMuted(muted: Boolean): Boolean =
         withContext(Dispatchers.Default) {
-            runCatching { channel?.setAudioHardMutedAsync(muted) ?: true }
-                .onFailure { Log.e(TAG, "setAudioHardMutedAsync failed", it) }
+            runCatching { channel?.setAudioHardMuted(muted) ?: true }
+                .onFailure { Log.e(TAG, "setAudioHardMuted failed", it) }
                 .getOrElse { false }
         }
 
