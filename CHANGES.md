@@ -13,8 +13,6 @@
 
 - [CHANGE] SoraVideoChannel の `hardMuted/softMuted` プロパティ名を `cameraHardMuted/cameraSoftMuted` に変更する破壊的変更
   - オーディオ用の `audioHardMuted/audioSoftMuted` プロパティを追加に伴いコードの可読性を上げるため
-- [UPDATE] Sora Android SDK を 2025.3.0-canary.3 に上げる
-- [UPFATE] libwebrtc を 141.7390.3.1 に上げる
 - [UPDATE] 前面・背面カメラの切り替え実行時に Capture の NULL チェックを追加する
   - 接続直後にカメラ切り替えボタンを押下した際に NullPointerException が発生することがあったため
   - @t-miya
@@ -139,10 +137,6 @@
 
 ### misc
 
-- [UPDATE] gragle を Kotlin DSL 対応する
-  - build.gradle、settings.gradle、samples/build.gradle を kts ファイルに置き換えた
-  - ライブラリバージョン管理を Version Catalog による管理に変更した
-  - @t-miya
 - [UPDATE] GitHub Actions の定期実行をやめる
   - @zztkm
 - [ADD] .github ディレクトリに copilot-instructions.md を追加

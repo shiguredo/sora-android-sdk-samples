@@ -451,8 +451,6 @@ class SoraVideoChannel(
                 getStatsIntervalMSec = 5000
             }
 
-        audioSoftMuted = false
-        audioHardMuted = false
         mediaChannel =
             SoraMediaChannel(
                 context = context,
