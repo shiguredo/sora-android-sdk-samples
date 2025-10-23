@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.gson.Gson
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
@@ -26,6 +27,7 @@ import jp.shiguredo.sora.sample.databinding.ActivityVideoChatRoomBinding
 import jp.shiguredo.sora.sample.facade.SoraVideoChannel
 import jp.shiguredo.sora.sample.option.SoraFrameSize
 import jp.shiguredo.sora.sample.option.SoraRoleType
+import jp.shiguredo.sora.sample.ui.util.MicMuteController
 import jp.shiguredo.sora.sample.ui.util.RendererLayoutCalculator
 import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
@@ -33,6 +35,8 @@ import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.webrtc.SurfaceViewRenderer
 import java.util.UUID
 
@@ -314,6 +318,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
         oldAudioMode = audioManager.mode
         Log.d(TAG, "AudioManager mode change: $oldAudioMode => MODE_IN_COMMUNICATION(3)")
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+        Log.d(TAG, "AudioManager.isMicrophoneMute=${audioManager.isMicrophoneMute}")
     }
 
     override fun onPause() {
@@ -391,13 +396,13 @@ class VideoChatRoomActivity : AppCompatActivity() {
 
             override fun onCameraMuteStateChanged(
                 channel: SoraVideoChannel,
-                hardMuted: Boolean,
-                softMuted: Boolean,
+                cameraHardMuted: Boolean,
+                cameraSoftMuted: Boolean,
             ) {
-                if (hardMuted) {
+                if (cameraHardMuted) {
                     cameraState = CameraState.HARD_MUTED
                     ui?.showCameraOffButton()
-                } else if (softMuted) {
+                } else if (cameraSoftMuted) {
                     cameraState = CameraState.SOFT_MUTED
                     ui?.showCameraSoftOffButton()
                 } else {
@@ -457,21 +462,34 @@ class VideoChatRoomActivity : AppCompatActivity() {
         channel?.switchCamera()
     }
 
-    private var muted = false
+    // マイクボタンのトグル操作用コントローラー
+    // 必要になるまで(toggleMuted()実行)生成を遅延
+    private val micMuteController by lazy {
+        MicMuteController(
+            scope = lifecycleScope,
+            setSoftMute = { mute -> channel?.mute(mute) },
+            setHardMute = { muted -> setAudioHardMuted(muted) },
+            showMicOn = { ui?.showMicOnButton() },
+            showMicSoft = { ui?.showMicSoftMuteButton() },
+            showMicHard = { ui?.showMicHardMuteButton() },
+            log = { message -> Log.d(TAG, message) },
+        )
+    }
 
     private enum class CameraState { ON, SOFT_MUTED, HARD_MUTED }
 
     private var cameraState: CameraState = CameraState.ON
 
     internal fun toggleMuted() {
-        if (muted) {
-            ui?.showMuteButton()
-        } else {
-            ui?.showUnmuteButton()
-        }
-        muted = !muted
-        channel?.mute(muted)
+        micMuteController.toggleMuted()
     }
+
+    private suspend fun setAudioHardMuted(muted: Boolean): Boolean =
+        withContext(Dispatchers.Default) {
+            runCatching { channel?.setAudioHardMuted(muted) ?: true }
+                .onFailure { Log.e(TAG, "setAudioHardMuted failed", it) }
+                .getOrElse { false }
+        }
 
     internal fun toggleCamera() {
         // UI 更新は onCameraMuteStateChanged で行う
@@ -515,6 +533,8 @@ class VideoChatRoomActivityUI(
         binding.toggleCameraButton.setOnClickListener { activity.toggleCamera() }
         binding.switchCameraButton.setOnClickListener { activity.switchCamera() }
         binding.closeButton.setOnClickListener { activity.close() }
+        // 初期表示はマイク ON
+        showMicOnButton()
     }
 
     internal fun changeState(colorCode: String) {
@@ -538,13 +558,19 @@ class VideoChatRoomActivityUI(
         renderersLayoutCalculator.remove(renderer)
     }
 
-    internal fun showUnmuteButton() {
+    internal fun showMicOnButton() {
         binding.toggleMuteButton.setImageDrawable(
             resources.getDrawable(R.drawable.ic_mic_white_48dp, null),
         )
     }
 
-    internal fun showMuteButton() {
+    internal fun showMicSoftMuteButton() {
+        binding.toggleMuteButton.setImageDrawable(
+            resources.getDrawable(R.drawable.ic_mic_off_white_48dp, null),
+        )
+    }
+
+    internal fun showMicHardMuteButton() {
         binding.toggleMuteButton.setImageDrawable(
             resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null),
         )
