@@ -7,7 +7,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
 import android.view.WindowManager
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -39,6 +43,15 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     private var oldAudioMode: Int = AudioManager.MODE_INVALID
 
     private lateinit var binding: ActivityVoiceChatRoomBinding
+
+    // 音量表示用のデータ構造
+    private data class VolumeViewHolder(
+        val view: View,
+        val streamIdText: TextView,
+        val volumeMeter: View,
+    )
+
+    private val volumeViews = mutableMapOf<String, VolumeViewHolder>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -134,6 +147,7 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
     internal fun close() {
         Log.d(TAG, "close")
+
         disposeChannel()
         finish()
     }
@@ -166,6 +180,14 @@ class VoiceChatRoomActivity : AppCompatActivity() {
             ) {
                 Log.d(TAG, "onAttendeesCountUpdated")
             }
+
+            override fun onAudioVolumeUpdate(
+                channel: SoraAudioChannel,
+                streamId: String,
+                volume: Float,
+            ) {
+                updateVolumeDisplay(streamId, volume)
+            }
         }
 
     private fun connectChannel() {
@@ -196,5 +218,42 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     private fun disposeChannel() {
         Log.d(TAG, "disposeChannel")
         channel?.dispose()
+    }
+
+    private fun updateVolumeDisplay(
+        streamId: String,
+        volume: Float,
+    ) {
+        // まだビューが存在しない場合は作成
+        if (!volumeViews.containsKey(streamId)) {
+            val volumeView =
+                LayoutInflater.from(this).inflate(
+                    R.layout.audio_volume_item,
+                    binding.volumeContainer,
+                    false,
+                )
+            val streamIdText = volumeView.findViewById<TextView>(R.id.streamIdText)
+            val volumeMeter = volumeView.findViewById<View>(R.id.volumeMeter)
+
+            streamIdText.text = streamId
+
+            val viewHolder = VolumeViewHolder(volumeView, streamIdText, volumeMeter)
+            volumeViews[streamId] = viewHolder
+            binding.volumeContainer.addView(volumeView)
+        }
+
+        // 音量メーターを更新
+        volumeViews[streamId]?.let { holder ->
+            val layoutParams = holder.volumeMeter.layoutParams as LinearLayout.LayoutParams
+            layoutParams.weight = volume
+            holder.volumeMeter.layoutParams = layoutParams
+
+            // 残りの空白部分のウェイトを調整
+            val parentLayout = (holder.view as LinearLayout).getChildAt(1) as LinearLayout
+            val emptyView = parentLayout.getChildAt(1)
+            val emptyParams = emptyView.layoutParams as LinearLayout.LayoutParams
+            emptyParams.weight = 1f - volume
+            emptyView.layoutParams = emptyParams
+        }
     }
 }
