@@ -18,7 +18,7 @@ jvmTarget = "1.8"
 javaCompatibility = "1.8"
 
 # Sora SDK
-sora-android-sdk = "2025.3.0-canary.4"
+sora-android-sdk = "2025.3.0-canary.5"
 
 # Libraries
 libwebrtc = "141.7390.3.1"
