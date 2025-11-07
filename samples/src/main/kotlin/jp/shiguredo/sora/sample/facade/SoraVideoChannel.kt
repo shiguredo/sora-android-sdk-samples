@@ -313,8 +313,8 @@ class SoraVideoChannel(
     private val audioMuteApplier =
         object : Runnable {
             override fun run() {
-                val track = localAudioTrack
-                track?.setEnabled(!audioSoftMuted)
+//                val track = localAudioTrack
+//                track?.setEnabled(!audioSoftMuted)
             }
         }
 
@@ -530,6 +530,9 @@ class SoraVideoChannel(
 
     fun mute(mute: Boolean) {
         audioSoftMuted = mute
+        val track = localAudioTrack
+        track?.setEnabled(!audioSoftMuted)
+        SoraLogger.d(TAG, "mio AudioSoftWare muted: $audioSoftMuted")
         applyAudioMuteState()
     }
 
@@ -550,6 +553,7 @@ class SoraVideoChannel(
             } else {
                 SoraLogger.w(TAG, "setAudioRecordingPaused ignored or failed (muted=$muted)")
             }
+            SoraLogger.d(TAG, "mio setAudioRecordingPaused muted: $muted result: $result")
             result
         } else {
             audioHardMuted = muted
