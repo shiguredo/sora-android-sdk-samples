@@ -459,15 +459,16 @@ class SimulcastActivity : AppCompatActivity() {
     }
 
     // マイクボタンのトグル操作用コントローラー
-    // 必要になるまで(toggleMuted()実行)生成を遅延
+    // 必要になるまで生成を遅延
     private val micMuteController by lazy {
         MicMuteController(
             scope = lifecycleScope,
             setSoftMute = { mute -> channel?.mute(mute) },
             setHardMute = { muted -> setAudioHardMuted(muted) },
-            showMicOn = { ui?.showMicOnButton() },
-            showMicSoft = { ui?.showMicSoftMuteButton() },
-            showMicHard = { ui?.showMicHardMuteButton() },
+            showSoftMuteOn = { ui?.showSoftMuteOnButton() },
+            showSoftMuteOff = { ui?.showSoftMuteOffButton() },
+            showHardMuteOn = { ui?.showHardMuteOnButton() },
+            showHardMuteOff = { ui?.showHardMuteOffButton() },
             log = { message -> Log.d(TAG, message) },
         )
     }
@@ -476,8 +477,12 @@ class SimulcastActivity : AppCompatActivity() {
 
     private var cameraState: CameraState = CameraState.ON
 
-    internal fun toggleMuted() {
-        micMuteController.toggleMuted()
+    internal fun toggleSoftMuted() {
+        micMuteController.toggleSoftMuted()
+    }
+
+    internal fun toggleHardMuted() {
+        micMuteController.toggleHardMuted()
     }
 
     private suspend fun setAudioHardMuted(muted: Boolean): Boolean =
@@ -529,12 +534,14 @@ class SimulcastActivityUI(
                 width = SoraScreenUtil.size(activity).x - dp2px(20 * 2),
                 height = SoraScreenUtil.size(activity).y - dp2px(20 * 2 + 100),
             )
-        binding.toggleMuteButton.setOnClickListener { activity.toggleMuted() }
+        binding.toggleSoftMuteButton.setOnClickListener { activity.toggleSoftMuted() }
+        binding.toggleHardMuteButton.setOnClickListener { activity.toggleHardMuted() }
         binding.toggleCameraButton.setOnClickListener { activity.toggleCamera() }
         binding.switchCameraButton.setOnClickListener { activity.switchCamera() }
         binding.closeButton.setOnClickListener { activity.close() }
-        // 初期表示はマイク ON
-        showMicOnButton()
+        // 初期表示は両方ともマイク ON
+        showSoftMuteOffButton()
+        showHardMuteOffButton()
     }
 
     internal fun changeState(colorCode: String) {
@@ -558,20 +565,26 @@ class SimulcastActivityUI(
         renderersLayoutCalculator.remove(renderer)
     }
 
-    internal fun showMicOnButton() {
-        binding.toggleMuteButton.setImageDrawable(
+    internal fun showSoftMuteOffButton() {
+        binding.toggleSoftMuteButton.setImageDrawable(
             resources.getDrawable(R.drawable.ic_mic_white_48dp, null),
         )
     }
 
-    internal fun showMicSoftMuteButton() {
-        binding.toggleMuteButton.setImageDrawable(
+    internal fun showSoftMuteOnButton() {
+        binding.toggleSoftMuteButton.setImageDrawable(
             resources.getDrawable(R.drawable.ic_mic_off_white_48dp, null),
         )
     }
 
-    internal fun showMicHardMuteButton() {
-        binding.toggleMuteButton.setImageDrawable(
+    internal fun showHardMuteOffButton() {
+        binding.toggleHardMuteButton.setImageDrawable(
+            resources.getDrawable(R.drawable.ic_mic_white_48dp, null),
+        )
+    }
+
+    internal fun showHardMuteOnButton() {
+        binding.toggleHardMuteButton.setImageDrawable(
             resources.getDrawable(R.drawable.ic_mic_off_black_48dp, null),
         )
     }
