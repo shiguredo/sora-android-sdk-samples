@@ -13,6 +13,7 @@
 
 - [CHANGE] SoraVideoChannel の `hardMuted/softMuted` プロパティ名を `cameraHardMuted/cameraSoftMuted` に変更する破壊的変更
   - オーディオ用の `audioHardMuted/audioSoftMuted` プロパティを追加に伴いコードの可読性を上げるため
+  - @t-miya
 - [UPDATE] 前面・背面カメラの切り替え実行時に Capture の NULL チェックを追加する
   - 接続直後にカメラ切り替えボタンを押下した際に NullPointerException が発生することがあったため
   - @t-miya
@@ -49,6 +50,7 @@
   - ビデオチャットサンプル、サイマルキャストサンプル、スポットライトサンプルのマイクミュートボタンにハードミュートに切り替える機能を追加する
     - 音声配信 -> ソフトミュート(audioトラック無効) -> ハードミュート(録音停止) -> 音声配信 -> ... で切り替わるボタンを追加する
     - MicMuteController クラスを追加し、VideoChatRoomActivity/SimulcastActivity での音声ミュート切り替え処理を共通化する
+  - @t-miya
 - [ADD] マイクのミュート制御の共通モジュールとして MicMuteController を追加した
   - 排他制御によりボタン連打等による不整合を防ぐ
   - ミュートボタンを扱うアクティビティで利用できる
@@ -68,6 +70,7 @@
   - @miosakuma
 - [UPDATE] システム条件を更新する
   - Android Studio 2025.2.1 以降
+  - @zztkm
 - [ADD] ローカルの sora-android-sdk を Composite build で取り込めるようにする
   - gradle.properties.example にローカルの sora-android-sdk のソースコードのパスを指定する `soraSdkDirPath` キーを追加
   - settings.gradle.kts に `soraSdkDirPath` のパスを Composite build で取り込む処理を追加
