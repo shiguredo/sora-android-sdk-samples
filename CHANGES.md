@@ -9,7 +9,11 @@
 - FIX
   - バグ修正
 
-## 2025.3
+## 2025.4
+
+## sora-andoroid-sdk-2025.3.0
+
+**リリース日**: 2025-11-11
 
 - [CHANGE] SoraVideoChannel の `hardMuted/softMuted` プロパティ名を `cameraHardMuted/cameraSoftMuted` に変更する破壊的変更
   - オーディオ用の `audioHardMuted/audioSoftMuted` プロパティを追加に伴いコードの可読性を上げるため
