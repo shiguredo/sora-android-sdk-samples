@@ -11,6 +11,11 @@
 
 ## 2025.4
 
+### misc
+
+- [UPDATE] `Claude Assistant` を `shiguredo/claude-code-action` を使うように更新する
+  - @zztkm
+
 ## sora-andoroid-sdk-2025.3.0
 
 **リリース日**: 2025-11-11
