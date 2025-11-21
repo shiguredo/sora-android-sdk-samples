@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.databinding.ActivityVideoChatRoomSetupBinding
 import jp.shiguredo.sora.sample.option.SoraFrameSize
 
@@ -77,50 +76,49 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         binding.start.setOnClickListener { startVideoChat() }
 
         binding.videoEnabledSelection.name.text = "映像の有無"
-        binding.videoEnabledSelection.spinner.setItems(videoEnabledOptions)
+        binding.videoEnabledSelection.spinner.setDropdownItems(videoEnabledOptions)
         binding.videoCodecSelection.name.text = "映像コーデック"
-        binding.videoCodecSelection.spinner.setItems(videoCodecOptions)
+        binding.videoCodecSelection.spinner.setDropdownItems(videoCodecOptions)
         binding.audioEnabledSelection.name.text = "音声の有無"
-        binding.audioEnabledSelection.spinner.setItems(audioEnabledOptions)
+        binding.audioEnabledSelection.spinner.setDropdownItems(audioEnabledOptions)
         binding.audioCodecSelection.name.text = "音声コーデック"
-        binding.audioCodecSelection.spinner.setItems(audioCodecOptions)
+        binding.audioCodecSelection.spinner.setDropdownItems(audioCodecOptions)
         binding.audioBitRateSelection.name.text = "音声ビットレート"
-        binding.audioBitRateSelection.spinner.setItems(audioBitRateOptions)
+        binding.audioBitRateSelection.spinner.setDropdownItems(audioBitRateOptions)
         binding.audioStereoSelection.name.text = "ステレオ音声"
-        binding.audioStereoSelection.spinner.setItems(audioStereoOptions)
+        binding.audioStereoSelection.spinner.setDropdownItems(audioStereoOptions)
         binding.roleSelection.name.text = "ロール"
-        binding.roleSelection.spinner.setItems(roleOptions)
+        binding.roleSelection.spinner.setDropdownItems(roleOptions)
         binding.videoBitRateSelection.name.text = "映像ビットレート"
-        binding.videoBitRateSelection.spinner.setItems(videoBitRateOptions)
+        binding.videoBitRateSelection.spinner.setDropdownItems(videoBitRateOptions)
         binding.videoSizeSelection.name.text = "映像サイズ"
-        binding.videoSizeSelection.spinner.setItems(videoSizeOptions)
-        binding.videoSizeSelection.spinner.selectedIndex = 3
+        binding.videoSizeSelection.spinner.setDropdownItems(videoSizeOptions, defaultIndex = 3)
         binding.vp9ProfileIdSelection.name.text = "VP9 プロファイル"
-        binding.vp9ProfileIdSelection.spinner.setItems(vp9ProfileIdOptions)
+        binding.vp9ProfileIdSelection.spinner.setDropdownItems(vp9ProfileIdOptions)
         binding.av1ProfileSelection.name.text = "AV1 プロファイル"
-        binding.av1ProfileSelection.spinner.setItems(av1ProfileOptions)
+        binding.av1ProfileSelection.spinner.setDropdownItems(av1ProfileOptions)
         binding.h264ProfileLevelIdSelection.name.text = "H264 プロファイル"
-        binding.h264ProfileLevelIdSelection.spinner.setItems(h264ProfileLevelIdOptions)
+        binding.h264ProfileLevelIdSelection.spinner.setDropdownItems(h264ProfileLevelIdOptions)
         binding.fpsSelection.name.text = "フレームレート"
-        binding.fpsSelection.spinner.setItems(fpsOptions)
+        binding.fpsSelection.spinner.setDropdownItems(fpsOptions)
         binding.resolutionChangeSelection.name.text = "解像度の変更"
-        binding.resolutionChangeSelection.spinner.setItems(resolutionChangeOptions)
+        binding.resolutionChangeSelection.spinner.setDropdownItems(resolutionChangeOptions)
         binding.resolutionAdjustmentSelection.name.text = "解像度の調整"
-        binding.resolutionAdjustmentSelection.spinner.setItems(resolutionAdjustmentOptions)
+        binding.resolutionAdjustmentSelection.spinner.setDropdownItems(resolutionAdjustmentOptions)
         binding.cameraFacingSelection.name.text = "カメラ"
-        binding.cameraFacingSelection.spinner.setItems(cameraFacingOptions)
+        binding.cameraFacingSelection.spinner.setDropdownItems(cameraFacingOptions)
         binding.clientIdSelection.name.text = "クライアント ID"
-        binding.clientIdSelection.spinner.setItems(clientIdOptions)
+        binding.clientIdSelection.spinner.setDropdownItems(clientIdOptions)
         binding.bundleIdSelection.name.text = "バンドル ID"
-        binding.bundleIdSelection.spinner.setItems(bundleIdOptions)
+        binding.bundleIdSelection.spinner.setDropdownItems(bundleIdOptions)
         binding.dataChannelSignalingSelection.name.text = "データチャネル"
-        binding.dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
+        binding.dataChannelSignalingSelection.spinner.setDropdownItems(dataChannelSignalingOptions)
         binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
-        binding.ignoreDisconnectWebSocketSelection.spinner.setItems(ignoreDisconnectWebSocketOptions)
+        binding.ignoreDisconnectWebSocketSelection.spinner.setDropdownItems(ignoreDisconnectWebSocketOptions)
         binding.audioStreamingLanguageCodeSelection.name.text = "文字変換言語コード"
-        binding.audioStreamingLanguageCodeSelection.spinner.setItems(audioStreamingLanguageCodeOptions)
+        binding.audioStreamingLanguageCodeSelection.spinner.setDropdownItems(audioStreamingLanguageCodeOptions)
         binding.initialCameraSelection.name.text = "開始時カメラ"
-        binding.initialCameraSelection.spinner.setItems(initialCameraOptions)
+        binding.initialCameraSelection.spinner.setDropdownItems(initialCameraOptions)
     }
 
     private fun startVideoChat() {
@@ -130,28 +128,28 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
             return
         }
 
-        val role = selectedItem(binding.roleSelection.spinner)
-        val videoCodec = selectedItem(binding.videoCodecSelection.spinner)
-        val videoEnabled = selectedItem(binding.videoEnabledSelection.spinner)
-        val audioCodec = selectedItem(binding.audioCodecSelection.spinner)
-        val audioEnabled = selectedItem(binding.audioEnabledSelection.spinner)
-        val audioBitRate = selectedItem(binding.audioBitRateSelection.spinner)
-        val audioStereo = selectedItem(binding.audioStereoSelection.spinner)
-        val videoBitRate = selectedItem(binding.videoBitRateSelection.spinner)
-        val videoSize = selectedItem(binding.videoSizeSelection.spinner)
-        val vp9ProfileId = selectedItem(binding.vp9ProfileIdSelection.spinner)
-        val av1Profile = selectedItem(binding.av1ProfileSelection.spinner)
-        val h264ProfileLevelId = selectedItem(binding.h264ProfileLevelIdSelection.spinner)
-        val fps = selectedItem(binding.fpsSelection.spinner)
-        val resolutionChange = selectedItem(binding.resolutionChangeSelection.spinner)
-        val resolutionAdjustment = selectedItem(binding.resolutionAdjustmentSelection.spinner)
-        val cameraFacing = selectedItem(binding.cameraFacingSelection.spinner)
-        val clientId = selectedItem(binding.clientIdSelection.spinner)
-        val bundleId = selectedItem(binding.bundleIdSelection.spinner)
-        val dataChannelSignaling = selectedItem(binding.dataChannelSignalingSelection.spinner)
-        val ignoreDisconnectWebSocket = selectedItem(binding.ignoreDisconnectWebSocketSelection.spinner)
-        val audioStreamingLanguageCode = selectedItem(binding.audioStreamingLanguageCodeSelection.spinner)
-        val initialCamera = selectedItem(binding.initialCameraSelection.spinner)
+        val role = binding.roleSelection.spinner.selectedItem()
+        val videoCodec = binding.videoCodecSelection.spinner.selectedItem()
+        val videoEnabled = binding.videoEnabledSelection.spinner.selectedItem()
+        val audioCodec = binding.audioCodecSelection.spinner.selectedItem()
+        val audioEnabled = binding.audioEnabledSelection.spinner.selectedItem()
+        val audioBitRate = binding.audioBitRateSelection.spinner.selectedItem()
+        val audioStereo = binding.audioStereoSelection.spinner.selectedItem()
+        val videoBitRate = binding.videoBitRateSelection.spinner.selectedItem()
+        val videoSize = binding.videoSizeSelection.spinner.selectedItem()
+        val vp9ProfileId = binding.vp9ProfileIdSelection.spinner.selectedItem()
+        val av1Profile = binding.av1ProfileSelection.spinner.selectedItem()
+        val h264ProfileLevelId = binding.h264ProfileLevelIdSelection.spinner.selectedItem()
+        val fps = binding.fpsSelection.spinner.selectedItem()
+        val resolutionChange = binding.resolutionChangeSelection.spinner.selectedItem()
+        val resolutionAdjustment = binding.resolutionAdjustmentSelection.spinner.selectedItem()
+        val cameraFacing = binding.cameraFacingSelection.spinner.selectedItem()
+        val clientId = binding.clientIdSelection.spinner.selectedItem()
+        val bundleId = binding.bundleIdSelection.spinner.selectedItem()
+        val dataChannelSignaling = binding.dataChannelSignalingSelection.spinner.selectedItem()
+        val ignoreDisconnectWebSocket = binding.ignoreDisconnectWebSocketSelection.spinner.selectedItem()
+        val audioStreamingLanguageCode = binding.audioStreamingLanguageCodeSelection.spinner.selectedItem()
+        val initialCamera = binding.initialCameraSelection.spinner.selectedItem()
 
         val intent = Intent(this, VideoChatRoomActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
@@ -180,8 +178,6 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
 
         startActivity(intent)
     }
-
-    private fun selectedItem(spinner: MaterialSpinner): String = spinner.getItems<String>()[spinner.selectedIndex]
 
     private fun showInputError() {
         Snackbar
