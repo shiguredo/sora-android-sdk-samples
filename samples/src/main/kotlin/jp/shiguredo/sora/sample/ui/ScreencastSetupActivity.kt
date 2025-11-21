@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.databinding.ActivityScreencastSetupBinding
@@ -33,14 +32,14 @@ class ScreencastSetupActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.videoCodecSelection.name.text = "映像コーデック"
-        binding.videoCodecSelection.spinner.setItems(videoCodecOptions)
+        binding.videoCodecSelection.spinner.setDropdownItems(videoCodecOptions)
         binding.audioCodecSelection.name.text = "音声コーデック"
-        binding.audioCodecSelection.spinner.setItems(audioCodecOptions)
+        binding.audioCodecSelection.spinner.setDropdownItems(audioCodecOptions)
 
         binding.start.setOnClickListener {
             val channelName = binding.channelNameInput.text.toString()
-            val videoCodec = selectedItem(binding.videoCodecSelection.spinner)
-            val audioCodec = selectedItem(binding.audioCodecSelection.spinner)
+            val videoCodec = binding.videoCodecSelection.spinner.selectedItem()
+            val audioCodec = binding.audioCodecSelection.spinner.selectedItem()
             startScreencast(channelName, videoCodec, audioCodec)
         }
     }
@@ -93,6 +92,4 @@ class ScreencastSetupActivity : AppCompatActivity() {
          * すでに選ばれたアプリに遷移しているためユーザーの視界に入ることはない
          */
     }
-
-    private fun selectedItem(spinner: MaterialSpinner): String = spinner.getItems<String>()[spinner.selectedIndex]
 }
