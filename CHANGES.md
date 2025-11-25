@@ -54,7 +54,8 @@
     - `productFlavors { create("free") { versionNameSuffix = "-free" } }` のブロックを削除
   - 利用していない flavor でビルドバリアントが増えていたため、Quickstart アプリと同じ構成に揃えて運用を簡素化するため
   - @zztkm
-- [CHANGE] 接続メニューのドロップダウンメニュー の UI 部品を Exposed dropdown menu に置き換える
+- [UPDATE] 接続メニューのドロップダウンメニュー の UI 部品を Exposed dropdown menu に置き換える
+  - Exposed dropdown menu 利用のためテーマを MaterialComponents に変更する
   - @t-miya
 - [ADD] オーディオ(マイク)のハードミュート機能を追加する
   - 実機のおいてマイクのインジケータが消灯する状態にできる

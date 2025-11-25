@@ -55,41 +55,45 @@ class SimulcastSetupActivity : AppCompatActivity() {
         binding.start.setOnClickListener { startVideoChat() }
 
         binding.videoEnabledSelection.name.text = "映像の有無"
-        binding.videoEnabledSelection.spinner.setDropdownItems(videoEnabledOptions)
         binding.initialCameraSelection.name.text = "開始時カメラ"
-        binding.initialCameraSelection.spinner.setDropdownItems(initialCameraOptions)
         binding.videoCodecSelection.name.text = "映像コーデック"
-        binding.videoCodecSelection.spinner.setDropdownItems(videoCodecOptions)
         binding.audioEnabledSelection.name.text = "音声の有無"
-        binding.audioEnabledSelection.spinner.setDropdownItems(audioEnabledOptions)
         binding.audioCodecSelection.name.text = "音声コーデック"
-        binding.audioCodecSelection.spinner.setDropdownItems(audioCodecOptions)
         binding.audioBitRateSelection.name.text = "音声ビットレート"
-        binding.audioBitRateSelection.spinner.setDropdownItems(audioBitRateOptions)
         binding.audioStereoSelection.name.text = "ステレオ音声"
-        binding.audioStereoSelection.spinner.setDropdownItems(audioStereoOptions)
         binding.roleSelection.name.text = "ロール"
-        binding.roleSelection.spinner.setDropdownItems(roleOptions)
         binding.videoBitRateSelection.name.text = "映像ビットレート"
-        binding.videoBitRateSelection.spinner.setDropdownItems(videoBitRateOptions, defaultIndex = 6)
         binding.videoSizeSelection.name.text = "映像サイズ"
-        binding.videoSizeSelection.spinner.setDropdownItems(videoSizeOptions, defaultIndex = 5)
         binding.fpsSelection.name.text = "フレームレート"
-        binding.fpsSelection.spinner.setDropdownItems(fpsOptions)
         binding.resolutionChangeSelection.name.text = "解像度の変更"
-        binding.resolutionChangeSelection.spinner.setDropdownItems(resolutionChangeOptions)
         binding.resolutionAdjustmentSelection.name.text = "解像度の調整"
-        binding.resolutionAdjustmentSelection.spinner.setDropdownItems(resolutionAdjustmentOptions)
         binding.simulcastRidSelection.name.text = "受信する rid"
-        binding.simulcastRidSelection.spinner.setDropdownItems(simulcastRidOptions)
         binding.clientIdSelection.name.text = "クライアント ID"
-        binding.clientIdSelection.spinner.setDropdownItems(clientIdOptions)
         binding.bundleIdSelection.name.text = "バンドル ID"
-        binding.bundleIdSelection.spinner.setDropdownItems(bundleIdOptions)
         binding.dataChannelSignalingSelection.name.text = "データチャネル"
-        binding.dataChannelSignalingSelection.spinner.setDropdownItems(dataChannelSignalingOptions)
         binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
-        binding.ignoreDisconnectWebSocketSelection.spinner.setDropdownItems(ignoreDisconnectWebSocketOptions)
+        initializeDropdowns(
+            listOf(
+                DropdownConfig(binding.videoEnabledSelection.spinner, videoEnabledOptions),
+                DropdownConfig(binding.initialCameraSelection.spinner, initialCameraOptions),
+                DropdownConfig(binding.videoCodecSelection.spinner, videoCodecOptions),
+                DropdownConfig(binding.audioEnabledSelection.spinner, audioEnabledOptions),
+                DropdownConfig(binding.audioCodecSelection.spinner, audioCodecOptions),
+                DropdownConfig(binding.audioBitRateSelection.spinner, audioBitRateOptions),
+                DropdownConfig(binding.audioStereoSelection.spinner, audioStereoOptions),
+                DropdownConfig(binding.roleSelection.spinner, roleOptions),
+                DropdownConfig(binding.videoBitRateSelection.spinner, videoBitRateOptions, defaultIndex = 6),
+                DropdownConfig(binding.videoSizeSelection.spinner, videoSizeOptions, defaultIndex = 5),
+                DropdownConfig(binding.fpsSelection.spinner, fpsOptions),
+                DropdownConfig(binding.resolutionChangeSelection.spinner, resolutionChangeOptions),
+                DropdownConfig(binding.resolutionAdjustmentSelection.spinner, resolutionAdjustmentOptions),
+                DropdownConfig(binding.simulcastRidSelection.spinner, simulcastRidOptions),
+                DropdownConfig(binding.clientIdSelection.spinner, clientIdOptions),
+                DropdownConfig(binding.bundleIdSelection.spinner, bundleIdOptions),
+                DropdownConfig(binding.dataChannelSignalingSelection.spinner, dataChannelSignalingOptions),
+                DropdownConfig(binding.ignoreDisconnectWebSocketSelection.spinner, ignoreDisconnectWebSocketOptions),
+            ),
+        )
     }
 
     private fun startVideoChat() {

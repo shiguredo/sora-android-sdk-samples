@@ -32,9 +32,13 @@ class ScreencastSetupActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.videoCodecSelection.name.text = "映像コーデック"
-        binding.videoCodecSelection.spinner.setDropdownItems(videoCodecOptions)
         binding.audioCodecSelection.name.text = "音声コーデック"
-        binding.audioCodecSelection.spinner.setDropdownItems(audioCodecOptions)
+        initializeDropdowns(
+            listOf(
+                DropdownConfig(binding.videoCodecSelection.spinner, videoCodecOptions),
+                DropdownConfig(binding.audioCodecSelection.spinner, audioCodecOptions),
+            ),
+        )
 
         binding.start.setOnClickListener {
             val channelName = binding.channelNameInput.text.toString()

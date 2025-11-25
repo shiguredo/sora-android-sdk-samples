@@ -68,43 +68,47 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         binding.start.setOnClickListener { startSpotlightChat() }
 
         binding.spotlightNumberSelection.name.text = "スポットライト数"
-        binding.spotlightNumberSelection.spinner.setDropdownItems(spotlightNumberOptions)
         binding.roleSelection.name.text = "ロール"
-        binding.roleSelection.spinner.setDropdownItems(roleOptions)
         binding.spotlightFocusRidSelection.name.text = "フォーカス時の rid"
-        binding.spotlightFocusRidSelection.spinner.setDropdownItems(spotlightFocusRidOptions)
         binding.spotlightUnfocusRidSelection.name.text = "非フォーカス時の rid"
-        binding.spotlightUnfocusRidSelection.spinner.setDropdownItems(spotlightUnfocusRidOptions)
         binding.simulcastEnabledSelection.name.text = "サイマルキャスト"
-        binding.simulcastEnabledSelection.spinner.setDropdownItems(simulcastEnabledOptions)
         binding.videoCodecSelection.name.text = "映像コーデック"
-        binding.videoCodecSelection.spinner.setDropdownItems(videoCodecOptions)
         binding.videoEnabledSelection.name.text = "映像の有無"
-        binding.videoEnabledSelection.spinner.setDropdownItems(videoEnabledOptions)
         binding.audioCodecSelection.name.text = "音声コーデック"
-        binding.audioCodecSelection.spinner.setDropdownItems(audioCodecOptions)
         binding.audioEnabledSelection.name.text = "音声の有無"
-        binding.audioEnabledSelection.spinner.setDropdownItems(audioEnabledOptions)
         binding.audioBitRateSelection.name.text = "音声ビットレート"
-        binding.audioBitRateSelection.spinner.setDropdownItems(audioBitRateOptions)
         binding.videoBitRateSelection.name.text = "映像ビットレート"
-        binding.videoBitRateSelection.spinner.setDropdownItems(videoBitRateOptions)
         binding.videoSizeSelection.name.text = "映像サイズ"
-        binding.videoSizeSelection.spinner.setDropdownItems(videoSizeOptions, defaultIndex = 3)
         binding.resolutionChangeSelection.name.text = "解像度の変更"
-        binding.resolutionChangeSelection.spinner.setDropdownItems(resolutionChangeOptions)
         binding.resolutionAdjustmentSelection.name.text = "解像度の調整"
-        binding.resolutionAdjustmentSelection.spinner.setDropdownItems(resolutionAdjustmentOptions)
         binding.fpsSelection.name.text = "フレームレート"
-        binding.fpsSelection.spinner.setDropdownItems(fpsOptions)
         binding.clientIdSelection.name.text = "クライアント ID"
-        binding.clientIdSelection.spinner.setDropdownItems(clientIdOptions)
         binding.bundleIdSelection.name.text = "バンドル ID"
-        binding.bundleIdSelection.spinner.setDropdownItems(bundleIdOptions)
         binding.dataChannelSignalingSelection.name.text = "データチャネル"
-        binding.dataChannelSignalingSelection.spinner.setDropdownItems(dataChannelSignalingOptions)
         binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
-        binding.ignoreDisconnectWebSocketSelection.spinner.setDropdownItems(ignoreDisconnectWebSocketOptions)
+        initializeDropdowns(
+            listOf(
+                DropdownConfig(binding.spotlightNumberSelection.spinner, spotlightNumberOptions),
+                DropdownConfig(binding.roleSelection.spinner, roleOptions),
+                DropdownConfig(binding.spotlightFocusRidSelection.spinner, spotlightFocusRidOptions),
+                DropdownConfig(binding.spotlightUnfocusRidSelection.spinner, spotlightUnfocusRidOptions),
+                DropdownConfig(binding.simulcastEnabledSelection.spinner, simulcastEnabledOptions),
+                DropdownConfig(binding.videoCodecSelection.spinner, videoCodecOptions),
+                DropdownConfig(binding.videoEnabledSelection.spinner, videoEnabledOptions),
+                DropdownConfig(binding.audioCodecSelection.spinner, audioCodecOptions),
+                DropdownConfig(binding.audioEnabledSelection.spinner, audioEnabledOptions),
+                DropdownConfig(binding.audioBitRateSelection.spinner, audioBitRateOptions),
+                DropdownConfig(binding.videoBitRateSelection.spinner, videoBitRateOptions),
+                DropdownConfig(binding.videoSizeSelection.spinner, videoSizeOptions, defaultIndex = 3),
+                DropdownConfig(binding.resolutionChangeSelection.spinner, resolutionChangeOptions),
+                DropdownConfig(binding.resolutionAdjustmentSelection.spinner, resolutionAdjustmentOptions),
+                DropdownConfig(binding.fpsSelection.spinner, fpsOptions),
+                DropdownConfig(binding.clientIdSelection.spinner, clientIdOptions),
+                DropdownConfig(binding.bundleIdSelection.spinner, bundleIdOptions),
+                DropdownConfig(binding.dataChannelSignalingSelection.spinner, dataChannelSignalingOptions),
+                DropdownConfig(binding.ignoreDisconnectWebSocketSelection.spinner, ignoreDisconnectWebSocketOptions),
+            ),
+        )
     }
 
     private fun startSpotlightChat() {

@@ -40,15 +40,19 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.start.setOnClickListener { startVoiceChat() }
         binding.audioCodecSelection.name.text = "音声コーデック"
-        binding.audioCodecSelection.spinner.setDropdownItems(audioCodecOptions)
         binding.audioBitRateSelection.name.text = "音声ビットレート"
-        binding.audioBitRateSelection.spinner.setDropdownItems(audioBitRateOptions)
         binding.roleSelection.name.text = "ロール"
-        binding.roleSelection.spinner.setDropdownItems(roleOptions)
         binding.dataChannelSignalingSelection.name.text = "データチャネル"
-        binding.dataChannelSignalingSelection.spinner.setDropdownItems(dataChannelSignalingOptions)
         binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
-        binding.ignoreDisconnectWebSocketSelection.spinner.setDropdownItems(ignoreDisconnectWebSocketOptions)
+        initializeDropdowns(
+            listOf(
+                DropdownConfig(binding.audioCodecSelection.spinner, audioCodecOptions),
+                DropdownConfig(binding.audioBitRateSelection.spinner, audioBitRateOptions),
+                DropdownConfig(binding.roleSelection.spinner, roleOptions),
+                DropdownConfig(binding.dataChannelSignalingSelection.spinner, dataChannelSignalingOptions),
+                DropdownConfig(binding.ignoreDisconnectWebSocketSelection.spinner, ignoreDisconnectWebSocketOptions),
+            ),
+        )
     }
 
     private fun startVoiceChat() {

@@ -76,49 +76,54 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         binding.start.setOnClickListener { startVideoChat() }
 
         binding.videoEnabledSelection.name.text = "映像の有無"
-        binding.videoEnabledSelection.spinner.setDropdownItems(videoEnabledOptions)
         binding.videoCodecSelection.name.text = "映像コーデック"
-        binding.videoCodecSelection.spinner.setDropdownItems(videoCodecOptions)
         binding.audioEnabledSelection.name.text = "音声の有無"
-        binding.audioEnabledSelection.spinner.setDropdownItems(audioEnabledOptions)
         binding.audioCodecSelection.name.text = "音声コーデック"
-        binding.audioCodecSelection.spinner.setDropdownItems(audioCodecOptions)
         binding.audioBitRateSelection.name.text = "音声ビットレート"
-        binding.audioBitRateSelection.spinner.setDropdownItems(audioBitRateOptions)
         binding.audioStereoSelection.name.text = "ステレオ音声"
-        binding.audioStereoSelection.spinner.setDropdownItems(audioStereoOptions)
         binding.roleSelection.name.text = "ロール"
-        binding.roleSelection.spinner.setDropdownItems(roleOptions)
         binding.videoBitRateSelection.name.text = "映像ビットレート"
-        binding.videoBitRateSelection.spinner.setDropdownItems(videoBitRateOptions)
         binding.videoSizeSelection.name.text = "映像サイズ"
-        binding.videoSizeSelection.spinner.setDropdownItems(videoSizeOptions, defaultIndex = 3)
         binding.vp9ProfileIdSelection.name.text = "VP9 プロファイル"
-        binding.vp9ProfileIdSelection.spinner.setDropdownItems(vp9ProfileIdOptions)
         binding.av1ProfileSelection.name.text = "AV1 プロファイル"
-        binding.av1ProfileSelection.spinner.setDropdownItems(av1ProfileOptions)
         binding.h264ProfileLevelIdSelection.name.text = "H264 プロファイル"
-        binding.h264ProfileLevelIdSelection.spinner.setDropdownItems(h264ProfileLevelIdOptions)
         binding.fpsSelection.name.text = "フレームレート"
-        binding.fpsSelection.spinner.setDropdownItems(fpsOptions)
         binding.resolutionChangeSelection.name.text = "解像度の変更"
-        binding.resolutionChangeSelection.spinner.setDropdownItems(resolutionChangeOptions)
         binding.resolutionAdjustmentSelection.name.text = "解像度の調整"
-        binding.resolutionAdjustmentSelection.spinner.setDropdownItems(resolutionAdjustmentOptions)
         binding.cameraFacingSelection.name.text = "カメラ"
-        binding.cameraFacingSelection.spinner.setDropdownItems(cameraFacingOptions)
         binding.clientIdSelection.name.text = "クライアント ID"
-        binding.clientIdSelection.spinner.setDropdownItems(clientIdOptions)
         binding.bundleIdSelection.name.text = "バンドル ID"
-        binding.bundleIdSelection.spinner.setDropdownItems(bundleIdOptions)
         binding.dataChannelSignalingSelection.name.text = "データチャネル"
-        binding.dataChannelSignalingSelection.spinner.setDropdownItems(dataChannelSignalingOptions)
         binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
-        binding.ignoreDisconnectWebSocketSelection.spinner.setDropdownItems(ignoreDisconnectWebSocketOptions)
         binding.audioStreamingLanguageCodeSelection.name.text = "文字変換言語コード"
-        binding.audioStreamingLanguageCodeSelection.spinner.setDropdownItems(audioStreamingLanguageCodeOptions)
         binding.initialCameraSelection.name.text = "開始時カメラ"
-        binding.initialCameraSelection.spinner.setDropdownItems(initialCameraOptions)
+
+        initializeDropdowns(
+            listOf(
+                DropdownConfig(binding.videoEnabledSelection.spinner, videoEnabledOptions),
+                DropdownConfig(binding.videoCodecSelection.spinner, videoCodecOptions),
+                DropdownConfig(binding.audioEnabledSelection.spinner, audioEnabledOptions),
+                DropdownConfig(binding.audioCodecSelection.spinner, audioCodecOptions),
+                DropdownConfig(binding.audioBitRateSelection.spinner, audioBitRateOptions),
+                DropdownConfig(binding.audioStereoSelection.spinner, audioStereoOptions),
+                DropdownConfig(binding.roleSelection.spinner, roleOptions),
+                DropdownConfig(binding.videoBitRateSelection.spinner, videoBitRateOptions),
+                DropdownConfig(binding.videoSizeSelection.spinner, videoSizeOptions, defaultIndex = 3),
+                DropdownConfig(binding.vp9ProfileIdSelection.spinner, vp9ProfileIdOptions),
+                DropdownConfig(binding.av1ProfileSelection.spinner, av1ProfileOptions),
+                DropdownConfig(binding.h264ProfileLevelIdSelection.spinner, h264ProfileLevelIdOptions),
+                DropdownConfig(binding.fpsSelection.spinner, fpsOptions),
+                DropdownConfig(binding.resolutionChangeSelection.spinner, resolutionChangeOptions),
+                DropdownConfig(binding.resolutionAdjustmentSelection.spinner, resolutionAdjustmentOptions),
+                DropdownConfig(binding.cameraFacingSelection.spinner, cameraFacingOptions),
+                DropdownConfig(binding.clientIdSelection.spinner, clientIdOptions),
+                DropdownConfig(binding.bundleIdSelection.spinner, bundleIdOptions),
+                DropdownConfig(binding.dataChannelSignalingSelection.spinner, dataChannelSignalingOptions),
+                DropdownConfig(binding.ignoreDisconnectWebSocketSelection.spinner, ignoreDisconnectWebSocketOptions),
+                DropdownConfig(binding.audioStreamingLanguageCodeSelection.spinner, audioStreamingLanguageCodeOptions),
+                DropdownConfig(binding.initialCameraSelection.spinner, initialCameraOptions),
+            ),
+        )
     }
 
     private fun startVideoChat() {
