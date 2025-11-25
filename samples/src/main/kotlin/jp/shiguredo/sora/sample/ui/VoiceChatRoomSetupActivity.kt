@@ -44,7 +44,7 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
         binding.roleSelection.name.text = "ロール"
         binding.dataChannelSignalingSelection.name.text = "データチャネル"
         binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
-        initializeDropdowns(
+        setupDropdowns(
             listOf(
                 DropdownConfig(binding.audioCodecSelection.spinner, audioCodecOptions),
                 DropdownConfig(binding.audioBitRateSelection.spinner, audioBitRateOptions),

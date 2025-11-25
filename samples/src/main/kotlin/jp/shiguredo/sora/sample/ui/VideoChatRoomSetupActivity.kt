@@ -98,7 +98,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         binding.audioStreamingLanguageCodeSelection.name.text = "文字変換言語コード"
         binding.initialCameraSelection.name.text = "開始時カメラ"
 
-        initializeDropdowns(
+        setupDropdowns(
             listOf(
                 DropdownConfig(binding.videoEnabledSelection.spinner, videoEnabledOptions),
                 DropdownConfig(binding.videoCodecSelection.spinner, videoCodecOptions),

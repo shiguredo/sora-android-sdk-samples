@@ -72,7 +72,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
         binding.bundleIdSelection.name.text = "バンドル ID"
         binding.dataChannelSignalingSelection.name.text = "データチャネル"
         binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
-        initializeDropdowns(
+        setupDropdowns(
             listOf(
                 DropdownConfig(binding.videoEnabledSelection.spinner, videoEnabledOptions),
                 DropdownConfig(binding.initialCameraSelection.spinner, initialCameraOptions),

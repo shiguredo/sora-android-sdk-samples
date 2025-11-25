@@ -86,7 +86,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         binding.bundleIdSelection.name.text = "バンドル ID"
         binding.dataChannelSignalingSelection.name.text = "データチャネル"
         binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
-        initializeDropdowns(
+        setupDropdowns(
             listOf(
                 DropdownConfig(binding.spotlightNumberSelection.spinner, spotlightNumberOptions),
                 DropdownConfig(binding.roleSelection.spinner, roleOptions),

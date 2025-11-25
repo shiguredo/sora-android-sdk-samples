@@ -38,10 +38,19 @@ fun AutoCompleteTextView.initializeDropdown(
 /**
  * ドロップダウンメニューとアイテムリストを一括で初期化する
  */
-fun initializeDropdowns(dropdowns: List<DropdownConfig>) {
+fun setupDropdowns(dropdowns: List<DropdownConfig>) {
     dropdowns.forEach { config ->
         config.view.initializeDropdown(config.items, config.defaultIndex)
     }
 }
 
-fun AutoCompleteTextView.selectedItem(): String = text?.toString().orEmpty()
+/**
+ * ドロップダウンのアイテム選択時処理
+ * (ほぼないことだが)空文字の場合は代わりにメニューアイテムの先頭要素を返す
+ */
+fun AutoCompleteTextView.selectedItem(): String {
+    val current = text?.toString()?.trim().orEmpty()
+    if (current.isNotEmpty()) return current
+    val first = adapter?.getItem(0)?.toString()
+    return first.orEmpty()
+}

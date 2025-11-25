@@ -33,7 +33,7 @@ class ScreencastSetupActivity : AppCompatActivity() {
 
         binding.videoCodecSelection.name.text = "映像コーデック"
         binding.audioCodecSelection.name.text = "音声コーデック"
-        initializeDropdowns(
+        setupDropdowns(
             listOf(
                 DropdownConfig(binding.videoCodecSelection.spinner, videoCodecOptions),
                 DropdownConfig(binding.audioCodecSelection.spinner, audioCodecOptions),
