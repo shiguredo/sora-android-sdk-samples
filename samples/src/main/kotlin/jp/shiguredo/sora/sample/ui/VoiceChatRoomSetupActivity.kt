@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.databinding.ActivityVoiceChatRoomSetupBinding
 
 class VoiceChatRoomSetupActivity : AppCompatActivity() {
@@ -41,15 +40,19 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.start.setOnClickListener { startVoiceChat() }
         binding.audioCodecSelection.name.text = "音声コーデック"
-        binding.audioCodecSelection.spinner.setItems(audioCodecOptions)
         binding.audioBitRateSelection.name.text = "音声ビットレート"
-        binding.audioBitRateSelection.spinner.setItems(audioBitRateOptions)
         binding.roleSelection.name.text = "ロール"
-        binding.roleSelection.spinner.setItems(roleOptions)
         binding.dataChannelSignalingSelection.name.text = "データチャネル"
-        binding.dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
         binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
-        binding.ignoreDisconnectWebSocketSelection.spinner.setItems(ignoreDisconnectWebSocketOptions)
+        setupDropdowns(
+            listOf(
+                DropdownConfig(binding.audioCodecSelection.spinner, audioCodecOptions),
+                DropdownConfig(binding.audioBitRateSelection.spinner, audioBitRateOptions),
+                DropdownConfig(binding.roleSelection.spinner, roleOptions),
+                DropdownConfig(binding.dataChannelSignalingSelection.spinner, dataChannelSignalingOptions),
+                DropdownConfig(binding.ignoreDisconnectWebSocketSelection.spinner, ignoreDisconnectWebSocketOptions),
+            ),
+        )
     }
 
     private fun startVoiceChat() {
@@ -59,11 +62,11 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
             return
         }
 
-        val role = selectedItem(binding.roleSelection.spinner)
-        val audioCodec = selectedItem(binding.audioCodecSelection.spinner)
-        val audioBitRate = selectedItem(binding.audioBitRateSelection.spinner)
-        val dataChannelSignaling = selectedItem(binding.dataChannelSignalingSelection.spinner)
-        val ignoreDisconnectWebSocket = selectedItem(binding.ignoreDisconnectWebSocketSelection.spinner)
+        val role = binding.roleSelection.spinner.selectedItem()
+        val audioCodec = binding.audioCodecSelection.spinner.selectedItem()
+        val audioBitRate = binding.audioBitRateSelection.spinner.selectedItem()
+        val dataChannelSignaling = binding.dataChannelSignalingSelection.spinner.selectedItem()
+        val ignoreDisconnectWebSocket = binding.ignoreDisconnectWebSocketSelection.spinner.selectedItem()
 
         val intent = Intent(this, VoiceChatRoomActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
@@ -75,8 +78,6 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
 
         startActivity(intent)
     }
-
-    private fun selectedItem(spinner: MaterialSpinner): String = spinner.getItems<String>()[spinner.selectedIndex]
 
     private fun showInputError() {
         Snackbar
