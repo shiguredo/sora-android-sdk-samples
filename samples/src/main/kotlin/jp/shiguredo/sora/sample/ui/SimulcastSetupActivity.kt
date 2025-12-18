@@ -38,7 +38,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("未指定", "MAINTAIN_RESOLUTION", "MAINTAIN_FRAMERATE", "BALANCED", "DISABLED")
     private val resolutionAdjustmentOptions = listOf("未指定", "16", "8", "4", "2", "無効")
-    private val simulcastRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
+    private val simulcastRequestRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
     private val clientIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
     private val bundleIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
@@ -67,7 +67,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
         binding.fpsSelection.name.text = "フレームレート"
         binding.resolutionChangeSelection.name.text = "解像度の変更"
         binding.resolutionAdjustmentSelection.name.text = "解像度の調整"
-        binding.simulcastRidSelection.name.text = "受信する rid"
+        binding.simulcastRequestRidSelection.name.text = "受信する rid"
         binding.clientIdSelection.name.text = "クライアント ID"
         binding.bundleIdSelection.name.text = "バンドル ID"
         binding.dataChannelSignalingSelection.name.text = "データチャネル"
@@ -87,7 +87,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
                 DropdownConfig(binding.fpsSelection.spinner, fpsOptions),
                 DropdownConfig(binding.resolutionChangeSelection.spinner, resolutionChangeOptions),
                 DropdownConfig(binding.resolutionAdjustmentSelection.spinner, resolutionAdjustmentOptions),
-                DropdownConfig(binding.simulcastRidSelection.spinner, simulcastRidOptions),
+                DropdownConfig(binding.simulcastRequestRidSelection.spinner, simulcastRequestRidOptions),
                 DropdownConfig(binding.clientIdSelection.spinner, clientIdOptions),
                 DropdownConfig(binding.bundleIdSelection.spinner, bundleIdOptions),
                 DropdownConfig(binding.dataChannelSignalingSelection.spinner, dataChannelSignalingOptions),
@@ -115,7 +115,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
         val fps = binding.fpsSelection.spinner.selectedItem()
         val resolutionChange = binding.resolutionChangeSelection.spinner.selectedItem()
         val resolutionAdjustment = binding.resolutionAdjustmentSelection.spinner.selectedItem()
-        val simulcastRid = binding.simulcastRidSelection.spinner.selectedItem()
+        val simulcastRequestRid = binding.simulcastRequestRidSelection.spinner.selectedItem()
         val clientId = binding.clientIdSelection.spinner.selectedItem()
         val bundleId = binding.bundleIdSelection.spinner.selectedItem()
         val dataChannelSignaling = binding.dataChannelSignalingSelection.spinner.selectedItem()
@@ -137,7 +137,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
         intent.putExtra("FPS", fps)
         intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
         intent.putExtra("RESOLUTION_ADJUSTMENT", resolutionAdjustment)
-        intent.putExtra("SIMULCAST_RID", simulcastRid)
+        intent.putExtra("SIMULCAST_REQUEST_RID", simulcastRequestRid)
         intent.putExtra("CLIENT_ID", clientId)
         intent.putExtra("BUNDLE_ID", bundleId)
         intent.putExtra("DATA_CHANNEL_SIGNALING", dataChannelSignaling)

@@ -228,7 +228,7 @@ class SimulcastActivity : AppCompatActivity() {
         }
 
         simulcastRequestRid =
-            when (intent.getStringExtra("SIMULCAST_RID")) {
+            when (intent.getStringExtra("SIMULCAST_REQUEST_RID")) {
                 "none" -> SoraVideoOption.SimulcastRequestRid.NONE
                 "r0" -> SoraVideoOption.SimulcastRequestRid.R0
                 "r1" -> SoraVideoOption.SimulcastRequestRid.R1
