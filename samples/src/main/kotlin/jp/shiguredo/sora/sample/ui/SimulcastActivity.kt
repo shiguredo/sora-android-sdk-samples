@@ -64,7 +64,7 @@ class SimulcastActivity : AppCompatActivity() {
     private var fps: Int = 30
     private var degradationPreference: SoraVideoOption.DegradationPreference? = null
     private var resolutionAdjustment: SoraVideoOption.ResolutionAdjustment? = null
-    private var simulcastRid: SoraVideoOption.SimulcastRid? = null
+    private var simulcastRequestRid: SoraVideoOption.SimulcastRequestRid? = null
     private var clientId: String? = null
     private var bundleId: String? = null
     private var dataChannelSignaling: Boolean? = null
@@ -227,11 +227,12 @@ class SimulcastActivity : AppCompatActivity() {
             }
         }
 
-        simulcastRid =
-            when (intent.getStringExtra("SIMULCAST_RID")) {
-                "r0" -> SoraVideoOption.SimulcastRid.R0
-                "r1" -> SoraVideoOption.SimulcastRid.R1
-                "r2" -> SoraVideoOption.SimulcastRid.R2
+        simulcastRequestRid =
+            when (intent.getStringExtra("SIMULCAST_REQUEST_RID")) {
+                "none" -> SoraVideoOption.SimulcastRequestRid.NONE
+                "r0" -> SoraVideoOption.SimulcastRequestRid.R0
+                "r1" -> SoraVideoOption.SimulcastRequestRid.R1
+                "r2" -> SoraVideoOption.SimulcastRequestRid.R2
                 else -> null
             }
 
@@ -433,7 +434,7 @@ class SimulcastActivity : AppCompatActivity() {
                 videoWidth = videoWidth,
                 videoHeight = videoHeight,
                 simulcast = simulcastEnabled,
-                simulcastRid = simulcastRid,
+                simulcastRequestRid = simulcastRequestRid,
                 videoFPS = fps,
                 degradationPreference = degradationPreference,
                 resolutionAdjustment = resolutionAdjustment,

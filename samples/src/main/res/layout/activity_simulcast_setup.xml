@@ -86,7 +86,7 @@
                     android:id="@+id/audioStereoSelection"/>
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/simulcastRidSelection"/>
+                    android:id="@+id/simulcastRequestRidSelection"/>
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/clientIdSelection"/>

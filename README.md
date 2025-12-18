@@ -16,7 +16,7 @@ Please read https://github.com/shiguredo/oss before use.
 
 - Android 8.0 以降 (エミュレーターでの動作は保証しません)
 - Android Studio 2025.2.1 以降
-- WebRTC SFU Sora 2025.1.0 以降
+- WebRTC SFU Sora 2025.2.0 以降
 
 ## サンプルの使い方
 
