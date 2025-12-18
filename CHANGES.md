@@ -11,11 +11,11 @@
 
 ## 2025.4
 
+- [CHANGE] サイマルキャストの設定値である SimulcastRid を SimulcastRequestRid に移行する
+  - これによりシステム条件の WebRTC SFU Sora のバージョンが 2025.2.0 以降になる
+  - @zztkm
 - [UPDATE] システム条件を更新する
   - WebRTC SFU Sora 2025.2.0 以降
-  - @zztkm
-- [UPDATE] サイマルキャストの設定値である SimulcastRid を SimulcastRequestRid に移行する
-  - これによりシステム条件の WebRTC SFU Sora のバージョンが 2025.2.0 以降になる
   - @zztkm
 
 ### misc
