@@ -61,7 +61,7 @@ class SoraVideoChannel(
     private val videoAv1Params: Any? = null,
     private val videoH264Params: Any? = null,
     private val simulcast: Boolean = false,
-    private val simulcastRid: SoraVideoOption.SimulcastRid? = null,
+    private val simulcastRequestRid: SoraVideoOption.SimulcastRequestRid? = null,
     private val videoFPS: Int = 30,
     private val degradationPreference: SoraVideoOption.DegradationPreference? = null,
     private val resolutionAdjustment: SoraVideoOption.ResolutionAdjustment? = null,
@@ -369,7 +369,7 @@ class SoraVideoChannel(
                 }
 
                 if (this@SoraVideoChannel.simulcast) {
-                    enableSimulcast(simulcastRid)
+                    enableSimulcast(simulcastRequestRid)
                 }
 
                 if (this@SoraVideoChannel.spotlight) {
