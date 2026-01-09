@@ -26,6 +26,8 @@ import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSimulcastRidResult
 import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSpotlightRid
 import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSpotlightRidParams
 import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSpotlightRidResult
+import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcResetSpotlightRid
+import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcResetSpotlightRidParams
 import jp.shiguredo.sora.sdk.channel.signaling.message.NotificationMessage
 import jp.shiguredo.sora.sdk.channel.signaling.message.OfferMessage
 import jp.shiguredo.sora.sdk.channel.signaling.message.PushMessage
@@ -822,10 +824,25 @@ class SoraVideoChannel(
         val channel = mediaChannel
         return try {
             if (channel == null) {
-                "Failed: mediaChannel is null"
-            } else {
-                // SDK のRPC呼び出しを利用
-                "ResetSpotlightRid (RPC呼び出し)"
+                return "Failed: mediaChannel is null"
+            }
+
+            // SDK のRPC呼び出しを利用
+            val params = SoraRpcResetSpotlightRidParams()
+            val result = channel.rpc(SoraRpcResetSpotlightRid, params)
+            when (result) {
+                is SoraRpcCallResult.Success<*> -> {
+                    // ResetSpotlightRid は結果を返さない
+                    "Success"
+                }
+
+                is SoraRpcCallResult.Error -> {
+                    "Error: code=${result.error.code}, message=${result.error.message}"
+                }
+
+                else -> {
+                    "Unknown result type"
+                }
             }
         } catch (e: Exception) {
             "Error: ${e.message}"

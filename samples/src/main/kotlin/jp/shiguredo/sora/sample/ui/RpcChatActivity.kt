@@ -615,13 +615,25 @@ class RpcChatActivity : AppCompatActivity() {
         val channel = channel ?: return
         lifecycleScope.launch {
             try {
+                // リクエスト情報を表示
+                val requestLog = "REQUEST:\nmethod: resetSpotlightRid\n"
+                ui?.appendSimulcastRequestResponseLog(requestLog)
+
                 val result = channel.resetSpotlightRid()
+
                 withContext(Dispatchers.Main) {
+                    // レスポンス情報を表示
+                    val responseLog = "RESPONSE:\nresult: $result\n"
+                    ui?.appendSimulcastRequestResponseLog(responseLog)
                     ui?.showToastOnUI("Spotlight RID リセット -> $result")
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to reset spotlight rid", e)
-                ui?.showToastOnUI("Spotlight RID リセット失敗: ${e.message}")
+                withContext(Dispatchers.Main) {
+                    val errorLog = "ERROR:\nmessage: ${e.message}\n"
+                    ui?.appendSimulcastRequestResponseLog(errorLog)
+                    ui?.showToastOnUI("Spotlight RID リセット失敗: ${e.message}")
+                }
             }
         }
     }
@@ -704,6 +716,13 @@ class RpcChatActivityUI(
         binding.rpcRequestSpotlightRidButton.setOnClickListener {
             if (spotlightEnabled) {
                 showSpotlightDialog()
+            }
+        }
+
+        // ResetSpotlightRid ボタン
+        binding.rpcResetSpotlightRidButton.setOnClickListener {
+            if (spotlightEnabled) {
+                activity.handleResetSpotlightRid()
             }
         }
     }
