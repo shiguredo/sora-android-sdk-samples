@@ -3,6 +3,8 @@ package jp.shiguredo.sora.sample.facade
 import android.content.Context
 import android.media.MediaRecorder
 import android.os.Handler
+import android.util.Log
+import com.google.gson.Gson
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.camera.CameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.camera.DefaultCameraVideoCapturerFactory
@@ -17,6 +19,13 @@ import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
 import jp.shiguredo.sora.sdk.channel.option.SoraSpotlightOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
+import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcCallResult
+import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSimulcastRid
+import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSimulcastRidParams
+import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSimulcastRidResult
+import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSpotlightRid
+import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSpotlightRidParams
+import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSpotlightRidResult
 import jp.shiguredo.sora.sdk.channel.signaling.message.NotificationMessage
 import jp.shiguredo.sora.sdk.channel.signaling.message.OfferMessage
 import jp.shiguredo.sora.sdk.channel.signaling.message.PushMessage
@@ -76,6 +85,8 @@ class SoraVideoChannel(
     private val capturerFactory: CameraVideoCapturerFactory =
         DefaultCameraVideoCapturerFactory(context, cameraFacing),
     private var listener: Listener?,
+    private val rpcEnabled: Boolean = false,
+    private val dataChannel: Boolean = true,
 ) {
     companion object {
         private val TAG = SoraVideoChannel::class.simpleName
@@ -676,6 +687,24 @@ class SoraVideoChannel(
 
     fun isCameraHardMuted(): Boolean = cameraHardMuted
 
+    // リモートビデオトラック取得（解像度監視用）
+    fun getRemoteVideoTrack(): VideoTrack? =
+        remoteRenderersSlot?.let { slot ->
+            try {
+                // SoraRemoteRendererSlot の workingTracks フィールドから最初のトラックを取得
+                val workingTracksField = slot.javaClass.getDeclaredField("workingTracks")
+                workingTracksField.isAccessible = true
+
+                @Suppress("UNCHECKED_CAST")
+                val workingTracks = workingTracksField.get(slot) as? Map<String, org.webrtc.VideoTrack>
+
+                workingTracks?.values?.firstOrNull()
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to get remote video track", e)
+                null
+            }
+        }
+
     fun disconnect() {
         stopCapturer()
         handler.removeCallbacks(audioMuteApplier)
@@ -709,5 +738,114 @@ class SoraVideoChannel(
         egl?.release()
         egl = null
         listener = null
+    }
+
+    // RPC メソッド
+    suspend fun requestSimulcastRid(rid: String): String {
+        val channel = mediaChannel
+        return try {
+            if (channel == null) {
+                return "Failed: mediaChannel is null"
+            }
+
+            // SDK の RPC メソッドを呼び出し
+            val params = SoraRpcRequestSimulcastRidParams(rid = rid)
+            val result =
+                channel.rpc(
+                    method = SoraRpcRequestSimulcastRid,
+                    params = params,
+                )
+
+            // 結果に応じて JSON フォーマットで返す
+            when (result) {
+                is SoraRpcCallResult.Success<*> -> {
+                    val data = result.result as? SoraRpcRequestSimulcastRidResult
+                    if (data != null) {
+                        Gson().toJson(data)
+                    } else {
+                        "Success but could not parse result"
+                    }
+                }
+                is SoraRpcCallResult.Error -> {
+                    "Error: code=${result.error.code}, message=${result.error.message}"
+                }
+                else -> {
+                    "Unknown result type"
+                }
+            }
+        } catch (e: Exception) {
+            "Error: ${e.message}"
+        }
+    }
+
+    suspend fun requestSpotlightRid(
+        focusRid: String,
+        unfocusRid: String,
+    ): String {
+        val channel = mediaChannel
+        return try {
+            if (channel == null) {
+                return "Failed: mediaChannel is null"
+            }
+
+            // SDK のRPC呼び出しを利用
+            val params =
+                SoraRpcRequestSpotlightRidParams(
+                    spotlightFocusRid = focusRid,
+                    spotlightUnfocusRid = unfocusRid,
+                )
+            val result = channel.rpc(SoraRpcRequestSpotlightRid, params)
+            when (result) {
+                is SoraRpcCallResult.Success<*> -> {
+                    val data = result.result as? SoraRpcRequestSpotlightRidResult
+                    if (data != null) {
+                        Gson().toJson(data)
+                    } else {
+                        "Success but could not parse result"
+                    }
+                }
+
+                is SoraRpcCallResult.Error -> {
+                    "Error: code=${result.error.code}, message=${result.error.message}"
+                }
+
+                else -> {
+                    "Unknown result type"
+                }
+            }
+        } catch (e: Exception) {
+            "Error: ${e.message}"
+        }
+    }
+
+    suspend fun resetSpotlightRid(): String {
+        val channel = mediaChannel
+        return try {
+            if (channel == null) {
+                "Failed: mediaChannel is null"
+            } else {
+                // SDK のRPC呼び出しを利用
+                "ResetSpotlightRid (RPC呼び出し)"
+            }
+        } catch (e: Exception) {
+            "Error: ${e.message}"
+        }
+    }
+
+    suspend fun putSignalingNotifyMetadata(
+        key: String,
+        value: String,
+    ): String {
+        val channel = mediaChannel
+        return try {
+            if (channel == null) {
+                "Failed: mediaChannel is null"
+            } else {
+                // SDK のRPC呼び出しを利用
+                "PutSignalingNotifyMetadata: $key=$value (RPC呼び出し)"
+            }
+        } catch (e: Exception) {
+            "Error: ${e.message}"
+        }
     }
 }

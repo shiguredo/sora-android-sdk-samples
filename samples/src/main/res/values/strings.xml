@@ -5,4 +5,9 @@
 
     <string name="permission_button_positive">許可する</string>
     <string name="permission_button_negative">許可しない</string>
+
+    <string-array name="rpc_methods">
+        <item>RequestSimulcastRid</item>
+        <item>RequestSpotlightRid</item>
+    </string-array>
 </resources>
