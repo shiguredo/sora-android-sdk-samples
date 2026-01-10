@@ -112,13 +112,13 @@
         android:background="#1a1a1a"
         android:padding="10dp">
 
-        <!-- RPC Method Buttons -->
+        <!-- RPC Method Buttons Row 1 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="5dp">
 
             <Button
                 android:id="@+id/rpcRequestSimulcastRidButton"
@@ -136,12 +136,30 @@
                 android:text="RequestSpotlightRid"
                 android:layout_marginEnd="5dp" />
 
+        </LinearLayout>
+
+        <!-- RPC Method Buttons Row 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="10dp">
+
             <Button
                 android:id="@+id/rpcResetSpotlightRidButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="ResetSpotlightRid" />
+                android:text="ResetSpotlightRid"
+                android:layout_marginEnd="5dp" />
+
+            <Button
+                android:id="@+id/rpcPutSignalingMetadataButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="PutSignalingMetadata" />
 
         </LinearLayout>
 

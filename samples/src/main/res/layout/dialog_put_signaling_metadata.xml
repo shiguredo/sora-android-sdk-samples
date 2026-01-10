@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Metadata (JSON Object)"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/dialogMetadataValueInput"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:hint='{"key": "value", ...}'
+            android:gravity="top|start"
+            android:inputType="text|textMultiLine"
+            android:fontFamily="monospace"
+            android:textSize="12sp"
+            android:layout_marginBottom="16dp"
+            android:minHeight="150dp" />
+
+        <CheckBox
+            android:id="@+id/dialogMetadataPushCheckbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Push to other participants"
+            android:checked="true"
+            android:layout_marginBottom="16dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:spacing="8dp">
+
+            <Button
+                android:id="@+id/dialogMetadataCancelButton"
+                android:layout_width="120dp"
+                android:layout_height="56dp"
+                android:text="Cancel"
+                android:layout_marginEnd="8dp"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/dialogMetadataSendButton"
+                android:layout_width="120dp"
+                android:layout_height="56dp"
+                android:text="Send"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

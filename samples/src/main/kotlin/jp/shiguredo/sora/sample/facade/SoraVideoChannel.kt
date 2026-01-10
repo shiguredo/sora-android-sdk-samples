@@ -20,6 +20,8 @@ import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
 import jp.shiguredo.sora.sdk.channel.option.SoraSpotlightOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcCallResult
+import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcPutSignalingNotifyMetadata
+import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcPutSignalingNotifyMetadataParams
 import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSimulcastRid
 import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSimulcastRidParams
 import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSimulcastRidResult
@@ -850,16 +852,46 @@ class SoraVideoChannel(
     }
 
     suspend fun putSignalingNotifyMetadata(
-        key: String,
-        value: String,
+        metadataJson: String,
+        push: Boolean = true,
     ): String {
         val channel = mediaChannel
         return try {
             if (channel == null) {
-                "Failed: mediaChannel is null"
-            } else {
-                // SDK のRPC呼び出しを利用
-                "PutSignalingNotifyMetadata: $key=$value (RPC呼び出し)"
+                return "Failed: mediaChannel is null"
+            }
+
+            // JSON文字列をMapにパース
+            @Suppress("UNCHECKED_CAST")
+            val metadata =
+                try {
+                    Gson().fromJson(metadataJson, Map::class.java) as? Map<String, Any?>
+                        ?: return "Error: Failed to parse metadata as JSON object"
+                } catch (e: Exception) {
+                    return "Error: Invalid JSON format - ${e.message}"
+                }
+
+            // SDK のRPC呼び出しを利用
+            val params =
+                SoraRpcPutSignalingNotifyMetadataParams(
+                    metadata = metadata,
+                    push = push,
+                )
+            val result = channel.rpc(SoraRpcPutSignalingNotifyMetadata, params)
+            when (result) {
+                is SoraRpcCallResult.Success<*> -> {
+                    // 成功した場合、メタデータを返す
+                    val returnedMetadata = result.result as? Map<String, Any?>
+                    Gson().toJson(returnedMetadata)
+                }
+
+                is SoraRpcCallResult.Error -> {
+                    "Error: code=${result.error.code}, message=${result.error.message}"
+                }
+
+                else -> {
+                    "Unknown result type"
+                }
             }
         } catch (e: Exception) {
             "Error: ${e.message}"

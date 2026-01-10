@@ -639,19 +639,29 @@ class RpcChatActivity : AppCompatActivity() {
     }
 
     internal fun handlePutSignalingNotifyMetadata(
-        key: String,
-        value: String,
+        metadataJson: String,
+        push: Boolean,
     ) {
         val channel = channel ?: return
         lifecycleScope.launch {
             try {
-                val result = channel.putSignalingNotifyMetadata(key, value)
+                val requestLog =
+                    "REQUEST: PutSignalingNotifyMetadata\n" +
+                        "metadata: $metadataJson\n" +
+                        "push: $push"
+                ui?.appendSimulcastRequestResponseLog(requestLog)
+
+                val result = channel.putSignalingNotifyMetadata(metadataJson, push)
                 withContext(Dispatchers.Main) {
-                    ui?.showToastOnUI("Metadata 設定: $key=$value -> $result")
+                    val responseLog = "RESPONSE: $result"
+                    ui?.appendSimulcastRequestResponseLog(responseLog)
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to put metadata", e)
-                ui?.showToastOnUI("Metadata 設定失敗: ${e.message}")
+                withContext(Dispatchers.Main) {
+                    val errorLog = "ERROR: ${e.message}"
+                    ui?.appendSimulcastRequestResponseLog(errorLog)
+                }
             }
         }
     }
@@ -724,6 +734,11 @@ class RpcChatActivityUI(
             if (spotlightEnabled) {
                 activity.handleResetSpotlightRid()
             }
+        }
+
+        // PutSignalingNotifyMetadata ボタン
+        binding.rpcPutSignalingMetadataButton.setOnClickListener {
+            showMetadataDialog()
         }
     }
 
@@ -860,6 +875,50 @@ class RpcChatActivityUI(
             selectedSpotlightUnfocusRid = dialogUnfocusRid
             activity.handleRequestSpotlightRid(dialogFocusRid, dialogUnfocusRid)
             dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun showMetadataDialog() {
+        val dialogView = activity.layoutInflater.inflate(R.layout.dialog_put_signaling_metadata, null)
+
+        val metadataInput = dialogView.findViewById<android.widget.EditText>(R.id.dialogMetadataValueInput)
+        val pushCheckbox = dialogView.findViewById<android.widget.CheckBox>(R.id.dialogMetadataPushCheckbox)
+        val cancelBtn = dialogView.findViewById<android.widget.Button>(R.id.dialogMetadataCancelButton)
+        val sendBtn = dialogView.findViewById<android.widget.Button>(R.id.dialogMetadataSendButton)
+
+        // サンプル JSON をデフォルト値として設定
+        metadataInput.setText("{\"example_key_1\": \"example_value_1\", \"example_key_2\": \"example_value_2\"}")
+
+        val dialog =
+            androidx.appcompat.app.AlertDialog
+                .Builder(activity)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create()
+
+        // ボタンサイズを大きくする
+        dialog.setOnShowListener {
+            sendBtn.minimumHeight = 80
+            cancelBtn.minimumHeight = 80
+        }
+
+        cancelBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        sendBtn.setOnClickListener {
+            val metadata = metadataInput.text.toString().trim()
+            val push = pushCheckbox.isChecked
+            if (metadata.isNotEmpty()) {
+                activity.handlePutSignalingNotifyMetadata(metadata, push)
+                dialog.dismiss()
+            } else {
+                android.widget.Toast
+                    .makeText(activity, "Metadata JSON is required", android.widget.Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
 
         dialog.show()
