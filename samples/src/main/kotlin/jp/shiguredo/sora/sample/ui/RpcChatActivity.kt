@@ -666,6 +666,36 @@ class RpcChatActivity : AppCompatActivity() {
         }
     }
 
+    internal fun handlePutSignalingNotifyMetadataItem(
+        key: String,
+        valueJson: String,
+        push: Boolean,
+    ) {
+        val channel = channel ?: return
+        lifecycleScope.launch {
+            try {
+                val requestLog =
+                    "REQUEST: PutSignalingNotifyMetadataItem\n" +
+                        "key: $key\n" +
+                        "value: $valueJson\n" +
+                        "push: $push"
+                ui?.appendSimulcastRequestResponseLog(requestLog)
+
+                val result = channel.putSignalingNotifyMetadataItem(key, valueJson, push)
+                withContext(Dispatchers.Main) {
+                    val responseLog = "RESPONSE: $result"
+                    ui?.appendSimulcastRequestResponseLog(responseLog)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to put metadata item", e)
+                withContext(Dispatchers.Main) {
+                    val errorLog = "ERROR: ${e.message}"
+                    ui?.appendSimulcastRequestResponseLog(errorLog)
+                }
+            }
+        }
+    }
+
     internal fun updateRemoteResolution(
         track: VideoTrack?,
         resolution: String,
@@ -739,6 +769,11 @@ class RpcChatActivityUI(
         // PutSignalingNotifyMetadata ボタン
         binding.rpcPutSignalingMetadataButton.setOnClickListener {
             showMetadataDialog()
+        }
+
+        // PutSignalingNotifyMetadataItem ボタン
+        binding.rpcPutSignalingMetadataItemButton.setOnClickListener {
+            showMetadataItemDialog()
         }
     }
 
@@ -917,6 +952,53 @@ class RpcChatActivityUI(
             } else {
                 android.widget.Toast
                     .makeText(activity, "Metadata JSON is required", android.widget.Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun showMetadataItemDialog() {
+        val dialogView = activity.layoutInflater.inflate(R.layout.dialog_put_signaling_metadata_item, null)
+
+        val keyInput = dialogView.findViewById<android.widget.EditText>(R.id.dialogMetadataItemKeyInput)
+        val valueInput = dialogView.findViewById<android.widget.EditText>(R.id.dialogMetadataItemValueInput)
+        val pushCheckbox = dialogView.findViewById<android.widget.CheckBox>(R.id.dialogMetadataItemPushCheckbox)
+        val cancelBtn = dialogView.findViewById<android.widget.Button>(R.id.dialogMetadataItemCancelButton)
+        val sendBtn = dialogView.findViewById<android.widget.Button>(R.id.dialogMetadataItemSendButton)
+
+        // サンプル値をデフォルト値として設定
+        keyInput.setText("example_key")
+        valueInput.setText("\"example_value\"")
+
+        val dialog =
+            androidx.appcompat.app.AlertDialog
+                .Builder(activity)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create()
+
+        // ボタンサイズを大きくする
+        dialog.setOnShowListener {
+            sendBtn.minimumHeight = 80
+            cancelBtn.minimumHeight = 80
+        }
+
+        cancelBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        sendBtn.setOnClickListener {
+            val key = keyInput.text.toString().trim()
+            val value = valueInput.text.toString().trim()
+            val push = pushCheckbox.isChecked
+            if (key.isNotEmpty() && value.isNotEmpty()) {
+                activity.handlePutSignalingNotifyMetadataItem(key, value, push)
+                dialog.dismiss()
+            } else {
+                android.widget.Toast
+                    .makeText(activity, "Key and Value are required", android.widget.Toast.LENGTH_SHORT)
                     .show()
             }
         }

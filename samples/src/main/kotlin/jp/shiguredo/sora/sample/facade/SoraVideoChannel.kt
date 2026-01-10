@@ -21,6 +21,8 @@ import jp.shiguredo.sora.sdk.channel.option.SoraSpotlightOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcCallResult
 import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcPutSignalingNotifyMetadata
+import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcPutSignalingNotifyMetadataItem
+import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcPutSignalingNotifyMetadataItemParams
 import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcPutSignalingNotifyMetadataParams
 import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSimulcastRid
 import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSimulcastRidParams
@@ -878,6 +880,55 @@ class SoraVideoChannel(
                     push = push,
                 )
             val result = channel.rpc(SoraRpcPutSignalingNotifyMetadata, params)
+            when (result) {
+                is SoraRpcCallResult.Success<*> -> {
+                    // 成功した場合、メタデータを返す
+                    val returnedMetadata = result.result as? Map<String, Any?>
+                    Gson().toJson(returnedMetadata)
+                }
+
+                is SoraRpcCallResult.Error -> {
+                    "Error: code=${result.error.code}, message=${result.error.message}"
+                }
+
+                else -> {
+                    "Unknown result type"
+                }
+            }
+        } catch (e: Exception) {
+            "Error: ${e.message}"
+        }
+    }
+
+    suspend fun putSignalingNotifyMetadataItem(
+        key: String,
+        valueJson: String,
+        push: Boolean = true,
+    ): String {
+        val channel = mediaChannel
+        return try {
+            if (channel == null) {
+                return "Failed: mediaChannel is null"
+            }
+
+            // JSON 文字列を Any にパース
+            @Suppress("UNCHECKED_CAST")
+            val value =
+                try {
+                    Gson().fromJson(valueJson, Any::class.java)
+                } catch (e: Exception) {
+                    // JSON パースに失敗した場合は文字列として扱う
+                    valueJson
+                }
+
+            // SDK のRPC呼び出しを利用
+            val params =
+                SoraRpcPutSignalingNotifyMetadataItemParams(
+                    key = key,
+                    value = value,
+                    push = push,
+                )
+            val result = channel.rpc(SoraRpcPutSignalingNotifyMetadataItem, params)
             when (result) {
                 is SoraRpcCallResult.Success<*> -> {
                     // 成功した場合、メタデータを返す
