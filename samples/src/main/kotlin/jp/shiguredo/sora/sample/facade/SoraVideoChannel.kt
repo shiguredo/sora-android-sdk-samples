@@ -19,19 +19,8 @@ import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
 import jp.shiguredo.sora.sdk.channel.option.SoraSpotlightOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
-import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcCallResult
-import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcPutSignalingNotifyMetadata
-import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcPutSignalingNotifyMetadataItem
-import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcPutSignalingNotifyMetadataItemParams
-import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcPutSignalingNotifyMetadataParams
-import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSimulcastRid
-import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSimulcastRidParams
-import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSimulcastRidResult
-import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSpotlightRid
-import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSpotlightRidParams
-import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcRequestSpotlightRidResult
-import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcResetSpotlightRid
-import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcResetSpotlightRidParams
+import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcException
+import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcResult
 import jp.shiguredo.sora.sdk.channel.signaling.message.NotificationMessage
 import jp.shiguredo.sora.sdk.channel.signaling.message.OfferMessage
 import jp.shiguredo.sora.sdk.channel.signaling.message.PushMessage
@@ -96,6 +85,11 @@ class SoraVideoChannel(
 ) {
     companion object {
         private val TAG = SoraVideoChannel::class.simpleName
+        private const val RPC_REQUEST_SIMULCAST_RID = "2025.2.0/RequestSimulcastRid"
+        private const val RPC_REQUEST_SPOTLIGHT_RID = "2025.2.0/RequestSpotlightRid"
+        private const val RPC_RESET_SPOTLIGHT_RID = "2025.2.0/ResetSpotlightRid"
+        private const val RPC_PUT_SIGNALING_NOTIFY_METADATA = "2025.2.0/PutSignalingNotifyMetadata"
+        private const val RPC_PUT_SIGNALING_NOTIFY_METADATA_ITEM = "2025.2.0/PutSignalingNotifyMetadataItem"
     }
 
     private var egl: EglBase? = EglBase.create()
@@ -755,30 +749,19 @@ class SoraVideoChannel(
             }
 
             // SDK の RPC メソッドを呼び出し
-            val params = SoraRpcRequestSimulcastRidParams(rid = rid)
-            val result =
-                channel.rpc(
-                    method = SoraRpcRequestSimulcastRid,
-                    params = params,
-                )
+            val paramsJson = Gson().toJson(mapOf("rid" to rid))
+            val result = channel.rpc(RPC_REQUEST_SIMULCAST_RID, paramsJson)
 
             // 結果に応じて JSON フォーマットで返す
             when (result) {
-                is SoraRpcCallResult.Success<*> -> {
-                    val data = result.result as? SoraRpcRequestSimulcastRidResult
-                    if (data != null) {
-                        Gson().toJson(data)
-                    } else {
-                        "Success but could not parse result"
-                    }
-                }
-                is SoraRpcCallResult.Error -> {
-                    "Error: code=${result.error.code}, message=${result.error.message}"
-                }
-                else -> {
-                    "Unknown result type"
-                }
+                null -> "Success"
+                is SoraRpcResult.Success -> result.result ?: "Success"
+                is SoraRpcResult.Error ->
+                    "Error: code=${result.error.code}, message=${result.error.message}" +
+                        (result.error.data?.let { ", data=$it" } ?: "")
             }
+        } catch (e: SoraRpcException) {
+            "Error: ${e.reason.name}: ${e.message}"
         } catch (e: Exception) {
             "Error: ${e.message}"
         }
@@ -795,30 +778,23 @@ class SoraVideoChannel(
             }
 
             // SDK のRPC呼び出しを利用
-            val params =
-                SoraRpcRequestSpotlightRidParams(
-                    spotlightFocusRid = focusRid,
-                    spotlightUnfocusRid = unfocusRid,
+            val paramsJson =
+                Gson().toJson(
+                    mapOf(
+                        "spotlight_focus_rid" to focusRid,
+                        "spotlight_unfocus_rid" to unfocusRid,
+                    ),
                 )
-            val result = channel.rpc(SoraRpcRequestSpotlightRid, params)
+            val result = channel.rpc(RPC_REQUEST_SPOTLIGHT_RID, paramsJson)
             when (result) {
-                is SoraRpcCallResult.Success<*> -> {
-                    val data = result.result as? SoraRpcRequestSpotlightRidResult
-                    if (data != null) {
-                        Gson().toJson(data)
-                    } else {
-                        "Success but could not parse result"
-                    }
-                }
-
-                is SoraRpcCallResult.Error -> {
-                    "Error: code=${result.error.code}, message=${result.error.message}"
-                }
-
-                else -> {
-                    "Unknown result type"
-                }
+                null -> "Success"
+                is SoraRpcResult.Success -> result.result ?: "Success"
+                is SoraRpcResult.Error ->
+                    "Error: code=${result.error.code}, message=${result.error.message}" +
+                        (result.error.data?.let { ", data=$it" } ?: "")
             }
+        } catch (e: SoraRpcException) {
+            "Error: ${e.reason.name}: ${e.message}"
         } catch (e: Exception) {
             "Error: ${e.message}"
         }
@@ -832,22 +808,21 @@ class SoraVideoChannel(
             }
 
             // SDK のRPC呼び出しを利用
-            val params = SoraRpcResetSpotlightRidParams()
-            val result = channel.rpc(SoraRpcResetSpotlightRid, params)
+            val paramsJson = "{}"
+            val result = channel.rpc(RPC_RESET_SPOTLIGHT_RID, paramsJson)
             when (result) {
-                is SoraRpcCallResult.Success<*> -> {
+                null -> "Success"
+                is SoraRpcResult.Success -> {
                     // ResetSpotlightRid は結果を返さない
                     "Success"
                 }
 
-                is SoraRpcCallResult.Error -> {
-                    "Error: code=${result.error.code}, message=${result.error.message}"
-                }
-
-                else -> {
-                    "Unknown result type"
-                }
+                is SoraRpcResult.Error ->
+                    "Error: code=${result.error.code}, message=${result.error.message}" +
+                        (result.error.data?.let { ", data=$it" } ?: "")
             }
+        } catch (e: SoraRpcException) {
+            "Error: ${e.reason.name}: ${e.message}"
         } catch (e: Exception) {
             "Error: ${e.message}"
         }
@@ -874,27 +849,23 @@ class SoraVideoChannel(
                 }
 
             // SDK のRPC呼び出しを利用
-            val params =
-                SoraRpcPutSignalingNotifyMetadataParams(
-                    metadata = metadata,
-                    push = push,
+            val paramsJson =
+                Gson().toJson(
+                    mapOf(
+                        "metadata" to metadata,
+                        "push" to push,
+                    ),
                 )
-            val result = channel.rpc(SoraRpcPutSignalingNotifyMetadata, params)
+            val result = channel.rpc(RPC_PUT_SIGNALING_NOTIFY_METADATA, paramsJson)
             when (result) {
-                is SoraRpcCallResult.Success<*> -> {
-                    // 成功した場合、メタデータを返す
-                    val returnedMetadata = result.result as? Map<String, Any?>
-                    Gson().toJson(returnedMetadata)
-                }
-
-                is SoraRpcCallResult.Error -> {
-                    "Error: code=${result.error.code}, message=${result.error.message}"
-                }
-
-                else -> {
-                    "Unknown result type"
-                }
+                null -> "Success"
+                is SoraRpcResult.Success -> result.result ?: "Success"
+                is SoraRpcResult.Error ->
+                    "Error: code=${result.error.code}, message=${result.error.message}" +
+                        (result.error.data?.let { ", data=$it" } ?: "")
             }
+        } catch (e: SoraRpcException) {
+            "Error: ${e.reason.name}: ${e.message}"
         } catch (e: Exception) {
             "Error: ${e.message}"
         }
@@ -922,28 +893,24 @@ class SoraVideoChannel(
                 }
 
             // SDK のRPC呼び出しを利用
-            val params =
-                SoraRpcPutSignalingNotifyMetadataItemParams(
-                    key = key,
-                    value = value,
-                    push = push,
+            val paramsJson =
+                Gson().toJson(
+                    mapOf(
+                        "key" to key,
+                        "value" to value,
+                        "push" to push,
+                    ),
                 )
-            val result = channel.rpc(SoraRpcPutSignalingNotifyMetadataItem, params)
+            val result = channel.rpc(RPC_PUT_SIGNALING_NOTIFY_METADATA_ITEM, paramsJson)
             when (result) {
-                is SoraRpcCallResult.Success<*> -> {
-                    // 成功した場合、メタデータを返す
-                    val returnedMetadata = result.result as? Map<String, Any?>
-                    Gson().toJson(returnedMetadata)
-                }
-
-                is SoraRpcCallResult.Error -> {
-                    "Error: code=${result.error.code}, message=${result.error.message}"
-                }
-
-                else -> {
-                    "Unknown result type"
-                }
+                null -> "Success"
+                is SoraRpcResult.Success -> result.result ?: "Success"
+                is SoraRpcResult.Error ->
+                    "Error: code=${result.error.code}, message=${result.error.message}" +
+                        (result.error.data?.let { ", data=$it" } ?: "")
             }
+        } catch (e: SoraRpcException) {
+            "Error: ${e.reason.name}: ${e.message}"
         } catch (e: Exception) {
             "Error: ${e.message}"
         }
