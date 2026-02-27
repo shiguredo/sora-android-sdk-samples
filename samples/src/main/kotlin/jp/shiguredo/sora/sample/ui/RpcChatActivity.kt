@@ -361,6 +361,8 @@ class RpcChatActivity : AppCompatActivity() {
             ) {
                 Log.d(TAG, "onRemoveRemoteRenderer")
                 ui?.removeRenderer(renderer)
+                detachResolutionMonitor()
+                tryAttachResolutionMonitor()
             }
 
             override fun onAddRemoteRenderer(
