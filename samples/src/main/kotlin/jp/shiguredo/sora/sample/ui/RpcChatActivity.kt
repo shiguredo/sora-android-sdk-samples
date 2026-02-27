@@ -805,8 +805,40 @@ class RpcChatActivityUI(
         }
     }
 
+    private fun createDialog(layoutResId: Int): Pair<android.view.View, androidx.appcompat.app.AlertDialog> {
+        val dialogView = activity.layoutInflater.inflate(layoutResId, null)
+        val dialog =
+            androidx.appcompat.app.AlertDialog
+                .Builder(activity)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create()
+        return dialogView to dialog
+    }
+
+    private fun bindCancelButton(
+        dialogView: android.view.View,
+        cancelButtonId: Int,
+        dialog: androidx.appcompat.app.AlertDialog,
+    ) {
+        dialogView.findViewById<android.widget.Button>(cancelButtonId).setOnClickListener {
+            dialog.dismiss()
+        }
+    }
+
+    private fun setLargeActionButtons(
+        dialog: androidx.appcompat.app.AlertDialog,
+        vararg buttons: android.widget.Button,
+    ) {
+        dialog.setOnShowListener {
+            buttons.forEach { button ->
+                button.minimumHeight = 80
+            }
+        }
+    }
+
     private fun showSimulcastDialog() {
-        val dialogView = activity.layoutInflater.inflate(R.layout.dialog_simulcast_rid, null)
+        val (dialogView, dialog) = createDialog(R.layout.dialog_simulcast_rid)
 
         val noneBtn = dialogView.findViewById<android.widget.Button>(R.id.dialogSimulcastNoneButton)
         val r0Btn = dialogView.findViewById<android.widget.Button>(R.id.dialogSimulcastR0Button)
@@ -814,7 +846,6 @@ class RpcChatActivityUI(
         val r2Btn = dialogView.findViewById<android.widget.Button>(R.id.dialogSimulcastR2Button)
 
         val selectionText = dialogView.findViewById<android.widget.TextView>(R.id.dialogSimulcastSelectionText)
-        val cancelBtn = dialogView.findViewById<android.widget.Button>(R.id.dialogSimulcastCancelButton)
         val sendBtn = dialogView.findViewById<android.widget.Button>(R.id.dialogSimulcastSendButton)
 
         var dialogSelectedRid = selectedSimulcastRid
@@ -842,16 +873,7 @@ class RpcChatActivityUI(
 
         updateSelectionText()
 
-        val dialog =
-            androidx.appcompat.app.AlertDialog
-                .Builder(activity)
-                .setView(dialogView)
-                .setCancelable(true)
-                .create()
-
-        cancelBtn.setOnClickListener {
-            dialog.dismiss()
-        }
+        bindCancelButton(dialogView, R.id.dialogSimulcastCancelButton, dialog)
 
         sendBtn.setOnClickListener {
             selectedSimulcastRid = dialogSelectedRid
@@ -863,7 +885,7 @@ class RpcChatActivityUI(
     }
 
     private fun showSpotlightDialog() {
-        val dialogView = activity.layoutInflater.inflate(R.layout.dialog_spotlight_rid, null)
+        val (dialogView, dialog) = createDialog(R.layout.dialog_spotlight_rid)
 
         val focusNoneBtn = dialogView.findViewById<android.widget.Button>(R.id.dialogSpotlightFocusNoneButton)
         val focusR0Btn = dialogView.findViewById<android.widget.Button>(R.id.dialogSpotlightFocusR0Button)
@@ -876,7 +898,6 @@ class RpcChatActivityUI(
         val unfocusR2Btn = dialogView.findViewById<android.widget.Button>(R.id.dialogSpotlightUnfocusR2Button)
 
         val selectionText = dialogView.findViewById<android.widget.TextView>(R.id.dialogSpotlightSelectionText)
-        val cancelBtn = dialogView.findViewById<android.widget.Button>(R.id.dialogSpotlightCancelButton)
         val sendBtn = dialogView.findViewById<android.widget.Button>(R.id.dialogSpotlightSendButton)
 
         var dialogFocusRid = selectedSpotlightFocusRid
@@ -922,16 +943,7 @@ class RpcChatActivityUI(
 
         updateSelectionText()
 
-        val dialog =
-            androidx.appcompat.app.AlertDialog
-                .Builder(activity)
-                .setView(dialogView)
-                .setCancelable(true)
-                .create()
-
-        cancelBtn.setOnClickListener {
-            dialog.dismiss()
-        }
+        bindCancelButton(dialogView, R.id.dialogSpotlightCancelButton, dialog)
 
         sendBtn.setOnClickListener {
             selectedSpotlightFocusRid = dialogFocusRid
@@ -944,32 +956,18 @@ class RpcChatActivityUI(
     }
 
     private fun showMetadataDialog() {
-        val dialogView = activity.layoutInflater.inflate(R.layout.dialog_put_signaling_metadata, null)
+        val (dialogView, dialog) = createDialog(R.layout.dialog_put_signaling_metadata)
 
         val metadataInput = dialogView.findViewById<android.widget.EditText>(R.id.dialogMetadataValueInput)
         val pushCheckbox = dialogView.findViewById<android.widget.CheckBox>(R.id.dialogMetadataPushCheckbox)
-        val cancelBtn = dialogView.findViewById<android.widget.Button>(R.id.dialogMetadataCancelButton)
         val sendBtn = dialogView.findViewById<android.widget.Button>(R.id.dialogMetadataSendButton)
+        val cancelBtn = dialogView.findViewById<android.widget.Button>(R.id.dialogMetadataCancelButton)
 
         // サンプル JSON をデフォルト値として設定
         metadataInput.setText("{\"example_key_1\": \"example_value_1\", \"example_key_2\": \"example_value_2\"}")
 
-        val dialog =
-            androidx.appcompat.app.AlertDialog
-                .Builder(activity)
-                .setView(dialogView)
-                .setCancelable(true)
-                .create()
-
-        // ボタンサイズを大きくする
-        dialog.setOnShowListener {
-            sendBtn.minimumHeight = 80
-            cancelBtn.minimumHeight = 80
-        }
-
-        cancelBtn.setOnClickListener {
-            dialog.dismiss()
-        }
+        setLargeActionButtons(dialog, sendBtn, cancelBtn)
+        bindCancelButton(dialogView, R.id.dialogMetadataCancelButton, dialog)
 
         sendBtn.setOnClickListener {
             val metadata = metadataInput.text.toString().trim()
@@ -988,34 +986,20 @@ class RpcChatActivityUI(
     }
 
     private fun showMetadataItemDialog() {
-        val dialogView = activity.layoutInflater.inflate(R.layout.dialog_put_signaling_metadata_item, null)
+        val (dialogView, dialog) = createDialog(R.layout.dialog_put_signaling_metadata_item)
 
         val keyInput = dialogView.findViewById<android.widget.EditText>(R.id.dialogMetadataItemKeyInput)
         val valueInput = dialogView.findViewById<android.widget.EditText>(R.id.dialogMetadataItemValueInput)
         val pushCheckbox = dialogView.findViewById<android.widget.CheckBox>(R.id.dialogMetadataItemPushCheckbox)
-        val cancelBtn = dialogView.findViewById<android.widget.Button>(R.id.dialogMetadataItemCancelButton)
         val sendBtn = dialogView.findViewById<android.widget.Button>(R.id.dialogMetadataItemSendButton)
+        val cancelBtn = dialogView.findViewById<android.widget.Button>(R.id.dialogMetadataItemCancelButton)
 
         // サンプル値をデフォルト値として設定
         keyInput.setText("example_key")
         valueInput.setText("\"example_value\"")
 
-        val dialog =
-            androidx.appcompat.app.AlertDialog
-                .Builder(activity)
-                .setView(dialogView)
-                .setCancelable(true)
-                .create()
-
-        // ボタンサイズを大きくする
-        dialog.setOnShowListener {
-            sendBtn.minimumHeight = 80
-            cancelBtn.minimumHeight = 80
-        }
-
-        cancelBtn.setOnClickListener {
-            dialog.dismiss()
-        }
+        setLargeActionButtons(dialog, sendBtn, cancelBtn)
+        bindCancelButton(dialogView, R.id.dialogMetadataItemCancelButton, dialog)
 
         sendBtn.setOnClickListener {
             val key = keyInput.text.toString().trim()
