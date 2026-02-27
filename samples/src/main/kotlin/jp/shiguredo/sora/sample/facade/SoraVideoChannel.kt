@@ -731,20 +731,14 @@ class SoraVideoChannel(
         listener = null
     }
 
-    // RPC メソッド
-    suspend fun requestSimulcastRid(rid: String): RpcCallResult {
-        val channel = mediaChannel
+    private suspend fun callRpc(
+        method: String,
+        paramsJson: String,
+    ): RpcCallResult {
+        val channel = mediaChannel ?: return RpcCallResult.Error("mediaChannel is null")
+
         return try {
-            if (channel == null) {
-                return RpcCallResult.Error("mediaChannel is null")
-            }
-
-            // SDK の RPC メソッドを呼び出し
-            val paramsJson = Gson().toJson(mapOf("rid" to rid))
-            val result = channel.rpc(RPC_REQUEST_SIMULCAST_RID, paramsJson)
-
-            // 結果に応じて JSON フォーマットで返す
-            when (result) {
+            when (val result = channel.rpc(method, paramsJson)) {
                 null -> RpcCallResult.Success()
                 is SoraRpcResult.Success -> RpcCallResult.Success(result.result)
                 is SoraRpcResult.Error ->
@@ -758,80 +752,35 @@ class SoraVideoChannel(
         } catch (e: Exception) {
             RpcCallResult.Error(e.message ?: "unknown error")
         }
+    }
+
+    // RPC メソッド
+    suspend fun requestSimulcastRid(rid: String): RpcCallResult {
+        val paramsJson = Gson().toJson(mapOf("rid" to rid))
+        return callRpc(RPC_REQUEST_SIMULCAST_RID, paramsJson)
     }
 
     suspend fun requestSpotlightRid(
         focusRid: String,
         unfocusRid: String,
     ): RpcCallResult {
-        val channel = mediaChannel
-        return try {
-            if (channel == null) {
-                return RpcCallResult.Error("mediaChannel is null")
-            }
-
-            // SDK のRPC呼び出しを利用
-            val paramsJson =
-                Gson().toJson(
-                    mapOf(
-                        "spotlight_focus_rid" to focusRid,
-                        "spotlight_unfocus_rid" to unfocusRid,
-                    ),
-                )
-            val result = channel.rpc(RPC_REQUEST_SPOTLIGHT_RID, paramsJson)
-            when (result) {
-                null -> RpcCallResult.Success()
-                is SoraRpcResult.Success -> RpcCallResult.Success(result.result)
-                is SoraRpcResult.Error ->
-                    RpcCallResult.Error(
-                        "code=${result.error.code}, message=${result.error.message}" +
-                            (result.error.data?.let { ", data=$it" } ?: ""),
-                    )
-            }
-        } catch (e: SoraRpcException) {
-            RpcCallResult.Error("${e.reason.name}: ${e.message}")
-        } catch (e: Exception) {
-            RpcCallResult.Error(e.message ?: "unknown error")
-        }
+        val paramsJson =
+            Gson().toJson(
+                mapOf(
+                    "spotlight_focus_rid" to focusRid,
+                    "spotlight_unfocus_rid" to unfocusRid,
+                ),
+            )
+        return callRpc(RPC_REQUEST_SPOTLIGHT_RID, paramsJson)
     }
 
-    suspend fun resetSpotlightRid(): RpcCallResult {
-        val channel = mediaChannel
-        return try {
-            if (channel == null) {
-                return RpcCallResult.Error("mediaChannel is null")
-            }
-
-            // SDK のRPC呼び出しを利用
-            val paramsJson = "{}"
-            val result = channel.rpc(RPC_RESET_SPOTLIGHT_RID, paramsJson)
-            when (result) {
-                null -> RpcCallResult.Success()
-                is SoraRpcResult.Success -> RpcCallResult.Success(result.result)
-
-                is SoraRpcResult.Error ->
-                    RpcCallResult.Error(
-                        "code=${result.error.code}, message=${result.error.message}" +
-                            (result.error.data?.let { ", data=$it" } ?: ""),
-                    )
-            }
-        } catch (e: SoraRpcException) {
-            RpcCallResult.Error("${e.reason.name}: ${e.message}")
-        } catch (e: Exception) {
-            RpcCallResult.Error(e.message ?: "unknown error")
-        }
-    }
+    suspend fun resetSpotlightRid(): RpcCallResult = callRpc(RPC_RESET_SPOTLIGHT_RID, "{}")
 
     suspend fun putSignalingNotifyMetadata(
         metadataJson: String,
         push: Boolean = true,
     ): RpcCallResult {
-        val channel = mediaChannel
         return try {
-            if (channel == null) {
-                return RpcCallResult.Error("mediaChannel is null")
-            }
-
             // JSON文字列をMapにパース
             @Suppress("UNCHECKED_CAST")
             val metadata =
@@ -850,18 +799,7 @@ class SoraVideoChannel(
                         "push" to push,
                     ),
                 )
-            val result = channel.rpc(RPC_PUT_SIGNALING_NOTIFY_METADATA, paramsJson)
-            when (result) {
-                null -> RpcCallResult.Success()
-                is SoraRpcResult.Success -> RpcCallResult.Success(result.result)
-                is SoraRpcResult.Error ->
-                    RpcCallResult.Error(
-                        "code=${result.error.code}, message=${result.error.message}" +
-                            (result.error.data?.let { ", data=$it" } ?: ""),
-                    )
-            }
-        } catch (e: SoraRpcException) {
-            RpcCallResult.Error("${e.reason.name}: ${e.message}")
+            callRpc(RPC_PUT_SIGNALING_NOTIFY_METADATA, paramsJson)
         } catch (e: Exception) {
             RpcCallResult.Error(e.message ?: "unknown error")
         }
@@ -871,13 +809,8 @@ class SoraVideoChannel(
         key: String,
         valueJson: String,
         push: Boolean = true,
-    ): RpcCallResult {
-        val channel = mediaChannel
-        return try {
-            if (channel == null) {
-                return RpcCallResult.Error("mediaChannel is null")
-            }
-
+    ): RpcCallResult =
+        try {
             // JSON 文字列を Any にパース
             @Suppress("UNCHECKED_CAST")
             val value =
@@ -897,20 +830,8 @@ class SoraVideoChannel(
                         "push" to push,
                     ),
                 )
-            val result = channel.rpc(RPC_PUT_SIGNALING_NOTIFY_METADATA_ITEM, paramsJson)
-            when (result) {
-                null -> RpcCallResult.Success()
-                is SoraRpcResult.Success -> RpcCallResult.Success(result.result)
-                is SoraRpcResult.Error ->
-                    RpcCallResult.Error(
-                        "code=${result.error.code}, message=${result.error.message}" +
-                            (result.error.data?.let { ", data=$it" } ?: ""),
-                    )
-            }
-        } catch (e: SoraRpcException) {
-            RpcCallResult.Error("${e.reason.name}: ${e.message}")
+            callRpc(RPC_PUT_SIGNALING_NOTIFY_METADATA_ITEM, paramsJson)
         } catch (e: Exception) {
             RpcCallResult.Error(e.message ?: "unknown error")
         }
-    }
 }
