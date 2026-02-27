@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Metadata Key"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/dialogMetadataItemKeyInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter key (e.g., user_id)"
+            android:layout_marginBottom="16dp"
+            android:minHeight="48dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Metadata Value (JSON or String)"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/dialogMetadataItemValueInput"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:hint='{"nested": "object"} or "simple_value" or 42'
+            android:gravity="top|start"
+            android:inputType="text|textMultiLine"
+            android:fontFamily="monospace"
+            android:textSize="12sp"
+            android:layout_marginBottom="16dp"
+            android:minHeight="120dp" />
+
+        <CheckBox
+            android:id="@+id/dialogMetadataItemPushCheckbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Push to other participants"
+            android:checked="true"
+            android:layout_marginBottom="16dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/dialogMetadataItemCancelButton"
+                android:layout_width="120dp"
+                android:layout_height="56dp"
+                android:text="Cancel"
+                android:layout_marginEnd="8dp"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/dialogMetadataItemSendButton"
+                android:layout_width="120dp"
+                android:layout_height="56dp"
+                android:text="Send"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

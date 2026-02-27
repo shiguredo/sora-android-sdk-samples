@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/black"
+    android:fitsSystemWindows="true"
+    android:padding="10dp">
+
+    <!-- Video display area (top half) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="#222222">
+
+        <TextView
+            android:id="@+id/channelNameText"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:background="#64DD17"
+            android:padding="10dp"
+            android:gravity="center"
+            android:text="[Channel]" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp">
+
+            <RelativeLayout
+                android:id="@+id/rendererContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#000000" />
+
+            <TextView
+                android:id="@+id/resolutionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:text="Resolution: -"
+                android:background="#80000000"
+                android:padding="8dp"
+                android:layout_gravity="top|start" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <!-- Video control buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:background="#C8000000"
+        android:padding="10dp">
+
+        <ImageButton
+            android:id="@+id/toggleMuteButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
+            android:scaleType="fitCenter"
+            android:background="@drawable/enabled_button_background"
+            android:padding="6dp"
+            app:srcCompat="@drawable/ic_mic_off_black_48dp" />
+
+        <ImageButton
+            android:id="@+id/toggleCameraButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
+            android:scaleType="fitCenter"
+            android:background="@drawable/enabled_button_background"
+            android:padding="6dp"
+            app:srcCompat="@drawable/ic_videocam_on_white_48dp" />
+
+        <ImageButton
+            android:id="@+id/switchCameraButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
+            android:scaleType="fitCenter"
+            android:background="@drawable/enabled_button_background"
+            android:padding="6dp"
+            app:srcCompat="@drawable/ic_videocam_white_48dp" />
+
+        <ImageButton
+            android:id="@+id/closeButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="fitCenter"
+            android:background="@drawable/enabled_button_background"
+            android:padding="6dp"
+            app:srcCompat="@drawable/ic_close_white_48dp" />
+
+    </LinearLayout>
+
+    <!-- RPC method selection and UI (bottom half) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="#1a1a1a"
+        android:padding="10dp">
+
+        <!-- RPC Method Buttons Row 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="5dp">
+
+            <Button
+                android:id="@+id/rpcRequestSimulcastRidButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="RequestSimulcastRid"
+                android:layout_marginEnd="5dp" />
+
+            <Button
+                android:id="@+id/rpcRequestSpotlightRidButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="RequestSpotlightRid"
+                android:layout_marginEnd="5dp" />
+
+        </LinearLayout>
+
+        <!-- RPC Method Buttons Row 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="10dp">
+
+            <Button
+                android:id="@+id/rpcResetSpotlightRidButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="ResetSpotlightRid"
+                android:layout_marginEnd="5dp" />
+
+            <Button
+                android:id="@+id/rpcPutSignalingMetadataButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="PutSignalingMetadata" />
+
+        </LinearLayout>
+
+        <!-- RPC Method Buttons Row 3 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="10dp">
+
+            <Button
+                android:id="@+id/rpcPutSignalingMetadataItemButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="PutSignalingMetadataItem" />
+
+        </LinearLayout>
+
+        <!-- RPC Request/Response Log Display -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Request / Response:"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:layout_marginBottom="5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp">
+
+            <TextView
+                android:id="@+id/rpcLogText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="11sp"
+                android:fontFamily="monospace"
+                android:text="Waiting for request..."
+                android:background="#1a1a1a"
+                android:padding="8dp" />
+
+        </ScrollView>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/localRendererContainer"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@android:color/darker_gray"
+        android:layout_gravity="start|bottom"
+        android:layout_margin="10dp" />
+
+</LinearLayout>

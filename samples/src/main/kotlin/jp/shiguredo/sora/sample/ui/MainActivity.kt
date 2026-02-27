@@ -79,6 +79,10 @@ class MainActivity : AppCompatActivity() {
                         description = "スポットライトのデモです。スポットライト数を固定したチャットが可能です。",
                     ),
                     Feature(
+                        title = "RPC チャット",
+                        description = "RPC 機能を動かすためのサンプルです。1:1 のビデオチャット。",
+                    ),
+                    Feature(
                         title = "リアルタイムメッセージング",
                         description = "リアルタイムメッセージングのデモです",
                     ),
@@ -156,8 +160,9 @@ class MainActivity : AppCompatActivity() {
             1 -> goToVoiceRoomDemoWithPermissionCheck()
             2 -> goToSimulcastWithPermissionCheck()
             3 -> goToSpotlightWithPermissionCheck()
-            4 -> goToMessaging()
-            5 -> goToScreencastActivityWithPermissionCheck()
+            4 -> goToRpcChatWithPermissionCheck()
+            5 -> goToMessaging()
+            6 -> goToScreencastActivityWithPermissionCheck()
             else -> {
                 Log.w(TAG, "must not come here")
             }
@@ -197,6 +202,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun goToSimulcast() {
         val intent = Intent(this, SimulcastSetupActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun goToRpcChat() {
+        val intent = Intent(this, RpcChatSetupActivity::class.java)
         startActivity(intent)
     }
 
@@ -293,6 +303,26 @@ class MainActivity : AppCompatActivity() {
                 shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)
         if (needRationale) {
             showRationaleDialog("ビデオチャットを利用するには、カメラとマイクの使用許可が必要です") {
+                requestCameraAndAudioPermissions.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO))
+            }
+        } else {
+            requestCameraAndAudioPermissions.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO))
+        }
+    }
+
+    private fun goToRpcChatWithPermissionCheck() {
+        val cameraGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+        val audioGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+        if (cameraGranted && audioGranted) {
+            goToRpcChat()
+            return
+        }
+        pendingActionAfterPermission = { goToRpcChat() }
+        val needRationale =
+            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
+                shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)
+        if (needRationale) {
+            showRationaleDialog("RPC チャットを利用するには、カメラとマイクの使用許可が必要です") {
                 requestCameraAndAudioPermissions.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO))
             }
         } else {

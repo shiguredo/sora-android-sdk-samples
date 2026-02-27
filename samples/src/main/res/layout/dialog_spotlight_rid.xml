@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@android:color/white">
+
+    <!-- Focus RID Section -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Spotlight Focus RID:"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp" />
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="4"
+        android:rowCount="1"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp">
+
+        <Button
+            android:id="@+id/dialogSpotlightFocusNoneButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_marginEnd="5dp"
+            android:text="none" />
+
+        <Button
+            android:id="@+id/dialogSpotlightFocusR0Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_column="1"
+            android:layout_columnWeight="1"
+            android:layout_marginEnd="5dp"
+            android:text="r0" />
+
+        <Button
+            android:id="@+id/dialogSpotlightFocusR1Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_column="2"
+            android:layout_columnWeight="1"
+            android:layout_marginEnd="5dp"
+            android:text="r1" />
+
+        <Button
+            android:id="@+id/dialogSpotlightFocusR2Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_column="3"
+            android:layout_columnWeight="1"
+            android:text="r2" />
+
+    </GridLayout>
+
+    <!-- Unfocus RID Section -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Spotlight Unfocus RID:"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp" />
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="4"
+        android:rowCount="1"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp">
+
+        <Button
+            android:id="@+id/dialogSpotlightUnfocusNoneButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_marginEnd="5dp"
+            android:text="none" />
+
+        <Button
+            android:id="@+id/dialogSpotlightUnfocusR0Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_column="1"
+            android:layout_columnWeight="1"
+            android:layout_marginEnd="5dp"
+            android:text="r0" />
+
+        <Button
+            android:id="@+id/dialogSpotlightUnfocusR1Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_column="2"
+            android:layout_columnWeight="1"
+            android:layout_marginEnd="5dp"
+            android:text="r1" />
+
+        <Button
+            android:id="@+id/dialogSpotlightUnfocusR2Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_column="3"
+            android:layout_columnWeight="1"
+            android:text="r2" />
+
+    </GridLayout>
+
+    <!-- Current Selection Display -->
+    <TextView
+        android:id="@+id/dialogSpotlightSelectionText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Focus: none | Unfocus: none"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"
+        android:background="#f0f0f0"
+        android:padding="10dp" />
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/dialogSpotlightCancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="キャンセル"
+            android:layout_marginEnd="10dp" />
+
+        <Button
+            android:id="@+id/dialogSpotlightSendButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="送信"
+            android:background="#F06292"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+</LinearLayout>
