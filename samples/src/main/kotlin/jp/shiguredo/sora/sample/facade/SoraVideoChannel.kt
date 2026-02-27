@@ -808,7 +808,7 @@ class SoraVideoChannel(
             val result = channel.rpc(RPC_RESET_SPOTLIGHT_RID, paramsJson)
             when (result) {
                 null -> RpcCallResult.Success()
-                is SoraRpcResult.Success -> RpcCallResult.Success()
+                is SoraRpcResult.Success -> RpcCallResult.Success(result.result)
 
                 is SoraRpcResult.Error ->
                     RpcCallResult.Error(

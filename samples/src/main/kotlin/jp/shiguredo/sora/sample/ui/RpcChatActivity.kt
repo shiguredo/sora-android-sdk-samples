@@ -612,10 +612,12 @@ class RpcChatActivity : AppCompatActivity() {
         width: Int,
         height: Int,
     ) {
-        if (lastResolutionWidth != width || lastResolutionHeight != height) {
-            lastResolutionWidth = width
-            lastResolutionHeight = height
-            ui?.updateResolutionDisplay("Resolution: $width x $height")
+        mainHandler.post {
+            if (lastResolutionWidth != width || lastResolutionHeight != height) {
+                lastResolutionWidth = width
+                lastResolutionHeight = height
+                ui?.updateResolutionDisplay("Resolution: $width x $height")
+            }
         }
     }
 
@@ -625,7 +627,7 @@ class RpcChatActivity : AppCompatActivity() {
             try {
                 // リクエスト情報を表示
                 val requestLog = "REQUEST:\nmethod: requestSimulcastRid\nrid: $rid\n"
-                ui?.appendSimulcastRequestResponseLog(requestLog)
+                ui?.appendRpcLog(requestLog)
 
                 val result = channel.requestSimulcastRid(rid)
                 val resultText = formatRpcResult(result)
@@ -633,14 +635,14 @@ class RpcChatActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     // レスポンス情報を表示
                     val responseLog = "RESPONSE:\nresult: $resultText\n"
-                    ui?.appendSimulcastRequestResponseLog(responseLog)
+                    ui?.appendRpcLog(responseLog)
                     ui?.showToastOnUI("Simulcast RID リクエスト: $rid -> $resultText")
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to request simulcast rid", e)
                 withContext(Dispatchers.Main) {
                     val errorLog = "ERROR:\nmessage: ${e.message}\n"
-                    ui?.appendSimulcastRequestResponseLog(errorLog)
+                    ui?.appendRpcLog(errorLog)
                     ui?.showToastOnUI("Simulcast RID リクエスト失敗: ${e.message}")
                 }
             }
@@ -656,7 +658,7 @@ class RpcChatActivity : AppCompatActivity() {
             try {
                 // リクエスト情報を表示
                 val requestLog = "REQUEST:\nmethod: requestSpotlightRid\nfocus_rid: $focusRid\nunfocus_rid: $unfocusRid\n"
-                ui?.appendSimulcastRequestResponseLog(requestLog)
+                ui?.appendRpcLog(requestLog)
 
                 val result = channel.requestSpotlightRid(focusRid, unfocusRid)
                 val resultText = formatRpcResult(result)
@@ -664,7 +666,7 @@ class RpcChatActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     // レスポンス情報を表示
                     val responseLog = "RESPONSE:\nresult: $resultText\n"
-                    ui?.appendSimulcastRequestResponseLog(responseLog)
+                    ui?.appendRpcLog(responseLog)
                     ui?.showToastOnUI(
                         "Spotlight RID リクエスト: focus=$focusRid, unfocus=$unfocusRid -> $resultText",
                     )
@@ -673,7 +675,7 @@ class RpcChatActivity : AppCompatActivity() {
                 Log.e(TAG, "Failed to request spotlight rid", e)
                 withContext(Dispatchers.Main) {
                     val errorLog = "ERROR:\nmessage: ${e.message}\n"
-                    ui?.appendSimulcastRequestResponseLog(errorLog)
+                    ui?.appendRpcLog(errorLog)
                     ui?.showToastOnUI("Spotlight RID リクエスト失敗: ${e.message}")
                 }
             }
@@ -686,7 +688,7 @@ class RpcChatActivity : AppCompatActivity() {
             try {
                 // リクエスト情報を表示
                 val requestLog = "REQUEST:\nmethod: resetSpotlightRid\n"
-                ui?.appendSimulcastRequestResponseLog(requestLog)
+                ui?.appendRpcLog(requestLog)
 
                 val result = channel.resetSpotlightRid()
                 val resultText = formatRpcResult(result)
@@ -694,14 +696,14 @@ class RpcChatActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     // レスポンス情報を表示
                     val responseLog = "RESPONSE:\nresult: $resultText\n"
-                    ui?.appendSimulcastRequestResponseLog(responseLog)
+                    ui?.appendRpcLog(responseLog)
                     ui?.showToastOnUI("Spotlight RID リセット -> $resultText")
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to reset spotlight rid", e)
                 withContext(Dispatchers.Main) {
                     val errorLog = "ERROR:\nmessage: ${e.message}\n"
-                    ui?.appendSimulcastRequestResponseLog(errorLog)
+                    ui?.appendRpcLog(errorLog)
                     ui?.showToastOnUI("Spotlight RID リセット失敗: ${e.message}")
                 }
             }
@@ -719,19 +721,19 @@ class RpcChatActivity : AppCompatActivity() {
                     "REQUEST: PutSignalingNotifyMetadata\n" +
                         "metadata: $metadataJson\n" +
                         "push: $push"
-                ui?.appendSimulcastRequestResponseLog(requestLog)
+                ui?.appendRpcLog(requestLog)
 
                 val result = channel.putSignalingNotifyMetadata(metadataJson, push)
                 val resultText = formatRpcResult(result)
                 withContext(Dispatchers.Main) {
                     val responseLog = "RESPONSE: $resultText"
-                    ui?.appendSimulcastRequestResponseLog(responseLog)
+                    ui?.appendRpcLog(responseLog)
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to put metadata", e)
                 withContext(Dispatchers.Main) {
                     val errorLog = "ERROR: ${e.message}"
-                    ui?.appendSimulcastRequestResponseLog(errorLog)
+                    ui?.appendRpcLog(errorLog)
                 }
             }
         }
@@ -750,19 +752,19 @@ class RpcChatActivity : AppCompatActivity() {
                         "key: $key\n" +
                         "value: $valueJson\n" +
                         "push: $push"
-                ui?.appendSimulcastRequestResponseLog(requestLog)
+                ui?.appendRpcLog(requestLog)
 
                 val result = channel.putSignalingNotifyMetadataItem(key, valueJson, push)
                 val resultText = formatRpcResult(result)
                 withContext(Dispatchers.Main) {
                     val responseLog = "RESPONSE: $resultText"
-                    ui?.appendSimulcastRequestResponseLog(responseLog)
+                    ui?.appendRpcLog(responseLog)
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to put metadata item", e)
                 withContext(Dispatchers.Main) {
                     val errorLog = "ERROR: ${e.message}"
-                    ui?.appendSimulcastRequestResponseLog(errorLog)
+                    ui?.appendRpcLog(errorLog)
                 }
             }
         }
@@ -1054,7 +1056,7 @@ class RpcChatActivityUI(
         dialog.show()
     }
 
-    internal fun appendSimulcastRequestResponseLog(message: String) {
+    internal fun appendRpcLog(message: String) {
         val currentText = binding.simulcastRequestResponseText.text.toString()
         val newText =
             if (currentText == "Waiting for request...") {
@@ -1117,7 +1119,7 @@ class RpcChatActivityUI(
     }
 
     internal fun showToastOnUI(message: String) {
-        Handler(Looper.getMainLooper()).post {
+        activity.runOnUiThread {
             Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
         }
     }
