@@ -10,7 +10,7 @@ import jp.shiguredo.sora.sample.option.SoraFrameSize
 
 class RpcChatSetupActivity : AppCompatActivity() {
     companion object {
-        val TAG = RpcChatSetupActivity::class.simpleName
+        private val TAG = RpcChatSetupActivity::class.simpleName
     }
 
     // Simulcast settings
@@ -163,29 +163,29 @@ class RpcChatSetupActivity : AppCompatActivity() {
         val initialCamera = binding.initialCameraSelection.spinner.selectedItem()
 
         val intent = Intent(this, RpcChatActivity::class.java)
-        intent.putExtra("CHANNEL_NAME", channelName)
-        intent.putExtra("ROLE", role)
-        intent.putExtra("VIDEO_CODEC", videoCodec)
-        intent.putExtra("VIDEO_ENABLED", videoEnabled)
-        intent.putExtra("AUDIO_CODEC", audioCodec)
-        intent.putExtra("AUDIO_ENABLED", audioEnabled)
-        intent.putExtra("AUDIO_BIT_RATE", audioBitRate)
-        intent.putExtra("VIDEO_BIT_RATE", videoBitRate)
-        intent.putExtra("VIDEO_SIZE", videoSize)
-        intent.putExtra("FPS", fps)
-        intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
-        intent.putExtra("RESOLUTION_ADJUSTMENT", resolutionAdjustment)
-        intent.putExtra("SIMULCAST_REQUEST_RID", simulcastRequestRid)
-        intent.putExtra("SPOTLIGHT_ENABLED", spotlightEnabled)
-        intent.putExtra("SPOTLIGHT_NUMBER", spotlightNumber)
-        intent.putExtra("SPOTLIGHT_FOCUS_RID", spotlightFocusRid)
-        intent.putExtra("SPOTLIGHT_UNFOCUS_RID", spotlightUnfocusRid)
-        intent.putExtra("CLIENT_ID", clientId)
-        intent.putExtra("BUNDLE_ID", bundleId)
-        intent.putExtra("DATA_CHANNEL_SIGNALING", dataChannelSignaling)
-        intent.putExtra("IGNORE_DISCONNECT_WEBSOCKET", ignoreDisconnectWebSocket)
-        intent.putExtra("INITIAL_CAMERA", initialCamera)
-        intent.putExtra("RPC_ENABLED", true)
+        intent.putExtra(RpcChatActivity.EXTRA_CHANNEL_NAME, channelName)
+        intent.putExtra(RpcChatActivity.EXTRA_ROLE, role)
+        intent.putExtra(RpcChatActivity.EXTRA_VIDEO_CODEC, videoCodec)
+        intent.putExtra(RpcChatActivity.EXTRA_VIDEO_ENABLED, videoEnabled)
+        intent.putExtra(RpcChatActivity.EXTRA_AUDIO_CODEC, audioCodec)
+        intent.putExtra(RpcChatActivity.EXTRA_AUDIO_ENABLED, audioEnabled)
+        intent.putExtra(RpcChatActivity.EXTRA_AUDIO_BIT_RATE, audioBitRate)
+        intent.putExtra(RpcChatActivity.EXTRA_VIDEO_BIT_RATE, videoBitRate)
+        intent.putExtra(RpcChatActivity.EXTRA_VIDEO_SIZE, videoSize)
+        intent.putExtra(RpcChatActivity.EXTRA_FPS, fps)
+        intent.putExtra(RpcChatActivity.EXTRA_RESOLUTION_CHANGE, resolutionChange)
+        intent.putExtra(RpcChatActivity.EXTRA_RESOLUTION_ADJUSTMENT, resolutionAdjustment)
+        intent.putExtra(RpcChatActivity.EXTRA_SIMULCAST_REQUEST_RID, simulcastRequestRid)
+        intent.putExtra(RpcChatActivity.EXTRA_SPOTLIGHT_ENABLED, spotlightEnabled)
+        intent.putExtra(RpcChatActivity.EXTRA_SPOTLIGHT_NUMBER, spotlightNumber)
+        intent.putExtra(RpcChatActivity.EXTRA_SPOTLIGHT_FOCUS_RID, spotlightFocusRid)
+        intent.putExtra(RpcChatActivity.EXTRA_SPOTLIGHT_UNFOCUS_RID, spotlightUnfocusRid)
+        intent.putExtra(RpcChatActivity.EXTRA_CLIENT_ID, clientId)
+        intent.putExtra(RpcChatActivity.EXTRA_BUNDLE_ID, bundleId)
+        intent.putExtra(RpcChatActivity.EXTRA_DATA_CHANNEL_SIGNALING, dataChannelSignaling)
+        intent.putExtra(RpcChatActivity.EXTRA_IGNORE_DISCONNECT_WEBSOCKET, ignoreDisconnectWebSocket)
+        intent.putExtra(RpcChatActivity.EXTRA_INITIAL_CAMERA, initialCamera)
+        intent.putExtra(RpcChatActivity.EXTRA_RPC_ENABLED, true)
 
         startActivity(intent)
     }

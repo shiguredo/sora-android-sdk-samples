@@ -12,10 +12,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.WindowManager
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -30,14 +27,12 @@ import jp.shiguredo.sora.sample.databinding.ActivityRpcChatBinding
 import jp.shiguredo.sora.sample.facade.SoraVideoChannel
 import jp.shiguredo.sora.sample.option.SoraFrameSize
 import jp.shiguredo.sora.sample.option.SoraRoleType
-import jp.shiguredo.sora.sample.ui.util.MicMuteController
 import jp.shiguredo.sora.sample.ui.util.RendererLayoutCalculator
 import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
-import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -50,6 +45,29 @@ import java.util.UUID
 class RpcChatActivity : AppCompatActivity() {
     companion object {
         private val TAG = RpcChatActivity::class.simpleName
+        const val EXTRA_CHANNEL_NAME = "CHANNEL_NAME"
+        const val EXTRA_VIDEO_CODEC = "VIDEO_CODEC"
+        const val EXTRA_AUDIO_CODEC = "AUDIO_CODEC"
+        const val EXTRA_ROLE = "ROLE"
+        const val EXTRA_VIDEO_ENABLED = "VIDEO_ENABLED"
+        const val EXTRA_AUDIO_ENABLED = "AUDIO_ENABLED"
+        const val EXTRA_FPS = "FPS"
+        const val EXTRA_VIDEO_SIZE = "VIDEO_SIZE"
+        const val EXTRA_RESOLUTION_CHANGE = "RESOLUTION_CHANGE"
+        const val EXTRA_RESOLUTION_ADJUSTMENT = "RESOLUTION_ADJUSTMENT"
+        const val EXTRA_VIDEO_BIT_RATE = "VIDEO_BIT_RATE"
+        const val EXTRA_AUDIO_BIT_RATE = "AUDIO_BIT_RATE"
+        const val EXTRA_CLIENT_ID = "CLIENT_ID"
+        const val EXTRA_BUNDLE_ID = "BUNDLE_ID"
+        const val EXTRA_DATA_CHANNEL_SIGNALING = "DATA_CHANNEL_SIGNALING"
+        const val EXTRA_IGNORE_DISCONNECT_WEBSOCKET = "IGNORE_DISCONNECT_WEBSOCKET"
+        const val EXTRA_SIMULCAST_REQUEST_RID = "SIMULCAST_REQUEST_RID"
+        const val EXTRA_SPOTLIGHT_NUMBER = "SPOTLIGHT_NUMBER"
+        const val EXTRA_SPOTLIGHT_FOCUS_RID = "SPOTLIGHT_FOCUS_RID"
+        const val EXTRA_SPOTLIGHT_UNFOCUS_RID = "SPOTLIGHT_UNFOCUS_RID"
+        const val EXTRA_RPC_ENABLED = "RPC_ENABLED"
+        const val EXTRA_SPOTLIGHT_ENABLED = "SPOTLIGHT_ENABLED"
+        const val EXTRA_INITIAL_CAMERA = "INITIAL_CAMERA"
 
         private enum class CameraState {
             ON,
@@ -89,8 +107,6 @@ class RpcChatActivity : AppCompatActivity() {
     private var ui: RpcChatActivityUI? = null
     private var channel: SoraVideoChannel? = null
 
-    private lateinit var binding: ActivityRpcChatBinding
-
     // 解像度監視用
     private var lastResolutionWidth: Int? = null
     private var lastResolutionHeight: Int? = null
@@ -99,6 +115,7 @@ class RpcChatActivity : AppCompatActivity() {
     private var resolutionMonitorRetryCount = 0
 
     private val mainHandler = Handler(Looper.getMainLooper())
+    private val resolutionMonitorRetryRunnable = Runnable { tryAttachResolutionMonitor() }
 
     // マイク状態の追跡
     private var isAudioMuted = false
@@ -106,8 +123,6 @@ class RpcChatActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
-        binding = ActivityRpcChatBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         setupWindow()
         parseIntent()
@@ -126,10 +141,10 @@ class RpcChatActivity : AppCompatActivity() {
     }
 
     private fun parseIntent() {
-        channelName = intent.getStringExtra("CHANNEL_NAME") ?: ""
+        channelName = intent.getStringExtra(EXTRA_CHANNEL_NAME) ?: ""
 
         videoCodec =
-            when (intent.getStringExtra("VIDEO_CODEC")) {
+            when (intent.getStringExtra(EXTRA_VIDEO_CODEC)) {
                 "未指定" -> SoraVideoOption.Codec.DEFAULT
                 "VP8" -> SoraVideoOption.Codec.VP8
                 "VP9" -> SoraVideoOption.Codec.VP9
@@ -140,14 +155,14 @@ class RpcChatActivity : AppCompatActivity() {
             }
 
         audioCodec =
-            when (intent.getStringExtra("AUDIO_CODEC")) {
+            when (intent.getStringExtra(EXTRA_AUDIO_CODEC)) {
                 "未指定" -> SoraAudioOption.Codec.DEFAULT
                 "OPUS" -> SoraAudioOption.Codec.OPUS
                 else -> SoraAudioOption.Codec.DEFAULT
             }
 
         role =
-            when (intent.getStringExtra("ROLE")) {
+            when (intent.getStringExtra(EXTRA_ROLE)) {
                 "SENDONLY" -> SoraRoleType.SENDONLY
                 "RECVONLY" -> SoraRoleType.RECVONLY
                 "SENDRECV" -> SoraRoleType.SENDRECV
@@ -155,29 +170,29 @@ class RpcChatActivity : AppCompatActivity() {
             }
 
         videoEnabled =
-            when (intent.getStringExtra("VIDEO_ENABLED")) {
+            when (intent.getStringExtra(EXTRA_VIDEO_ENABLED)) {
                 "有効" -> true
                 "無効" -> false
                 else -> true
             }
 
         audioEnabled =
-            when (intent.getStringExtra("AUDIO_ENABLED")) {
+            when (intent.getStringExtra(EXTRA_AUDIO_ENABLED)) {
                 "有効" -> true
                 "無効" -> false
                 else -> true
             }
 
         startWithCamera =
-            when (intent.getStringExtra("INITIAL_CAMERA")) {
+            when (intent.getStringExtra(EXTRA_INITIAL_CAMERA)) {
                 "有効" -> true
                 "無効" -> false
                 else -> true
             }
 
-        fps = (intent.getStringExtra("FPS") ?: "30").toInt()
+        fps = (intent.getStringExtra(EXTRA_FPS) ?: "30").toInt()
 
-        intent.getStringExtra("VIDEO_SIZE")?.let { key ->
+        intent.getStringExtra(EXTRA_VIDEO_SIZE)?.let { key ->
             SoraFrameSize.landscape[key]?.let { p ->
                 videoWidth = p.x
                 videoHeight = p.y
@@ -185,7 +200,7 @@ class RpcChatActivity : AppCompatActivity() {
         }
 
         degradationPreference =
-            when (intent.getStringExtra("RESOLUTION_CHANGE")) {
+            when (intent.getStringExtra(EXTRA_RESOLUTION_CHANGE)) {
                 "未指定" -> null
                 "MAINTAIN_RESOLUTION" -> SoraVideoOption.DegradationPreference.MAINTAIN_RESOLUTION
                 "MAINTAIN_FRAMERATE" -> SoraVideoOption.DegradationPreference.MAINTAIN_FRAMERATE
@@ -195,7 +210,7 @@ class RpcChatActivity : AppCompatActivity() {
             }
 
         resolutionAdjustment =
-            when (intent.getStringExtra("RESOLUTION_ADJUSTMENT")) {
+            when (intent.getStringExtra(EXTRA_RESOLUTION_ADJUSTMENT)) {
                 "16" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_16
                 "8" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_8
                 "4" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_4
@@ -205,19 +220,19 @@ class RpcChatActivity : AppCompatActivity() {
             }
 
         videoBitRate =
-            when (val stringValue = intent.getStringExtra("VIDEO_BIT_RATE")) {
+            when (val stringValue = intent.getStringExtra(EXTRA_VIDEO_BIT_RATE)) {
                 "未指定" -> null
                 else -> stringValue?.toInt()
             }
 
         audioBitRate =
-            when (val stringValue = intent.getStringExtra("AUDIO_BIT_RATE")) {
+            when (val stringValue = intent.getStringExtra(EXTRA_AUDIO_BIT_RATE)) {
                 "未指定" -> null
                 else -> stringValue?.toInt()
             }
 
         clientId =
-            when (intent.getStringExtra("CLIENT_ID")) {
+            when (intent.getStringExtra(EXTRA_CLIENT_ID)) {
                 "なし" -> null
                 "端末情報" -> Build.MODEL
                 "時雨堂" -> "🍖時雨堂🍗"
@@ -226,7 +241,7 @@ class RpcChatActivity : AppCompatActivity() {
             }
 
         bundleId =
-            when (intent.getStringExtra("BUNDLE_ID")) {
+            when (intent.getStringExtra(EXTRA_BUNDLE_ID)) {
                 "なし" -> null
                 "端末情報" -> Build.MODEL
                 "時雨堂" -> "☔時雨堂🌂"
@@ -235,7 +250,7 @@ class RpcChatActivity : AppCompatActivity() {
             }
 
         dataChannelSignaling =
-            when (intent.getStringExtra("DATA_CHANNEL_SIGNALING")) {
+            when (intent.getStringExtra(EXTRA_DATA_CHANNEL_SIGNALING)) {
                 "無効" -> false
                 "有効" -> true
                 "未指定" -> null
@@ -243,7 +258,7 @@ class RpcChatActivity : AppCompatActivity() {
             }
 
         ignoreDisconnectWebSocket =
-            when (intent.getStringExtra("IGNORE_DISCONNECT_WEBSOCKET")) {
+            when (intent.getStringExtra(EXTRA_IGNORE_DISCONNECT_WEBSOCKET)) {
                 "無効" -> false
                 "有効" -> true
                 "未指定" -> null
@@ -251,31 +266,31 @@ class RpcChatActivity : AppCompatActivity() {
             }
 
         simulcastRequestRid =
-            when (val stringValue = intent.getStringExtra("SIMULCAST_REQUEST_RID")) {
+            when (val stringValue = intent.getStringExtra(EXTRA_SIMULCAST_REQUEST_RID)) {
                 "未指定" -> null
                 else -> stringValue
             }
 
         spotlightNumber =
-            when (val stringValue = intent.getStringExtra("SPOTLIGHT_NUMBER")) {
+            when (val stringValue = intent.getStringExtra(EXTRA_SPOTLIGHT_NUMBER)) {
                 "未指定" -> null
                 else -> stringValue?.toInt()
             }
 
         spotlightFocusRid =
-            when (val stringValue = intent.getStringExtra("SPOTLIGHT_FOCUS_RID")) {
+            when (val stringValue = intent.getStringExtra(EXTRA_SPOTLIGHT_FOCUS_RID)) {
                 "未指定" -> null
                 else -> stringValue
             }
 
         spotlightUnfocusRid =
-            when (val stringValue = intent.getStringExtra("SPOTLIGHT_UNFOCUS_RID")) {
+            when (val stringValue = intent.getStringExtra(EXTRA_SPOTLIGHT_UNFOCUS_RID)) {
                 "未指定" -> null
                 else -> stringValue
             }
 
-        rpcEnabled = intent.getBooleanExtra("RPC_ENABLED", false)
-        spotlightEnabled = intent.getBooleanExtra("SPOTLIGHT_ENABLED", true)
+        rpcEnabled = intent.getBooleanExtra(EXTRA_RPC_ENABLED, false)
+        spotlightEnabled = intent.getBooleanExtra(EXTRA_SPOTLIGHT_ENABLED, true)
 
         ui =
             RpcChatActivityUI(
@@ -401,7 +416,6 @@ class RpcChatActivity : AppCompatActivity() {
 
     private fun connectChannel() {
         Log.d(TAG, "connectChannel")
-        val handler = Handler(Looper.getMainLooper())
 
         try {
             val signalingEndpointCandidates = BuildConfig.SIGNALING_ENDPOINT.split(",").map { it.trim() }
@@ -444,7 +458,7 @@ class RpcChatActivity : AppCompatActivity() {
             channel =
                 SoraVideoChannel(
                     context = this,
-                    handler = handler,
+                    handler = mainHandler,
                     signalingEndpointCandidates = signalingEndpointCandidates,
                     channelId = channelName,
                     signalingMetadata = signalingMetadata,
@@ -520,8 +534,10 @@ class RpcChatActivity : AppCompatActivity() {
             }
 
             CameraState.HARD_MUTED -> {
-                channel.setCameraHardMuted(false)
-                channel.setCameraSoftMuted(false)
+                if (videoEnabled) {
+                    channel.setCameraHardMuted(false)
+                    channel.setCameraSoftMuted(false)
+                }
             }
         }
     }
@@ -546,7 +562,7 @@ class RpcChatActivity : AppCompatActivity() {
                 // onAddRemoteRenderer 呼び出し時点では track 未登録のことがあるため短時間だけ再試行する
                 if (resolutionMonitorRetryCount < 20) {
                     resolutionMonitorRetryCount += 1
-                    mainHandler.postDelayed({ tryAttachResolutionMonitor() }, 100L)
+                    mainHandler.postDelayed(resolutionMonitorRetryRunnable, 100L)
                 }
                 return
             }
@@ -571,7 +587,7 @@ class RpcChatActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.w(TAG, "Failed to detach resolution monitor", e)
         } finally {
-            mainHandler.removeCallbacksAndMessages(null)
+            mainHandler.removeCallbacks(resolutionMonitorRetryRunnable)
             resolutionMonitorRetryCount = 0
             resolutionMonitorSink = null
             remoteVideoTrack = null
@@ -579,6 +595,18 @@ class RpcChatActivity : AppCompatActivity() {
             lastResolutionHeight = null
         }
     }
+
+    private fun formatRpcResult(result: SoraVideoChannel.RpcCallResult): String =
+        when (result) {
+            is SoraVideoChannel.RpcCallResult.Success -> {
+                if (result.result.isNullOrBlank()) {
+                    "Success"
+                } else {
+                    "Success: ${result.result}"
+                }
+            }
+            is SoraVideoChannel.RpcCallResult.Error -> "Error: ${result.message}"
+        }
 
     internal fun updateRemoteResolution(
         width: Int,
@@ -600,12 +628,13 @@ class RpcChatActivity : AppCompatActivity() {
                 ui?.appendSimulcastRequestResponseLog(requestLog)
 
                 val result = channel.requestSimulcastRid(rid)
+                val resultText = formatRpcResult(result)
 
                 withContext(Dispatchers.Main) {
                     // レスポンス情報を表示
-                    val responseLog = "RESPONSE:\nresult: $result\n"
+                    val responseLog = "RESPONSE:\nresult: $resultText\n"
                     ui?.appendSimulcastRequestResponseLog(responseLog)
-                    ui?.showToastOnUI("Simulcast RID リクエスト: $rid -> $result")
+                    ui?.showToastOnUI("Simulcast RID リクエスト: $rid -> $resultText")
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to request simulcast rid", e)
@@ -630,12 +659,15 @@ class RpcChatActivity : AppCompatActivity() {
                 ui?.appendSimulcastRequestResponseLog(requestLog)
 
                 val result = channel.requestSpotlightRid(focusRid, unfocusRid)
+                val resultText = formatRpcResult(result)
 
                 withContext(Dispatchers.Main) {
                     // レスポンス情報を表示
-                    val responseLog = "RESPONSE:\nresult: $result\n"
+                    val responseLog = "RESPONSE:\nresult: $resultText\n"
                     ui?.appendSimulcastRequestResponseLog(responseLog)
-                    ui?.showToastOnUI("Spotlight RID リクエスト: focus=$focusRid, unfocus=$unfocusRid -> $result")
+                    ui?.showToastOnUI(
+                        "Spotlight RID リクエスト: focus=$focusRid, unfocus=$unfocusRid -> $resultText",
+                    )
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to request spotlight rid", e)
@@ -657,12 +689,13 @@ class RpcChatActivity : AppCompatActivity() {
                 ui?.appendSimulcastRequestResponseLog(requestLog)
 
                 val result = channel.resetSpotlightRid()
+                val resultText = formatRpcResult(result)
 
                 withContext(Dispatchers.Main) {
                     // レスポンス情報を表示
-                    val responseLog = "RESPONSE:\nresult: $result\n"
+                    val responseLog = "RESPONSE:\nresult: $resultText\n"
                     ui?.appendSimulcastRequestResponseLog(responseLog)
-                    ui?.showToastOnUI("Spotlight RID リセット -> $result")
+                    ui?.showToastOnUI("Spotlight RID リセット -> $resultText")
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to reset spotlight rid", e)
@@ -689,8 +722,9 @@ class RpcChatActivity : AppCompatActivity() {
                 ui?.appendSimulcastRequestResponseLog(requestLog)
 
                 val result = channel.putSignalingNotifyMetadata(metadataJson, push)
+                val resultText = formatRpcResult(result)
                 withContext(Dispatchers.Main) {
-                    val responseLog = "RESPONSE: $result"
+                    val responseLog = "RESPONSE: $resultText"
                     ui?.appendSimulcastRequestResponseLog(responseLog)
                 }
             } catch (e: Exception) {
@@ -719,8 +753,9 @@ class RpcChatActivity : AppCompatActivity() {
                 ui?.appendSimulcastRequestResponseLog(requestLog)
 
                 val result = channel.putSignalingNotifyMetadataItem(key, valueJson, push)
+                val resultText = formatRpcResult(result)
                 withContext(Dispatchers.Main) {
-                    val responseLog = "RESPONSE: $result"
+                    val responseLog = "RESPONSE: $resultText"
                     ui?.appendSimulcastRequestResponseLog(responseLog)
                 }
             } catch (e: Exception) {
@@ -833,7 +868,7 @@ class RpcChatActivityUI(
     ) {
         dialog.setOnShowListener {
             buttons.forEach { button ->
-                button.minimumHeight = 80
+                button.minimumHeight = dp2px(80)
             }
         }
     }
@@ -1040,10 +1075,6 @@ class RpcChatActivityUI(
         binding.localRendererContainer.addView(renderer)
     }
 
-    internal fun removeLocalRenderer() {
-        binding.localRendererContainer.removeAllViews()
-    }
-
     internal fun addRenderer(renderer: SurfaceViewRenderer) {
         renderer.layoutParams = rendererLayoutParams()
         binding.rendererContainer.addView(renderer)
@@ -1099,8 +1130,6 @@ class RpcChatActivityUI(
         params.setMargins(margin, margin, margin, margin)
         return params
     }
-
-    private val lifecycleScope = activity.lifecycleScope
 }
 
 /**

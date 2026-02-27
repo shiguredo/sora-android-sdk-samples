@@ -66,6 +66,8 @@ class SoraRemoteRendererSlot(
         return renderer
     }
 
+    fun getFirstWorkingTrack(): VideoTrack? = workingTracks.values.firstOrNull()
+
     fun dispose() {
         SoraLogger.d(TAG, "dispose")
         workingRenderers.values.forEach {
