@@ -386,7 +386,10 @@ class RpcChatActivity : AppCompatActivity() {
                 cameraHardMuted: Boolean,
                 cameraSoftMuted: Boolean,
             ) {
-                if (cameraHardMuted || cameraSoftMuted) {
+                if (cameraHardMuted) {
+                    cameraState = CameraState.HARD_MUTED
+                    ui?.showCameraOffButton()
+                } else if (cameraSoftMuted) {
                     cameraState = CameraState.SOFT_MUTED
                     ui?.showCameraOffButton()
                 } else {
@@ -519,8 +522,8 @@ class RpcChatActivity : AppCompatActivity() {
             }
 
             CameraState.HARD_MUTED -> {
-                // hard muted cannot be changed
-                ui?.showToastOnUI("映像は無効です")
+                channel.setCameraHardMuted(false)
+                channel.setCameraSoftMuted(false)
             }
         }
     }
