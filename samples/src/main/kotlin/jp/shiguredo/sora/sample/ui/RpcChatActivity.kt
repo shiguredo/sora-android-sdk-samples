@@ -67,6 +67,7 @@ class RpcChatActivity : AppCompatActivity() {
     private var videoBitRate: Int? = null
     private var videoWidth: Int = SoraVideoOption.FrameSize.Landscape.VGA.x
     private var videoHeight: Int = SoraVideoOption.FrameSize.Landscape.VGA.y
+    private var startWithCamera: Boolean = true
     private var fps: Int = 30
     private var degradationPreference: SoraVideoOption.DegradationPreference? = null
     private var resolutionAdjustment: SoraVideoOption.ResolutionAdjustment? = null
@@ -96,6 +97,9 @@ class RpcChatActivity : AppCompatActivity() {
     private var lastResolutionHeight: Int? = null
     private var remoteVideoTrack: VideoTrack? = null
     private var resolutionMonitorSink: ResolutionMonitorSink? = null
+    private var resolutionMonitorRetryCount = 0
+
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     // マイク状態の追跡
     private var isAudioMuted = false
@@ -160,6 +164,13 @@ class RpcChatActivity : AppCompatActivity() {
 
         audioEnabled =
             when (intent.getStringExtra("AUDIO_ENABLED")) {
+                "有効" -> true
+                "無効" -> false
+                else -> true
+            }
+
+        startWithCamera =
+            when (intent.getStringExtra("INITIAL_CAMERA")) {
                 "有効" -> true
                 "無効" -> false
                 else -> true
@@ -281,7 +292,7 @@ class RpcChatActivity : AppCompatActivity() {
                 spotlightEnabled = spotlightEnabled,
             )
 
-        if (videoEnabled) {
+        if (videoEnabled && startWithCamera) {
             cameraState = CameraState.ON
             ui?.showCameraOnButton()
         } else {
@@ -357,9 +368,8 @@ class RpcChatActivity : AppCompatActivity() {
                 renderer: SurfaceViewRenderer,
             ) {
                 Log.d(TAG, "onAddRemoteRenderer")
-                // リモートビデオトラックを取得して、解像度监視を開始
-                remoteVideoTrack = channel.getRemoteVideoTrack()
-                ui?.addRenderer(renderer, remoteVideoTrack)
+                ui?.addRenderer(renderer)
+                tryAttachResolutionMonitor()
                 // 解像度情報を初期表示
                 ui?.updateResolutionDisplay("Resolution: 受信中...")
             }
@@ -445,7 +455,7 @@ class RpcChatActivity : AppCompatActivity() {
                     spotlightUnfocusRid = spotlightUnfocusRidEnum,
                     roleType = role,
                     videoEnabled = videoEnabled,
-                    startWithCamera = videoEnabled,
+                    startWithCamera = startWithCamera,
                     videoWidth = videoWidth,
                     videoHeight = videoHeight,
                     videoFPS = fps,
@@ -472,6 +482,7 @@ class RpcChatActivity : AppCompatActivity() {
 
     private fun disconnectChannel() {
         Log.d(TAG, "disconnectChannel")
+        detachResolutionMonitor()
         channel?.dispose()
         channel = null
     }
@@ -523,23 +534,48 @@ class RpcChatActivity : AppCompatActivity() {
         }
     }
 
-    internal fun attachResolutionMonitor(renderer: SurfaceViewRenderer) {
-        // SurfaceViewRenderer から解像度情報を取得
-        // フレームが描画されるたびに解像度をチェック
+    private fun tryAttachResolutionMonitor() {
+        if (resolutionMonitorSink != null) {
+            return
+        }
+
         try {
-            if (remoteVideoTrack == null) {
+            val track = channel?.getRemoteVideoTrack()
+            if (track == null) {
+                // onAddRemoteRenderer 呼び出し時点では track 未登録のことがあるため短時間だけ再試行する
+                if (resolutionMonitorRetryCount < 20) {
+                    resolutionMonitorRetryCount += 1
+                    mainHandler.postDelayed({ tryAttachResolutionMonitor() }, 100L)
+                }
                 return
             }
-            val monitorSink =
-                ResolutionMonitorSink { width, height ->
-                    updateRemoteResolution(width, height)
-                }
-            // SurfaceViewRenderer をラップして、解像度をモニタリング
-            // このため、新しい解像度値は onFrame コールバック経由で取得されます
-            // ここでは、Sink を保持しておく
-            remoteVideoTrack?.addSink(monitorSink)
+
+            remoteVideoTrack = track
+            val monitorSink = ResolutionMonitorSink(::updateRemoteResolution)
+            resolutionMonitorSink = monitorSink
+            track.addSink(monitorSink)
+            resolutionMonitorRetryCount = 0
         } catch (e: Exception) {
             Log.e(TAG, "Failed to attach resolution monitor", e)
+        }
+    }
+
+    private fun detachResolutionMonitor() {
+        try {
+            val track = remoteVideoTrack
+            val sink = resolutionMonitorSink
+            if (track != null && sink != null) {
+                track.removeSink(sink)
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to detach resolution monitor", e)
+        } finally {
+            mainHandler.removeCallbacksAndMessages(null)
+            resolutionMonitorRetryCount = 0
+            resolutionMonitorSink = null
+            remoteVideoTrack = null
+            lastResolutionWidth = null
+            lastResolutionHeight = null
         }
     }
 
@@ -1031,24 +1067,10 @@ class RpcChatActivityUI(
         binding.localRendererContainer.removeAllViews()
     }
 
-    internal fun addRenderer(
-        renderer: SurfaceViewRenderer,
-        track: VideoTrack?,
-    ) {
+    internal fun addRenderer(renderer: SurfaceViewRenderer) {
         renderer.layoutParams = rendererLayoutParams()
         binding.rendererContainer.addView(renderer)
         renderersLayoutCalculator.add(renderer)
-
-        // 解像度監視用の Sink を作成してレンダラーにアタッチ
-        val monitorSink =
-            ResolutionMonitorSink { width, height ->
-                activity.updateRemoteResolution(width, height)
-            }
-
-        // 注: SurfaceViewRenderer は VideoSink なので、複数の Sink を使う場合は
-        // 解像度情報をレンダラーから直接取得する必要があります
-        // ここではダミーとして、フレーム受信時に解像度を更新するプレースホルダーを用意
-        activity.attachResolutionMonitor(renderer)
     }
 
     internal fun removeRenderer(renderer: SurfaceViewRenderer) {

@@ -121,7 +121,7 @@ class RpcChatSetupActivity : AppCompatActivity() {
                 DropdownConfig(binding.resolutionAdjustmentSelection.spinner, resolutionAdjustmentOptions),
                 DropdownConfig(binding.clientIdSelection.spinner, clientIdOptions),
                 DropdownConfig(binding.bundleIdSelection.spinner, bundleIdOptions),
-                DropdownConfig(binding.dataChannelSignalingSelection.spinner, dataChannelSignalingOptions),
+                DropdownConfig(binding.dataChannelSignalingSelection.spinner, dataChannelSignalingOptions, defaultIndex = 2),
                 DropdownConfig(binding.ignoreDisconnectWebSocketSelection.spinner, ignoreDisconnectWebSocketOptions),
                 DropdownConfig(binding.initialCameraSelection.spinner, initialCameraOptions),
             ),
