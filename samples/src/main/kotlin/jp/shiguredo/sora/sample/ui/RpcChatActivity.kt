@@ -469,7 +469,7 @@ class RpcChatActivity : AppCompatActivity() {
                     audioBitRate = audioBitRate,
                     degradationPreference = degradationPreference,
                     resolutionAdjustment = resolutionAdjustment,
-                    simulcast = false,
+                    simulcast = true,
                     simulcastRequestRid = simulcastRequestRidEnum,
                     listener = channelListener,
                 )
