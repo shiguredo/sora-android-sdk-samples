@@ -186,7 +186,6 @@ class RpcChatSetupActivity : AppCompatActivity() {
         intent.putExtra("IGNORE_DISCONNECT_WEBSOCKET", ignoreDisconnectWebSocket)
         intent.putExtra("INITIAL_CAMERA", initialCamera)
         intent.putExtra("RPC_ENABLED", true)
-        intent.putExtra("DATA_CHANNEL_ENABLED", true)
 
         startActivity(intent)
     }

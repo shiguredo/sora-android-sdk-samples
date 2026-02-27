@@ -81,7 +81,6 @@ class RpcChatActivity : AppCompatActivity() {
     private var spotlightUnfocusRid: String? = null
     private var spotlightEnabled: Boolean = true
     private var rpcEnabled: Boolean = false
-    private var dataChannelEnabled: Boolean = true
 
     private var oldAudioMode: Int = AudioManager.MODE_NORMAL
     private var role = SoraRoleType.SENDRECV
@@ -277,7 +276,6 @@ class RpcChatActivity : AppCompatActivity() {
 
         rpcEnabled = intent.getBooleanExtra("RPC_ENABLED", false)
         spotlightEnabled = intent.getBooleanExtra("SPOTLIGHT_ENABLED", true)
-        dataChannelEnabled = intent.getBooleanExtra("DATA_CHANNEL_ENABLED", true)
 
         ui =
             RpcChatActivityUI(
@@ -474,8 +472,6 @@ class RpcChatActivity : AppCompatActivity() {
                     simulcast = false,
                     simulcastRequestRid = simulcastRequestRidEnum,
                     listener = channelListener,
-                    rpcEnabled = rpcEnabled,
-                    dataChannel = dataChannelEnabled,
                 )
 
             channel?.connect()

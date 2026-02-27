@@ -80,8 +80,6 @@ class SoraVideoChannel(
     private val capturerFactory: CameraVideoCapturerFactory =
         DefaultCameraVideoCapturerFactory(context, cameraFacing),
     private var listener: Listener?,
-    private val rpcEnabled: Boolean = false,
-    private val dataChannel: Boolean = true,
 ) {
     companion object {
         private val TAG = SoraVideoChannel::class.simpleName
