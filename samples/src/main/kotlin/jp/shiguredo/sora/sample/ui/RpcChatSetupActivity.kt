@@ -151,7 +151,7 @@ class RpcChatSetupActivity : AppCompatActivity() {
             when (binding.spotlightEnabledSelection.spinner.selectedItem()) {
                 "有効" -> true
                 "無効" -> false
-                else -> true
+                else -> false
             }
         val spotlightNumber = binding.spotlightNumberSelection.spinner.selectedItem()
         val spotlightFocusRid = binding.spotlightFocusRidSelection.spinner.selectedItem()
