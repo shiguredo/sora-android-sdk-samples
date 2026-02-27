@@ -780,58 +780,50 @@ class SoraVideoChannel(
         metadataJson: String,
         push: Boolean = true,
     ): RpcCallResult {
-        return try {
-            // JSON文字列をMapにパース
-            @Suppress("UNCHECKED_CAST")
-            val metadata =
-                try {
-                    Gson().fromJson(metadataJson, Map::class.java) as? Map<String, Any?>
-                        ?: return RpcCallResult.Error("Failed to parse metadata as JSON object")
-                } catch (e: Exception) {
-                    return RpcCallResult.Error("Invalid JSON format - ${e.message}")
-                }
+        // JSON文字列をMapにパース
+        @Suppress("UNCHECKED_CAST")
+        val metadata =
+            try {
+                Gson().fromJson(metadataJson, Map::class.java) as? Map<String, Any?>
+                    ?: return RpcCallResult.Error("Failed to parse metadata as JSON object")
+            } catch (e: Exception) {
+                return RpcCallResult.Error("Invalid JSON format - ${e.message}")
+            }
 
-            // SDK のRPC呼び出しを利用
-            val paramsJson =
-                Gson().toJson(
-                    mapOf(
-                        "metadata" to metadata,
-                        "push" to push,
-                    ),
-                )
-            callRpc(RPC_PUT_SIGNALING_NOTIFY_METADATA, paramsJson)
-        } catch (e: Exception) {
-            RpcCallResult.Error(e.message ?: "unknown error")
-        }
+        // SDK のRPC呼び出しを利用
+        val paramsJson =
+            Gson().toJson(
+                mapOf(
+                    "metadata" to metadata,
+                    "push" to push,
+                ),
+            )
+        return callRpc(RPC_PUT_SIGNALING_NOTIFY_METADATA, paramsJson)
     }
 
     suspend fun putSignalingNotifyMetadataItem(
         key: String,
         valueJson: String,
         push: Boolean = true,
-    ): RpcCallResult =
-        try {
-            // JSON 文字列を Any にパース
-            @Suppress("UNCHECKED_CAST")
-            val value =
-                try {
-                    Gson().fromJson(valueJson, Any::class.java)
-                } catch (e: Exception) {
-                    // JSON パースに失敗した場合は文字列として扱う
-                    valueJson
-                }
+    ): RpcCallResult {
+        // value には JSON 値（object/array/number/boolean/string）も、素の文字列も受け付ける。
+        // そのため一度 JSON としてパースを試み、失敗した場合は入力値をそのまま文字列として利用する。
+        val value =
+            try {
+                Gson().fromJson(valueJson, Any::class.java)
+            } catch (e: Exception) {
+                valueJson
+            }
 
-            // SDK のRPC呼び出しを利用
-            val paramsJson =
-                Gson().toJson(
-                    mapOf(
-                        "key" to key,
-                        "value" to value,
-                        "push" to push,
-                    ),
-                )
-            callRpc(RPC_PUT_SIGNALING_NOTIFY_METADATA_ITEM, paramsJson)
-        } catch (e: Exception) {
-            RpcCallResult.Error(e.message ?: "unknown error")
-        }
+        // SDK のRPC呼び出しを利用
+        val paramsJson =
+            Gson().toJson(
+                mapOf(
+                    "key" to key,
+                    "value" to value,
+                    "push" to push,
+                ),
+            )
+        return callRpc(RPC_PUT_SIGNALING_NOTIFY_METADATA_ITEM, paramsJson)
+    }
 }
