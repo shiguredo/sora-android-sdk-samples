@@ -731,13 +731,6 @@ class RpcChatActivity : AppCompatActivity() {
             }
         }
     }
-
-    internal fun updateRemoteResolution(
-        track: VideoTrack?,
-        resolution: String,
-    ) {
-        ui?.updateResolutionDisplay(resolution)
-    }
 }
 
 class RpcChatActivityUI(
@@ -753,7 +746,6 @@ class RpcChatActivityUI(
 ) {
     private val renderersLayoutCalculator: RendererLayoutCalculator
     private var binding: ActivityRpcChatBinding
-    private var currentRpcMethod: String = "RequestSimulcastRid"
     private var selectedSimulcastRid: String = "none"
     private var selectedSpotlightFocusRid: String = "none"
     private var selectedSpotlightUnfocusRid: String = "none"
