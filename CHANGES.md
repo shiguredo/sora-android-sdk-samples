@@ -19,6 +19,9 @@
   - @zztkm
 - [UPDATE] Sora Android SDK を 2026.1.0 に上げる
   - @zztkm
+- [ADD] RPC サンプルを追加する
+  - Sora の RPC 機能を試すことができるサンプル
+  - @zztkm
 
 ### misc
 
