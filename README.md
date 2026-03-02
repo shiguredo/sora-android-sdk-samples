@@ -40,6 +40,10 @@ Please read https://github.com/shiguredo/oss before use.
 
 スポットライトのデモです。アクティブ配信数を固定したチャットが可能です。
 
+### RPC チャット
+
+RPC 機能のデモです。
+
 ### リアルタイムメッセージング
 
 リアルタイムメッセージングのデモです。
