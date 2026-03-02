@@ -14,10 +14,6 @@
 - [CHANGE] サイマルキャストの設定値である SimulcastRid を SimulcastRequestRid に移行する
   - これによりシステム条件の WebRTC SFU Sora のバージョンが 2025.2.0 以降になる
   - @zztkm
-- [UPDATE] システム条件を更新する
-  - Android Studio 2025.2.1 以降
-  - WebRTC SFU Sora 2025.2.0 以降
-  - @zztkm
 - [UPDATE] Sora Android SDK を 2026.1.0 に上げる
   - @zztkm
 - [ADD] RPC サンプルを追加する
@@ -26,6 +22,10 @@
 
 ### misc
 
+- [UPDATE] システム条件を更新する
+  - Android Studio 2025.2.1 以降
+  - WebRTC SFU Sora 2025.2.0 以降
+  - @zztkm
 - [UPDATE] `Claude Assistant` を `shiguredo/claude-code-action` を使うように更新する
   - @zztkm
 
