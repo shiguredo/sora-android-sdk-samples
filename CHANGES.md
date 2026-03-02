@@ -9,6 +9,8 @@
 - FIX
   - バグ修正
 
+## 2026.2
+
 ## 2026.1
 
 - [CHANGE] サイマルキャストの設定値である SimulcastRid を SimulcastRequestRid に移行する
