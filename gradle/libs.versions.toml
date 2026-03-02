@@ -18,7 +18,7 @@ jvmTarget = "1.8"
 javaCompatibility = "1.8"
 
 # Sora SDK
-sora-android-sdk = "2026.1.0-canary.0"
+sora-android-sdk = "2026.1.0"
 
 # Libraries
 gson = "2.13.1"
