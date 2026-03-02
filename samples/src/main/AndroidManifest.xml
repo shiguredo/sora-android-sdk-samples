@@ -72,6 +72,11 @@
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:label="サイマルキャスト"
             android:exported="true" />
+        <activity
+            android:name=".ui.RpcChatSetupActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
+            android:label="RPC チャット"
+            android:exported="true" />
         <!--
             以下は実際にWebRTCを利用して動画/音声の通話を行うActivity
             セッション中にActivityが破壊されないように次のどちらかの設定を行う
@@ -107,6 +112,11 @@
             android:name=".ui.SimulcastActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:label="Simulcast"
+            android:exported="true" />
+        <activity
+            android:name=".ui.RpcChatActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
+            android:label="RPC チャット"
             android:exported="true" />
     </application>
 

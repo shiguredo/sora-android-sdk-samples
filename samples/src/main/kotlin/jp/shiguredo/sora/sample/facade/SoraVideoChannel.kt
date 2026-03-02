@@ -3,6 +3,7 @@ package jp.shiguredo.sora.sample.facade
 import android.content.Context
 import android.media.MediaRecorder
 import android.os.Handler
+import com.google.gson.Gson
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.camera.CameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.camera.DefaultCameraVideoCapturerFactory
@@ -17,12 +18,13 @@ import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraMediaOption
 import jp.shiguredo.sora.sdk.channel.option.SoraSpotlightOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
+import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcException
+import jp.shiguredo.sora.sdk.channel.rpc.SoraRpcResult
 import jp.shiguredo.sora.sdk.channel.signaling.message.NotificationMessage
 import jp.shiguredo.sora.sdk.channel.signaling.message.OfferMessage
 import jp.shiguredo.sora.sdk.channel.signaling.message.PushMessage
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
 import jp.shiguredo.sora.sdk.util.SoraLogger
-import kotlinx.coroutines.runBlocking
 import org.webrtc.AudioTrack
 import org.webrtc.CameraVideoCapturer
 import org.webrtc.EglBase
@@ -61,7 +63,7 @@ class SoraVideoChannel(
     private val videoAv1Params: Any? = null,
     private val videoH264Params: Any? = null,
     private val simulcast: Boolean = false,
-    private val simulcastRid: SoraVideoOption.SimulcastRid? = null,
+    private val simulcastRequestRid: SoraVideoOption.SimulcastRequestRid? = null,
     private val videoFPS: Int = 30,
     private val degradationPreference: SoraVideoOption.DegradationPreference? = null,
     private val resolutionAdjustment: SoraVideoOption.ResolutionAdjustment? = null,
@@ -77,8 +79,23 @@ class SoraVideoChannel(
         DefaultCameraVideoCapturerFactory(context, cameraFacing),
     private var listener: Listener?,
 ) {
+    sealed interface RpcCallResult {
+        data class Success(
+            val result: String? = null,
+        ) : RpcCallResult
+
+        data class Error(
+            val message: String,
+        ) : RpcCallResult
+    }
+
     companion object {
         private val TAG = SoraVideoChannel::class.simpleName
+        private const val RPC_REQUEST_SIMULCAST_RID = "2025.2.0/RequestSimulcastRid"
+        private const val RPC_REQUEST_SPOTLIGHT_RID = "2025.2.0/RequestSpotlightRid"
+        private const val RPC_RESET_SPOTLIGHT_RID = "2025.2.0/ResetSpotlightRid"
+        private const val RPC_PUT_SIGNALING_NOTIFY_METADATA = "2025.2.0/PutSignalingNotifyMetadata"
+        private const val RPC_PUT_SIGNALING_NOTIFY_METADATA_ITEM = "2025.2.0/PutSignalingNotifyMetadataItem"
     }
 
     private var egl: EglBase? = EglBase.create()
@@ -369,7 +386,7 @@ class SoraVideoChannel(
                 }
 
                 if (this@SoraVideoChannel.simulcast) {
-                    enableSimulcast(simulcastRid)
+                    enableSimulcast(simulcastRequestRid)
                 }
 
                 if (this@SoraVideoChannel.spotlight) {
@@ -676,6 +693,9 @@ class SoraVideoChannel(
 
     fun isCameraHardMuted(): Boolean = cameraHardMuted
 
+    // リモートビデオトラック取得（解像度監視用）
+    fun getRemoteVideoTrack(): VideoTrack? = remoteRenderersSlot?.getFirstWorkingTrack()
+
     fun disconnect() {
         stopCapturer()
         handler.removeCallbacks(audioMuteApplier)
@@ -709,5 +729,101 @@ class SoraVideoChannel(
         egl?.release()
         egl = null
         listener = null
+    }
+
+    private suspend fun callRpc(
+        method: String,
+        paramsJson: String,
+    ): RpcCallResult {
+        val channel = mediaChannel ?: return RpcCallResult.Error("mediaChannel is null")
+
+        return try {
+            when (val result = channel.rpc(method, paramsJson)) {
+                null -> RpcCallResult.Success()
+                is SoraRpcResult.Success -> RpcCallResult.Success(result.result)
+                is SoraRpcResult.Error ->
+                    RpcCallResult.Error(
+                        "code=${result.error.code}, message=${result.error.message}" +
+                            (result.error.data?.let { ", data=$it" } ?: ""),
+                    )
+            }
+        } catch (e: SoraRpcException) {
+            RpcCallResult.Error("${e.reason.name}: ${e.message}")
+        } catch (e: Exception) {
+            RpcCallResult.Error(e.message ?: "unknown error")
+        }
+    }
+
+    // RPC メソッド
+    suspend fun requestSimulcastRid(rid: String): RpcCallResult {
+        val paramsJson = Gson().toJson(mapOf("rid" to rid))
+        return callRpc(RPC_REQUEST_SIMULCAST_RID, paramsJson)
+    }
+
+    suspend fun requestSpotlightRid(
+        focusRid: String,
+        unfocusRid: String,
+    ): RpcCallResult {
+        val paramsJson =
+            Gson().toJson(
+                mapOf(
+                    "spotlight_focus_rid" to focusRid,
+                    "spotlight_unfocus_rid" to unfocusRid,
+                ),
+            )
+        return callRpc(RPC_REQUEST_SPOTLIGHT_RID, paramsJson)
+    }
+
+    suspend fun resetSpotlightRid(): RpcCallResult = callRpc(RPC_RESET_SPOTLIGHT_RID, "{}")
+
+    suspend fun putSignalingNotifyMetadata(
+        metadataJson: String,
+        push: Boolean = true,
+    ): RpcCallResult {
+        // JSON文字列をMapにパース
+        @Suppress("UNCHECKED_CAST")
+        val metadata =
+            try {
+                Gson().fromJson(metadataJson, Map::class.java) as? Map<String, Any?>
+                    ?: return RpcCallResult.Error("Failed to parse metadata as JSON object")
+            } catch (e: Exception) {
+                return RpcCallResult.Error("Invalid JSON format - ${e.message}")
+            }
+
+        // SDK のRPC呼び出しを利用
+        val paramsJson =
+            Gson().toJson(
+                mapOf(
+                    "metadata" to metadata,
+                    "push" to push,
+                ),
+            )
+        return callRpc(RPC_PUT_SIGNALING_NOTIFY_METADATA, paramsJson)
+    }
+
+    suspend fun putSignalingNotifyMetadataItem(
+        key: String,
+        valueJson: String,
+        push: Boolean = true,
+    ): RpcCallResult {
+        // value には JSON 値（object/array/number/boolean/string）も、素の文字列も受け付ける。
+        // そのため一度 JSON としてパースを試み、失敗した場合は入力値をそのまま文字列として利用する。
+        val value =
+            try {
+                Gson().fromJson(valueJson, Any::class.java)
+            } catch (e: Exception) {
+                valueJson
+            }
+
+        // SDK のRPC呼び出しを利用
+        val paramsJson =
+            Gson().toJson(
+                mapOf(
+                    "key" to key,
+                    "value" to value,
+                    "push" to push,
+                ),
+            )
+        return callRpc(RPC_PUT_SIGNALING_NOTIFY_METADATA_ITEM, paramsJson)
     }
 }

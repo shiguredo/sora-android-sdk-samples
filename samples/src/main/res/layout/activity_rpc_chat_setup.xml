@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
@@ -19,11 +20,12 @@
             android:background="@drawable/app_background"
             android:orientation="vertical" >
 
-            <com.google.android.material.textfield.TextInputLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
                 android:layout_margin="10dp"
+                android:orientation="vertical"
                 android:padding="10dp">
 
                 <EditText
@@ -44,10 +46,29 @@
                     android:layout_margin="10dp"
                     android:text="接続する" />
 
+                <!-- Simulcast settings -->
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/simulcastRequestRidSelection"/>
+
+                <!-- Spotlight settings -->
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/spotlightEnabledSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/spotlightNumberSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/spotlightFocusRidSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/spotlightUnfocusRidSelection"/>
+
+                <!-- Common video/audio settings -->
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/roleSelection"/>
-
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/videoCodecSelection"/>
@@ -56,10 +77,13 @@
                     android:id="@+id/videoEnabledSelection"/>
                 <include
                     layout="@layout/signaling_selection"
-                    android:id="@+id/initialCameraSelection"/>
+                    android:id="@+id/audioCodecSelection"/>
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/audioEnabledSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/audioBitRateSelection"/>
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/videoBitRateSelection"/>
@@ -68,25 +92,13 @@
                     android:id="@+id/videoSizeSelection"/>
                 <include
                     layout="@layout/signaling_selection"
+                    android:id="@+id/fpsSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
                     android:id="@+id/resolutionChangeSelection"/>
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/resolutionAdjustmentSelection"/>
-                <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/audioCodecSelection"/>
-                <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/fpsSelection"/>
-                <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/audioBitRateSelection"/>
-                <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/audioStereoSelection"/>
-                <include
-                    layout="@layout/signaling_selection"
-                    android:id="@+id/simulcastRequestRidSelection"/>
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/clientIdSelection"/>
@@ -99,7 +111,11 @@
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/ignoreDisconnectWebSocketSelection"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                <include
+                    layout="@layout/signaling_selection"
+                    android:id="@+id/initialCameraSelection"/>
+
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

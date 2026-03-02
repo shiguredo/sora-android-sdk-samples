@@ -15,8 +15,8 @@ Please read https://github.com/shiguredo/oss before use.
 ## システム条件
 
 - Android 8.0 以降 (エミュレーターでの動作は保証しません)
-- Android Studio 2025.2.1 以降
-- WebRTC SFU Sora 2025.1.0 以降
+- Android Studio 2025.3.1 以降
+- WebRTC SFU Sora 2025.2.0 以降
 
 ## サンプルの使い方
 
@@ -39,6 +39,10 @@ Please read https://github.com/shiguredo/oss before use.
 ### スポットライト
 
 スポットライトのデモです。アクティブ配信数を固定したチャットが可能です。
+
+### RPC チャット
+
+RPC 機能のデモです。
 
 ### リアルタイムメッセージング
 

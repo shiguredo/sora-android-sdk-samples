@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import com.jaredrummler.materialspinner.MaterialSpinner
 import jp.shiguredo.sora.sample.databinding.ActivitySimulcastSetupBinding
 import jp.shiguredo.sora.sample.option.SoraFrameSize
 
@@ -39,7 +38,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("未指定", "MAINTAIN_RESOLUTION", "MAINTAIN_FRAMERATE", "BALANCED", "DISABLED")
     private val resolutionAdjustmentOptions = listOf("未指定", "16", "8", "4", "2", "無効")
-    private val simulcastRidOptions = listOf("未指定", "r0", "r1", "r2")
+    private val simulcastRequestRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
     private val clientIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
     private val bundleIdOptions = listOf("なし", "端末情報", "時雨堂", "ランダム")
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
@@ -56,44 +55,45 @@ class SimulcastSetupActivity : AppCompatActivity() {
         binding.start.setOnClickListener { startVideoChat() }
 
         binding.videoEnabledSelection.name.text = "映像の有無"
-        binding.videoEnabledSelection.spinner.setItems(videoEnabledOptions)
         binding.initialCameraSelection.name.text = "開始時カメラ"
-        binding.initialCameraSelection.spinner.setItems(initialCameraOptions)
         binding.videoCodecSelection.name.text = "映像コーデック"
-        binding.videoCodecSelection.spinner.setItems(videoCodecOptions)
         binding.audioEnabledSelection.name.text = "音声の有無"
-        binding.audioEnabledSelection.spinner.setItems(audioEnabledOptions)
         binding.audioCodecSelection.name.text = "音声コーデック"
-        binding.audioCodecSelection.spinner.setItems(audioCodecOptions)
         binding.audioBitRateSelection.name.text = "音声ビットレート"
-        binding.audioBitRateSelection.spinner.setItems(audioBitRateOptions)
         binding.audioStereoSelection.name.text = "ステレオ音声"
-        binding.audioStereoSelection.spinner.setItems(audioStereoOptions)
         binding.roleSelection.name.text = "ロール"
-        binding.roleSelection.spinner.setItems(roleOptions)
         binding.videoBitRateSelection.name.text = "映像ビットレート"
-        binding.videoBitRateSelection.spinner.setItems(videoBitRateOptions)
         binding.videoSizeSelection.name.text = "映像サイズ"
-        binding.videoSizeSelection.spinner.setItems(videoSizeOptions)
         binding.fpsSelection.name.text = "フレームレート"
-        binding.fpsSelection.spinner.setItems(fpsOptions)
         binding.resolutionChangeSelection.name.text = "解像度の変更"
-        binding.resolutionChangeSelection.spinner.setItems(resolutionChangeOptions)
         binding.resolutionAdjustmentSelection.name.text = "解像度の調整"
-        binding.resolutionAdjustmentSelection.spinner.setItems(resolutionAdjustmentOptions)
-        binding.simulcastRidSelection.name.text = "受信する rid"
-        binding.simulcastRidSelection.spinner.setItems(simulcastRidOptions)
+        binding.simulcastRequestRidSelection.name.text = "受信する rid"
         binding.clientIdSelection.name.text = "クライアント ID"
-        binding.clientIdSelection.spinner.setItems(clientIdOptions)
         binding.bundleIdSelection.name.text = "バンドル ID"
-        binding.bundleIdSelection.spinner.setItems(bundleIdOptions)
         binding.dataChannelSignalingSelection.name.text = "データチャネル"
-        binding.dataChannelSignalingSelection.spinner.setItems(dataChannelSignalingOptions)
         binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
-        binding.ignoreDisconnectWebSocketSelection.spinner.setItems(ignoreDisconnectWebSocketOptions)
-
-        binding.videoBitRateSelection.spinner.selectedIndex = 6
-        binding.videoSizeSelection.spinner.selectedIndex = 5
+        setupDropdowns(
+            listOf(
+                DropdownConfig(binding.videoEnabledSelection.spinner, videoEnabledOptions),
+                DropdownConfig(binding.initialCameraSelection.spinner, initialCameraOptions),
+                DropdownConfig(binding.videoCodecSelection.spinner, videoCodecOptions),
+                DropdownConfig(binding.audioEnabledSelection.spinner, audioEnabledOptions),
+                DropdownConfig(binding.audioCodecSelection.spinner, audioCodecOptions),
+                DropdownConfig(binding.audioBitRateSelection.spinner, audioBitRateOptions),
+                DropdownConfig(binding.audioStereoSelection.spinner, audioStereoOptions),
+                DropdownConfig(binding.roleSelection.spinner, roleOptions),
+                DropdownConfig(binding.videoBitRateSelection.spinner, videoBitRateOptions, defaultIndex = 6),
+                DropdownConfig(binding.videoSizeSelection.spinner, videoSizeOptions, defaultIndex = 5),
+                DropdownConfig(binding.fpsSelection.spinner, fpsOptions),
+                DropdownConfig(binding.resolutionChangeSelection.spinner, resolutionChangeOptions),
+                DropdownConfig(binding.resolutionAdjustmentSelection.spinner, resolutionAdjustmentOptions),
+                DropdownConfig(binding.simulcastRequestRidSelection.spinner, simulcastRequestRidOptions),
+                DropdownConfig(binding.clientIdSelection.spinner, clientIdOptions),
+                DropdownConfig(binding.bundleIdSelection.spinner, bundleIdOptions),
+                DropdownConfig(binding.dataChannelSignalingSelection.spinner, dataChannelSignalingOptions),
+                DropdownConfig(binding.ignoreDisconnectWebSocketSelection.spinner, ignoreDisconnectWebSocketOptions),
+            ),
+        )
     }
 
     private fun startVideoChat() {
@@ -103,24 +103,24 @@ class SimulcastSetupActivity : AppCompatActivity() {
             return
         }
 
-        val role = selectedItem(binding.roleSelection.spinner)
-        val videoCodec = selectedItem(binding.videoCodecSelection.spinner)
-        val videoEnabled = selectedItem(binding.videoEnabledSelection.spinner)
-        val audioCodec = selectedItem(binding.audioCodecSelection.spinner)
-        val audioEnabled = selectedItem(binding.audioEnabledSelection.spinner)
-        val audioBitRate = selectedItem(binding.audioBitRateSelection.spinner)
-        val audioStereo = selectedItem(binding.audioStereoSelection.spinner)
-        val videoBitRate = selectedItem(binding.videoBitRateSelection.spinner)
-        val videoSize = selectedItem(binding.videoSizeSelection.spinner)
-        val fps = selectedItem(binding.fpsSelection.spinner)
-        val resolutionChange = selectedItem(binding.resolutionChangeSelection.spinner)
-        val resolutionAdjustment = selectedItem(binding.resolutionAdjustmentSelection.spinner)
-        val simulcastRid = selectedItem(binding.simulcastRidSelection.spinner)
-        val clientId = selectedItem(binding.clientIdSelection.spinner)
-        val bundleId = selectedItem(binding.bundleIdSelection.spinner)
-        val dataChannelSignaling = selectedItem(binding.dataChannelSignalingSelection.spinner)
-        val ignoreDisconnectWebSocket = selectedItem(binding.ignoreDisconnectWebSocketSelection.spinner)
-        val initialCamera = selectedItem(binding.initialCameraSelection.spinner)
+        val role = binding.roleSelection.spinner.selectedItem()
+        val videoCodec = binding.videoCodecSelection.spinner.selectedItem()
+        val videoEnabled = binding.videoEnabledSelection.spinner.selectedItem()
+        val audioCodec = binding.audioCodecSelection.spinner.selectedItem()
+        val audioEnabled = binding.audioEnabledSelection.spinner.selectedItem()
+        val audioBitRate = binding.audioBitRateSelection.spinner.selectedItem()
+        val audioStereo = binding.audioStereoSelection.spinner.selectedItem()
+        val videoBitRate = binding.videoBitRateSelection.spinner.selectedItem()
+        val videoSize = binding.videoSizeSelection.spinner.selectedItem()
+        val fps = binding.fpsSelection.spinner.selectedItem()
+        val resolutionChange = binding.resolutionChangeSelection.spinner.selectedItem()
+        val resolutionAdjustment = binding.resolutionAdjustmentSelection.spinner.selectedItem()
+        val simulcastRequestRid = binding.simulcastRequestRidSelection.spinner.selectedItem()
+        val clientId = binding.clientIdSelection.spinner.selectedItem()
+        val bundleId = binding.bundleIdSelection.spinner.selectedItem()
+        val dataChannelSignaling = binding.dataChannelSignalingSelection.spinner.selectedItem()
+        val ignoreDisconnectWebSocket = binding.ignoreDisconnectWebSocketSelection.spinner.selectedItem()
+        val initialCamera = binding.initialCameraSelection.spinner.selectedItem()
 
         val intent = Intent(this, SimulcastActivity::class.java)
         intent.putExtra("CHANNEL_NAME", channelName)
@@ -137,7 +137,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
         intent.putExtra("FPS", fps)
         intent.putExtra("RESOLUTION_CHANGE", resolutionChange)
         intent.putExtra("RESOLUTION_ADJUSTMENT", resolutionAdjustment)
-        intent.putExtra("SIMULCAST_RID", simulcastRid)
+        intent.putExtra("SIMULCAST_REQUEST_RID", simulcastRequestRid)
         intent.putExtra("CLIENT_ID", clientId)
         intent.putExtra("BUNDLE_ID", bundleId)
         intent.putExtra("DATA_CHANNEL_SIGNALING", dataChannelSignaling)
@@ -146,8 +146,6 @@ class SimulcastSetupActivity : AppCompatActivity() {
 
         startActivity(intent)
     }
-
-    private fun selectedItem(spinner: MaterialSpinner): String = spinner.getItems<String>()[spinner.selectedIndex]
 
     private fun showInputError() {
         Snackbar

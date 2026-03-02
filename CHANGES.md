@@ -9,10 +9,23 @@
 - FIX
   - バグ修正
 
-## 2025.4
+## 2026.1
+
+- [CHANGE] サイマルキャストの設定値である SimulcastRid を SimulcastRequestRid に移行する
+  - これによりシステム条件の WebRTC SFU Sora のバージョンが 2025.2.0 以降になる
+  - @zztkm
+- [UPDATE] Sora Android SDK を 2026.1.0 に上げる
+  - @zztkm
+- [ADD] RPC サンプルを追加する
+  - Sora の RPC 機能を試すことができるサンプル
+  - @zztkm
 
 ### misc
 
+- [UPDATE] システム条件を更新する
+  - Android Studio 2025.3.1 以降
+  - WebRTC SFU Sora 2025.2.0 以降
+  - @zztkm
 - [UPDATE] `Claude Assistant` を `shiguredo/claude-code-action` を使うように更新する
   - @zztkm
 
@@ -54,6 +67,9 @@
     - `productFlavors { create("free") { versionNameSuffix = "-free" } }` のブロックを削除
   - 利用していない flavor でビルドバリアントが増えていたため、Quickstart アプリと同じ構成に揃えて運用を簡素化するため
   - @zztkm
+- [UPDATE] 接続メニューのドロップダウンメニュー の UI 部品を Exposed dropdown menu に置き換える
+  - Exposed dropdown menu 利用のためテーマを MaterialComponents に変更する
+  - @t-miya
 - [ADD] オーディオ(マイク)のハードミュート機能を追加する
   - 実機のおいてマイクのインジケータが消灯する状態にできる
   - ビデオチャットサンプル、サイマルキャストサンプル、スポットライトサンプルのマイクミュートボタンにハードミュートに切り替える機能を追加する
