@@ -13,7 +13,7 @@
 
 - [UPDATE] Sora Android SDK を 2026.2.0-canary.0 に上げる
   - @zztkm
-- [UPDATE] Video チャットサンプルで `onOfferMessage` を `onSignalingMessage` に置き換える
+- [UPDATE] ビデオチャットサンプルで `onOfferMessage` を `onSignalingMessage` に置き換える
   - @zztkm
 
 ## 2026.1
