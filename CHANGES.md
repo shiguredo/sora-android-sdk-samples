@@ -9,6 +9,13 @@
 - FIX
   - バグ修正
 
+## 2026.2
+
+- [UPDATE] Sora Android SDK を 2026.2.0-canary.0 に上げる
+  - @zztkm
+- [UPDATE] Video チャットサンプルで `onOfferMessage` を `onSignalingMessage` に置き換える
+  - @zztkm
+
 ## 2026.1
 
 - [CHANGE] サイマルキャストの設定値である SimulcastRid を SimulcastRequestRid に移行する
