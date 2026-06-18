@@ -11,10 +11,16 @@
 
 ## 2026.2
 
-- [UPDATE] Sora Android SDK を 2026.2.0-canary.0 に上げる
-  - @zztkm
+- [UPDATE] Sora Android SDK を 2026.2.0-canary.1 に上げる
+  - libwebrtc を m150 に上げる
+  - @t-miya @zztkm
 - [UPDATE] ビデオチャットサンプルで `onOfferMessage` を `onSignalingMessage` に置き換える
   - @zztkm
+
+### misc
+
+- [UPDATE] Github Actions の build ワークフローの Java バージョンを 21 に上げる
+  - @t-miya
 
 ## 2026.1
 
