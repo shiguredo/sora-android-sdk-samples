@@ -14,9 +14,6 @@
 - [UPDATE] Sora Android SDK を 2026.2.0-canary.1 に上げる
   - libwebrtc を m150 に上げる
   - @t-miya @zztkm
-- [ADD] ビデオチャットサンプルでリモートトラック追加時の `trackId` / `streamId` を手動確認できるようにする
-  - `SoraMediaChannel.RemoteTrackListener` を `SoraVideoChannel` 経由で受け取り、ログ出力できるようにする
-  - @t-miya
 - [UPDATE] ビデオチャットサンプルで `onOfferMessage` を `onSignalingMessage` に置き換える
   - @zztkm
 
