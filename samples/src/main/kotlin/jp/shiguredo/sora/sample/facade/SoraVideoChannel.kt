@@ -63,6 +63,7 @@ class SoraVideoChannel(
     private val videoVp9Params: Any? = null,
     private val videoAv1Params: Any? = null,
     private val videoH264Params: Any? = null,
+    private val videoH265Params: Any? = null,
     private val simulcast: Boolean = false,
     private val simulcastRequestRid: SoraVideoOption.SimulcastRequestRid? = null,
     private val videoFPS: Int = 30,
@@ -408,6 +409,7 @@ class SoraVideoChannel(
                 videoVp9Params = this@SoraVideoChannel.videoVp9Params
                 videoAv1Params = this@SoraVideoChannel.videoAv1Params
                 videoH264Params = this@SoraVideoChannel.videoH264Params
+                videoH265Params = this@SoraVideoChannel.videoH265Params
                 this@SoraVideoChannel.degradationPreference?.let {
                     degradationPreference = this@SoraVideoChannel.degradationPreference
                 }

@@ -16,6 +16,9 @@
   - @t-miya @zztkm
 - [UPDATE] ビデオチャットサンプルで `onOfferMessage` を `onSignalingMessage` に置き換える
   - @zztkm
+- [ADD] 接続メニューに H.265 プロファイル設定を追加する
+  - ビデオチャットサンプル、サイマルキャストサンプル、スポットライトサンプル、RPC チャットサンプルの接続メニューに H.265 プロファイル設定を追加する
+  - @t-miya
 
 ### misc
 

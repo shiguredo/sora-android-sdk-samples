@@ -63,6 +63,11 @@ class RpcChatSetupActivity : AppCompatActivity() {
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")
     private val ignoreDisconnectWebSocketOptions = listOf("未指定", "無効", "有効")
     private val initialCameraOptions = listOf("有効", "無効")
+    private val h265ParamsEnabledOptions = listOf("無効", "有効")
+    private val h265ProfileIdOptions = listOf("1 (Main)")
+    private val h265LevelIdOptions = listOf("90", "120", "150")
+    private val h265TierFlagOptions = listOf("0", "1")
+    private val h265TxModeOptions = listOf("SRST", "MRST", "MRMT")
 
     private lateinit var binding: ActivityRpcChatSetupBinding
 
@@ -100,6 +105,11 @@ class RpcChatSetupActivity : AppCompatActivity() {
         binding.dataChannelSignalingSelection.name.text = "データチャネル (シグナリング)"
         binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
         binding.initialCameraSelection.name.text = "開始時カメラ"
+        binding.h265ParamsEnabledSelection.name.text = "H265 プロファイル設定"
+        binding.h265ProfileIdSelection.name.text = "H265 profile_id"
+        binding.h265LevelIdSelection.name.text = "H265 level_id"
+        binding.h265TierFlagSelection.name.text = "H265 tier_flag"
+        binding.h265TxModeSelection.name.text = "H265 tx_mode"
 
         setupDropdowns(
             listOf(
@@ -124,8 +134,18 @@ class RpcChatSetupActivity : AppCompatActivity() {
                 DropdownConfig(binding.dataChannelSignalingSelection.spinner, dataChannelSignalingOptions, defaultIndex = 2),
                 DropdownConfig(binding.ignoreDisconnectWebSocketSelection.spinner, ignoreDisconnectWebSocketOptions),
                 DropdownConfig(binding.initialCameraSelection.spinner, initialCameraOptions),
+                DropdownConfig(binding.h265ParamsEnabledSelection.spinner, h265ParamsEnabledOptions),
+                DropdownConfig(binding.h265ProfileIdSelection.spinner, h265ProfileIdOptions),
+                DropdownConfig(binding.h265LevelIdSelection.spinner, h265LevelIdOptions),
+                DropdownConfig(binding.h265TierFlagSelection.spinner, h265TierFlagOptions),
+                DropdownConfig(binding.h265TxModeSelection.spinner, h265TxModeOptions),
             ),
         )
+
+        binding.h265ParamsEnabledSelection.spinner.setOnItemClickListener { _, _, _, _ ->
+            updateH265ParamsGroupVisibility()
+        }
+        updateH265ParamsGroupVisibility()
     }
 
     private fun startRpcChat() {
@@ -161,6 +181,11 @@ class RpcChatSetupActivity : AppCompatActivity() {
         val dataChannelSignaling = binding.dataChannelSignalingSelection.spinner.selectedItem()
         val ignoreDisconnectWebSocket = binding.ignoreDisconnectWebSocketSelection.spinner.selectedItem()
         val initialCamera = binding.initialCameraSelection.spinner.selectedItem()
+        val h265ParamsEnabled = binding.h265ParamsEnabledSelection.spinner.selectedItem()
+        val h265ProfileId = binding.h265ProfileIdSelection.spinner.selectedItem()
+        val h265LevelId = binding.h265LevelIdSelection.spinner.selectedItem()
+        val h265TierFlag = binding.h265TierFlagSelection.spinner.selectedItem()
+        val h265TxMode = binding.h265TxModeSelection.spinner.selectedItem()
 
         val intent = Intent(this, RpcChatActivity::class.java)
         intent.putExtra(RpcChatActivity.EXTRA_CHANNEL_NAME, channelName)
@@ -186,8 +211,24 @@ class RpcChatSetupActivity : AppCompatActivity() {
         intent.putExtra(RpcChatActivity.EXTRA_IGNORE_DISCONNECT_WEBSOCKET, ignoreDisconnectWebSocket)
         intent.putExtra(RpcChatActivity.EXTRA_INITIAL_CAMERA, initialCamera)
         intent.putExtra(RpcChatActivity.EXTRA_RPC_ENABLED, true)
+        if (videoCodec == "H265") {
+            intent.putExtra(RpcChatActivity.EXTRA_H265_PARAMS_ENABLED, h265ParamsEnabled)
+            intent.putExtra(RpcChatActivity.EXTRA_H265_PROFILE_ID, h265ProfileId.substringBefore(" "))
+            intent.putExtra(RpcChatActivity.EXTRA_H265_LEVEL_ID, h265LevelId)
+            intent.putExtra(RpcChatActivity.EXTRA_H265_TIER_FLAG, h265TierFlag)
+            intent.putExtra(RpcChatActivity.EXTRA_H265_TX_MODE, h265TxMode)
+        }
 
         startActivity(intent)
+    }
+
+    private fun updateH265ParamsGroupVisibility() {
+        binding.h265ParamsGroup.visibility =
+            if (binding.h265ParamsEnabledSelection.spinner.selectedItem() == "有効") {
+                android.view.View.VISIBLE
+            } else {
+                android.view.View.GONE
+            }
     }
 
     private fun showInputError() {
