@@ -58,6 +58,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var videoVp9Params: Any? = null
     private var videoAv1Params: Any? = null
     private var videoH264Params: Any? = null
+    private var videoH265Params: Any? = null
     private var startWithCamera: Boolean = true
     private var spotlight = false
     private var spotlightNumber: Int? = null
@@ -186,6 +187,28 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 "未指定" -> null
                 else -> stringValue?.let { mapOf("profile_level_id" to it) }
             }
+
+        videoH265Params =
+            if (intent.getStringExtra("H265_PARAMS_ENABLED") == "有効") {
+                val profileId = intent.getStringExtra("H265_PROFILE_ID")?.toIntOrNull()
+                val levelId = intent.getStringExtra("H265_LEVEL_ID")?.toIntOrNull()
+                val tierFlag = intent.getStringExtra("H265_TIER_FLAG")?.toIntOrNull()
+                val txMode = intent.getStringExtra("H265_TX_MODE")
+
+                if (profileId != null && levelId != null && tierFlag != null && txMode != null) {
+                    mapOf(
+                        "profile_id" to profileId,
+                        "level_id" to levelId,
+                        "tier_flag" to tierFlag,
+                        "tx_mode" to txMode,
+                    )
+                } else {
+                    null
+                }
+            } else {
+                null
+            }
+
         resolutionAdjustment =
             when (intent.getStringExtra("RESOLUTION_ADJUSTMENT")) {
                 "16" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_16
@@ -435,6 +458,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 videoVp9Params = videoVp9Params,
                 videoAv1Params = videoAv1Params,
                 videoH264Params = videoH264Params,
+                videoH265Params = videoH265Params,
                 degradationPreference = degradationPreference,
                 resolutionAdjustment = resolutionAdjustment,
                 videoCodec = videoCodec,
