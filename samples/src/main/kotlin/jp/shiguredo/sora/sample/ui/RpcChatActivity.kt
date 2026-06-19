@@ -67,6 +67,7 @@ class RpcChatActivity : AppCompatActivity() {
         const val EXTRA_RPC_ENABLED = "RPC_ENABLED"
         const val EXTRA_SPOTLIGHT_ENABLED = "SPOTLIGHT_ENABLED"
         const val EXTRA_INITIAL_CAMERA = "INITIAL_CAMERA"
+        const val EXTRA_VIDEO_SOURCE = "VIDEO_SOURCE"
         const val EXTRA_H265_PARAMS_ENABLED = "H265_PARAMS_ENABLED"
         const val EXTRA_H265_PROFILE_ID = "H265_PROFILE_ID"
         const val EXTRA_H265_LEVEL_ID = "H265_LEVEL_ID"
@@ -90,6 +91,7 @@ class RpcChatActivity : AppCompatActivity() {
     private var videoWidth: Int = SoraVideoOption.FrameSize.Landscape.VGA.x
     private var videoHeight: Int = SoraVideoOption.FrameSize.Landscape.VGA.y
     private var startWithCamera: Boolean = true
+    private var useDummyVideo = false
     private var fps: Int = 30
     private var degradationPreference: SoraVideoOption.DegradationPreference? = null
     private var resolutionAdjustment: SoraVideoOption.ResolutionAdjustment? = null
@@ -194,6 +196,8 @@ class RpcChatActivity : AppCompatActivity() {
                 "無効" -> false
                 else -> true
             }
+
+        useDummyVideo = intent.getStringExtra(EXTRA_VIDEO_SOURCE) == "ダミー映像"
 
         fps = (intent.getStringExtra(EXTRA_FPS) ?: "30").toInt()
 
@@ -498,6 +502,7 @@ class RpcChatActivity : AppCompatActivity() {
                     roleType = role,
                     videoEnabled = videoEnabled,
                     startWithCamera = startWithCamera,
+                    useDummyVideo = useDummyVideo,
                     videoWidth = videoWidth,
                     videoHeight = videoHeight,
                     videoFPS = fps,

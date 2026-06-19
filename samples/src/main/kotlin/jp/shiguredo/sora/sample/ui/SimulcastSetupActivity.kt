@@ -15,6 +15,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
 
     private val videoCodecOptions = listOf("未指定", "VP8", "VP9", "H264", "H265", "AV1")
     private val videoEnabledOptions = listOf("有効", "無効")
+    private val videoSourceOptions = listOf("カメラ", "ダミー映像")
     private val initialCameraOptions = listOf("有効", "無効")
     private val audioCodecOptions = listOf("未指定", "OPUS")
     private val audioEnabledOptions = listOf("有効", "無効")
@@ -62,6 +63,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
         binding.videoEnabledSelection.name.text = "映像の有無"
         binding.initialCameraSelection.name.text = "開始時カメラ"
         binding.videoCodecSelection.name.text = "映像コーデック"
+        binding.videoSourceSelection.name.text = "映像ソース"
         binding.audioEnabledSelection.name.text = "音声の有無"
         binding.audioCodecSelection.name.text = "音声コーデック"
         binding.audioBitRateSelection.name.text = "音声ビットレート"
@@ -85,6 +87,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
         setupDropdowns(
             listOf(
                 DropdownConfig(binding.videoEnabledSelection.spinner, videoEnabledOptions),
+                DropdownConfig(binding.videoSourceSelection.spinner, videoSourceOptions),
                 DropdownConfig(binding.initialCameraSelection.spinner, initialCameraOptions),
                 DropdownConfig(binding.videoCodecSelection.spinner, videoCodecOptions),
                 DropdownConfig(binding.audioEnabledSelection.spinner, audioEnabledOptions),
@@ -126,6 +129,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
         val role = binding.roleSelection.spinner.selectedItem()
         val videoCodec = binding.videoCodecSelection.spinner.selectedItem()
         val videoEnabled = binding.videoEnabledSelection.spinner.selectedItem()
+        val videoSource = binding.videoSourceSelection.spinner.selectedItem()
         val audioCodec = binding.audioCodecSelection.spinner.selectedItem()
         val audioEnabled = binding.audioEnabledSelection.spinner.selectedItem()
         val audioBitRate = binding.audioBitRateSelection.spinner.selectedItem()
@@ -168,6 +172,7 @@ class SimulcastSetupActivity : AppCompatActivity() {
         intent.putExtra("DATA_CHANNEL_SIGNALING", dataChannelSignaling)
         intent.putExtra("IGNORE_DISCONNECT_WEBSOCKET", ignoreDisconnectWebSocket)
         intent.putExtra("INITIAL_CAMERA", initialCamera)
+        intent.putExtra("VIDEO_SOURCE", videoSource)
         if (videoCodec == "H265") {
             intent.putExtra("H265_PARAMS_ENABLED", h265ParamsEnabled)
             intent.putExtra("H265_PROFILE_ID", h265ProfileId.substringBefore(" "))

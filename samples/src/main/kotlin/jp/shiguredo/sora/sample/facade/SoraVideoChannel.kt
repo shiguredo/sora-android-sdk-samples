@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import jp.shiguredo.sora.sample.BuildConfig
 import jp.shiguredo.sora.sample.camera.CameraVideoCapturerFactory
 import jp.shiguredo.sora.sample.camera.DefaultCameraVideoCapturerFactory
+import jp.shiguredo.sora.sample.camera.DummyVideoCapturer
 import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sample.stats.VideoUpstreamLatencyStatsCollector
 import jp.shiguredo.sora.sample.ui.util.SoraRemoteRendererSlot
@@ -34,6 +35,7 @@ import org.webrtc.ProxyType
 import org.webrtc.RTCStatsReport
 import org.webrtc.RtpParameters
 import org.webrtc.SurfaceViewRenderer
+import org.webrtc.VideoCapturer
 import org.webrtc.VideoTrack
 import java.lang.Exception
 import java.util.concurrent.Executors
@@ -79,6 +81,7 @@ class SoraVideoChannel(
     private val audioStreamingLanguageCode: String? = null,
     private val capturerFactory: CameraVideoCapturerFactory =
         DefaultCameraVideoCapturerFactory(context, cameraFacing),
+    private val useDummyVideo: Boolean = false,
     private var listener: Listener?,
 ) {
     sealed interface RpcCallResult {
@@ -313,7 +316,7 @@ class SoraVideoChannel(
         }
 
     var mediaChannel: SoraMediaChannel? = null
-    private var capturer: CameraVideoCapturer? = null
+    private var capturer: VideoCapturer? = null
 
     private val capturing = AtomicBoolean(false)
 
@@ -378,8 +381,15 @@ class SoraVideoChannel(
                         enableAudioUpstream()
                     }
                     if (videoEnabled) {
-                        capturer = capturerFactory.createCapturer()
-                        enableVideoUpstream(capturer!!, egl!!.eglBaseContext)
+                        // DummyVideoCapturer は I420 フレームを自前生成するため EGL 不要 (null 指定)
+                        // CameraVideoCapturer は SurfaceTexture 経由でフレームを取得するため EGL 必須
+                        if (useDummyVideo) {
+                            capturer = DummyVideoCapturer()
+                            enableVideoUpstream(capturer!!, null)
+                        } else {
+                            capturer = capturerFactory.createCapturer()
+                            enableVideoUpstream(capturer!!, egl!!.eglBaseContext)
+                        }
                     }
                 }
 
@@ -534,12 +544,11 @@ class SoraVideoChannel(
     }
 
     fun switchCamera() {
-        val capturerRef = capturer
-
-        if (capturerRef == null) {
-            SoraLogger.w(TAG, "switchCamera called but capturer is null")
-            return
-        }
+        val cameraCapturer =
+            capturer as? CameraVideoCapturer ?: run {
+                SoraLogger.w(TAG, "switchCamera called but capturer is not a CameraVideoCapturer")
+                return
+            }
 
         if (!capturing.get()) {
             SoraLogger.w(TAG, "switchCamera ignored because capturer is not running")
@@ -547,7 +556,7 @@ class SoraVideoChannel(
         }
 
         try {
-            capturerRef.switchCamera(cameraSwitchHandler)
+            cameraCapturer.switchCamera(cameraSwitchHandler)
         } catch (e: Exception) {
             SoraLogger.e(TAG, "switchCamera failed", e)
         }
@@ -711,6 +720,7 @@ class SoraVideoChannel(
         audioHardMuted = false
         mediaChannel?.disconnect()
         mediaChannel = null
+        capturer?.dispose()
         capturer = null
 
         if (!closed) {
