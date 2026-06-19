@@ -19,11 +19,17 @@ import java.util.Locale
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 
+// 7 色横カラーバー + 経過秒 + チェッカーパターンを生成するダミー VideoCapturer 実装
+// カメラを使わずに検証用の映像を Sora に送信するためのもの
 internal class DummyVideoCapturer : VideoCapturer {
     companion object {
         private const val TAG = "DummyVideoCapturer"
+
+        // Y プレーン輝度値 (16-235 が TV レンジ)
         private const val Y_BLACK = 16.toByte()
         private const val Y_WHITE = 235.toByte()
+
+        // U/V プレーン無彩色 (128 = グレー)
         private const val UV_NEUTRAL = 128.toByte()
     }
 
@@ -162,7 +168,9 @@ internal class DummyVideoCapturer : VideoCapturer {
         val barWidth = w / colorTable.size + 1
         val shift = (frameIndex.get() * 4 % w).toInt()
 
-        // 1行分の Y パターンを事前計算（shift 0 基準）
+        // 1 行分のカラーバーパターンを ByteArray に事前計算し、ByteBuffer.put(byte[]) で
+        // 行単位の一括書き込み。スクロール時は wrap-around を 2 回の put で実現。
+        // Direct ByteBuffer のため put(index, byte) のようなピクセル単位 JNI 呼び出しは回避する
         val yRow = ByteArray(w)
         for (x in 0 until w) {
             yRow[x] = colorYBytes[x / barWidth % colorTable.size]
@@ -236,25 +244,10 @@ internal class DummyVideoCapturer : VideoCapturer {
         videoFrame.release()
 
         frameIndex.incrementAndGet()
-        logFps()
     }
 
-    private fun logFps() {
-        fpsFrameCount++
-        val now = System.currentTimeMillis()
-        if (lastFpsLogTimeMs == 0L) {
-            lastFpsLogTimeMs = now
-            return
-        }
-        val elapsed = now - lastFpsLogTimeMs
-        if (elapsed >= 1000) {
-            val fps = fpsFrameCount * 1000.0 / elapsed
-            Log.d(TAG, "FPS: %.1f (frames=$fpsFrameCount, elapsed=$elapsed ms)".format(fps))
-            lastFpsLogTimeMs = now
-            fpsFrameCount = 0
-        }
-    }
-
+    // テキストを Bitmap に描画し I420 バッファへ書き込む
+    // 経過秒のように毎フレームテキストが変わる場合に使う
     private fun drawText(
         buffer: JavaI420Buffer,
         frameWidth: Int,
@@ -267,6 +260,8 @@ internal class DummyVideoCapturer : VideoCapturer {
         drawTextFromBitmap(buffer, frameWidth, frameHeight, bitmap, yPercent)
     }
 
+    // 事前生成した Bitmap から I420 バッファへピクセルを転送する
+    // 開始時刻のようにテキストが固定で Bitmap をキャッシュしている場合に使う
     private fun drawTextFromBitmap(
         buffer: JavaI420Buffer,
         frameWidth: Int,
@@ -290,6 +285,8 @@ internal class DummyVideoCapturer : VideoCapturer {
         val uStride = buffer.strideU
         val vStride = buffer.strideV
 
+        // ARGB ピクセルを Y 値に変換し、行単位の ByteArray に構築して bulk put
+        // U/V は一律 128 で埋めた ByteArray を行単位で一括書き込み
         val uvWidth = (bw + 1) / 2
         val uvRow = ByteArray(uvWidth) { UV_NEUTRAL }
 
@@ -334,6 +331,8 @@ internal class DummyVideoCapturer : VideoCapturer {
                 typeface = Typeface.MONOSPACE
                 cachedPaint = this
             }
+        // 経過秒テキスト用 Bitmap はサイズ一致時に再利用し、毎フレームの Bitmap.createBitmap を回避
+        // 開始時刻テキストは不変のため初回生成後に startTextBitmap にキャッシュして描画をスキップ
         paint.isAntiAlias = antiAlias
         paint.textSize = (frameWidth * fontSizeFraction).toFloat().coerceAtLeast(12f)
 
@@ -360,6 +359,7 @@ internal class DummyVideoCapturer : VideoCapturer {
         return bitmap
     }
 
+    // 白黒のチェッカーボードを描画する
     private fun drawCheckerboard(
         buffer: JavaI420Buffer,
         frameWidth: Int,
@@ -374,7 +374,8 @@ internal class DummyVideoCapturer : VideoCapturer {
 
         val blockSizes = intArrayOf(1, 2, 4, 8)
 
-        // 各バンドの基準行パターンを事前計算（by=0、scroll=0 の状態）
+        // 各バンドの基準行パターンを ByteArray に事前計算し、行単位の bulk put で書き込む
+        // スクロールと奇数行反転はバイト列の offset 指定で吸収し、ピクセル単位ループを回避する
         val bandPatterns =
             Array(4) { band ->
                 val bs = blockSizes[band]
