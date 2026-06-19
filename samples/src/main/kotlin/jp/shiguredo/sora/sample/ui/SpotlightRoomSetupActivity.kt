@@ -29,6 +29,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
             "256",
         )
     private val videoEnabledOptions = listOf("有効", "無効")
+    private val videoSourceOptions = listOf("カメラ", "ダミー映像")
     private val audioEnabledOptions = listOf("有効", "無効")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
     private val spotlightFocusRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
@@ -79,6 +80,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         binding.simulcastEnabledSelection.name.text = "サイマルキャスト"
         binding.videoCodecSelection.name.text = "映像コーデック"
         binding.videoEnabledSelection.name.text = "映像の有無"
+        binding.videoSourceSelection.name.text = "映像ソース"
         binding.audioCodecSelection.name.text = "音声コーデック"
         binding.audioEnabledSelection.name.text = "音声の有無"
         binding.audioBitRateSelection.name.text = "音声ビットレート"
@@ -105,6 +107,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
                 DropdownConfig(binding.simulcastEnabledSelection.spinner, simulcastEnabledOptions),
                 DropdownConfig(binding.videoCodecSelection.spinner, videoCodecOptions),
                 DropdownConfig(binding.videoEnabledSelection.spinner, videoEnabledOptions),
+                DropdownConfig(binding.videoSourceSelection.spinner, videoSourceOptions),
                 DropdownConfig(binding.audioCodecSelection.spinner, audioCodecOptions),
                 DropdownConfig(binding.audioEnabledSelection.spinner, audioEnabledOptions),
                 DropdownConfig(binding.audioBitRateSelection.spinner, audioBitRateOptions),
@@ -148,6 +151,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         val audioBitRate = binding.audioBitRateSelection.spinner.selectedItem()
         val audioEnabled = binding.audioEnabledSelection.spinner.selectedItem()
         val videoEnabled = binding.videoEnabledSelection.spinner.selectedItem()
+        val videoSource = binding.videoSourceSelection.spinner.selectedItem()
         val videoBitRate = binding.videoBitRateSelection.spinner.selectedItem()
         val videoSize = binding.videoSizeSelection.spinner.selectedItem()
         val resolutionChange = binding.resolutionChangeSelection.spinner.selectedItem()
@@ -176,6 +180,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("AUDIO_BIT_RATE", audioBitRate)
         intent.putExtra("AUDIO_ENABLED", audioEnabled)
         intent.putExtra("VIDEO_ENABLED", videoEnabled)
+        intent.putExtra("VIDEO_SOURCE", videoSource)
         intent.putExtra("VIDEO_BIT_RATE", videoBitRate)
         intent.putExtra("VIDEO_SIZE", videoSize)
         intent.putExtra("RESOLUTION_CHANGE", resolutionChange)

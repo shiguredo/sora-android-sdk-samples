@@ -56,6 +56,7 @@ class SimulcastActivity : AppCompatActivity() {
     private var videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x
     private var videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y
     private var startWithCamera: Boolean = true
+    private var useDummyVideo = false
     private var spotlight = false
     private var spotlightNumber: Int? = null
     private var spotlightFocusRid: SoraVideoOption.SpotlightRid? = null
@@ -135,6 +136,8 @@ class SimulcastActivity : AppCompatActivity() {
                 "無効" -> false
                 else -> true
             }
+
+        useDummyVideo = intent.getStringExtra("VIDEO_SOURCE") == "ダミー映像"
 
         fps = (intent.getStringExtra("FPS") ?: "30").toInt()
 
@@ -453,6 +456,7 @@ class SimulcastActivity : AppCompatActivity() {
                 spotlightUnfocusRid = spotlightUnfocusRid,
                 videoEnabled = videoEnabled,
                 startWithCamera = startWithCamera,
+                useDummyVideo = useDummyVideo,
                 videoWidth = videoWidth,
                 videoHeight = videoHeight,
                 simulcast = simulcastEnabled,

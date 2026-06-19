@@ -60,6 +60,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
     private var videoH264Params: Any? = null
     private var videoH265Params: Any? = null
     private var startWithCamera: Boolean = true
+    private var useDummyVideo = false
     private var spotlight = false
     private var spotlightNumber: Int? = null
     private var fps: Int = 30
@@ -136,6 +137,8 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 "無効" -> false
                 else -> true
             }
+
+        useDummyVideo = intent.getStringExtra("VIDEO_SOURCE") == "ダミー映像"
 
         fps = (intent.getStringExtra("FPS") ?: "30").toInt()
 
@@ -452,6 +455,7 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 spotlightNumber = spotlightNumber,
                 videoEnabled = videoEnabled,
                 startWithCamera = startWithCamera,
+                useDummyVideo = useDummyVideo,
                 videoWidth = videoWidth,
                 videoHeight = videoHeight,
                 videoFPS = fps,

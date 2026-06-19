@@ -38,6 +38,7 @@ class RpcChatSetupActivity : AppCompatActivity() {
             "256",
         )
     private val videoEnabledOptions = listOf("有効", "無効")
+    private val videoSourceOptions = listOf("カメラ", "ダミー映像")
     private val audioEnabledOptions = listOf("有効", "無効")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
     private val videoBitRateOptions =
@@ -92,6 +93,7 @@ class RpcChatSetupActivity : AppCompatActivity() {
         binding.roleSelection.name.text = "ロール"
         binding.videoCodecSelection.name.text = "映像コーデック"
         binding.videoEnabledSelection.name.text = "映像の有無"
+        binding.videoSourceSelection.name.text = "映像ソース"
         binding.audioCodecSelection.name.text = "音声コーデック"
         binding.audioEnabledSelection.name.text = "音声の有無"
         binding.audioBitRateSelection.name.text = "音声ビットレート"
@@ -121,6 +123,7 @@ class RpcChatSetupActivity : AppCompatActivity() {
                 DropdownConfig(binding.roleSelection.spinner, roleOptions),
                 DropdownConfig(binding.videoCodecSelection.spinner, videoCodecOptions),
                 DropdownConfig(binding.videoEnabledSelection.spinner, videoEnabledOptions),
+                DropdownConfig(binding.videoSourceSelection.spinner, videoSourceOptions),
                 DropdownConfig(binding.audioCodecSelection.spinner, audioCodecOptions),
                 DropdownConfig(binding.audioEnabledSelection.spinner, audioEnabledOptions),
                 DropdownConfig(binding.audioBitRateSelection.spinner, audioBitRateOptions),
@@ -158,6 +161,7 @@ class RpcChatSetupActivity : AppCompatActivity() {
         val role = binding.roleSelection.spinner.selectedItem()
         val videoCodec = binding.videoCodecSelection.spinner.selectedItem()
         val videoEnabled = binding.videoEnabledSelection.spinner.selectedItem()
+        val videoSource = binding.videoSourceSelection.spinner.selectedItem()
         val audioCodec = binding.audioCodecSelection.spinner.selectedItem()
         val audioEnabled = binding.audioEnabledSelection.spinner.selectedItem()
         val audioBitRate = binding.audioBitRateSelection.spinner.selectedItem()
@@ -192,6 +196,7 @@ class RpcChatSetupActivity : AppCompatActivity() {
         intent.putExtra(RpcChatActivity.EXTRA_ROLE, role)
         intent.putExtra(RpcChatActivity.EXTRA_VIDEO_CODEC, videoCodec)
         intent.putExtra(RpcChatActivity.EXTRA_VIDEO_ENABLED, videoEnabled)
+        intent.putExtra(RpcChatActivity.EXTRA_VIDEO_SOURCE, videoSource)
         intent.putExtra(RpcChatActivity.EXTRA_AUDIO_CODEC, audioCodec)
         intent.putExtra(RpcChatActivity.EXTRA_AUDIO_ENABLED, audioEnabled)
         intent.putExtra(RpcChatActivity.EXTRA_AUDIO_BIT_RATE, audioBitRate)

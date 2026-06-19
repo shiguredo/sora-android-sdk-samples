@@ -57,6 +57,9 @@
                     android:id="@+id/videoEnabledSelection"/>
                 <include
                     layout="@layout/signaling_selection"
+                    android:id="@+id/videoSourceSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
                     android:id="@+id/audioEnabledSelection"/>
                 <include
                     layout="@layout/signaling_selection"

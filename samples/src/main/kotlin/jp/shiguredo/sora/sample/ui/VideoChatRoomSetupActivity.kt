@@ -16,6 +16,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
 
     private val videoCodecOptions = listOf("未指定", "VP8", "VP9", "H264", "H265", "AV1")
     private val videoEnabledOptions = listOf("有効", "無効")
+    private val videoSourceOptions = listOf("カメラ", "ダミー映像")
     private val audioCodecOptions = listOf("未指定", "OPUS")
     private val audioEnabledOptions = listOf("有効", "無効")
     private val audioBitRateOptions =
@@ -108,11 +109,13 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         binding.ignoreDisconnectWebSocketSelection.name.text = "WS 切断を無視"
         binding.audioStreamingLanguageCodeSelection.name.text = "文字変換言語コード"
         binding.initialCameraSelection.name.text = "開始時カメラ"
+        binding.videoSourceSelection.name.text = "映像ソース"
 
         setupDropdowns(
             listOf(
                 DropdownConfig(binding.videoEnabledSelection.spinner, videoEnabledOptions),
                 DropdownConfig(binding.videoCodecSelection.spinner, videoCodecOptions),
+                DropdownConfig(binding.videoSourceSelection.spinner, videoSourceOptions),
                 DropdownConfig(binding.audioEnabledSelection.spinner, audioEnabledOptions),
                 DropdownConfig(binding.audioCodecSelection.spinner, audioCodecOptions),
                 DropdownConfig(binding.audioBitRateSelection.spinner, audioBitRateOptions),
@@ -157,6 +160,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         val role = binding.roleSelection.spinner.selectedItem()
         val videoCodec = binding.videoCodecSelection.spinner.selectedItem()
         val videoEnabled = binding.videoEnabledSelection.spinner.selectedItem()
+        val videoSource = binding.videoSourceSelection.spinner.selectedItem()
         val audioCodec = binding.audioCodecSelection.spinner.selectedItem()
         val audioEnabled = binding.audioEnabledSelection.spinner.selectedItem()
         val audioBitRate = binding.audioBitRateSelection.spinner.selectedItem()
@@ -219,6 +223,7 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
         intent.putExtra("IGNORE_DISCONNECT_WEBSOCKET", ignoreDisconnectWebSocket)
         intent.putExtra("AUDIO_STREAMING_LANGUAGE_CODE", audioStreamingLanguageCode)
         intent.putExtra("INITIAL_CAMERA", initialCamera)
+        intent.putExtra("VIDEO_SOURCE", videoSource)
 
         startActivity(intent)
     }
