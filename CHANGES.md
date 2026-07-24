@@ -11,9 +11,17 @@
 
 ## 2026.2
 
-- [UPDATE] Sora Android SDK を 2026.2.0-canary.1 に上げる
+- [UPDATE] Sora Android SDK を 2026.2.0-canary.3 に上げる
   - libwebrtc を m150 に上げる
   - @t-miya @zztkm
+- [UPDATE] 依存ライブラリーのバージョンを上げる
+  - com.android.tools.build:gradle を 9.2.1 に上げる
+  - Gradle バージョンを 9.5.0 に上げる
+  - kotlin バージョンを 2.2.10 に上げる
+  - com.google.code.gson:gson を 2.14.0 に上げる
+  - androidx.appcompat:appcompat を 1.7.1 に上げる
+  - org.jlleitschuh.gradle:ktlint-gradle を 14.2.0 に上げる
+  - @t-miya
 - [UPDATE] ビデオチャットサンプルで `onOfferMessage` を `onSignalingMessage` に置き換える
   - @zztkm
 - [ADD] 接続メニューに検証用のダミー映像ソースを追加する
