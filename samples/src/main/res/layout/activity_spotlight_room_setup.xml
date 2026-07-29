@@ -59,6 +59,9 @@
                     android:id="@+id/videoEnabledSelection"/>
                 <include
                     layout="@layout/signaling_selection"
+                    android:id="@+id/videoSourceSelection"/>
+                <include
+                    layout="@layout/signaling_selection"
                     android:id="@+id/audioCodecSelection"/>
                 <include
                     layout="@layout/signaling_selection"
@@ -69,6 +72,47 @@
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/videoSizeSelection"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="#f6f6f6"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="4dp"
+                        android:text="H265 設定" />
+
+                    <include
+                        android:id="@+id/h265ParamsEnabledSelection"
+                        layout="@layout/signaling_selection" />
+
+                    <LinearLayout
+                        android:id="@+id/h265ParamsGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <include
+                            android:id="@+id/h265ProfileIdSelection"
+                            layout="@layout/signaling_selection" />
+
+                        <include
+                            android:id="@+id/h265LevelIdSelection"
+                            layout="@layout/signaling_selection" />
+
+                        <include
+                            android:id="@+id/h265TierFlagSelection"
+                            layout="@layout/signaling_selection" />
+
+                        <include
+                            android:id="@+id/h265TxModeSelection"
+                            layout="@layout/signaling_selection" />
+                    </LinearLayout>
+                </LinearLayout>
                 <include
                     layout="@layout/signaling_selection"
                     android:id="@+id/resolutionChangeSelection"/>

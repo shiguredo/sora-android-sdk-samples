@@ -67,6 +67,12 @@ class RpcChatActivity : AppCompatActivity() {
         const val EXTRA_RPC_ENABLED = "RPC_ENABLED"
         const val EXTRA_SPOTLIGHT_ENABLED = "SPOTLIGHT_ENABLED"
         const val EXTRA_INITIAL_CAMERA = "INITIAL_CAMERA"
+        const val EXTRA_VIDEO_SOURCE = "VIDEO_SOURCE"
+        const val EXTRA_H265_PARAMS_ENABLED = "H265_PARAMS_ENABLED"
+        const val EXTRA_H265_PROFILE_ID = "H265_PROFILE_ID"
+        const val EXTRA_H265_LEVEL_ID = "H265_LEVEL_ID"
+        const val EXTRA_H265_TIER_FLAG = "H265_TIER_FLAG"
+        const val EXTRA_H265_TX_MODE = "H265_TX_MODE"
 
         private enum class CameraState {
             ON,
@@ -85,6 +91,7 @@ class RpcChatActivity : AppCompatActivity() {
     private var videoWidth: Int = SoraVideoOption.FrameSize.Landscape.VGA.x
     private var videoHeight: Int = SoraVideoOption.FrameSize.Landscape.VGA.y
     private var startWithCamera: Boolean = true
+    private var useDummyVideo = false
     private var fps: Int = 30
     private var degradationPreference: SoraVideoOption.DegradationPreference? = null
     private var resolutionAdjustment: SoraVideoOption.ResolutionAdjustment? = null
@@ -98,6 +105,7 @@ class RpcChatActivity : AppCompatActivity() {
     private var spotlightUnfocusRid: String? = null
     private var spotlightEnabled: Boolean = true
     private var rpcEnabled: Boolean = false
+    private var videoH265Params: Any? = null
 
     private var oldAudioMode: Int = AudioManager.MODE_NORMAL
     private var role = SoraRoleType.SENDRECV
@@ -189,6 +197,8 @@ class RpcChatActivity : AppCompatActivity() {
                 else -> true
             }
 
+        useDummyVideo = intent.getStringExtra(EXTRA_VIDEO_SOURCE) == "ダミー映像"
+
         fps = (intent.getStringExtra(EXTRA_FPS) ?: "30").toInt()
 
         intent.getStringExtra(EXTRA_VIDEO_SIZE)?.let { key ->
@@ -216,6 +226,27 @@ class RpcChatActivity : AppCompatActivity() {
                 "2" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_2
                 "無効" -> SoraVideoOption.ResolutionAdjustment.NONE
                 else -> null
+            }
+
+        videoH265Params =
+            if (intent.getStringExtra(EXTRA_H265_PARAMS_ENABLED) == "有効") {
+                val profileId = intent.getStringExtra(EXTRA_H265_PROFILE_ID)?.toIntOrNull()
+                val levelId = intent.getStringExtra(EXTRA_H265_LEVEL_ID)?.toIntOrNull()
+                val tierFlag = intent.getStringExtra(EXTRA_H265_TIER_FLAG)?.toIntOrNull()
+                val txMode = intent.getStringExtra(EXTRA_H265_TX_MODE)
+
+                if (profileId != null && levelId != null && tierFlag != null && txMode != null) {
+                    mapOf(
+                        "profile_id" to profileId,
+                        "level_id" to levelId,
+                        "tier_flag" to tierFlag,
+                        "tx_mode" to txMode,
+                    )
+                } else {
+                    null
+                }
+            } else {
+                null
             }
 
         videoBitRate =
@@ -471,6 +502,7 @@ class RpcChatActivity : AppCompatActivity() {
                     roleType = role,
                     videoEnabled = videoEnabled,
                     startWithCamera = startWithCamera,
+                    useDummyVideo = useDummyVideo,
                     videoWidth = videoWidth,
                     videoHeight = videoHeight,
                     videoFPS = fps,
@@ -481,6 +513,7 @@ class RpcChatActivity : AppCompatActivity() {
                     audioBitRate = audioBitRate,
                     degradationPreference = degradationPreference,
                     resolutionAdjustment = resolutionAdjustment,
+                    videoH265Params = videoH265Params,
                     simulcast = true,
                     simulcastRequestRid = simulcastRequestRidEnum,
                     listener = channelListener,

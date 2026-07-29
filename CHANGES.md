@@ -9,6 +9,34 @@
 - FIX
   - バグ修正
 
+## 2026.2
+
+- [UPDATE] Sora Android SDK を 2026.2.1 に上げる
+  - libwebrtc を m150 に上げる
+  - @t-miya @zztkm
+- [UPDATE] 依存ライブラリーのバージョンを上げる
+  - com.android.tools.build:gradle を 9.2.1 に上げる
+  - Gradle バージョンを 9.5.0 に上げる
+  - kotlin バージョンを 2.2.10 に上げる
+  - com.google.code.gson:gson を 2.14.0 に上げる
+  - androidx.appcompat:appcompat を 1.7.1 に上げる
+  - org.jlleitschuh.gradle:ktlint-gradle を 14.2.0 に上げる
+  - @t-miya
+- [UPDATE] ビデオチャットサンプルで `onOfferMessage` を `onSignalingMessage` に置き換える
+  - @zztkm
+- [ADD] 接続メニューに検証用のダミー映像ソースを追加する
+  - ビデオチャットサンプル、サイマルキャストサンプル、スポットライトサンプル、RPC チャットサンプルの接続メニューに映像ソース（カメラ / ダミー映像）選択を追加する
+  - ダミー映像はカラーバー + 経過秒 + チェッカーパターンを生成し、カメラなしで映像配信の検証ができる
+  - @t-miya
+- [ADD] 接続メニューに H.265 プロファイル設定を追加する
+  - ビデオチャットサンプル、サイマルキャストサンプル、スポットライトサンプル、RPC チャットサンプルの接続メニューに H.265 プロファイル設定を追加する
+  - @t-miya
+
+### misc
+
+- [UPDATE] Github Actions の build ワークフローの Java バージョンを 21 に上げる
+  - @t-miya
+
 ## 2026.1
 
 - [CHANGE] サイマルキャストの設定値である SimulcastRid を SimulcastRequestRid に移行する

@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ktlint)
 }
@@ -63,6 +62,8 @@ android {
         compose = true
         // AGP 8.0 からデフォルトで false になった
         buildConfig = true
+        // AGP 9.0 からデフォルトで false になった
+        resValues = true
     }
 
     compileOptions {
@@ -73,7 +74,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 }

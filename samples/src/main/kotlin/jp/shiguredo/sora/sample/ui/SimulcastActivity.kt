@@ -56,6 +56,7 @@ class SimulcastActivity : AppCompatActivity() {
     private var videoWidth: Int = SoraVideoOption.FrameSize.Portrait.VGA.x
     private var videoHeight: Int = SoraVideoOption.FrameSize.Portrait.VGA.y
     private var startWithCamera: Boolean = true
+    private var useDummyVideo = false
     private var spotlight = false
     private var spotlightNumber: Int? = null
     private var spotlightFocusRid: SoraVideoOption.SpotlightRid? = null
@@ -69,6 +70,7 @@ class SimulcastActivity : AppCompatActivity() {
     private var bundleId: String? = null
     private var dataChannelSignaling: Boolean? = null
     private var ignoreDisconnectWebSocket: Boolean? = null
+    private var videoH265Params: Any? = null
 
     private var oldAudioMode: Int = AudioManager.MODE_NORMAL
 
@@ -135,6 +137,8 @@ class SimulcastActivity : AppCompatActivity() {
                 else -> true
             }
 
+        useDummyVideo = intent.getStringExtra("VIDEO_SOURCE") == "ダミー映像"
+
         fps = (intent.getStringExtra("FPS") ?: "30").toInt()
 
         intent.getStringExtra("VIDEO_SIZE")?.let { key ->
@@ -199,6 +203,27 @@ class SimulcastActivity : AppCompatActivity() {
                 "2" -> SoraVideoOption.ResolutionAdjustment.MULTIPLE_OF_2
                 "無効" -> SoraVideoOption.ResolutionAdjustment.NONE
                 else -> null
+            }
+
+        videoH265Params =
+            if (intent.getStringExtra("H265_PARAMS_ENABLED") == "有効") {
+                val profileId = intent.getStringExtra("H265_PROFILE_ID")?.toIntOrNull()
+                val levelId = intent.getStringExtra("H265_LEVEL_ID")?.toIntOrNull()
+                val tierFlag = intent.getStringExtra("H265_TIER_FLAG")?.toIntOrNull()
+                val txMode = intent.getStringExtra("H265_TX_MODE")
+
+                if (profileId != null && levelId != null && tierFlag != null && txMode != null) {
+                    mapOf(
+                        "profile_id" to profileId,
+                        "level_id" to levelId,
+                        "tier_flag" to tierFlag,
+                        "tx_mode" to txMode,
+                    )
+                } else {
+                    null
+                }
+            } else {
+                null
             }
 
         videoBitRate =
@@ -431,6 +456,7 @@ class SimulcastActivity : AppCompatActivity() {
                 spotlightUnfocusRid = spotlightUnfocusRid,
                 videoEnabled = videoEnabled,
                 startWithCamera = startWithCamera,
+                useDummyVideo = useDummyVideo,
                 videoWidth = videoWidth,
                 videoHeight = videoHeight,
                 simulcast = simulcastEnabled,
@@ -438,6 +464,7 @@ class SimulcastActivity : AppCompatActivity() {
                 videoFPS = fps,
                 degradationPreference = degradationPreference,
                 resolutionAdjustment = resolutionAdjustment,
+                videoH265Params = videoH265Params,
                 videoCodec = videoCodec,
                 videoBitRate = videoBitRate,
                 audioEnabled = audioEnabled,
