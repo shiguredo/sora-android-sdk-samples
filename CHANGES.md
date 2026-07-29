@@ -11,7 +11,7 @@
 
 ## 2026.2
 
-- [UPDATE] Sora Android SDK を 2026.2.0-canary.3 に上げる
+- [UPDATE] Sora Android SDK を 2026.2.1 に上げる
   - libwebrtc を m150 に上げる
   - @t-miya @zztkm
 - [UPDATE] 依存ライブラリーのバージョンを上げる
