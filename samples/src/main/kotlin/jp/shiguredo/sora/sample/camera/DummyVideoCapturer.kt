@@ -156,6 +156,9 @@ internal class DummyVideoCapturer : VideoCapturer {
 
     override fun isScreencast(): Boolean = false
 
+    // libwebrtc 151 で VideoCapturer に追加された。キャプチャー中かどうかを返す
+    override fun isCapturing(): Boolean = isRunning.get()
+
     private fun generateFrame() {
         val w = width
         val h = height
