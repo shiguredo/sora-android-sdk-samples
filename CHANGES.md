@@ -9,6 +9,13 @@
 - FIX
   - バグ修正
 
+## 2026.4
+
+- [UPDATE] Sora Android SDK を 2026.4.0-canary.4 に上げる
+  - `SoraLogger.libjingleEnabled` を `SoraLogger.libwebrtcLogEnabled` に置き換える
+    - 旧名は非推奨のエイリアスとして残っているが、非推奨警告を出さないようにする
+  - @zztkm
+
 ## 2026.3
 
 - [UPDATE] Sora Android SDK を 2026.3.0 に上げる
