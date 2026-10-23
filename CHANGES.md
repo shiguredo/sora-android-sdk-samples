@@ -11,7 +11,8 @@
 
 ## 2026.4
 
-- [UPDATE] Sora Android SDK を 2026.4.0-canary.7 に上げる
+- [UPDATE] Sora Android SDK を 2026.4.0 に上げる
+  - libwebrtc 依存先を `shiguredo-webrtc-android` から `webrtc-build` に変更する
   - `SoraLogger.libjingleEnabled` を `SoraLogger.libwebrtcLogEnabled` に置き換える
     - 旧名は非推奨のエイリアスとして残っているが、非推奨警告を出さないようにする
   - @zztkm @tmiya
