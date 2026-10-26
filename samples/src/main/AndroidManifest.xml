@@ -67,6 +67,18 @@
             android:taskAffinity=".secondary"
             android:launchMode="singleInstance"
             android:exported="true"  />
+        <!--
+            スクリーンキャストで配信するゲーム画面
+            アプリ単位で共有する場合のキャプチャ対象にするため、taskAffinity は指定せず main task に配置する
+            singleTop は通知タップやオーバーレイの起動ボタンによる多重起動を防ぐため
+        -->
+        <activity
+            android:name=".ui.ScreencastGameActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
+            android:label="スクリーンキャスト"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false" />
         <activity
             android:name=".ui.SimulcastSetupActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
