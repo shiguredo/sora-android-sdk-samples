@@ -2,6 +2,7 @@ package jp.shiguredo.sora.sample.ui
 
 import android.annotation.TargetApi
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -35,10 +36,16 @@ class ScreencastSetupActivity : AppCompatActivity() {
         binding.audioCodecSelection.name.text = "音声コーデック"
         setupDropdowns(
             listOf(
-                DropdownConfig(binding.videoCodecSelection.spinner, videoCodecOptions),
+                // 映像コーデックの初期値は VP9
+                DropdownConfig(
+                    binding.videoCodecSelection.spinner,
+                    videoCodecOptions,
+                    defaultIndex = videoCodecOptions.indexOf("VP9"),
+                ),
                 DropdownConfig(binding.audioCodecSelection.spinner, audioCodecOptions),
             ),
         )
+        setupShareAppHint()
 
         binding.start.setOnClickListener {
             val channelName = binding.channelNameInput.text.toString()
@@ -48,13 +55,31 @@ class ScreencastSetupActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * 画面共有の確認画面で選択する項目は Android のバージョンによって異なるため、
+     * 実行中のバージョンに合わせた手順を表示します。
+     */
+    private fun setupShareAppHint() {
+        val connect = getString(R.string.screencast_connect)
+        val appName = getString(R.string.app_name)
+        binding.shareAppHint.text =
+            when {
+                // Android 16 (API 36) 以降は「1 個のアプリを共有」と表示される
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA ->
+                    getString(R.string.screencast_share_app_hint_api36, connect, appName)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE ->
+                    getString(R.string.screencast_share_app_hint_api34, connect, appName)
+                else -> getString(R.string.screencast_share_app_hint_legacy, connect)
+            }
+    }
+
     override fun onActivityResult(
         requestCode: Int,
         resultCode: Int,
         data: Intent?,
     ) {
         super.onActivityResult(requestCode, resultCode, data)
-        screencastStarter?.onActivityResult(requestCode, resultCode, data)
+        screencastStarter?.onActivityResult(requestCode, data)
     }
 
     private fun startScreencast(
@@ -85,15 +110,10 @@ class ScreencastSetupActivity : AppCompatActivity() {
                 videoFPS = 30,
                 stateTitle = "Sora Screencast",
                 stateText = "live on $channelId",
-                stateIcon = R.drawable.icon,
                 notificationIcon = R.drawable.icon,
-                boundActivityName = MainActivity::class.java.canonicalName!!,
+                boundActivityName = ScreencastGameActivity::class.java.canonicalName!!,
                 serviceClass = SoraScreencastService::class,
             )
         screencastStarter?.start()
-        /*
-         * 1つのアプリ をスクリーンキャスト時にはここに下に何か書いても、
-         * すでに選ばれたアプリに遷移しているためユーザーの視界に入ることはない
-         */
     }
 }

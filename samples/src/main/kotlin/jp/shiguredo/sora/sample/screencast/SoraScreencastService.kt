@@ -39,6 +39,11 @@ class SoraScreencastService : Service() {
     companion object {
         val TAG = SoraScreencastService::class.simpleName
 
+        /**
+         * 配信停止を配信画面に通知するブロードキャストのアクションです。
+         */
+        const val ACTION_SCREENCAST_STOPPED = "jp.shiguredo.sora.sample.ACTION_SCREENCAST_STOPPED"
+
         private var running = false
 
         fun isRunning() = running
@@ -53,14 +58,13 @@ class SoraScreencastService : Service() {
     private var binding: ScreencastServiceBinding? = null
 
     private var capturing = false
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private var isClosing = false
 
     private val channelListener =
         object : SoraMediaChannel.Listener {
             override fun onConnect(mediaChannel: SoraMediaChannel) {
                 SoraLogger.d(TAG, "[screencast] @onConnected")
-                // MainActivity に画面更新を促す Intent を送る
-                // 取れるイベントの中では最も遅いが、このタイミングでも送信が開始されているとは限らない
-                sendInvalidateBroadcast()
             }
 
             override fun onClose(
@@ -97,6 +101,11 @@ class SoraScreencastService : Service() {
         flags: Int,
         startId: Int,
     ): Int {
+        // 同じ Service インスタンスへの二重開始は受け付けない
+        if (SoraScreencastService.running || isClosing) {
+            SoraLogger.w(TAG, "service is already running or closing")
+            return Service.START_NOT_STICKY
+        }
         SoraScreencastService.running = true
 
         egl = EglBase.create()
@@ -109,39 +118,35 @@ class SoraScreencastService : Service() {
             }
         if (req == null) {
             SoraLogger.w(TAG, "request not found")
+            SoraScreencastService.running = false
             stopSelf()
             return Service.START_NOT_STICKY
         }
 
         setupUI()
         startNotification(startId)
+        // 配信する画面を起動する
+        launchActivity()
         openChannel()
 
         return START_NOT_STICKY
     }
 
     private fun startNotification(startId: Int) {
-        val notificationChannelId =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                createNotificationChannel()
-            } else {
-                ""
-            }
+        val notificationChannelId = createNotificationChannel()
 
-        val activityIntent = createBoundActivityIntent()
-        val pendingIntent = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_MUTABLE)
-        val notification =
+        val builder =
             NotificationCompat
                 .Builder(this, notificationChannelId)
                 .setContentTitle(req!!.stateTitle)
                 .setContentText(req!!.stateText)
-                .setContentIntent(pendingIntent)
                 .setSmallIcon(req!!.notificationIcon)
-                .build()
-        startForeground(startId, notification)
+        createBoundActivityIntent()?.let {
+            builder.setContentIntent(PendingIntent.getActivity(this, 0, it, PendingIntent.FLAG_MUTABLE))
+        }
+        startForeground(startId, builder.build())
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(): String {
         val notificationChannelId = "jp.shiguredo.sora.sample"
         val notificationChannelName = "Sora SDK Sample"
@@ -175,16 +180,28 @@ class SoraScreencastService : Service() {
         uiContainer = ScreencastUIContainer(this, binding!!.root)
     }
 
+    /**
+     * 配信画面を起動します。配信開始時と、オーバーレイの起動ボタンから呼び出されます。
+     */
     private fun launchActivity() {
-        val intent = createBoundActivityIntent()
+        val intent = createBoundActivityIntent() ?: return
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(intent)
+        try {
+            startActivity(intent)
+            SoraLogger.d(TAG, "launchActivity")
+        } catch (e: Exception) {
+            SoraLogger.w(TAG, "failed to launch activity: ${e.message}")
+        }
     }
 
-    private fun createBoundActivityIntent(): Intent {
-        val intent = Intent(this, Class.forName(req!!.boundActivityName!!))
-        intent.putExtra("CHANNEL_ID", req!!.channelId)
-        return intent
+    private fun createBoundActivityIntent(): Intent? {
+        val activityName = req?.boundActivityName ?: return null
+        return try {
+            Intent(this, Class.forName(activityName))
+        } catch (e: ClassNotFoundException) {
+            SoraLogger.w(TAG, "bound activity not found: $activityName")
+            null
+        }
     }
 
     override fun onDestroy() {
@@ -210,9 +227,10 @@ class SoraScreencastService : Service() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         when (newConfig.orientation) {
-            Configuration.ORIENTATION_LANDSCAPE -> changeCaptureFormat()
-            Configuration.ORIENTATION_PORTRAIT -> changeCaptureFormat()
-            else -> { /* do nothing */ }
+            Configuration.ORIENTATION_LANDSCAPE,
+            Configuration.ORIENTATION_PORTRAIT,
+            -> changeCaptureFormat()
+            else -> Unit
         }
     }
 
@@ -227,13 +245,6 @@ class SoraScreencastService : Service() {
         }
     }
 
-    private fun sendInvalidateBroadcast() {
-        // MainActivity に画面更新を促す Intent を送る
-        val intent = Intent("ACTION_INVALIDATE_VIEW")
-        intent.setPackage(applicationContext.packageName)
-        sendBroadcast(intent)
-    }
-
     internal fun startCapturer() {
         capturer?.let {
             if (!capturing) {
@@ -241,7 +252,7 @@ class SoraScreencastService : Service() {
                 SoraLogger.d(TAG, "startCapture")
                 val size = SoraScreenUtil.size(this)
                 /*
-                 * Pixel シリーズにおいてキャスト時に 1つのアプリ でこのサンプルを選び、
+                 * Pixel シリーズでアプリ単位の共有時にこのサンプルを選び、
                  * 下記の処理を呼び出した場合は失敗してしまう。
                  * それに対する対策として ScreencastSetupActivity を
                  * android:launchMode="singleInstance" にしている
@@ -280,11 +291,6 @@ class SoraScreencastService : Service() {
     private fun openChannel() {
         capturer = ScreenCapturerAndroid(req!!.data, mediaProjectionCallback)
 
-        if (capturer == null) {
-            SoraLogger.w(TAG, "failed to obtain screen capturer")
-            return
-        }
-
         val mediaOption =
             SoraMediaOption().apply {
                 // when audio stream is disabled, it'll crush.
@@ -320,9 +326,16 @@ class SoraScreencastService : Service() {
     }
 
     private fun closeChannel() {
-        val handler = Handler(Looper.getMainLooper())
-        handler.post {
+        mainHandler.post {
+            if (isClosing) {
+                return@post
+            }
+            isClosing = true
             SoraLogger.d(TAG, "closeChannel")
+            SoraScreencastService.running = false
+            val stoppedIntent = Intent(ACTION_SCREENCAST_STOPPED)
+            stoppedIntent.setPackage(applicationContext.packageName)
+            sendBroadcast(stoppedIntent)
             mediaChannel?.disconnect()
             mediaChannel = null
             stopCapturer()
@@ -330,7 +343,6 @@ class SoraScreencastService : Service() {
             egl = null
             uiContainer?.clear()
             NetworkMonitor.getInstance().stopMonitoring()
-            SoraScreencastService.running = false
             stopSelf()
         }
     }

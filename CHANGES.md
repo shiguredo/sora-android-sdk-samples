@@ -11,6 +11,15 @@
 
 ## 2026.4
 
+- [ADD] スクリーンキャストサンプルに箱積みゲームを追加する
+  - 配信開始後にゲーム画面を表示する
+  - 配信停止時にゲーム画面を終了する
+  - ゲーム画面の表示中は画面を消灯させない
+  - 通知タップとオーバーレイの起動ボタンの遷移先をゲーム画面に変更する
+  - 接続設定画面に Android のバージョンに応じた画面共有の手順を表示する
+  - @t-miya
+- [UPDATE] スクリーンキャストの映像コーデックの初期値を VP9 にする
+  - @t-miya
 - [UPDATE] Sora Android SDK を 2026.4.0 に上げる
   - libwebrtc 依存先を `shiguredo-webrtc-android` から `webrtc-build` に変更する
   - `SoraLogger.libjingleEnabled` を `SoraLogger.libwebrtcLogEnabled` に置き換える

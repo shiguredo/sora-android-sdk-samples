@@ -11,14 +11,12 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="6dp"
-        android:background="@drawable/app_background">
+        android:padding="6dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/app_background"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -31,10 +29,27 @@
                     android:id="@+id/channelNameInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="@string/channelId"
                     android:inputType="text"
                     android:hint="チャネル名" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/shareAppHint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="2dp"
+                    android:textColor="#333333"
+                    android:textSize="14sp" />
 
                 <Button
                     android:id="@+id/start"
@@ -42,8 +57,8 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/white"
                     android:background="#F06292"
-                    android:layout_margin="10dp"
-                    android:text="接続する" />
+                    android:layout_marginTop="10dp"
+                    android:text="@string/screencast_connect" />
 
                 <include
                     layout="@layout/signaling_selection"
@@ -52,7 +67,7 @@
                     layout="@layout/signaling_selection"
                     android:id="@+id/audioCodecSelection"/>
 
-            </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

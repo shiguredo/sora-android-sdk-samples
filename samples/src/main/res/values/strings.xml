@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">Sora Android SDK サンプル集</string>
 
-    <string name="version_requirement_screencast">この機能のご利用にはAndroid 5.0以上のOSが必要です。</string>
-
     <string name="permission_button_positive">許可する</string>
     <string name="permission_button_negative">許可しない</string>
+
+    <string name="screencast_connect">接続する</string>
+
+    <string name="screencast_game_hint">画面をタップすると箱が落下します。</string>
+
+    <string name="screencast_share_app_hint_api36">「%1$s」をタップした後に表示される確認画面で「1 個のアプリを共有」を選択して「次へ」をタップし、次の画面のアプリ一覧から「%2$s」を選択してください。</string>
+    <string name="screencast_share_app_hint_api34">「%1$s」をタップした後に表示される確認画面で「1 つのアプリ」を選択して「開始」をタップし、次の画面のアプリ一覧から「%2$s」を選択してください。この選択肢が表示されない場合は、そのまま共有を開始してください。画面全体が配信されます。</string>
+    <string name="screencast_share_app_hint_legacy">「%1$s」をタップした後に表示される確認画面で「今すぐ開始」をタップしてください。画面全体が配信されます。</string>
 </resources>

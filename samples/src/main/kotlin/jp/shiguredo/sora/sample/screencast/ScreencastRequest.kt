@@ -18,7 +18,6 @@ class ScreencastRequest(
     val audioCodec: String?,
     val stateTitle: String?,
     val stateText: String?,
-    val stateIcon: Int,
     val notificationIcon: Int,
     val boundActivityName: String?,
 ) : Parcelable {
@@ -39,7 +38,6 @@ class ScreencastRequest(
         parcel.readString(),
         parcel.readString(),
         parcel.readInt(),
-        parcel.readInt(),
         parcel.readString(),
     ) {
     }
@@ -58,7 +56,6 @@ class ScreencastRequest(
         parcel.writeString(audioCodec)
         parcel.writeString(stateTitle)
         parcel.writeString(stateText)
-        parcel.writeInt(stateIcon)
         parcel.writeInt(notificationIcon)
         parcel.writeString(boundActivityName)
     }

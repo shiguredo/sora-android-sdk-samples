@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.projection.MediaProjectionManager
 import android.net.Uri
-import android.os.Build
 import android.provider.Settings
 import kotlin.reflect.KClass
 
@@ -17,14 +16,13 @@ class SoraScreencastServiceStarter(
     private val channelId: String,
     private val stateTitle: String,
     private val stateText: String,
-    private val stateIcon: Int,
     private val notificationIcon: Int,
+    private val boundActivityName: String,
     private val signalingMetadata: String = "",
     private val videoScale: Float = 0.5f,
     private val videoFPS: Int = 30,
     private val videoCodec: String = "未指定",
     private val audioCodec: String = "OPUS",
-    private val boundActivityName: String = activity.javaClass.canonicalName!!,
     private val serviceClass: KClass<SoraScreencastService>,
 ) {
     companion object {
@@ -32,19 +30,17 @@ class SoraScreencastServiceStarter(
         const val REQ_CODE_OVERLAY = 4902
     }
 
-    private var resultCode: Int? = null
     private var resultData: Intent? = null
 
     fun onActivityResult(
         reqCode: Int,
-        resultCode: Int,
         data: Intent?,
-    ): Boolean =
+    ) {
         when (reqCode) {
-            REQ_CODE_SCREEN_CAPTURE -> handleScreenCaptureResult(resultCode, data)
+            REQ_CODE_SCREEN_CAPTURE -> handleScreenCaptureResult(data)
             REQ_CODE_OVERLAY -> startScreenCaptureService()
-            else -> false
         }
+    }
 
     fun start() {
         val manager: MediaProjectionManager =
@@ -57,27 +53,17 @@ class SoraScreencastServiceStarter(
         )
     }
 
-    private fun handleScreenCaptureResult(
-        resultCode: Int,
-        data: Intent?,
-    ): Boolean {
+    private fun handleScreenCaptureResult(data: Intent?) {
         if (data == null) {
-            return true
+            return
         }
 
-        this.resultCode = resultCode
         this.resultData = data
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            startScreenCaptureService()
-        } else {
-            handleScreenCaptureResultOverMarshmallow()
-        }
-        return true
+        handleScreenCaptureResultWithOverlayPermission()
     }
 
-    @TargetApi(23)
-    private fun handleScreenCaptureResultOverMarshmallow() {
+    private fun handleScreenCaptureResultWithOverlayPermission() {
         if (Settings.canDrawOverlays(activity.applicationContext)) {
             startScreenCaptureService()
         } else {
@@ -87,7 +73,7 @@ class SoraScreencastServiceStarter(
         }
     }
 
-    private fun startScreenCaptureService(): Boolean {
+    private fun startScreenCaptureService() {
         val intent = Intent(activity, serviceClass.java)
         val request =
             ScreencastRequest(
@@ -101,7 +87,6 @@ class SoraScreencastServiceStarter(
                 videoScale = videoScale,
                 stateTitle = stateTitle,
                 stateText = stateText,
-                stateIcon = stateIcon,
                 notificationIcon = notificationIcon,
                 boundActivityName = boundActivityName,
             )
@@ -110,8 +95,8 @@ class SoraScreencastServiceStarter(
         /*
          * startService を行った Activity は1つのアプリにもなれないので、
          * アプリ切り替えにも現れないよう finishAndRemoveTask でタスクごと消す
+         * 配信する画面は SoraScreencastService が起動する
          */
         activity.finishAndRemoveTask()
-        return true
     }
 }
