@@ -3,10 +3,10 @@ package jp.shiguredo.sora.sample.screencast
 import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.PixelFormat
-import android.os.Build
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
+import jp.shiguredo.sora.sdk.util.SoraLogger
 
 @TargetApi(21)
 class ScreencastUIContainer(
@@ -15,36 +15,39 @@ class ScreencastUIContainer(
     width: Int = WindowManager.LayoutParams.MATCH_PARENT,
     height: Int = WindowManager.LayoutParams.WRAP_CONTENT,
 ) {
+    companion object {
+        private val TAG = ScreencastUIContainer::class.simpleName
+    }
+
     private var isOnTop = true
-    private var windowManager: WindowManager? =
+    private val windowManager: WindowManager =
         context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+    var isAdded: Boolean = false
+        private set
 
     init {
         val params = createLayoutParams(width, height)
         params.gravity = Gravity.TOP
-        windowManager?.addView(view, params)
+        try {
+            windowManager.addView(view, params)
+            isAdded = true
+        } catch (e: WindowManager.BadTokenException) {
+            SoraLogger.w(TAG, "failed to add overlay view", e)
+        }
     }
 
     private fun createLayoutParams(
         width: Int,
         height: Int,
-    ): WindowManager.LayoutParams {
-        val windowType =
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-            } else {
-                @Suppress("DEPRECATION")
-                WindowManager.LayoutParams.TYPE_PHONE
-            }
-
-        return WindowManager.LayoutParams(
+    ): WindowManager.LayoutParams =
+        WindowManager.LayoutParams(
             width,
             height,
-            windowType,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             createWindowFrags(),
             PixelFormat.TRANSLUCENT,
         )
-    }
 
     private fun createWindowFrags(): Int =
         WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
@@ -60,13 +63,17 @@ class ScreencastUIContainer(
             params.gravity = Gravity.TOP
         }
         isOnTop = !isOnTop
-        windowManager?.updateViewLayout(view, params)
+        windowManager.updateViewLayout(view, params)
     }
 
     fun clear() {
-        if (view.isAttachedToWindow) {
-            windowManager?.removeViewImmediate(view)
+        if (isAdded) {
+            try {
+                windowManager.removeViewImmediate(view)
+            } catch (e: IllegalArgumentException) {
+                SoraLogger.w(TAG, "failed to remove overlay view", e)
+            }
         }
-        windowManager = null
+        isAdded = false
     }
 }

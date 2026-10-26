@@ -7,6 +7,7 @@ import android.content.Intent
 import android.media.projection.MediaProjectionManager
 import android.net.Uri
 import android.provider.Settings
+import jp.shiguredo.sora.sdk.util.SoraLogger
 import kotlin.reflect.KClass
 
 @TargetApi(21)
@@ -26,6 +27,8 @@ class SoraScreencastServiceStarter(
     private val serviceClass: KClass<SoraScreencastService>,
 ) {
     companion object {
+        private val TAG = SoraScreencastServiceStarter::class.simpleName
+
         const val REQ_CODE_SCREEN_CAPTURE = 4901
         const val REQ_CODE_OVERLAY = 4902
     }
@@ -38,7 +41,7 @@ class SoraScreencastServiceStarter(
     ) {
         when (reqCode) {
             REQ_CODE_SCREEN_CAPTURE -> handleScreenCaptureResult(data)
-            REQ_CODE_OVERLAY -> startScreenCaptureService()
+            REQ_CODE_OVERLAY -> handleOverlayPermissionResult()
         }
     }
 
@@ -55,6 +58,7 @@ class SoraScreencastServiceStarter(
 
     private fun handleScreenCaptureResult(data: Intent?) {
         if (data == null) {
+            notifyStartFailed(SoraScreencastService.START_FAILURE_REASON_CANCELED)
             return
         }
 
@@ -73,11 +77,24 @@ class SoraScreencastServiceStarter(
         }
     }
 
+    private fun handleOverlayPermissionResult() {
+        if (Settings.canDrawOverlays(activity.applicationContext)) {
+            startScreenCaptureService()
+            return
+        }
+        notifyStartFailed(SoraScreencastService.START_FAILURE_REASON_PERMISSION)
+    }
+
     private fun startScreenCaptureService() {
+        val data =
+            resultData ?: run {
+                notifyStartFailed(SoraScreencastService.START_FAILURE_REASON_UNKNOWN)
+                return
+            }
         val intent = Intent(activity, serviceClass.java)
         val request =
             ScreencastRequest(
-                data = resultData!!,
+                data = data,
                 signalingEndpoint = signalingEndpoint,
                 channelId = channelId,
                 signalingMetadata = signalingMetadata,
@@ -91,12 +108,23 @@ class SoraScreencastServiceStarter(
                 boundActivityName = boundActivityName,
             )
         intent.putExtra("SCREENCAST_REQUEST", request)
-        activity.startService(intent)
+        try {
+            activity.startService(intent)
+        } catch (e: RuntimeException) {
+            SoraLogger.w(TAG, "failed to start screencast service", e)
+            notifyStartFailed(SoraScreencastService.START_FAILURE_REASON_UNKNOWN)
+            return
+        }
         /*
-         * startService を行った Activity は1つのアプリにもなれないので、
-         * アプリ切り替えにも現れないよう finishAndRemoveTask でタスクごと消す
+         * 接続設定画面は開始結果を受け取るまで残す
          * 配信する画面は SoraScreencastService が起動する
          */
-        activity.finishAndRemoveTask()
+    }
+
+    private fun notifyStartFailed(reason: String) {
+        val intent = Intent(SoraScreencastService.ACTION_SCREENCAST_START_FAILED)
+        intent.setPackage(activity.packageName)
+        intent.putExtra(SoraScreencastService.EXTRA_START_FAILURE_REASON, reason)
+        activity.sendBroadcast(intent)
     }
 }
