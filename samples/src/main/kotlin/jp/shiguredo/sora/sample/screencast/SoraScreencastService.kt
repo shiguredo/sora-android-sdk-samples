@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.provider.Settings
 import android.view.LayoutInflater
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -44,6 +45,36 @@ class SoraScreencastService : Service() {
          */
         const val ACTION_SCREENCAST_STOPPED = "jp.shiguredo.sora.sample.ACTION_SCREENCAST_STOPPED"
 
+        /**
+         * 配信開始の準備が完了したことを接続設定画面に通知するアクションです。
+         */
+        const val ACTION_SCREENCAST_STARTED = "jp.shiguredo.sora.sample.ACTION_SCREENCAST_STARTED"
+
+        /**
+         * 配信開始に失敗したことを接続設定画面に通知するアクションです。
+         */
+        const val ACTION_SCREENCAST_START_FAILED = "jp.shiguredo.sora.sample.ACTION_SCREENCAST_START_FAILED"
+
+        /**
+         * 配信開始の失敗理由を格納する extra のキーです。
+         */
+        const val EXTRA_START_FAILURE_REASON = "jp.shiguredo.sora.sample.EXTRA_START_FAILURE_REASON"
+
+        /**
+         * オーバーレイ権限が無いために配信を開始できなかったことを表す失敗理由です。
+         */
+        const val START_FAILURE_REASON_PERMISSION = "permission"
+
+        /**
+         * 上記以外の理由で配信を開始できなかったことを表す失敗理由です。
+         */
+        const val START_FAILURE_REASON_UNKNOWN = "unknown"
+
+        /**
+         * 画面共有の許可操作がキャンセルされたことを表す失敗理由です。
+         */
+        const val START_FAILURE_REASON_CANCELED = "canceled"
+
         private var running = false
 
         fun isRunning() = running
@@ -60,6 +91,7 @@ class SoraScreencastService : Service() {
     private var capturing = false
     private val mainHandler = Handler(Looper.getMainLooper())
     private var isClosing = false
+    private var isAborting = false
 
     private val channelListener =
         object : SoraMediaChannel.Listener {
@@ -102,13 +134,17 @@ class SoraScreencastService : Service() {
         startId: Int,
     ): Int {
         // 同じ Service インスタンスへの二重開始は受け付けない
-        if (SoraScreencastService.running || isClosing) {
+        if (SoraScreencastService.running || isClosing || isAborting) {
             SoraLogger.w(TAG, "service is already running or closing")
+            if (SoraScreencastService.running) {
+                sendStartedBroadcast()
+            } else {
+                sendStartFailedBroadcast(START_FAILURE_REASON_UNKNOWN)
+            }
             return Service.START_NOT_STICKY
         }
         SoraScreencastService.running = true
 
-        egl = EglBase.create()
         req =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 intent.getParcelableExtra("SCREENCAST_REQUEST", ScreencastRequest::class.java)
@@ -118,18 +154,74 @@ class SoraScreencastService : Service() {
             }
         if (req == null) {
             SoraLogger.w(TAG, "request not found")
-            SoraScreencastService.running = false
-            stopSelf()
-            return Service.START_NOT_STICKY
+            return failStart(START_FAILURE_REASON_UNKNOWN)
         }
 
-        setupUI()
-        startNotification(startId)
-        // 配信する画面を起動する
-        launchActivity()
-        openChannel()
+        if (!Settings.canDrawOverlays(this)) {
+            SoraLogger.w(TAG, "overlay permission is not granted")
+            return failStart(START_FAILURE_REASON_PERMISSION)
+        }
+
+        val uiReady =
+            try {
+                setupUI()
+            } catch (e: Exception) {
+                SoraLogger.w(TAG, "failed to setup overlay UI", e)
+                false
+            }
+        if (!uiReady) {
+            return failStart(START_FAILURE_REASON_UNKNOWN)
+        }
+
+        egl = EglBase.create()
+
+        try {
+            startNotification(startId)
+            openChannel()
+            // 配信する画面を起動する
+            if (!launchActivity()) {
+                return failStart(START_FAILURE_REASON_UNKNOWN)
+            }
+        } catch (e: Exception) {
+            SoraLogger.w(TAG, "failed to start screencast", e)
+            return failStart(START_FAILURE_REASON_UNKNOWN)
+        }
+
+        sendStartedBroadcast()
 
         return START_NOT_STICKY
+    }
+
+    private fun failStart(reason: String): Int {
+        sendStartFailedBroadcast(reason)
+        isAborting = true
+        SoraScreencastService.running = false
+        stopSelf()
+        return Service.START_NOT_STICKY
+    }
+
+    private fun sendStartedBroadcast() {
+        sendScreencastBroadcast(ACTION_SCREENCAST_STARTED)
+    }
+
+    private fun sendStartFailedBroadcast(reason: String) {
+        sendScreencastBroadcast(ACTION_SCREENCAST_START_FAILED, reason)
+    }
+
+    private fun sendStoppedBroadcast() {
+        sendScreencastBroadcast(ACTION_SCREENCAST_STOPPED)
+    }
+
+    private fun sendScreencastBroadcast(
+        action: String,
+        failureReason: String? = null,
+    ) {
+        val intent = Intent(action)
+        intent.setPackage(applicationContext.packageName)
+        if (failureReason != null) {
+            intent.putExtra(EXTRA_START_FAILURE_REASON, failureReason)
+        }
+        sendBroadcast(intent)
     }
 
     private fun startNotification(startId: Int) {
@@ -161,7 +253,7 @@ class SoraScreencastService : Service() {
         return notificationChannelId
     }
 
-    private fun setupUI() {
+    private fun setupUI(): Boolean {
         val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         binding = ScreencastServiceBinding.inflate(inflater)
@@ -177,20 +269,24 @@ class SoraScreencastService : Service() {
         binding!!.toggleMutedButton.setOnClickListener { toggleMuted() }
         binding!!.closeChannelButton.setOnClickListener { closeChannel() }
 
-        uiContainer = ScreencastUIContainer(this, binding!!.root)
+        val container = ScreencastUIContainer(this, binding!!.root)
+        uiContainer = container
+        return container.isAdded
     }
 
     /**
      * 配信画面を起動します。配信開始時と、オーバーレイの起動ボタンから呼び出されます。
      */
-    private fun launchActivity() {
-        val intent = createBoundActivityIntent() ?: return
+    private fun launchActivity(): Boolean {
+        val intent = createBoundActivityIntent() ?: return false
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        try {
+        return try {
             startActivity(intent)
             SoraLogger.d(TAG, "launchActivity")
+            true
         } catch (e: Exception) {
-            SoraLogger.w(TAG, "failed to launch activity: ${e.message}")
+            SoraLogger.w(TAG, "failed to launch activity", e)
+            false
         }
     }
 
@@ -333,9 +429,7 @@ class SoraScreencastService : Service() {
             isClosing = true
             SoraLogger.d(TAG, "closeChannel")
             SoraScreencastService.running = false
-            val stoppedIntent = Intent(ACTION_SCREENCAST_STOPPED)
-            stoppedIntent.setPackage(applicationContext.packageName)
-            sendBroadcast(stoppedIntent)
+            sendStoppedBroadcast()
             mediaChannel?.disconnect()
             mediaChannel = null
             stopCapturer()

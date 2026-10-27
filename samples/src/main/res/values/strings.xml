@@ -6,6 +6,10 @@
 
     <string name="screencast_connect">接続する</string>
 
+    <string name="screencast_overlay_permission_required">他のアプリの上に重ねて表示する権限が必要です</string>
+
+    <string name="screencast_start_failed">配信を開始できませんでした</string>
+
     <string name="screencast_game_hint">画面をタップすると箱が落下します。</string>
 
     <string name="screencast_share_app_hint_api36">「%1$s」をタップした後に表示される確認画面で「1 個のアプリを共有」を選択して「次へ」をタップし、次の画面のアプリ一覧から「%2$s」を選択してください。</string>
