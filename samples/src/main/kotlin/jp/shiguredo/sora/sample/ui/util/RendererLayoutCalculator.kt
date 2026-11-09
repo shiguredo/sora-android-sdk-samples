@@ -1,23 +1,19 @@
 package jp.shiguredo.sora.sample.ui.util
 
 import android.view.View
-import android.view.ViewGroup
 import android.widget.RelativeLayout
 
 /**
  * タイルの配置と、タイル内に表示する映像矩形を計算する。
  *
- * 格子サイズはコンストラクタで与えた値、または [updateContainerSize] で与えた実測値を用いる。
- * [applyGridSizeToContainer] は wrap_content のコンテナ専用で、match_parent のコンテナには使わない。
+ * 格子サイズは [updateContainerSize] で与えたコンテナの実測サイズを用いる。
  */
 class RendererLayoutCalculator(
-    width: Int,
-    height: Int,
+    width: Int = 0,
+    height: Int = 0,
 ) {
     private var width = width
     private var height = height
-    private var originalContainerWidth = ViewGroup.LayoutParams.WRAP_CONTENT
-    private var originalContainerHeight = ViewGroup.LayoutParams.WRAP_CONTENT
     private val views = mutableListOf<View>()
     private val cellRects = mutableMapOf<View, LayoutRect>()
     private val videoSizes = mutableMapOf<View, VideoSize>()
@@ -34,10 +30,7 @@ class RendererLayoutCalculator(
         onNumberOfViewChanged()
     }
 
-    fun isEmpty(): Boolean = views.isEmpty()
-
     // コンテナの実測サイズが変わった場合に格子と映像矩形を再計算する
-    // match_parent のコンテナ専用で、コンテナの LayoutParams は変更しない
     fun updateContainerSize(
         width: Int,
         height: Int,
@@ -74,27 +67,6 @@ class RendererLayoutCalculator(
 
     // まだ解像度を受信していない場合は null を返す
     fun getVideoSize(view: View): VideoSize? = videoSizes[view]
-
-    // タイル内の映像矩形に合わせて子ビューのサイズを変えると、wrap_content のコンテナが縮むため
-    // タイル格子全体のサイズをコンテナに設定する
-    fun applyGridSizeToContainer(container: View) {
-        val params = container.layoutParams
-        if (params.width != width || params.height != height) {
-            originalContainerWidth = params.width
-            originalContainerHeight = params.height
-        }
-        params.width = width
-        params.height = height
-        container.layoutParams = params
-    }
-
-    // 映像が無くなった場合はコンテナを applyGridSizeToContainer より前のサイズに戻す
-    fun resetContainerSize(container: View) {
-        val params = container.layoutParams
-        params.width = originalContainerWidth
-        params.height = originalContainerHeight
-        container.layoutParams = params
-    }
 
     private fun onNumberOfViewChanged() {
         val count = views.size

@@ -25,7 +25,6 @@ import jp.shiguredo.sora.sample.facade.SoraVideoChannel
 import jp.shiguredo.sora.sample.option.SoraFrameSize
 import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sample.ui.util.RendererLayoutCalculator
-import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
@@ -767,11 +766,7 @@ class RpcChatActivityUI(
         activity.setContentView(binding.root)
         binding.channelNameText.text = channelName
 
-        this.renderersLayoutCalculator =
-            RendererLayoutCalculator(
-                width = SoraScreenUtil.size(activity).x - dp2px(20 * 2),
-                height = SoraScreenUtil.size(activity).y - dp2px(20 * 2 + 100),
-            )
+        this.renderersLayoutCalculator = RendererLayoutCalculator()
 
         // rendererContainer は match_parent のため、実際にレイアウトされたサイズで格子を計算する
         binding.rendererContainer.addOnLayoutChangeListener { _, left, top, right, bottom, _, _, _, _ ->
