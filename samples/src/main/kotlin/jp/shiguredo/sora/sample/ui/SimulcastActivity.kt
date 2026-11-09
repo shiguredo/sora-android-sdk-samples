@@ -410,6 +410,15 @@ class SimulcastActivity : AppCompatActivity() {
                 ui?.removeRenderer(renderer)
             }
 
+            override fun onFrameResolutionChanged(
+                channel: SoraVideoChannel,
+                renderer: SurfaceViewRenderer,
+                width: Int,
+                height: Int,
+            ) {
+                ui?.updateVideoSize(renderer, width, height)
+            }
+
             override fun onAttendeesCountUpdated(
                 channel: SoraVideoChannel,
                 attendees: ChannelAttendeesCount,
@@ -576,6 +585,10 @@ class SimulcastActivityUI(
     }
 
     internal fun addRenderer(renderer: SurfaceViewRenderer) {
+        if (renderersLayoutCalculator.isEmpty()) {
+            // レターボックス化で子ビューのサイズが変わってもコンテナが縮まないようにする
+            renderersLayoutCalculator.applyGridSizeToContainer(binding.rendererContainer)
+        }
         renderer.layoutParams = rendererLayoutParams()
         binding.rendererContainer.addView(renderer)
         renderersLayoutCalculator.add(renderer)
@@ -584,6 +597,18 @@ class SimulcastActivityUI(
     internal fun removeRenderer(renderer: SurfaceViewRenderer) {
         binding.rendererContainer.removeView(renderer)
         renderersLayoutCalculator.remove(renderer)
+        if (renderersLayoutCalculator.isEmpty()) {
+            renderersLayoutCalculator.resetContainerSize(binding.rendererContainer)
+        }
+    }
+
+    // main thread から呼ぶこと
+    internal fun updateVideoSize(
+        renderer: SurfaceViewRenderer,
+        width: Int,
+        height: Int,
+    ) {
+        renderersLayoutCalculator.setVideoSize(renderer, width, height)
     }
 
     internal fun showMicOnButton() {

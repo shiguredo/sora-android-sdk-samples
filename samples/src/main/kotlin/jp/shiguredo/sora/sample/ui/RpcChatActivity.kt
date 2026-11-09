@@ -1,8 +1,6 @@
 package jp.shiguredo.sora.sample.ui
 
 import android.content.Context
-import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 import android.graphics.Color
 import android.media.AudioManager
 import android.os.Build
@@ -36,9 +34,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.webrtc.SurfaceViewRenderer
-import org.webrtc.VideoFrame
-import org.webrtc.VideoSink
-import org.webrtc.VideoTrack
 import java.util.UUID
 
 class RpcChatActivity : AppCompatActivity() {
@@ -114,15 +109,10 @@ class RpcChatActivity : AppCompatActivity() {
     private var ui: RpcChatActivityUI? = null
     private var channel: SoraVideoChannel? = null
 
-    // 解像度監視用
-    private var lastResolutionWidth: Int? = null
-    private var lastResolutionHeight: Int? = null
-    private var remoteVideoTrack: VideoTrack? = null
-    private var resolutionMonitorSink: ResolutionMonitorSink? = null
-    private var resolutionMonitorRetryCount = 0
+    // 解像度表示用
+    private var resolutionDisplayRenderer: SurfaceViewRenderer? = null
 
     private val mainHandler = Handler(Looper.getMainLooper())
-    private val resolutionMonitorRetryRunnable = Runnable { tryAttachResolutionMonitor() }
 
     // マイク状態の追跡
     private var isAudioMuted = false
@@ -403,8 +393,9 @@ class RpcChatActivity : AppCompatActivity() {
             ) {
                 Log.d(TAG, "onRemoveRemoteRenderer")
                 ui?.removeRenderer(renderer)
-                detachResolutionMonitor()
-                tryAttachResolutionMonitor()
+                // 削除後は残りのストリームの反復順で先頭を表示対象にする
+                resolutionDisplayRenderer = channel.getRemoteVideoRenderer()
+                ui?.updateResolutionDisplay(resolutionDisplayRenderer)
             }
 
             override fun onAddRemoteRenderer(
@@ -413,9 +404,23 @@ class RpcChatActivity : AppCompatActivity() {
             ) {
                 Log.d(TAG, "onAddRemoteRenderer")
                 ui?.addRenderer(renderer)
-                tryAttachResolutionMonitor()
-                // 解像度情報を初期表示
-                ui?.updateResolutionDisplay("Resolution: 受信中...")
+                if (resolutionDisplayRenderer == null) {
+                    // ストリームの追加時は表示対象を切り替えない
+                    resolutionDisplayRenderer = channel.getRemoteVideoRenderer()
+                }
+                ui?.updateResolutionDisplay(resolutionDisplayRenderer)
+            }
+
+            override fun onFrameResolutionChanged(
+                channel: SoraVideoChannel,
+                renderer: SurfaceViewRenderer,
+                width: Int,
+                height: Int,
+            ) {
+                ui?.updateVideoSize(renderer, width, height)
+                if (resolutionDisplayRenderer === renderer) {
+                    ui?.updateResolutionDisplay(renderer)
+                }
             }
 
             override fun onAttendeesCountUpdated(
@@ -528,9 +533,9 @@ class RpcChatActivity : AppCompatActivity() {
 
     private fun disconnectChannel() {
         Log.d(TAG, "disconnectChannel")
-        detachResolutionMonitor()
         channel?.dispose()
         channel = null
+        resolutionDisplayRenderer = null
     }
 
     internal fun handleToggleMute() {
@@ -582,51 +587,6 @@ class RpcChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun tryAttachResolutionMonitor() {
-        if (resolutionMonitorSink != null) {
-            return
-        }
-
-        try {
-            val track = channel?.getRemoteVideoTrack()
-            if (track == null) {
-                // onAddRemoteRenderer 呼び出し時点では track 未登録のことがあるため短時間だけ再試行する
-                if (resolutionMonitorRetryCount < 20) {
-                    resolutionMonitorRetryCount += 1
-                    mainHandler.postDelayed(resolutionMonitorRetryRunnable, 100L)
-                }
-                return
-            }
-
-            remoteVideoTrack = track
-            val monitorSink = ResolutionMonitorSink(::updateRemoteResolution)
-            resolutionMonitorSink = monitorSink
-            track.addSink(monitorSink)
-            resolutionMonitorRetryCount = 0
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to attach resolution monitor", e)
-        }
-    }
-
-    private fun detachResolutionMonitor() {
-        try {
-            val track = remoteVideoTrack
-            val sink = resolutionMonitorSink
-            if (track != null && sink != null) {
-                track.removeSink(sink)
-            }
-        } catch (e: Exception) {
-            Log.w(TAG, "Failed to detach resolution monitor", e)
-        } finally {
-            mainHandler.removeCallbacks(resolutionMonitorRetryRunnable)
-            resolutionMonitorRetryCount = 0
-            resolutionMonitorSink = null
-            remoteVideoTrack = null
-            lastResolutionWidth = null
-            lastResolutionHeight = null
-        }
-    }
-
     private fun formatRpcResult(result: SoraVideoChannel.RpcCallResult): String =
         when (result) {
             is SoraVideoChannel.RpcCallResult.Success -> {
@@ -638,19 +598,6 @@ class RpcChatActivity : AppCompatActivity() {
             }
             is SoraVideoChannel.RpcCallResult.Error -> "Error: ${result.message}"
         }
-
-    internal fun updateRemoteResolution(
-        width: Int,
-        height: Int,
-    ) {
-        mainHandler.post {
-            if (lastResolutionWidth != width || lastResolutionHeight != height) {
-                lastResolutionWidth = width
-                lastResolutionHeight = height
-                ui?.updateResolutionDisplay("Resolution: $width x $height")
-            }
-        }
-    }
 
     internal fun handleRequestSimulcastRid(rid: String) {
         val channel = channel ?: return
@@ -825,6 +772,11 @@ class RpcChatActivityUI(
                 width = SoraScreenUtil.size(activity).x - dp2px(20 * 2),
                 height = SoraScreenUtil.size(activity).y - dp2px(20 * 2 + 100),
             )
+
+        // rendererContainer は match_parent のため、実際にレイアウトされたサイズで格子を計算する
+        binding.rendererContainer.addOnLayoutChangeListener { _, left, top, right, bottom, _, _, _, _ ->
+            renderersLayoutCalculator.updateContainerSize(right - left, bottom - top)
+        }
 
         binding.toggleMuteButton.setOnClickListener { activity.handleToggleMute() }
         binding.toggleCameraButton.setOnClickListener { activity.handleToggleCamera() }
@@ -1121,10 +1073,24 @@ class RpcChatActivityUI(
         renderersLayoutCalculator.remove(renderer)
     }
 
-    internal fun updateResolutionDisplay(resolution: String) {
-        activity.runOnUiThread {
-            binding.resolutionText.text = resolution
-        }
+    // main thread から呼ぶこと
+    internal fun updateVideoSize(
+        renderer: SurfaceViewRenderer,
+        width: Int,
+        height: Int,
+    ) {
+        renderersLayoutCalculator.setVideoSize(renderer, width, height)
+    }
+
+    // main thread から呼ぶこと
+    internal fun updateResolutionDisplay(renderer: SurfaceViewRenderer?) {
+        val videoSize = renderer?.let { renderersLayoutCalculator.getVideoSize(it) }
+        binding.resolutionText.text =
+            when {
+                renderer == null -> "Resolution: -"
+                videoSize == null -> "Resolution: 受信中..."
+                else -> "Resolution: ${videoSize.width} x ${videoSize.height}"
+            }
     }
 
     internal fun showMicOnButton() {
@@ -1164,27 +1130,5 @@ class RpcChatActivityUI(
         val margin = dp2px(videoViewMargin)
         params.setMargins(margin, margin, margin, margin)
         return params
-    }
-}
-
-/**
- * ビデオフレームから解像度を抽出するカスタム VideoSink
- */
-class ResolutionMonitorSink(
-    private val onResolutionChanged: (width: Int, height: Int) -> Unit,
-) : VideoSink {
-    private var lastWidth: Int? = null
-    private var lastHeight: Int? = null
-
-    override fun onFrame(frame: VideoFrame) {
-        val width = frame.rotatedWidth
-        val height = frame.rotatedHeight
-
-        // 解像度が変更された場合のみコールバック
-        if (lastWidth != width || lastHeight != height) {
-            lastWidth = width
-            lastHeight = height
-            onResolutionChanged(width, height)
-        }
     }
 }

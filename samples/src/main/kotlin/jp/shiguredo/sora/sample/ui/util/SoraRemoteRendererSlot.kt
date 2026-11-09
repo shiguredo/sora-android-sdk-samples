@@ -4,8 +4,8 @@ import android.content.Context
 import jp.shiguredo.sora.sdk.util.SoraLogger
 import org.webrtc.EglBase
 import org.webrtc.MediaStream
+import org.webrtc.RendererCommon
 import org.webrtc.SurfaceViewRenderer
-import org.webrtc.VideoTrack
 
 // TODO support NUMBER_OF_RENDERERS limitation
 class SoraRemoteRendererSlot(
@@ -21,10 +21,18 @@ class SoraRemoteRendererSlot(
         fun onAddRenderer(renderer: SurfaceViewRenderer)
 
         fun onRemoveRenderer(renderer: SurfaceViewRenderer)
+
+        // onAddRenderer の後に呼ばれる
+        // 映像の表示サイズ (rotation を反映した幅と高さ) が変わった際の通知
+        // libwebrtc のメディアスレッドから呼ばれるため、UI を更新する場合は main thread へポストすること
+        fun onFrameResolutionChanged(
+            renderer: SurfaceViewRenderer,
+            width: Int,
+            height: Int,
+        )
     }
 
     val workingRenderers = HashMap<String, SurfaceViewRenderer>()
-    val workingTracks = HashMap<String, VideoTrack>()
 
     fun onAddRemoteStream(ms: MediaStream) {
         SoraLogger.d(TAG, "onAddRemoteStream:${ms.id}")
@@ -34,12 +42,10 @@ class SoraRemoteRendererSlot(
             return
         }
         val renderer = createSurfaceViewRenderer()
+        workingRenderers.put(ms.id, renderer)
         listener?.onAddRenderer(renderer)
 
         val track = ms.videoTracks[0]
-        workingRenderers.put(ms.id, renderer)
-        workingTracks.put(ms.id, track)
-
         track.setEnabled(true)
         track.addSink(renderer)
     }
@@ -56,17 +62,31 @@ class SoraRemoteRendererSlot(
                 it.release()
             }
             workingRenderers.remove(msid)
-            workingTracks.remove(msid)
         }
     }
 
     fun createSurfaceViewRenderer(): SurfaceViewRenderer {
         val renderer = SurfaceViewRenderer(context)
-        renderer.init(eglContext, null)
+        renderer.init(
+            eglContext,
+            object : RendererCommon.RendererEvents {
+                override fun onFirstFrameRendered() {}
+
+                override fun onFrameResolutionChanged(
+                    videoWidth: Int,
+                    videoHeight: Int,
+                    rotation: Int,
+                ) {
+                    val size = VideoSize.fromRotation(videoWidth, videoHeight, rotation)
+                    listener?.onFrameResolutionChanged(renderer, size.width, size.height)
+                }
+            },
+        )
         return renderer
     }
 
-    fun getFirstWorkingTrack(): VideoTrack? = workingTracks.values.firstOrNull()
+    // workingRenderers の反復順で最初のストリームに対応するレンダラーを返す
+    fun getFirstWorkingRenderer(): SurfaceViewRenderer? = workingRenderers.values.firstOrNull()
 
     fun dispose() {
         SoraLogger.d(TAG, "dispose")
@@ -75,7 +95,6 @@ class SoraRemoteRendererSlot(
             it.release()
         }
         workingRenderers.clear()
-        workingTracks.clear()
         listener = null
     }
 }

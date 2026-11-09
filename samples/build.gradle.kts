@@ -119,6 +119,8 @@ dependencies {
         // external dependency
         implementation(libs.sora.android.sdk)
     }
+
+    testImplementation(libs.junit)
 }
 
 configurations.all {
