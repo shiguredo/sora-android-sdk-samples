@@ -130,6 +130,14 @@ class SoraVideoChannel(
             renderer: SurfaceViewRenderer,
         ) {}
 
+        // main thread で呼ばれる。width と height は rotation を適用した表示サイズ
+        fun onFrameResolutionChanged(
+            channel: SoraVideoChannel,
+            renderer: SurfaceViewRenderer,
+            width: Int,
+            height: Int,
+        ) {}
+
         fun onAddLocalRenderer(
             channel: SoraVideoChannel,
             renderer: SurfaceViewRenderer,
@@ -356,6 +364,17 @@ class SoraVideoChannel(
             override fun onRemoveRenderer(renderer: SurfaceViewRenderer) {
                 handler.post {
                     listener?.onRemoveRemoteRenderer(this@SoraVideoChannel, renderer)
+                }
+            }
+
+            override fun onFrameResolutionChanged(
+                renderer: SurfaceViewRenderer,
+                width: Int,
+                height: Int,
+            ) {
+                // libwebrtc のメディアスレッドから呼ばれるため main thread へポストする
+                handler.post {
+                    listener?.onFrameResolutionChanged(this@SoraVideoChannel, renderer, width, height)
                 }
             }
         }
@@ -710,8 +729,8 @@ class SoraVideoChannel(
 
     fun isCameraHardMuted(): Boolean = cameraHardMuted
 
-    // リモートビデオトラック取得（解像度監視用）
-    fun getRemoteVideoTrack(): VideoTrack? = remoteRenderersSlot?.getFirstWorkingTrack()
+    // リモート映像の表示対象となるレンダラー取得（解像度表示用）
+    fun getRemoteVideoRenderer(): SurfaceViewRenderer? = remoteRenderersSlot?.getFirstWorkingRenderer()
 
     fun disconnect() {
         stopCapturer()

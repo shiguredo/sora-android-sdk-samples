@@ -29,7 +29,6 @@ import jp.shiguredo.sora.sample.option.SoraFrameSize
 import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sample.ui.util.MicMuteController
 import jp.shiguredo.sora.sample.ui.util.RendererLayoutCalculator
-import jp.shiguredo.sora.sample.ui.util.SoraScreenUtil
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.channel.option.SoraVideoOption
@@ -413,6 +412,15 @@ class VideoChatRoomActivity : AppCompatActivity() {
                 ui?.removeRenderer(renderer)
             }
 
+            override fun onFrameResolutionChanged(
+                channel: SoraVideoChannel,
+                renderer: SurfaceViewRenderer,
+                width: Int,
+                height: Int,
+            ) {
+                ui?.updateVideoSize(renderer, width, height)
+            }
+
             override fun onAttendeesCountUpdated(
                 channel: SoraVideoChannel,
                 attendees: ChannelAttendeesCount,
@@ -552,11 +560,11 @@ class VideoChatRoomActivityUI(
         binding = ActivityVideoChatRoomBinding.inflate(activity.layoutInflater)
         activity.setContentView(binding.root)
         binding.channelNameText.text = channelName
-        this.renderersLayoutCalculator =
-            RendererLayoutCalculator(
-                width = SoraScreenUtil.size(activity).x - dp2px(20 * 2),
-                height = SoraScreenUtil.size(activity).y - dp2px(20 * 2 + 100),
-            )
+        this.renderersLayoutCalculator = RendererLayoutCalculator()
+        // rendererContainer は実際の表示領域のサイズになるため、レイアウト後に格子サイズを更新する
+        binding.rendererContainer.addOnLayoutChangeListener { _, left, top, right, bottom, _, _, _, _ ->
+            renderersLayoutCalculator.updateContainerSize(right - left, bottom - top)
+        }
         binding.toggleMuteButton.setOnClickListener { activity.toggleMuted() }
         binding.toggleCameraButton.setOnClickListener { activity.toggleCamera() }
         binding.switchCameraButton.setOnClickListener { activity.switchCamera() }
@@ -584,6 +592,15 @@ class VideoChatRoomActivityUI(
     internal fun removeRenderer(renderer: SurfaceViewRenderer) {
         binding.rendererContainer.removeView(renderer)
         renderersLayoutCalculator.remove(renderer)
+    }
+
+    // main thread から呼ぶこと
+    internal fun updateVideoSize(
+        renderer: SurfaceViewRenderer,
+        width: Int,
+        height: Int,
+    ) {
+        renderersLayoutCalculator.setVideoSize(renderer, width, height)
     }
 
     internal fun showMicOnButton() {

@@ -3,11 +3,20 @@ package jp.shiguredo.sora.sample.ui.util
 import android.view.View
 import android.widget.RelativeLayout
 
+/**
+ * タイルの配置と、タイル内に表示する映像矩形を計算する。
+ *
+ * 格子サイズは [updateContainerSize] で与えたコンテナの実測サイズを用いる。
+ */
 class RendererLayoutCalculator(
-    val width: Int,
-    val height: Int,
+    width: Int = 0,
+    height: Int = 0,
 ) {
-    private var views = mutableListOf<View>()
+    private var width = width
+    private var height = height
+    private val views = mutableListOf<View>()
+    private val cellRects = mutableMapOf<View, LayoutRect>()
+    private val videoSizes = mutableMapOf<View, VideoSize>()
 
     fun add(view: View) {
         views.add(view)
@@ -16,10 +25,50 @@ class RendererLayoutCalculator(
 
     fun remove(view: View) {
         views.remove(view)
+        cellRects.remove(view)
+        videoSizes.remove(view)
         onNumberOfViewChanged()
     }
 
-    fun onNumberOfViewChanged() {
+    // コンテナの実測サイズが変わった場合に格子と映像矩形を再計算する
+    fun updateContainerSize(
+        width: Int,
+        height: Int,
+    ) {
+        if (width <= 0 || height <= 0) {
+            return
+        }
+        if (this.width == width && this.height == height) {
+            return
+        }
+        this.width = width
+        this.height = height
+        onNumberOfViewChanged()
+    }
+
+    // 映像の解像度を設定し、そのビューに表示する映像矩形を再計算する
+    fun setVideoSize(
+        view: View,
+        width: Int,
+        height: Int,
+    ) {
+        if (width <= 0 || height <= 0 || !views.contains(view)) {
+            return
+        }
+
+        val current = videoSizes[view]
+        if (current != null && current.width == width && current.height == height) {
+            return
+        }
+
+        videoSizes[view] = VideoSize(width, height)
+        layoutVideoRect(view)
+    }
+
+    // まだ解像度を受信していない場合は null を返す
+    fun getVideoSize(view: View): VideoSize? = videoSizes[view]
+
+    private fun onNumberOfViewChanged() {
         val count = views.size
         when (count) {
             0 -> {}
@@ -70,11 +119,19 @@ class RendererLayoutCalculator(
         x: Int,
         y: Int,
     ) {
+        cellRects[view] = LayoutRect(x, y, w, h)
+        layoutVideoRect(view)
+    }
+
+    private fun layoutVideoRect(view: View) {
+        val cell = cellRects[view] ?: return
+        val videoSize = videoSizes[view]
+        val rect = if (videoSize == null) cell else VideoRectCalculator.calculateInCell(cell, videoSize)
         val params = view.layoutParams as RelativeLayout.LayoutParams
-        params.width = w
-        params.height = h
-        params.leftMargin = x
-        params.topMargin = y
+        params.width = rect.width
+        params.height = rect.height
+        params.leftMargin = rect.left
+        params.topMargin = rect.top
         view.layoutParams = params
     }
 
