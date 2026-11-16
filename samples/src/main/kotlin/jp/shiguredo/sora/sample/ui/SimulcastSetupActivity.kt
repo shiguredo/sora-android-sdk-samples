@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import jp.shiguredo.sora.sample.databinding.ActivitySimulcastSetupBinding
+import jp.shiguredo.sora.sample.option.SoraBitRateOptions
 import jp.shiguredo.sora.sample.option.SoraFrameSize
 
 class SimulcastSetupActivity : AppCompatActivity() {
@@ -19,21 +20,10 @@ class SimulcastSetupActivity : AppCompatActivity() {
     private val initialCameraOptions = listOf("有効", "無効")
     private val audioCodecOptions = listOf("未指定", "OPUS")
     private val audioEnabledOptions = listOf("有効", "無効")
-    private val audioBitRateOptions =
-        listOf(
-            "未指定",
-            "8",
-            "16",
-            "24",
-            "32",
-            "64",
-            "96",
-            "128",
-            "256",
-        )
+    private val audioBitRateOptions = SoraBitRateOptions.audio
     private val audioStereoOptions = listOf("モノラル", "ステレオ")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
-    private val videoBitRateOptions = listOf("200", "500", "700", "1200", "2500", "4000", "5000", "10000", "15000", "20000", "30000")
+    private val videoBitRateOptions = SoraBitRateOptions.video
 
     private val videoSizeOptions = SoraFrameSize.landscape.keys.toList()
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
@@ -95,7 +85,11 @@ class SimulcastSetupActivity : AppCompatActivity() {
                 DropdownConfig(binding.audioBitRateSelection.spinner, audioBitRateOptions),
                 DropdownConfig(binding.audioStereoSelection.spinner, audioStereoOptions),
                 DropdownConfig(binding.roleSelection.spinner, roleOptions),
-                DropdownConfig(binding.videoBitRateSelection.spinner, videoBitRateOptions, defaultIndex = 6),
+                DropdownConfig(
+                    binding.videoBitRateSelection.spinner,
+                    videoBitRateOptions,
+                    defaultIndex = videoBitRateOptions.indexOf("5000"),
+                ),
                 DropdownConfig(binding.videoSizeSelection.spinner, videoSizeOptions, defaultIndex = 5),
                 DropdownConfig(binding.fpsSelection.spinner, fpsOptions),
                 DropdownConfig(binding.resolutionChangeSelection.spinner, resolutionChangeOptions),

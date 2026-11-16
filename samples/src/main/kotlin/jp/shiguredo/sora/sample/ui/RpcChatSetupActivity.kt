@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import jp.shiguredo.sora.sample.databinding.ActivityRpcChatSetupBinding
+import jp.shiguredo.sora.sample.option.SoraBitRateOptions
 import jp.shiguredo.sora.sample.option.SoraFrameSize
 
 class RpcChatSetupActivity : AppCompatActivity() {
@@ -25,36 +26,12 @@ class RpcChatSetupActivity : AppCompatActivity() {
     // Common settings
     private val videoCodecOptions = listOf("未指定", "VP8", "VP9", "H264", "H265", "AV1")
     private val audioCodecOptions = listOf("未指定", "OPUS")
-    private val audioBitRateOptions =
-        listOf(
-            "未指定",
-            "8",
-            "16",
-            "24",
-            "32",
-            "64",
-            "96",
-            "128",
-            "256",
-        )
+    private val audioBitRateOptions = SoraBitRateOptions.audio
     private val videoEnabledOptions = listOf("有効", "無効")
     private val videoSourceOptions = listOf("カメラ", "ダミー映像")
     private val audioEnabledOptions = listOf("有効", "無効")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
-    private val videoBitRateOptions =
-        listOf(
-            "200",
-            "500",
-            "700",
-            "1200",
-            "2500",
-            "4000",
-            "5000",
-            "10000",
-            "15000",
-            "20000",
-            "30000",
-        )
+    private val videoBitRateOptions = SoraBitRateOptions.video
     private val videoSizeOptions = SoraFrameSize.landscape.keys.toList()
     private val fpsOptions = listOf("30", "10", "15", "20", "24", "60")
     private val resolutionChangeOptions = listOf("未指定", "MAINTAIN_RESOLUTION", "MAINTAIN_FRAMERATE", "BALANCED", "DISABLED")
@@ -127,7 +104,11 @@ class RpcChatSetupActivity : AppCompatActivity() {
                 DropdownConfig(binding.audioCodecSelection.spinner, audioCodecOptions),
                 DropdownConfig(binding.audioEnabledSelection.spinner, audioEnabledOptions),
                 DropdownConfig(binding.audioBitRateSelection.spinner, audioBitRateOptions),
-                DropdownConfig(binding.videoBitRateSelection.spinner, videoBitRateOptions, defaultIndex = 1),
+                DropdownConfig(
+                    binding.videoBitRateSelection.spinner,
+                    videoBitRateOptions,
+                    defaultIndex = videoBitRateOptions.indexOf("500"),
+                ),
                 DropdownConfig(binding.videoSizeSelection.spinner, videoSizeOptions, defaultIndex = 5),
                 DropdownConfig(binding.fpsSelection.spinner, fpsOptions),
                 DropdownConfig(binding.resolutionChangeSelection.spinner, resolutionChangeOptions),

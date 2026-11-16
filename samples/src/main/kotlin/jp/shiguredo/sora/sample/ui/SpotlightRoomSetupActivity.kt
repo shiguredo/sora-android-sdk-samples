@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import jp.shiguredo.sora.sample.databinding.ActivitySpotlightRoomSetupBinding
+import jp.shiguredo.sora.sample.option.SoraBitRateOptions
 import jp.shiguredo.sora.sample.option.SoraFrameSize
 
 class SpotlightRoomSetupActivity : AppCompatActivity() {
@@ -16,18 +17,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     private val spotlightNumberOptions = listOf("未指定", "1", "2", "3", "4", "5", "6", "7", "8")
     private val videoCodecOptions = listOf("未指定", "VP8", "VP9", "H264", "H265", "AV1")
     private val audioCodecOptions = listOf("未指定", "OPUS")
-    private val audioBitRateOptions =
-        listOf(
-            "未指定",
-            "8",
-            "16",
-            "24",
-            "32",
-            "64",
-            "96",
-            "128",
-            "256",
-        )
+    private val audioBitRateOptions = SoraBitRateOptions.audio
     private val videoEnabledOptions = listOf("有効", "無効")
     private val videoSourceOptions = listOf("カメラ", "ダミー映像")
     private val audioEnabledOptions = listOf("有効", "無効")
@@ -35,20 +25,7 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
     private val spotlightFocusRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
     private val spotlightUnfocusRidOptions = listOf("未指定", "none", "r0", "r1", "r2")
     private val simulcastEnabledOptions = listOf("有効", "無効")
-    private val videoBitRateOptions =
-        listOf(
-            "500",
-            "200",
-            "700",
-            "1200",
-            "2500",
-            "4000",
-            "5000",
-            "10000",
-            "15000",
-            "20000",
-            "30000",
-        )
+    private val videoBitRateOptions = SoraBitRateOptions.video
     private val videoSizeOptions = SoraFrameSize.landscape.keys.toList()
     private val resolutionChangeOptions = listOf("未指定", "MAINTAIN_RESOLUTION", "MAINTAIN_FRAMERATE", "BALANCED", "DISABLED")
     private val resolutionAdjustmentOptions = listOf("未指定", "16", "8", "4", "2", "無効")
@@ -111,7 +88,11 @@ class SpotlightRoomSetupActivity : AppCompatActivity() {
                 DropdownConfig(binding.audioCodecSelection.spinner, audioCodecOptions),
                 DropdownConfig(binding.audioEnabledSelection.spinner, audioEnabledOptions),
                 DropdownConfig(binding.audioBitRateSelection.spinner, audioBitRateOptions),
-                DropdownConfig(binding.videoBitRateSelection.spinner, videoBitRateOptions),
+                DropdownConfig(
+                    binding.videoBitRateSelection.spinner,
+                    videoBitRateOptions,
+                    defaultIndex = videoBitRateOptions.indexOf("500"),
+                ),
                 DropdownConfig(binding.videoSizeSelection.spinner, videoSizeOptions, defaultIndex = 3),
                 DropdownConfig(binding.resolutionChangeSelection.spinner, resolutionChangeOptions),
                 DropdownConfig(binding.resolutionAdjustmentSelection.spinner, resolutionAdjustmentOptions),

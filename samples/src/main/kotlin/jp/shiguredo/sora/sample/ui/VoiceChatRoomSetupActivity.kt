@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import jp.shiguredo.sora.sample.databinding.ActivityVoiceChatRoomSetupBinding
+import jp.shiguredo.sora.sample.option.SoraBitRateOptions
 
 class VoiceChatRoomSetupActivity : AppCompatActivity() {
     companion object {
@@ -13,18 +14,7 @@ class VoiceChatRoomSetupActivity : AppCompatActivity() {
     }
 
     private val audioCodecOptions = listOf("未指定", "OPUS")
-    private val audioBitRateOptions =
-        listOf(
-            "未指定",
-            "8",
-            "16",
-            "24",
-            "32",
-            "64",
-            "96",
-            "128",
-            "256",
-        )
+    private val audioBitRateOptions = SoraBitRateOptions.audio
 
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
     private val dataChannelSignalingOptions = listOf("未指定", "無効", "有効")

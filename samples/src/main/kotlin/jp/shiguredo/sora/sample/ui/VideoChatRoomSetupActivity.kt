@@ -7,6 +7,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import jp.shiguredo.sora.sample.databinding.ActivityVideoChatRoomSetupBinding
+import jp.shiguredo.sora.sample.option.SoraBitRateOptions
 import jp.shiguredo.sora.sample.option.SoraFrameSize
 
 class VideoChatRoomSetupActivity : AppCompatActivity() {
@@ -19,38 +20,10 @@ class VideoChatRoomSetupActivity : AppCompatActivity() {
     private val videoSourceOptions = listOf("カメラ", "ダミー映像")
     private val audioCodecOptions = listOf("未指定", "OPUS")
     private val audioEnabledOptions = listOf("有効", "無効")
-    private val audioBitRateOptions =
-        listOf(
-            "未指定",
-            "8",
-            "16",
-            "24",
-            "32",
-            "64",
-            "96",
-            "128",
-            "256",
-        )
+    private val audioBitRateOptions = SoraBitRateOptions.audio
     private val audioStereoOptions = listOf("モノラル", "ステレオ")
     private val roleOptions = listOf("SENDRECV", "SENDONLY", "RECVONLY")
-    private val videoBitRateOptions =
-        listOf(
-            "未指定",
-            "100",
-            "300",
-            "500",
-            "800",
-            "1000",
-            "1500",
-            "2000",
-            "2500",
-            "3000",
-            "5000",
-            "10000",
-            "15000",
-            "20000",
-            "30000",
-        )
+    private val videoBitRateOptions = SoraBitRateOptions.video
     private val videoSizeOptions = SoraFrameSize.all.keys.toList()
     private val vp9ProfileIdOptions = listOf("未指定", "0", "1", "2", "3")
     private val av1ProfileOptions = listOf("未指定", "0", "1", "2")
