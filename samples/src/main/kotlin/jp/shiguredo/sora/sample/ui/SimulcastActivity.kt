@@ -28,6 +28,7 @@ import jp.shiguredo.sora.sample.facade.SoraVideoChannel
 import jp.shiguredo.sora.sample.option.SoraFrameSize
 import jp.shiguredo.sora.sample.option.SoraRoleType
 import jp.shiguredo.sora.sample.ui.util.MicMuteController
+import jp.shiguredo.sora.sample.ui.util.MuteStateMessages
 import jp.shiguredo.sora.sample.ui.util.RendererLayoutCalculator
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
@@ -430,15 +431,26 @@ class SimulcastActivity : AppCompatActivity() {
                 cameraHardMuted: Boolean,
                 cameraSoftMuted: Boolean,
             ) {
-                if (cameraHardMuted) {
-                    cameraState = CameraState.HARD_MUTED
-                    ui?.showCameraOffButton()
-                } else if (cameraSoftMuted) {
-                    cameraState = CameraState.SOFT_MUTED
-                    ui?.showCameraSoftOffButton()
-                } else {
-                    cameraState = CameraState.ON
-                    ui?.showCameraOnButton()
+                val nextState =
+                    when {
+                        cameraHardMuted -> CameraState.HARD_MUTED
+                        cameraSoftMuted -> CameraState.SOFT_MUTED
+                        else -> CameraState.ON
+                    }
+                val stateChanged = nextState != cameraState
+                cameraState = nextState
+                when (nextState) {
+                    CameraState.HARD_MUTED -> ui?.showCameraOffButton()
+                    CameraState.SOFT_MUTED -> ui?.showCameraSoftOffButton()
+                    CameraState.ON -> ui?.showCameraOnButton()
+                }
+                // ハードミュート解除の途中でも同じハードミュート状態が通知されるため、
+                // 状態が変化したときだけ表示する
+                // ただしハードミュートに失敗してソフトミュートへ戻った場合は、
+                // 状態が変わらなくても遷移後の状態を知らせる
+                if (stateChanged || pendingCameraHardMute) {
+                    pendingCameraHardMute = false
+                    ui?.showToastOnUI(MuteStateMessages.camera(cameraHardMuted, cameraSoftMuted))
                 }
             }
         }
@@ -501,9 +513,18 @@ class SimulcastActivity : AppCompatActivity() {
             scope = lifecycleScope,
             setSoftMute = { mute -> channel?.mute(mute) },
             setHardMute = { muted -> setAudioHardMuted(muted) },
-            showMicOn = { ui?.showMicOnButton() },
-            showMicSoft = { ui?.showMicSoftMuteButton() },
-            showMicHard = { ui?.showMicHardMuteButton() },
+            showMicOn = {
+                ui?.showMicOnButton()
+                ui?.showToastOnUI(MuteStateMessages.MIC_ON)
+            },
+            showMicSoft = {
+                ui?.showMicSoftMuteButton()
+                ui?.showToastOnUI(MuteStateMessages.MIC_SOFT_MUTED)
+            },
+            showMicHard = {
+                ui?.showMicHardMuteButton()
+                ui?.showToastOnUI(MuteStateMessages.MIC_HARD_MUTED)
+            },
             log = { message -> Log.d(TAG, message) },
         )
     }
@@ -511,6 +532,9 @@ class SimulcastActivity : AppCompatActivity() {
     private enum class CameraState { ON, SOFT_MUTED, HARD_MUTED }
 
     private var cameraState: CameraState = CameraState.ON
+
+    // ハードミュートの成否を確定状態で判定するためのフラグ
+    private var pendingCameraHardMute = false
 
     internal fun toggleMuted() {
         micMuteController.toggleMuted()
@@ -532,7 +556,10 @@ class SimulcastActivity : AppCompatActivity() {
             }
             CameraState.SOFT_MUTED -> {
                 // ソフトウェアミュート -> ハードウェアミュート
-                channel?.setCameraHardMuted(true)
+                // ハードミュートに失敗すると状態が変わらないため、実行中であることを記録する
+                val currentChannel = channel ?: return
+                pendingCameraHardMute = true
+                currentChannel.setCameraHardMuted(true)
             }
             CameraState.HARD_MUTED -> {
                 // ハードウェアミュート -> ON
@@ -637,6 +664,12 @@ class SimulcastActivityUI(
         binding.toggleCameraButton.setImageDrawable(
             resources.getDrawable(R.drawable.ic_videocam_on_white_48dp, null),
         )
+    }
+
+    internal fun showToastOnUI(message: String) {
+        activity.runOnUiThread {
+            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun dp2px(d: Int): Int = (density * d).toInt()

@@ -24,6 +24,7 @@ import jp.shiguredo.sora.sample.databinding.ActivityRpcChatBinding
 import jp.shiguredo.sora.sample.facade.SoraVideoChannel
 import jp.shiguredo.sora.sample.option.SoraFrameSize
 import jp.shiguredo.sora.sample.option.SoraRoleType
+import jp.shiguredo.sora.sample.ui.util.MuteStateMessages
 import jp.shiguredo.sora.sample.ui.util.RendererLayoutCalculator
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
@@ -434,15 +435,23 @@ class RpcChatActivity : AppCompatActivity() {
                 cameraHardMuted: Boolean,
                 cameraSoftMuted: Boolean,
             ) {
-                if (cameraHardMuted) {
-                    cameraState = CameraState.HARD_MUTED
-                    ui?.showCameraOffButton()
-                } else if (cameraSoftMuted) {
-                    cameraState = CameraState.SOFT_MUTED
-                    ui?.showCameraOffButton()
-                } else {
-                    cameraState = CameraState.ON
-                    ui?.showCameraOnButton()
+                val nextState =
+                    when {
+                        cameraHardMuted -> CameraState.HARD_MUTED
+                        cameraSoftMuted -> CameraState.SOFT_MUTED
+                        else -> CameraState.ON
+                    }
+                val stateChanged = nextState != cameraState
+                cameraState = nextState
+                when (nextState) {
+                    CameraState.HARD_MUTED -> ui?.showCameraOffButton()
+                    CameraState.SOFT_MUTED -> ui?.showCameraOffButton()
+                    CameraState.ON -> ui?.showCameraOnButton()
+                }
+                // ハードミュート解除の途中でも同じハードミュート状態が通知されるため、
+                // 状態が変化したときだけ表示する
+                if (stateChanged) {
+                    ui?.showToastOnUI(MuteStateMessages.camera(cameraHardMuted, cameraSoftMuted))
                 }
             }
         }
@@ -545,8 +554,10 @@ class RpcChatActivity : AppCompatActivity() {
             // UI ボタンを更新
             if (isAudioMuted) {
                 ui?.showMicOffButton()
+                ui?.showToastOnUI(MuteStateMessages.MIC_SOFT_MUTED)
             } else {
                 ui?.showMicOnButton()
+                ui?.showToastOnUI(MuteStateMessages.MIC_ON)
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to toggle mute", e)
@@ -555,17 +566,14 @@ class RpcChatActivity : AppCompatActivity() {
 
     internal fun handleToggleCamera() {
         val channel = channel ?: return
+        // UI 更新と Toast は onCameraMuteStateChanged で行う
         when (cameraState) {
             CameraState.ON -> {
-                cameraState = CameraState.SOFT_MUTED
                 channel.setCameraSoftMuted(true)
-                ui?.showCameraOffButton()
             }
 
             CameraState.SOFT_MUTED -> {
-                cameraState = CameraState.ON
                 channel.setCameraSoftMuted(false)
-                ui?.showCameraOnButton()
             }
 
             CameraState.HARD_MUTED -> {
