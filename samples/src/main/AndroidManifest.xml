@@ -14,6 +14,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-feature android:name="android.hardware.camera2.full" />
     <uses-feature android:name="android.hardware.camera" />
@@ -44,7 +47,7 @@
             android:name=".ui.VoiceChatRoomSetupActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:label="ボイスチャット"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".ui.VideoChatRoomSetupActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
@@ -110,11 +113,19 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
+        <!--
+            設定画面や通知タップによる多重起動で通話が二重に開始されるのを防ぐため singleTop とする
+        -->
         <activity
             android:name=".ui.VoiceChatRoomActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:label="ボイスチャット"
-            android:exported="true" />
+            android:launchMode="singleTop"
+            android:exported="false" />
+        <service
+            android:name=".voicechat.BackgroundCallService"
+            android:exported="false"
+            android:foregroundServiceType="microphone" />
         <service
             android:name=".screencast.SoraScreencastService"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
