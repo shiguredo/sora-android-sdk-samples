@@ -1,7 +1,10 @@
 package jp.shiguredo.sora.sample.ui
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.Handler
@@ -10,6 +13,7 @@ import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -19,6 +23,7 @@ import jp.shiguredo.sora.sample.R
 import jp.shiguredo.sora.sample.databinding.ActivityVoiceChatRoomBinding
 import jp.shiguredo.sora.sample.facade.SoraAudioChannel
 import jp.shiguredo.sora.sample.option.SoraRoleType
+import jp.shiguredo.sora.sample.voicechat.BackgroundCallService
 import jp.shiguredo.sora.sdk.channel.data.ChannelAttendeesCount
 import jp.shiguredo.sora.sdk.channel.option.SoraAudioOption
 import jp.shiguredo.sora.sdk.error.SoraErrorReason
@@ -26,6 +31,8 @@ import jp.shiguredo.sora.sdk.error.SoraErrorReason
 class VoiceChatRoomActivity : AppCompatActivity() {
     companion object {
         private val TAG = VoiceChatRoomActivity::class.simpleName
+
+        internal const val EXTRA_BACKGROUND_CALL = "BACKGROUND_CALL"
     }
 
     private var channelName: String = ""
@@ -35,10 +42,30 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     private var role = SoraRoleType.SENDRECV
     private var dataChannelSignaling: Boolean? = null
     private var ignoreDisconnectWebSocket: Boolean? = null
+    private var backgroundCall = false
+
+    private var connectionRequested = false
+    private var closed = false
+    private var audioModeConfigured = false
 
     private var oldAudioMode: Int = AudioManager.MODE_INVALID
 
     private lateinit var binding: ActivityVoiceChatRoomBinding
+
+    private var startFailedReceiverRegistered = false
+
+    private val startFailedReceiver =
+        object : BroadcastReceiver() {
+            override fun onReceive(
+                context: Context?,
+                intent: Intent?,
+            ) {
+                if (intent?.action != BackgroundCallService.ACTION_BACKGROUND_CALL_START_FAILED) {
+                    return
+                }
+                handleBackgroundCallStartFailed()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -86,9 +113,37 @@ class VoiceChatRoomActivity : AppCompatActivity() {
                 else -> null
             }
 
+        backgroundCall = intent.getBooleanExtra(EXTRA_BACKGROUND_CALL, false)
+
+        if (backgroundCall) {
+            ContextCompat.registerReceiver(
+                this,
+                startFailedReceiver,
+                IntentFilter(BackgroundCallService.ACTION_BACKGROUND_CALL_START_FAILED),
+                ContextCompat.RECEIVER_NOT_EXPORTED,
+            )
+            startFailedReceiverRegistered = true
+        }
+
         binding.channelNameText.text = channelName
         binding.closeButton.setOnClickListener { close() }
+    }
 
+    override fun onStart() {
+        super.onStart()
+        // FGS は可視状態の Activity から開始する。動作中の再開始は失敗時に通話を終了させる
+        // ため行わず、Service が停止している場合だけ復帰させる
+        if (backgroundCall && !closed && !BackgroundCallService.isRunning()) {
+            startBackgroundCallService()
+        }
+        if (closed) {
+            return
+        }
+        // 通話の接続は初回の onStart のみ行い、バックグラウンドから戻ったときは再接続しない
+        if (connectionRequested) {
+            return
+        }
+        connectionRequested = true
         connectChannel()
     }
 
@@ -108,34 +163,89 @@ class VoiceChatRoomActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        if (closed) {
+            return
+        }
         this.volumeControlStream = AudioManager.STREAM_VOICE_CALL
 
         val audioManager =
             applicationContext.getSystemService(Context.AUDIO_SERVICE)
                 as AudioManager
-        oldAudioMode = audioManager.mode
-        Log.d(TAG, "AudioManager mode change: $oldAudioMode => MODE_IN_COMMUNICATION(3)")
+        if (!audioModeConfigured) {
+            oldAudioMode = audioManager.mode
+            audioModeConfigured = true
+        }
+        Log.d(TAG, "AudioManager mode change: ${audioManager.mode} => MODE_IN_COMMUNICATION(3)")
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
         Log.d(TAG, "AudioManager.isMicrophoneMute=${audioManager.isMicrophoneMute}")
     }
 
-    // AudioManager.MODE_INVALID が使われているため lint でエラーが出るので一時的に抑制しておく
-    @SuppressLint("WrongConstant")
     override fun onPause() {
         Log.d(TAG, "onPause")
         super.onPause()
-        val audioManager =
-            applicationContext.getSystemService(Context.AUDIO_SERVICE)
-                as AudioManager
-        Log.d(TAG, "AudioManager mode change: MODE_IN_COMMUNICATION(3) => $oldAudioMode")
-        audioManager.mode = oldAudioMode
+        if (backgroundCall) {
+            // バックグラウンド通話では通話と AudioManager のモードを維持する
+            return
+        }
         close()
     }
 
+    override fun onDestroy() {
+        Log.d(TAG, "onDestroy")
+        if (startFailedReceiverRegistered) {
+            unregisterReceiver(startFailedReceiver)
+            startFailedReceiverRegistered = false
+        }
+        if (!closed) {
+            closed = true
+            releaseCallResources()
+        }
+        super.onDestroy()
+    }
+
     internal fun close() {
+        if (closed) {
+            return
+        }
+        closed = true
         Log.d(TAG, "close")
-        disposeChannel()
+        releaseCallResources()
         finish()
+    }
+
+    private fun releaseCallResources() {
+        disposeChannel()
+        BackgroundCallService.stop(this)
+        restoreAudioMode()
+    }
+
+    private fun startBackgroundCallService() {
+        try {
+            BackgroundCallService.start(this, intent)
+        } catch (e: Exception) {
+            Log.e(TAG, "failed to start background call service", e)
+            handleBackgroundCallStartFailed()
+        }
+    }
+
+    private fun handleBackgroundCallStartFailed() {
+        // FGS を開始できない場合はバックグラウンド通話を継続できないため、通話を終了する
+        Toast.makeText(this, R.string.background_call_start_failed, Toast.LENGTH_LONG).show()
+        close()
+    }
+
+    // AudioManager.MODE_INVALID が使われているため lint でエラーが出るので一時的に抑制しておく
+    @SuppressLint("WrongConstant")
+    private fun restoreAudioMode() {
+        if (!audioModeConfigured) {
+            return
+        }
+        val audioManager =
+            applicationContext.getSystemService(Context.AUDIO_SERVICE)
+                as AudioManager
+        Log.d(TAG, "AudioManager mode change: ${audioManager.mode} => $oldAudioMode")
+        audioManager.mode = oldAudioMode
+        audioModeConfigured = false
     }
 
     private var channel: SoraAudioChannel? = null
@@ -196,5 +306,6 @@ class VoiceChatRoomActivity : AppCompatActivity() {
     private fun disposeChannel() {
         Log.d(TAG, "disposeChannel")
         channel?.dispose()
+        channel = null
     }
 }
